@@ -1,0 +1,7 @@
+<snippet>
+    <tabTrigger>createenchantment</tabTrigger>
+    <scope>source.papyrus</scope>
+    <description>WornObject.CreateEnchantment</description>
+
+    <content><![CDATA[CreateEnchantment(Actor akActor, Int aiHandSlot, Int aiSlotMask, Float afMaxCharge, MagicEffect[] akEffects, Float[] afMagnitudes, Int[] aiAreas, Int[] aiDurations)]]></content>
+</snippet>

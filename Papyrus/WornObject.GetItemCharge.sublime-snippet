@@ -1,0 +1,7 @@
+<snippet>
+    <tabTrigger>getitemcharge</tabTrigger>
+    <scope>source.papyrus</scope>
+    <description>WornObject.GetItemCharge</description>
+
+    <content><![CDATA[GetItemCharge(Actor akActor, Int aiHandSlot, Int aiSlotMask)]]></content>
+</snippet>
