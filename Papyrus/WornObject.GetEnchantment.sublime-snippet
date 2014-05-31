@@ -2,6 +2,5 @@
     <tabTrigger>getenchantment</tabTrigger>
     <scope>source.papyrus</scope>
     <description>WornObject.GetEnchantment</description>
-
     <content><![CDATA[GetEnchantment(Actor akActor, Int aiHandSlot, Int aiSlotMask)]]></content>
 </snippet>

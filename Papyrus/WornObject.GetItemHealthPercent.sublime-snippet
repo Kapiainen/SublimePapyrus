@@ -2,6 +2,5 @@
     <tabTrigger>getitemhealthpercent</tabTrigger>
     <scope>source.papyrus</scope>
     <description>WornObject.GetItemHealthPercent</description>
-
     <content><![CDATA[GetItemHealthPercent(Actor akActor, Int aiHandSlot, Int aiSlotMask)]]></content>
 </snippet>

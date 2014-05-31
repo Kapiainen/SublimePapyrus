@@ -2,6 +2,5 @@
     <tabTrigger>getdisplayname</tabTrigger>
     <scope>source.papyrus</scope>
     <description>WornObject.GetDisplayName</description>
-
     <content><![CDATA[GetDisplayName(Actor akActor, Int aiHandSlot, Int aiSlotMask)]]></content>
 </snippet>
