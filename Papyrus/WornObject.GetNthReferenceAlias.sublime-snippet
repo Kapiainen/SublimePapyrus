@@ -2,5 +2,5 @@
     <tabTrigger>getnthreferencealias</tabTrigger>
     <scope>source.papyrus</scope>
     <description>WornObject.GetNthReferenceAlias</description>
-    <content><![CDATA[GetNthmReferenceAlias(Actor akActor, Int aiHandSlot, Int aiSlotMask, Int aiN)]]></content>
+    <content><![CDATA[GetNthmReferenceAlias(${1:Actor akActor}, ${2:Int aiHandSlot}, ${3:Int aiSlotMask}, ${4:Int aiN})]]></content>
 </snippet>

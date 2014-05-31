@@ -2,5 +2,5 @@
     <tabTrigger>getitemmaxcharge</tabTrigger>
     <scope>source.papyrus</scope>
     <description>WornObject.GetItemMaxCharge</description>
-    <content><![CDATA[GetItemMaxCharge(Actor akActor, Int aiHandSlot, Int aiSlotMask)]]></content>
+    <content><![CDATA[GetItemMaxCharge(${1:Actor akActor}, ${2:Int aiHandSlot}, ${3:Int aiSlotMask})]]></content>
 </snippet>
