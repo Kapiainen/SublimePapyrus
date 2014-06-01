@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>isdigit</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>StringUtil.IsDigit (SKSE)</description>
+	<content><![CDATA[IsDigit(${1:String asChar})]]></content>
+</snippet>
