@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>invoke</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>UI.Invoke (SKSE)</description>
+	<content><![CDATA[Invoke(${1:String asMenuName}, ${2:String asTarget})]]></content>
+</snippet>
