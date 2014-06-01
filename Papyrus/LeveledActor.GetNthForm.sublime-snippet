@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>getnthform</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>LeveledActor.GetNthForm (SKSE)</description>
+	<content><![CDATA[GetNthForm(${1:Int aiN})]]></content>
+</snippet>

@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>addform</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>LeveledItem.AddForm</description>
+	<content><![CDATA[AddForm(${1:Form akForm}, ${2:Int aiLevel}, ${3:Int aiCount})]]></content>
+</snippet>
