@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>getnumtexturepaths</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>TextureSet.GetNumTexturePaths (SKSE)</description>
+	<content><![CDATA[GetNumTexturePaths()]]></content>
+</snippet>
