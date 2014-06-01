@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>issword</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Weapon.IsSword (SKSE)</description>
+	<content><![CDATA[IsSword()]]></content>
+</snippet>

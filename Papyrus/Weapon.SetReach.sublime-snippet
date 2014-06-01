@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>setreach</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Weapon.SetReach (SKSE)</description>
+	<content><![CDATA[SetReach(${1:Float afReach})]]></content>
+</snippet>

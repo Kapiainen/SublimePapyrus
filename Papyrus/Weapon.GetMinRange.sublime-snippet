@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>getminrange</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Weapon.GetMinRange (SKSE)</description>
+	<content><![CDATA[GetMinRange()]]></content>
+</snippet>
