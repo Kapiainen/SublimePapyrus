@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>playandwait</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Sound.PlayAndWait</description>
+	<content><![CDATA[PlayAndWait(${1:ObjectReference akSource})]]></content>
+</snippet>
