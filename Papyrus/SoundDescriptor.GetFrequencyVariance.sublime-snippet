@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>getfrequencyvariance</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>SoundDescriptor.GetFrequencyVariance (SKSE)</description>
+	<content><![CDATA[GetFrequencyVariance()]]></content>
+</snippet>

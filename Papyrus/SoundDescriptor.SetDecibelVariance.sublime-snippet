@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>setdecibelvariance</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>SoundDescriptor.SetDecibelVariance (SKSE)</description>
+	<content><![CDATA[SetDecibelVariance(${1:Int aiDecibelVariance})]]></content>
+</snippet>
