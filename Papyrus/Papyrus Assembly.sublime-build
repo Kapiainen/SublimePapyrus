@@ -1,0 +1,5 @@
+{
+	"target": "assemble_papyrus",
+	"cmd": "$file",
+	"selector": "source.papyrus-assembly"
+}
