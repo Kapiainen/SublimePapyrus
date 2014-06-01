@@ -1,6 +1,6 @@
 <snippet>
     <tabTrigger>setitemhealthpercent</tabTrigger>
     <scope>source.papyrus</scope>
-    <description>WornObject.SetItemHealthPercent</description>
+    <description>WornObject.SetItemHealthPercent (SKSE)</description>
     <content><![CDATA[SetItemHealthPercent(${1:Actor akActor}, ${2:Int aiHandSlot}, ${3:Int aiSlotMask}, ${4:Float afHealth})]]></content>
 </snippet>

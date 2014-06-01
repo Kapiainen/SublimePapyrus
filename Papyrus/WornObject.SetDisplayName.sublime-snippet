@@ -1,6 +1,6 @@
 <snippet>
     <tabTrigger>setdisplayname</tabTrigger>
     <scope>source.papyrus</scope>
-    <description>WornObject.SetDisplayName</description>
+    <description>WornObject.SetDisplayName (SKSE)</description>
     <content><![CDATA[SetDisplayName(${1:Actor akActor}, ${2:Int aiHandSlot}, ${3:Int aiSlotMask}, ${4:String asName}, ${5:Bool abForce = False})]]></content>
 </snippet>

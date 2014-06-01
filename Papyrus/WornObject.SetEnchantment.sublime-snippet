@@ -1,6 +1,6 @@
 <snippet>
     <tabTrigger>setenchantment</tabTrigger>
     <scope>source.papyrus</scope>
-    <description>WornObject.SetEnchantment</description>
+    <description>WornObject.SetEnchantment (SKSE)</description>
     <content><![CDATA[SetEnchantment(${1:Actor akActor}, ${2:Int aiHandSlot}, ${3:Int aiSlotMask}, ${4:Enchantment akSource}, ${5:Float afMaxCharge})]]></content>
 </snippet>

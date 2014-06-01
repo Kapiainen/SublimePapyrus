@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>setactive</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Weather.SetActive</description>
+	<content><![CDATA[SetActive(${1:Bool abOverride = False}, ${2:Bool abAccelerate = False})]]></content>
+</snippet>

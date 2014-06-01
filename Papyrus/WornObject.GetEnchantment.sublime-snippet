@@ -1,6 +1,6 @@
 <snippet>
     <tabTrigger>getenchantment</tabTrigger>
     <scope>source.papyrus</scope>
-    <description>WornObject.GetEnchantment</description>
+    <description>WornObject.GetEnchantment (SKSE)</description>
     <content><![CDATA[GetEnchantment(${1:Actor akActor}, ${2:Int aiHandSlot}, ${3:Int aiSlotMask})]]></content>
 </snippet>

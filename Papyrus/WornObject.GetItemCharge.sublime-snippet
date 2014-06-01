@@ -1,6 +1,6 @@
 <snippet>
     <tabTrigger>getitemcharge</tabTrigger>
     <scope>source.papyrus</scope>
-    <description>WornObject.GetItemCharge</description>
+    <description>WornObject.GetItemCharge (SKSE)</description>
     <content><![CDATA[GetItemCharge(${1:Actor akActor}, ${2:Int aiHandSlot}, ${3:Int aiSlotMask})]]></content>
 </snippet>
