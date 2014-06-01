@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>pushfloat</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>UICallback.PushFloat (SKSE)</description>
+	<content><![CDATA[PushFloat(${1:Int aiHandle}, ${2:Float afValue})]]></content>
+</snippet>
