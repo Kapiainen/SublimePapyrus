@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>setiniint</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Utility.SetINIInt</description>
+	<content><![CDATA[SetINIInt(${1:String asINI}, ${2:Int aiValue})]]></content>
+</snippet>

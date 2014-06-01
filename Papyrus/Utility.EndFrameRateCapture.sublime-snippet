@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>endframeratecapture</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Utility.EndFrameRateCapture</description>
+	<content><![CDATA[EndFrameRateCapture()]]></content>
+</snippet>

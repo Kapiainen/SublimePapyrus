@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>gametimetostring</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Utility.GameTimeToString</description>
+	<content><![CDATA[GameTimeToString(${1:Float afGameTime})]]></content>
+</snippet>

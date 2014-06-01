@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>waitmenumode</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Utility.WaitMenuMode</description>
+	<content><![CDATA[WaitMenuMode(${1:Float afSeconds})]]></content>
+</snippet>

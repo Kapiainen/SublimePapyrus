@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>getiniint</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Utility.GetINIInt (SKSE)</description>
+	<content><![CDATA[GetINIInt(${1:String asINI})]]></content>
+</snippet>

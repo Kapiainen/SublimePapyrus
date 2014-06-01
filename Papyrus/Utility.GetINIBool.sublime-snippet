@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>getinibool</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Utility.GetINIBool (SKSE)</description>
+	<content><![CDATA[GetINIBool(${1:String asINI})]]></content>
+</snippet>
