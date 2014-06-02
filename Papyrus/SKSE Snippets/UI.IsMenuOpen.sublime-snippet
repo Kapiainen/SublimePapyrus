@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>IsMenuOpen</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>UI.IsMenuOpen</description>
+	<content><![CDATA[IsMenuOpen(${1:string menuName})]]></content>
+</snippet>

@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>InvokeStringA</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>UI.InvokeStringA</description>
+	<content><![CDATA[InvokeStringA(${1:string menuName}, ${2:string target})]]></content>
+</snippet>
