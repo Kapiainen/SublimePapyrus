@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>Guard</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>SKI_QuestBase.Guard</description>
-	<content><![CDATA[Guard()]]></content>
-</snippet>
