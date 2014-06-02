@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetPlayersLastRiddenHorse</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Game.GetPlayersLastRiddenHorse</description>
-	<content><![CDATA[GetPlayersLastRiddenHorse()]]></content>
-</snippet>

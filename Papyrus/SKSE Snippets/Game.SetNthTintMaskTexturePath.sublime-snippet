@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetNthTintMaskTexturePath</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Game.SetNthTintMaskTexturePath</description>
-	<content><![CDATA[SetNthTintMaskTexturePath(${1:string path}, ${2:int n})]]></content>
-</snippet>

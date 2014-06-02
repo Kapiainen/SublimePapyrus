@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>IsIgnoringFriendlyHits</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ObjectReference.IsIgnoringFriendlyHits</description>
-	<content><![CDATA[IsIgnoringFriendlyHits()]]></content>
-</snippet>

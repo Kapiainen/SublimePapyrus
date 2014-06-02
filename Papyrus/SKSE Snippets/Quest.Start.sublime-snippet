@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>Start</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Quest.Start</description>
-	<content><![CDATA[Start()]]></content>
-</snippet>

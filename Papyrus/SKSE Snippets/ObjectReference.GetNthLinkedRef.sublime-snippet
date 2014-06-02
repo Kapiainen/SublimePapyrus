@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetNthLinkedRef</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ObjectReference.GetNthLinkedRef</description>
-	<content><![CDATA[GetNthLinkedRef(${1:int aiLinkedRef})]]></content>
-</snippet>

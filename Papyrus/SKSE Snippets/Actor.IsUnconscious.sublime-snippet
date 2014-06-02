@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>IsUnconscious</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Actor.IsUnconscious</description>
-	<content><![CDATA[IsUnconscious()]]></content>
-</snippet>

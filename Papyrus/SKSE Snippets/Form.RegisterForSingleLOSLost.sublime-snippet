@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>RegisterForSingleLOSLost</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Form.RegisterForSingleLOSLost</description>
-	<content><![CDATA[RegisterForSingleLOSLost(${1:Actor akViewer}, ${2:ObjectReference akTarget})]]></content>
-</snippet>

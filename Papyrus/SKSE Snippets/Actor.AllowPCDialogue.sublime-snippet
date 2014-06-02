@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>AllowPCDialogue</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Actor.AllowPCDialogue</description>
-	<content><![CDATA[AllowPCDialogue(${1:bool abTalk})]]></content>
-</snippet>

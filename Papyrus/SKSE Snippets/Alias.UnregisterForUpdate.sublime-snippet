@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>UnregisterForUpdate</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Alias.UnregisterForUpdate</description>
-	<content><![CDATA[UnregisterForUpdate()]]></content>
-</snippet>

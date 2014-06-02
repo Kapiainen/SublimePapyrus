@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetSaturation</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ColorComponent.SetSaturation</description>
-	<content><![CDATA[SetSaturation(${1:int argb}, ${2:float s})]]></content>
-</snippet>

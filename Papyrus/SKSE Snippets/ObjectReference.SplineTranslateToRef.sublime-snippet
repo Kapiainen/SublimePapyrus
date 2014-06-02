@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SplineTranslateToRef</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ObjectReference.SplineTranslateToRef</description>
-	<content><![CDATA[SplineTranslateToRef(${1:ObjectReference arTarget}, ${2:float afTangentMagnitude}, ${3:float afSpeed}, ${4:float afMaxRotationSpeed = 0})]]></content>
-</snippet>

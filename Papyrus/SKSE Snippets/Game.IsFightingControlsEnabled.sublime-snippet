@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>IsFightingControlsEnabled</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Game.IsFightingControlsEnabled</description>
-	<content><![CDATA[IsFightingControlsEnabled()]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetNthEntryQuest</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Perk.SetNthEntryQuest</description>
-	<content><![CDATA[SetNthEntryQuest(${1:int n}, ${2:Quest newQuest})]]></content>
-</snippet>

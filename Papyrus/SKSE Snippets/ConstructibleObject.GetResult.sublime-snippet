@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetResult</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ConstructibleObject.GetResult</description>
-	<content><![CDATA[GetResult()]]></content>
-</snippet>

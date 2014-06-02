@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetNthTintMaskType</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Game.GetNthTintMaskType</description>
-	<content><![CDATA[GetNthTintMaskType(${1:int n})]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>MakeImmobile</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Race.MakeImmobile</description>
-	<content><![CDATA[MakeImmobile()]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>IsEssential</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Actor.IsEssential</description>
-	<content><![CDATA[IsEssential()]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetForcedLandingMarker</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Actor.SetForcedLandingMarker</description>
-	<content><![CDATA[SetForcedLandingMarker(${1:ObjectReference aMarker})]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetDefensiveMult</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>CombatStyle.GetDefensiveMult</description>
-	<content><![CDATA[GetDefensiveMult()]]></content>
-</snippet>

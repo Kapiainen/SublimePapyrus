@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>ClearAllowPickpocket</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Race.ClearAllowPickpocket</description>
-	<content><![CDATA[ClearAllowPickpocket()]]></content>
-</snippet>

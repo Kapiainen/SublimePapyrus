@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>IsTakeable</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Book.IsTakeable</description>
-	<content><![CDATA[IsTakeable()]]></content>
-</snippet>

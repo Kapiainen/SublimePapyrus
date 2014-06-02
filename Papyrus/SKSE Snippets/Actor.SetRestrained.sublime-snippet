@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetRestrained</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Actor.SetRestrained</description>
-	<content><![CDATA[SetRestrained(${1:bool abRestrained = true})]]></content>
-</snippet>

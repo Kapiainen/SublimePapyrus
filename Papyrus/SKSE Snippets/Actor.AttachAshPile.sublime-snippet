@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>AttachAshPile</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Actor.AttachAshPile</description>
-	<content><![CDATA[AttachAshPile(${1:Form akAshPileBase = None})]]></content>
-</snippet>

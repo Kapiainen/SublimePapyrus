@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetHudCartMode</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Game.SetHudCartMode</description>
-	<content><![CDATA[SetHudCartMode(${1:bool abSetCartMode = true})]]></content>
-</snippet>

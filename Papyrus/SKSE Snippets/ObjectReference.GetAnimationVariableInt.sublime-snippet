@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetAnimationVariableInt</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ObjectReference.GetAnimationVariableInt</description>
-	<content><![CDATA[GetAnimationVariableInt(${1:string arVariableName})]]></content>
-</snippet>

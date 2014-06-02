@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetStage</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Quest.SetStage</description>
-	<content><![CDATA[SetStage(${1:int aiStage})]]></content>
-</snippet>

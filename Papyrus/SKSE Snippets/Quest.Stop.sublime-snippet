@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>Stop</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Quest.Stop</description>
-	<content><![CDATA[Stop()]]></content>
-</snippet>

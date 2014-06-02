@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>IsObjectFavorited</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Game.IsObjectFavorited</description>
-	<content><![CDATA[IsObjectFavorited(${1:Form form})]]></content>
-</snippet>

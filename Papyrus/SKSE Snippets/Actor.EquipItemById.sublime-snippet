@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>EquipItemById</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Actor.EquipItemById</description>
-	<content><![CDATA[EquipItemById(${1:Form item}, ${2:int itemId}, ${3:int equipSlot = 0}, ${4:bool preventUnequip = false}, ${5:bool equipSound = true})]]></content>
-</snippet>

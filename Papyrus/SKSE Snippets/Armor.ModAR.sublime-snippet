@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>ModAR</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Armor.ModAR</description>
-	<content><![CDATA[ModAR(${1:int modBy})]]></content>
-</snippet>

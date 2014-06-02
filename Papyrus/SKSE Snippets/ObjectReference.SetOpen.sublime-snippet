@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetOpen</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ObjectReference.SetOpen</description>
-	<content><![CDATA[SetOpen(${1:bool abOpen = true})]]></content>
-</snippet>

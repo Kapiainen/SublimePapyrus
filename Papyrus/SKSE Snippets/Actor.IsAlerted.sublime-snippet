@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>IsAlerted</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Actor.IsAlerted</description>
-	<content><![CDATA[IsAlerted()]]></content>
-</snippet>

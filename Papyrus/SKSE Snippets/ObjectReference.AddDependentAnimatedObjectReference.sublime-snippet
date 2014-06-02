@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>AddDependentAnimatedObjectReference</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ObjectReference.AddDependentAnimatedObjectReference</description>
-	<content><![CDATA[AddDependentAnimatedObjectReference(${1:ObjectReference akDependent})]]></content>
-</snippet>

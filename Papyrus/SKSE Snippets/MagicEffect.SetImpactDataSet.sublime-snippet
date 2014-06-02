@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetImpactDataSet</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>MagicEffect.SetImpactDataSet</description>
-	<content><![CDATA[SetImpactDataSet(${1:ImpactDataSet obj})]]></content>
-</snippet>

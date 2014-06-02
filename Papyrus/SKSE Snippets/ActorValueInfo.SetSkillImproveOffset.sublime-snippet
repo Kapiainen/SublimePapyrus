@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetSkillImproveOffset</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ActorValueInfo.SetSkillImproveOffset</description>
-	<content><![CDATA[SetSkillImproveOffset(${1:float value})]]></content>
-</snippet>

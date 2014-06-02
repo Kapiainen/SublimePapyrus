@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetPlayerMovementMode</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Game.GetPlayerMovementMode</description>
-	<content><![CDATA[GetPlayerMovementMode()]]></content>
-</snippet>

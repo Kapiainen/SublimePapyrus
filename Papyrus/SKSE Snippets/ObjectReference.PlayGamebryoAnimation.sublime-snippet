@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>PlayGamebryoAnimation</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ObjectReference.PlayGamebryoAnimation</description>
-	<content><![CDATA[PlayGamebryoAnimation(${1:string asAnimation}, ${2:bool abStartOver = false}, ${3:float afEaseInTime = 0})]]></content>
-</snippet>

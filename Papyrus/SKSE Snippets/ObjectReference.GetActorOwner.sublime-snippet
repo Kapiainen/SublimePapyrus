@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetActorOwner</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ObjectReference.GetActorOwner</description>
-	<content><![CDATA[GetActorOwner()]]></content>
-</snippet>

@@ -1,8 +1,0 @@
-<snippet>
-	<tabTrigger>OnStoryInfection</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Quest.OnStoryInfection</description>
-	<content><![CDATA[Event OnStoryInfection(${1:ObjectReference akTransmittingActor}, ${2:Form akInfection})
-${0}
-EndEvent]]></content>
-</snippet>

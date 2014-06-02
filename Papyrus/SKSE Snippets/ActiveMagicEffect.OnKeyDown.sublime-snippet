@@ -1,8 +1,0 @@
-<snippet>
-	<tabTrigger>OnKeyDown</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ActiveMagicEffect.OnKeyDown</description>
-	<content><![CDATA[Event OnKeyDown(${1:int keyCode})
-${0}
-EndEvent]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>IsLightArmor</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Armor.IsLightArmor</description>
-	<content><![CDATA[IsLightArmor()]]></content>
-</snippet>

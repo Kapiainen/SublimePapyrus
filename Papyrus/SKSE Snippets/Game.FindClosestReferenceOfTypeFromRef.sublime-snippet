@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>FindClosestReferenceOfTypeFromRef</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Game.FindClosestReferenceOfTypeFromRef</description>
-	<content><![CDATA[FindClosestReferenceOfTypeFromRef(${1:Form arBaseObject}, ${2:ObjectReference arCenter}, ${3:float afRadius})]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>IsPlayersLastRiddenHorse</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Actor.IsPlayersLastRiddenHorse</description>
-	<content><![CDATA[IsPlayersLastRiddenHorse()]]></content>
-</snippet>

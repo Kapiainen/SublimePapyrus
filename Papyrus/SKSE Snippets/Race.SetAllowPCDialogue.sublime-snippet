@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetAllowPCDialogue</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Race.SetAllowPCDialogue</description>
-	<content><![CDATA[SetAllowPCDialogue()]]></content>
-</snippet>

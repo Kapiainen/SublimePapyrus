@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>IsGuard</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Actor.IsGuard</description>
-	<content><![CDATA[IsGuard()]]></content>
-</snippet>

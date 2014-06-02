@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetCasterActor</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ActiveMagicEffect.GetCasterActor</description>
-	<content><![CDATA[GetCasterActor()]]></content>
-</snippet>

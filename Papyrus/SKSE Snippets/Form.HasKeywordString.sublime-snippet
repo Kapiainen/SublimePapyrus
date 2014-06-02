@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>HasKeywordString</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Form.HasKeywordString</description>
-	<content><![CDATA[HasKeywordString(${1:string s})]]></content>
-</snippet>

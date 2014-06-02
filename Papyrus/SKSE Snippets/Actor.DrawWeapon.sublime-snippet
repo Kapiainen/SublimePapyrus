@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>DrawWeapon</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Actor.DrawWeapon</description>
-	<content><![CDATA[DrawWeapon()]]></content>
-</snippet>

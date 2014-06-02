@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetFogPlanes</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Cell.SetFogPlanes</description>
-	<content><![CDATA[SetFogPlanes(${1:float afNear}, ${2:float afFar})]]></content>
-</snippet>

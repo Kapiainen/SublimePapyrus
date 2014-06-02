@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetNumOverlayHeadParts</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ActorBase.GetNumOverlayHeadParts</description>
-	<content><![CDATA[GetNumOverlayHeadParts()]]></content>
-</snippet>

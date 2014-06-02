@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>RegisterForSingleUpdateGameTime</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Form.RegisterForSingleUpdateGameTime</description>
-	<content><![CDATA[RegisterForSingleUpdateGameTime(${1:float afInterval})]]></content>
-</snippet>

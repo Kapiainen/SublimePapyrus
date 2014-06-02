@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>ModActorValue</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Actor.ModActorValue</description>
-	<content><![CDATA[ModActorValue(${1:string asValueName}, ${2:float afAmount})]]></content>
-</snippet>

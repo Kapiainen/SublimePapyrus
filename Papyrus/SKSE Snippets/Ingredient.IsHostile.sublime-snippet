@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>IsHostile</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Ingredient.IsHostile</description>
-	<content><![CDATA[IsHostile()]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>Reset</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ObjectReference.Reset</description>
-	<content><![CDATA[Reset(${1:ObjectReference akTarget = None})]]></content>
-</snippet>

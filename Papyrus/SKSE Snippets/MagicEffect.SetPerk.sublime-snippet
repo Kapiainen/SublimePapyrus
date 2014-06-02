@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetPerk</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>MagicEffect.SetPerk</description>
-	<content><![CDATA[SetPerk(${1:Perk obj})]]></content>
-</snippet>

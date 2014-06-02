@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetBeastForm</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Game.SetBeastForm</description>
-	<content><![CDATA[SetBeastForm(${1:bool abEntering})]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetNodeScale</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>NetImmerse.SetNodeScale</description>
-	<content><![CDATA[SetNodeScale(${1:ObjectReference ref}, ${2:string node}, ${3:float scale}, ${4:bool firstPerson})]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetShoutMult</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>CombatStyle.GetShoutMult</description>
-	<content><![CDATA[GetShoutMult()]]></content>
-</snippet>

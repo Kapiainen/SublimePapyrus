@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetPerkPoints</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Game.GetPerkPoints</description>
-	<content><![CDATA[GetPerkPoints()]]></content>
-</snippet>

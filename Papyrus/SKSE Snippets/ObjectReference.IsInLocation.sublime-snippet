@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>IsInLocation</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ObjectReference.IsInLocation</description>
-	<content><![CDATA[IsInLocation(${1:Location akLocation})]]></content>
-</snippet>

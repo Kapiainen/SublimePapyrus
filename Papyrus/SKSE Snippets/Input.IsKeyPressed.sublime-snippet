@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>IsKeyPressed</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Input.IsKeyPressed</description>
-	<content><![CDATA[IsKeyPressed(${1:Int dxKeycode})]]></content>
-</snippet>

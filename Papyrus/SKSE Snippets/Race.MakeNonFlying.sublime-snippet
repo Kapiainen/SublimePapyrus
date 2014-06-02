@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>MakeNonFlying</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Race.MakeNonFlying</description>
-	<content><![CDATA[MakeNonFlying()]]></content>
-</snippet>

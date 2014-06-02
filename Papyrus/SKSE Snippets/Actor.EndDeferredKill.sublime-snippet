@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>EndDeferredKill</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Actor.EndDeferredKill</description>
-	<content><![CDATA[EndDeferredKill()]]></content>
-</snippet>

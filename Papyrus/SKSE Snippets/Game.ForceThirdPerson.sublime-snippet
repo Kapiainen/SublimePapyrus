@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>ForceThirdPerson</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Game.ForceThirdPerson</description>
-	<content><![CDATA[ForceThirdPerson()]]></content>
-</snippet>

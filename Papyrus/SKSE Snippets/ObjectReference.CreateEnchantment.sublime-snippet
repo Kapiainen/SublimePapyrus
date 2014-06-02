@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>CreateEnchantment</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ObjectReference.CreateEnchantment</description>
-	<content><![CDATA[CreateEnchantment(${1:float maxCharge})]]></content>
-</snippet>

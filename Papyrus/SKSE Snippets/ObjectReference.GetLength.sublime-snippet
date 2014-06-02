@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetLength</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ObjectReference.GetLength</description>
-	<content><![CDATA[GetLength()]]></content>
-</snippet>

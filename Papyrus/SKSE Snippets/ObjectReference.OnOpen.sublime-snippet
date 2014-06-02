@@ -1,8 +1,0 @@
-<snippet>
-	<tabTrigger>OnOpen</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ObjectReference.OnOpen</description>
-	<content><![CDATA[Event OnOpen(${1:ObjectReference akActionRef})
-${0}
-EndEvent]]></content>
-</snippet>

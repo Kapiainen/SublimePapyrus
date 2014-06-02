@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetBlue</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ColorComponent.GetBlue</description>
-	<content><![CDATA[GetBlue(${1:int argb})]]></content>
-</snippet>

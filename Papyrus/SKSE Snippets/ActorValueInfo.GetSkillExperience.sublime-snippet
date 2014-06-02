@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetSkillExperience</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ActorValueInfo.GetSkillExperience</description>
-	<content><![CDATA[GetSkillExperience()]]></content>
-</snippet>

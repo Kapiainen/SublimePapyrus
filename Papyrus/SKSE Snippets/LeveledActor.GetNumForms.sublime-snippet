@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetNumForms</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>LeveledActor.GetNumForms</description>
-	<content><![CDATA[GetNumForms()]]></content>
-</snippet>

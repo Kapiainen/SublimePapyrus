@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetMagnitude</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ActiveMagicEffect.GetMagnitude</description>
-	<content><![CDATA[GetMagnitude()]]></content>
-</snippet>

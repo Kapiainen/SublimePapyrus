@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>UnequipSpell</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Actor.UnequipSpell</description>
-	<content><![CDATA[UnequipSpell(${1:Spell akSpell}, ${2:int aiSource})]]></content>
-</snippet>

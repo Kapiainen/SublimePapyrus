@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetAvoidsRoads</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Race.SetAvoidsRoads</description>
-	<content><![CDATA[SetAvoidsRoads()]]></content>
-</snippet>

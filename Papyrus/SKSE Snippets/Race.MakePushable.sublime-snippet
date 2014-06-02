@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>MakePushable</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Race.MakePushable</description>
-	<content><![CDATA[MakePushable()]]></content>
-</snippet>

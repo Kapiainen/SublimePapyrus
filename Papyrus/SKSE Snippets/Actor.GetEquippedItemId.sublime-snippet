@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetEquippedItemId</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Actor.GetEquippedItemId</description>
-	<content><![CDATA[GetEquippedItemId(${1:int location})]]></content>
-</snippet>

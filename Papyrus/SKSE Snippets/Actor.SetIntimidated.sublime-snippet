@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetIntimidated</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Actor.SetIntimidated</description>
-	<content><![CDATA[SetIntimidated(${1:bool abIntimidate = true})]]></content>
-</snippet>

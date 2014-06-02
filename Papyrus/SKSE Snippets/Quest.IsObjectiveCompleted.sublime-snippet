@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>IsObjectiveCompleted</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Quest.IsObjectiveCompleted</description>
-	<content><![CDATA[IsObjectiveCompleted(${1:int aiObjective})]]></content>
-</snippet>

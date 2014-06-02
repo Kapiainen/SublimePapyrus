@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetArmorRating</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Armor.GetArmorRating</description>
-	<content><![CDATA[GetArmorRating()]]></content>
-</snippet>

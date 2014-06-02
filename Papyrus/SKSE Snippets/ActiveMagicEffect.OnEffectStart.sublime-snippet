@@ -1,8 +1,0 @@
-<snippet>
-	<tabTrigger>OnEffectStart</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ActiveMagicEffect.OnEffectStart</description>
-	<content><![CDATA[Event OnEffectStart(${1:Actor akTarget}, ${2:Actor akCaster})
-${0}
-EndEvent]]></content>
-</snippet>

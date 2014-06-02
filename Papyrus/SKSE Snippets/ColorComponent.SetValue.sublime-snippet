@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetValue</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ColorComponent.SetValue</description>
-	<content><![CDATA[SetValue(${1:int argb}, ${2:float v})]]></content>
-</snippet>

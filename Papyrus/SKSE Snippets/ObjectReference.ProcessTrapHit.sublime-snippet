@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>ProcessTrapHit</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ObjectReference.ProcessTrapHit</description>
-	<content><![CDATA[ProcessTrapHit(${1:ObjectReference akTrap}, ${2:float afDamage}, ${3:float afPushback}, ${4:float afXVel}, ${5:float afYVel}, ${6:float afZVel}, ${7:float afXPos}, ${8:float afYPos}, ${9:float afZPos}, ${10:int aeMaterial}, ${11:float afStagger})]]></content>
-</snippet>

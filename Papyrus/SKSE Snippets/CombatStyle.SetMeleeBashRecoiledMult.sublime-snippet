@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetMeleeBashRecoiledMult</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>CombatStyle.SetMeleeBashRecoiledMult</description>
-	<content><![CDATA[SetMeleeBashRecoiledMult(${1:float mult})]]></content>
-</snippet>

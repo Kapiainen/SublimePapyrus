@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetAllowFlyingMountLandingRequests</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Game.SetAllowFlyingMountLandingRequests</description>
-	<content><![CDATA[SetAllowFlyingMountLandingRequests(${1:bool abAllow})]]></content>
-</snippet>

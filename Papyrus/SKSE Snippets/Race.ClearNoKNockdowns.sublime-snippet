@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>ClearNoKNockdowns</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Race.ClearNoKNockdowns</description>
-	<content><![CDATA[ClearNoKNockdowns()]]></content>
-</snippet>

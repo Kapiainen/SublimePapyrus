@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>EnablePlayerControls</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Game.EnablePlayerControls</description>
-	<content><![CDATA[EnablePlayerControls(${1:bool abMovement = true}, ${2:bool abFighting = true}, ${3:bool abCamSwitch = true}, ${4:bool abLooking = true})]]></content>
-</snippet>

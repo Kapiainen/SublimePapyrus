@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetSkillUsageMult</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>MagicEffect.SetSkillUsageMult</description>
-	<content><![CDATA[SetSkillUsageMult(${1:float usageMult})]]></content>
-</snippet>

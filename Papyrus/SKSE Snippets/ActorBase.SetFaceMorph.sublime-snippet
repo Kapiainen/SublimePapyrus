@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetFaceMorph</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ActorBase.SetFaceMorph</description>
-	<content><![CDATA[SetFaceMorph(${1:float value}, ${2:int index})]]></content>
-</snippet>

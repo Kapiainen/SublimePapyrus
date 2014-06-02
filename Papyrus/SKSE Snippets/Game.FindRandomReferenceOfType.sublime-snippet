@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>FindRandomReferenceOfType</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Game.FindRandomReferenceOfType</description>
-	<content><![CDATA[FindRandomReferenceOfType(${1:Form arBaseObject}, ${2:float afX}, ${3:float afY}, ${4:float afZ}, ${5:float afRadius})]]></content>
-</snippet>

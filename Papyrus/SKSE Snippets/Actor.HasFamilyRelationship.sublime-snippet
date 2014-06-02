@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>HasFamilyRelationship</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Actor.HasFamilyRelationship</description>
-	<content><![CDATA[HasFamilyRelationship(${1:Actor akOther = None})]]></content>
-</snippet>

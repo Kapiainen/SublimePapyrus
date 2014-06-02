@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>UnequipAll</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Actor.UnequipAll</description>
-	<content><![CDATA[UnequipAll()]]></content>
-</snippet>

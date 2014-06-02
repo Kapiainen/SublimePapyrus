@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetExplosion</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>MagicEffect.SetExplosion</description>
-	<content><![CDATA[SetExplosion(${1:Explosion obj})]]></content>
-</snippet>

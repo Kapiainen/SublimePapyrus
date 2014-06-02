@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetMotionType</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ObjectReference.SetMotionType</description>
-	<content><![CDATA[SetMotionType(${1:int aeMotionType}, ${2:bool abAllowActivate = true})]]></content>
-</snippet>

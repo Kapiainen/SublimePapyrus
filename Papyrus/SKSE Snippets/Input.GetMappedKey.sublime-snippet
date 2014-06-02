@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetMappedKey</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Input.GetMappedKey</description>
-	<content><![CDATA[GetMappedKey(${1:string control}, ${2:int deviceType = 0xFF})]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>ClearForcedLandingMarker</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Actor.ClearForcedLandingMarker</description>
-	<content><![CDATA[ClearForcedLandingMarker()]]></content>
-</snippet>

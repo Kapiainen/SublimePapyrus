@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetNthEffectDuration</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Ingredient.GetNthEffectDuration</description>
-	<content><![CDATA[GetNthEffectDuration(${1:int index})]]></content>
-</snippet>

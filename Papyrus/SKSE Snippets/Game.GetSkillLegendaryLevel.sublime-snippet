@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetSkillLegendaryLevel</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Game.GetSkillLegendaryLevel</description>
-	<content><![CDATA[GetSkillLegendaryLevel(${1:string actorValue})]]></content>
-</snippet>

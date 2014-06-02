@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>MakeMobile</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Race.MakeMobile</description>
-	<content><![CDATA[MakeMobile()]]></content>
-</snippet>

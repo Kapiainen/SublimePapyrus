@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>RightShift</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Math.RightShift</description>
-	<content><![CDATA[RightShift(${1:int value}, ${2:int shiftBy})]]></content>
-</snippet>

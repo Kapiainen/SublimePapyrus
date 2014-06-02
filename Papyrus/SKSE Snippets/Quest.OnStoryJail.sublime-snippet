@@ -1,8 +1,0 @@
-<snippet>
-	<tabTrigger>OnStoryJail</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Quest.OnStoryJail</description>
-	<content><![CDATA[Event OnStoryJail(${1:ObjectReference akGuard}, ${2:Form akCrimeGroup}, ${3:Location akLocation})
-${0}
-EndEvent]]></content>
-</snippet>

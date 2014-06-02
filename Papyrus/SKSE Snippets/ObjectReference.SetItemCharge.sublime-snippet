@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetItemCharge</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ObjectReference.SetItemCharge</description>
-	<content><![CDATA[SetItemCharge(${1:float charge})]]></content>
-</snippet>

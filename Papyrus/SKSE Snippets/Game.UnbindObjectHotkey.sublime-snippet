@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>UnbindObjectHotkey</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Game.UnbindObjectHotkey</description>
-	<content><![CDATA[UnbindObjectHotkey(${1:int hotkey})]]></content>
-</snippet>

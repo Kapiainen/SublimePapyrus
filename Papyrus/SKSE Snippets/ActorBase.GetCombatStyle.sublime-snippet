@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetCombatStyle</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ActorBase.GetCombatStyle</description>
-	<content><![CDATA[GetCombatStyle()]]></content>
-</snippet>

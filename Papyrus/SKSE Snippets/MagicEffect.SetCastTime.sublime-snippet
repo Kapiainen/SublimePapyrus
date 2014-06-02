@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetCastTime</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>MagicEffect.SetCastTime</description>
-	<content><![CDATA[SetCastTime(${1:float castTime})]]></content>
-</snippet>

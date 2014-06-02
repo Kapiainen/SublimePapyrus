@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetPerkTree</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ActorValueInfo.GetPerkTree</description>
-	<content><![CDATA[GetPerkTree(${1:FormList list}, ${2:Actor akActor = None}, ${3:bool unowned = true}, ${4:bool allRanks = false})]]></content>
-</snippet>

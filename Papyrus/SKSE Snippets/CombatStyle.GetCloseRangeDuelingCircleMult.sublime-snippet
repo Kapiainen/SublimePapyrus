@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetCloseRangeDuelingCircleMult</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>CombatStyle.GetCloseRangeDuelingCircleMult</description>
-	<content><![CDATA[GetCloseRangeDuelingCircleMult()]]></content>
-</snippet>

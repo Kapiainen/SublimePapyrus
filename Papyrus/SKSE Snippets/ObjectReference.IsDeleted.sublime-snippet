@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>IsDeleted</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ObjectReference.IsDeleted</description>
-	<content><![CDATA[IsDeleted()]]></content>
-</snippet>

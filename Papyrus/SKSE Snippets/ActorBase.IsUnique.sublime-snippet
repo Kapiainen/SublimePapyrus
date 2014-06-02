@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>IsUnique</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ActorBase.IsUnique</description>
-	<content><![CDATA[IsUnique()]]></content>
-</snippet>

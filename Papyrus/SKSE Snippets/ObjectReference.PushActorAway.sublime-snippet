@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>PushActorAway</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ObjectReference.PushActorAway</description>
-	<content><![CDATA[PushActorAway(${1:Actor akActorToPush}, ${2:float aiKnockbackForce})]]></content>
-</snippet>

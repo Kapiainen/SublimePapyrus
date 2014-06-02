@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>IsInFaction</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Actor.IsInFaction</description>
-	<content><![CDATA[IsInFaction(${1:Faction akFaction})]]></content>
-</snippet>

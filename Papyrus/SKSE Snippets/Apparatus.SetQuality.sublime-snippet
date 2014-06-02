@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetQuality</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Apparatus.SetQuality</description>
-	<content><![CDATA[SetQuality(${1:int quality})]]></content>
-</snippet>

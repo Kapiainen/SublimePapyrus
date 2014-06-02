@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetExpressionOverride</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Actor.SetExpressionOverride</description>
-	<content><![CDATA[SetExpressionOverride(${1:int aiMood}, ${2:int aiStrength = 100})]]></content>
-</snippet>

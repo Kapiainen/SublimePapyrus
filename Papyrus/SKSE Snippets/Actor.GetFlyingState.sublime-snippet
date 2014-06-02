@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetFlyingState</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Actor.GetFlyingState</description>
-	<content><![CDATA[GetFlyingState()]]></content>
-</snippet>

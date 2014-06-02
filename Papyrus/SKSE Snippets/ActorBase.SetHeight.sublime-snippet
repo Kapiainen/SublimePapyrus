@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetHeight</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ActorBase.SetHeight</description>
-	<content><![CDATA[SetHeight(${1:float height})]]></content>
-</snippet>

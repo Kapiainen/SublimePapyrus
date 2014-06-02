@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>UnregisterForAllMenus</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Alias.UnregisterForAllMenus</description>
-	<content><![CDATA[UnregisterForAllMenus()]]></content>
-</snippet>

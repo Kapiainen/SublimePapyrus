@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetEssential</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ActorBase.SetEssential</description>
-	<content><![CDATA[SetEssential(${1:bool abEssential = true})]]></content>
-</snippet>

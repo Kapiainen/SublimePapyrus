@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetNthEntryRank</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Perk.SetNthEntryRank</description>
-	<content><![CDATA[SetNthEntryRank(${1:int n}, ${2:int rank})]]></content>
-</snippet>

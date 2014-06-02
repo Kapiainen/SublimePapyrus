@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetWorldSpace</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ObjectReference.GetWorldSpace</description>
-	<content><![CDATA[GetWorldSpace()]]></content>
-</snippet>

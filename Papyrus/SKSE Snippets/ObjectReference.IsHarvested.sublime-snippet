@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>IsHarvested</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ObjectReference.IsHarvested</description>
-	<content><![CDATA[IsHarvested()]]></content>
-</snippet>

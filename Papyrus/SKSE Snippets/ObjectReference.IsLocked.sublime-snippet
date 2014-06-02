@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>IsLocked</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ObjectReference.IsLocked</description>
-	<content><![CDATA[IsLocked()]]></content>
-</snippet>

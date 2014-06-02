@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetHeadingAngle</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ObjectReference.GetHeadingAngle</description>
-	<content><![CDATA[GetHeadingAngle(${1:ObjectReference akOther})]]></content>
-</snippet>

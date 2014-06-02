@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetModelPath</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ArmorAddon.SetModelPath</description>
-	<content><![CDATA[SetModelPath(${1:string path}, ${2:bool firstPerson}, ${3:bool female})]]></content>
-</snippet>

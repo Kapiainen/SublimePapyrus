@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetDefaultVoiceType</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Race.GetDefaultVoiceType</description>
-	<content><![CDATA[GetDefaultVoiceType(${1:bool female})]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetNthEntryValue</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Perk.SetNthEntryValue</description>
-	<content><![CDATA[SetNthEntryValue(${1:int n}, ${2:int i}, ${3:float value})]]></content>
-</snippet>

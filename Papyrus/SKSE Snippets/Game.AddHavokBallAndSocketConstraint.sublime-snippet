@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>AddHavokBallAndSocketConstraint</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Game.AddHavokBallAndSocketConstraint</description>
-	<content><![CDATA[AddHavokBallAndSocketConstraint(${1:ObjectReference arRefA}, ${2:string arRefANode}, ${3:ObjectReference arRefB}, ${4:string arRefBNode}, ${5:float afRefALocalOffsetX = 0}, ${6:float afRefALocalOffsetY = 0}, ${7:float afRefALocalOffsetZ = 0}, ${8:float afRefBLocalOffsetX = 0}, ${9:float afRefBLocalOffsetY = 0}, ${10:float afRefBLocalOffsetZ = 0})]]></content>
-</snippet>

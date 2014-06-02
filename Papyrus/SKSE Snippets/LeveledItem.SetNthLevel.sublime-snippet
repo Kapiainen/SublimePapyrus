@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetNthLevel</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>LeveledItem.SetNthLevel</description>
-	<content><![CDATA[SetNthLevel(${1:int n}, ${2:int level})]]></content>
-</snippet>
