@@ -8,7 +8,6 @@ using System.Text.RegularExpressions;
 
 namespace PapyrusToSublimeSnippets
 {
-    //Has problems with ObjectReference.psc Line 89 & 100 Delte the comments of these lines.
     class Program
     {
         static void Main(string[] args)
@@ -19,7 +18,7 @@ namespace PapyrusToSublimeSnippets
             string OutputDir = Console.ReadLine();
             if (PapyrusDir.Equals(""))
             {
-                PapyrusDir = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
+                PapyrusDir = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
             }
             if (OutputDir.Equals(""))
             {
@@ -34,7 +33,8 @@ namespace PapyrusToSublimeSnippets
             int CountFunctions = 0;
             int CountEvent = 0;
             Regex rx = new Regex(@"(?<=[(|,]\s*)\w+\s+\w+(\s+[=]+\s+\w+)?");
-            Regex InvalideStartPattern = new Regex(@"^\s*[;|{]");
+            Regex EventPattern = new Regex(@"(?i)^\s*\b(event)");
+            Regex FunctionPattern = new Regex(@"(?i)^(\s*\w+\s+)?\b(function)");
             StreamWriter funcLog = new StreamWriter(OutputDir + "\\FunctionLog.txt", false);
             StreamWriter classLog = new StreamWriter(OutputDir + "\\ClassLog.txt", false);
             foreach (string file in files)
@@ -45,15 +45,15 @@ namespace PapyrusToSublimeSnippets
                 string line;
                 while ((line = sr.ReadLine()) != null)
                 {
-                    string checkingline = line.ToLower();
-                    if (((checkingline.Contains("function")) || (checkingline.Contains("event"))) && !(checkingline.Contains("kstoryeventnode") || checkingline.Contains("modevent") || checkingline.Contains("endevent") || checkingline.Contains("endfunction") || (InvalideStartPattern.IsMatch(line))))
+                    if (EventPattern.IsMatch(line) || FunctionPattern.IsMatch(line))
                     {
+                        string checkingline = line.ToLower();
                         int startName = 0;
                         if (checkingline.Contains("function"))
-                        {
-                            startName = checkingline.IndexOf("function") + 9;
-                        }
-                        else if (checkingline.Contains("event"))
+	                    {
+	                        startName = checkingline.IndexOf("function") + 9;	 
+	                    }
+                        else if(checkingline.Contains("event"))
                         {
                             startName = checkingline.IndexOf("event") + 6;
                         }
@@ -67,10 +67,10 @@ namespace PapyrusToSublimeSnippets
                         sw.WriteLine("\t<tabTrigger>" + FunctionName + "</tabTrigger>");
                         sw.WriteLine("\t<scope>source.papyrus</scope>");
                         sw.WriteLine("\t<description>" + FileName + "." + FunctionName + "</description>");
-
-                        if (checkingline.Contains("event"))
-                        {
-                            sw.Write("\t<content><![CDATA[Event " + FunctionName + "(");
+                        
+                        if (EventPattern.IsMatch(line))
+	                    {
+		                    sw.Write("\t<content><![CDATA[Event " + FunctionName + "(");
                             int i = 1;
                             if (matches.Count > 0)
                             {
@@ -87,8 +87,8 @@ namespace PapyrusToSublimeSnippets
                             sw.Write(")\n${0}\nEndEvent]]></content>\n");
                             sw.WriteLine("</snippet>");
                             CountEvent++;
-                        }
-                        else
+	                    }
+                        else if(FunctionPattern.IsMatch(line))
                         {
                             sw.Write("\t<content><![CDATA[" + FunctionName + "(");
                             int i = 1;
