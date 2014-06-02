@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>getdecibelvariance</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>SoundDescriptor.GetDecibelVariance (SKSE)</description>
-	<content><![CDATA[GetDecibelVariance()]]></content>
-</snippet>

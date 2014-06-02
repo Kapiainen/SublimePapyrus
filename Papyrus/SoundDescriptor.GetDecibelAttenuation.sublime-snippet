@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>getdecibelattenuation</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>SoundDescriptor.GetDecibelAttenuation (SKSE)</description>
-	<content><![CDATA[GetDecibelAttenuation()]]></content>
-</snippet>

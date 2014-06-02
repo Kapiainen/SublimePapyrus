@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>getnthspell</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Shout.GetNthSpell (SKSE)</description>
-	<content><![CDATA[GetNthSpell(${1:Int aiN})]]></content>
-</snippet>

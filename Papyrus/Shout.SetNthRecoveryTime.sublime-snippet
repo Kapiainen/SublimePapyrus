@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>setnthrecoverytime</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Shout.SetNthRecoveryTime (SKSE)</description>
-	<content><![CDATA[SetNthRecoveryTime(${1:Int aiN}, ${2:Float afTime})]]></content>
-</snippet>

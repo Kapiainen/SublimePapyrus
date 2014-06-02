@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>stopinstance</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Sound.StopInstance</description>
-	<content><![CDATA[StopInstance(${1:Int aiPlaybackInstance})]]></content>
-</snippet>

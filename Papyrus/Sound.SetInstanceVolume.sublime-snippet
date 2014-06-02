@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>setinstancevolume</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Sound.SetInstanceVolume</description>
-	<content><![CDATA[SetInstanceVolume(${1:Int aiPlaybackInstance}, ${2:Float afVolume})]]></content>
-</snippet>
