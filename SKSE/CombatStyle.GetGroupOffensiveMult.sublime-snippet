@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetGroupOffensiveMult</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>CombatStyle.GetGroupOffensiveMult</description>
+	<content><![CDATA[GetGroupOffensiveMult()]]></content>
+</snippet>

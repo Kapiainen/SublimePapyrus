@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>SetPlayerKnows</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Form.SetPlayerKnows</description>
+	<content><![CDATA[SetPlayerKnows(${1:bool knows})]]></content>
+</snippet>

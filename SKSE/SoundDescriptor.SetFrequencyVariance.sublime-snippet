@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>SetFrequencyVariance</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>SoundDescriptor.SetFrequencyVariance</description>
+	<content><![CDATA[SetFrequencyVariance(${1:int frequencyVariance})]]></content>
+</snippet>

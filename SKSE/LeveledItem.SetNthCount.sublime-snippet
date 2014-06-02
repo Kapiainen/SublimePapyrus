@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>SetNthCount</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>LeveledItem.SetNthCount</description>
+	<content><![CDATA[SetNthCount(${1:int n}, ${2:int count})]]></content>
+</snippet>

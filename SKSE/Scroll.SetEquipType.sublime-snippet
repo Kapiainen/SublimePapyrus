@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>SetEquipType</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Scroll.SetEquipType</description>
+	<content><![CDATA[SetEquipType(${1:EquipSlot type})]]></content>
+</snippet>

@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>SetIngredient</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Flora.SetIngredient</description>
+	<content><![CDATA[SetIngredient(${1:Ingredient akIngredient})]]></content>
+</snippet>

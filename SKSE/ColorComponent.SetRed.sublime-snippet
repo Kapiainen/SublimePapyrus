@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>SetRed</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>ColorComponent.SetRed</description>
+	<content><![CDATA[SetRed(${1:int argb}, ${2:int r})]]></content>
+</snippet>

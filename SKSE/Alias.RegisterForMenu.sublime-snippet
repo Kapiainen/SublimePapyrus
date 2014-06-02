@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>RegisterForMenu</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Alias.RegisterForMenu</description>
+	<content><![CDATA[RegisterForMenu(${1:string menuName})]]></content>
+</snippet>

@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>NoKnockdowns</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Race.NoKnockdowns</description>
+	<content><![CDATA[NoKnockdowns()]]></content>
+</snippet>

@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetNthModDependency</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Game.GetNthModDependency</description>
+	<content><![CDATA[GetNthModDependency(${1:int modIndex}, ${2:int n})]]></content>
+</snippet>

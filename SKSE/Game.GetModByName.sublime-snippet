@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetModByName</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Game.GetModByName</description>
+	<content><![CDATA[GetModByName(${1:string name})]]></content>
+</snippet>

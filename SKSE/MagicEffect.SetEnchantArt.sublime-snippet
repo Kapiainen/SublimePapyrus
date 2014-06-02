@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>SetEnchantArt</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>MagicEffect.SetEnchantArt</description>
+	<content><![CDATA[SetEnchantArt(${1:Art obj})]]></content>
+</snippet>

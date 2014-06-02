@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>RegisterForCrosshairRef</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>ActiveMagicEffect.RegisterForCrosshairRef</description>
+	<content><![CDATA[RegisterForCrosshairRef()]]></content>
+</snippet>

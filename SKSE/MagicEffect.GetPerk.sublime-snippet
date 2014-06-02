@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetPerk</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>MagicEffect.GetPerk</description>
+	<content><![CDATA[GetPerk()]]></content>
+</snippet>

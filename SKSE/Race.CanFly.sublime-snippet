@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>CanFly</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Race.CanFly</description>
+	<content><![CDATA[CanFly()]]></content>
+</snippet>

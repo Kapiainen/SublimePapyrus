@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>SetAllowDualWielding</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>CombatStyle.SetAllowDualWielding</description>
+	<content><![CDATA[SetAllowDualWielding(${1:bool allow})]]></content>
+</snippet>

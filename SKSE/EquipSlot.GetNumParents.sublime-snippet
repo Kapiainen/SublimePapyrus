@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetNumParents</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>EquipSlot.GetNumParents</description>
+	<content><![CDATA[GetNumParents()]]></content>
+</snippet>

@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>ClearNoShadow</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Race.ClearNoShadow</description>
+	<content><![CDATA[ClearNoShadow()]]></content>
+</snippet>

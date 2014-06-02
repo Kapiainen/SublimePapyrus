@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetTintMaskTexturePath</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Game.GetTintMaskTexturePath</description>
+	<content><![CDATA[GetTintMaskTexturePath(${1:int type}, ${2:int index})]]></content>
+</snippet>

@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetSkillUseMult</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>ActorValueInfo.GetSkillUseMult</description>
+	<content><![CDATA[GetSkillUseMult()]]></content>
+</snippet>

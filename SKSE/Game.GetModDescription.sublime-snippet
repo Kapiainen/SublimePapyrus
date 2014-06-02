@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetModDescription</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Game.GetModDescription</description>
+	<content><![CDATA[GetModDescription(${1:int modIndex})]]></content>
+</snippet>

@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetEnableParent</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>ObjectReference.GetEnableParent</description>
+	<content><![CDATA[GetEnableParent()]]></content>
+</snippet>

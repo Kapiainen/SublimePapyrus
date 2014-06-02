@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>SetNthEffectArea</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Enchantment.SetNthEffectArea</description>
+	<content><![CDATA[SetNthEffectArea(${1:int index}, ${2:int value})]]></content>
+</snippet>

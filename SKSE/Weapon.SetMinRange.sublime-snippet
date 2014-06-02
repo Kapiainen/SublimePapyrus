@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>SetMinRange</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Weapon.SetMinRange</description>
+	<content><![CDATA[SetMinRange(${1:float minRange})]]></content>
+</snippet>

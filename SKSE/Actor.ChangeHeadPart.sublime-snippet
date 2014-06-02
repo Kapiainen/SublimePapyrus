@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>ChangeHeadPart</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Actor.ChangeHeadPart</description>
+	<content><![CDATA[ChangeHeadPart(${1:HeadPart hPart})]]></content>
+</snippet>

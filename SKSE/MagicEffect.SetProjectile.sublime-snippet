@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>SetProjectile</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>MagicEffect.SetProjectile</description>
+	<content><![CDATA[SetProjectile(${1:Projectile obj})]]></content>
+</snippet>

@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>SetModelPath</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Art.SetModelPath</description>
+	<content><![CDATA[SetModelPath(${1:string path})]]></content>
+</snippet>

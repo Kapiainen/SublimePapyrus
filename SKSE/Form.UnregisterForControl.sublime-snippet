@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>UnregisterForControl</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Form.UnregisterForControl</description>
+	<content><![CDATA[UnregisterForControl(${1:string control})]]></content>
+</snippet>

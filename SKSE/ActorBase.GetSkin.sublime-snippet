@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetSkin</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>ActorBase.GetSkin</description>
+	<content><![CDATA[GetSkin()]]></content>
+</snippet>

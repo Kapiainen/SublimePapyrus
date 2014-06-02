@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetName</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Form.GetName</description>
+	<content><![CDATA[GetName()]]></content>
+</snippet>

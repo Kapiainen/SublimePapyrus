@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetNthEffectMagicEffect</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Potion.GetNthEffectMagicEffect</description>
+	<content><![CDATA[GetNthEffectMagicEffect(${1:int index})]]></content>
+</snippet>

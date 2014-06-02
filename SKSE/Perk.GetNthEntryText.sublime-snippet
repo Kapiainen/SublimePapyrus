@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetNthEntryText</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Perk.GetNthEntryText</description>
+	<content><![CDATA[GetNthEntryText(${1:int n})]]></content>
+</snippet>

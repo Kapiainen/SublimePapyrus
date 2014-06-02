@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>PushFloatA</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>UICallback.PushFloatA</description>
+	<content><![CDATA[PushFloatA(${1:int handle})]]></content>
+</snippet>

@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>SetArea</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>MagicEffect.SetArea</description>
+	<content><![CDATA[SetArea(${1:int area})]]></content>
+</snippet>

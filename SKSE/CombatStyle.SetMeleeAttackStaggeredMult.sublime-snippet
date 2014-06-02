@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>SetMeleeAttackStaggeredMult</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>CombatStyle.SetMeleeAttackStaggeredMult</description>
+	<content><![CDATA[SetMeleeAttackStaggeredMult(${1:float mult})]]></content>
+</snippet>

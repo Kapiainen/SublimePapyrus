@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetNthWordOfPower</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Shout.GetNthWordOfPower</description>
+	<content><![CDATA[GetNthWordOfPower(${1:int n})]]></content>
+</snippet>

@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>AddSkillExperience</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>ActorValueInfo.AddSkillExperience</description>
+	<content><![CDATA[AddSkillExperience(${1:float exp})]]></content>
+</snippet>

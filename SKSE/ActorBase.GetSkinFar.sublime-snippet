@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetSkinFar</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>ActorBase.GetSkinFar</description>
+	<content><![CDATA[GetSkinFar()]]></content>
+</snippet>

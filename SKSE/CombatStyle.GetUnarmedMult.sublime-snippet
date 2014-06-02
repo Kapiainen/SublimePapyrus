@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetUnarmedMult</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>CombatStyle.GetUnarmedMult</description>
+	<content><![CDATA[GetUnarmedMult()]]></content>
+</snippet>

@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>IsMace</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Weapon.IsMace</description>
+	<content><![CDATA[IsMace()]]></content>
+</snippet>

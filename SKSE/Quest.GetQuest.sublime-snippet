@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetQuest</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Quest.GetQuest</description>
+	<content><![CDATA[GetQuest(${1:string editorId})]]></content>
+</snippet>

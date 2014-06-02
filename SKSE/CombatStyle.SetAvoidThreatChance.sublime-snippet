@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>SetAvoidThreatChance</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>CombatStyle.SetAvoidThreatChance</description>
+	<content><![CDATA[SetAvoidThreatChance(${1:float chance})]]></content>
+</snippet>

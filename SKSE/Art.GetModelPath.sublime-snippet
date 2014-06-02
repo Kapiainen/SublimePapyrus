@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetModelPath</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Art.GetModelPath</description>
+	<content><![CDATA[GetModelPath()]]></content>
+</snippet>
