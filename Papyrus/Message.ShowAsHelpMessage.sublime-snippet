@@ -1,0 +1,8 @@
+<snippet>
+	<tabTrigger>ShowAsHelpMessage</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Message.ShowAsHelpMessage</description>
+	<content><![CDATA[Event ShowAsHelpMessage(${1:string asEvent}, ${2:float afDuration}, ${3:float afInterval}, ${4:int aiMaxTimes})
+${0}
+EndEvent]]></content>
+</snippet>

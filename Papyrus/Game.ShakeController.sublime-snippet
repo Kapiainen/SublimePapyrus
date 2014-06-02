@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>ShakeController</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Game.ShakeController</description>
+	<content><![CDATA[ShakeController(${1:float afSmallMotorStrength}, ${2:float afBigMotorStreangth}, ${3:float afDuration})]]></content>
+</snippet>

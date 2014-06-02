@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetFormFromFile</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Game.GetFormFromFile</description>
+	<content><![CDATA[GetFormFromFile(${1:int aiFormID}, ${2:string asFilename})]]></content>
+</snippet>

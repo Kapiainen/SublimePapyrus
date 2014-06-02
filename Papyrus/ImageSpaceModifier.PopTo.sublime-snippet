@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>PopTo</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>ImageSpaceModifier.PopTo</description>
+	<content><![CDATA[PopTo(${1:ImageSpaceModifier akNewModifier}, ${2:float afStrength = 1})]]></content>
+</snippet>

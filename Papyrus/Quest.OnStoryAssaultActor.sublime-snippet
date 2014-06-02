@@ -1,0 +1,8 @@
+<snippet>
+	<tabTrigger>OnStoryAssaultActor</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Quest.OnStoryAssaultActor</description>
+	<content><![CDATA[Event OnStoryAssaultActor(${1:ObjectReference akVictim}, ${2:ObjectReference akAttacker})
+${0}
+EndEvent]]></content>
+</snippet>

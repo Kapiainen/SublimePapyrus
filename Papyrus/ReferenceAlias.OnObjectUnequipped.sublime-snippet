@@ -1,0 +1,8 @@
+<snippet>
+	<tabTrigger>OnObjectUnequipped</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>ReferenceAlias.OnObjectUnequipped</description>
+	<content><![CDATA[Event OnObjectUnequipped(${1:Form akBaseObject}, ${2:ObjectReference akReference})
+${0}
+EndEvent]]></content>
+</snippet>

@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>RemovePerk</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Actor.RemovePerk</description>
+	<content><![CDATA[RemovePerk(${1:Perk akPerk})]]></content>
+</snippet>

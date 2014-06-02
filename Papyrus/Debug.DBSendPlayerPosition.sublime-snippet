@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>DBSendPlayerPosition</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Debug.DBSendPlayerPosition</description>
+	<content><![CDATA[DBSendPlayerPosition()]]></content>
+</snippet>

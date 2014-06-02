@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>ServeTime</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Game.ServeTime</description>
+	<content><![CDATA[ServeTime()]]></content>
+</snippet>

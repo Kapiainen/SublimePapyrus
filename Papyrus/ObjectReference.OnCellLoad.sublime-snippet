@@ -1,0 +1,8 @@
+<snippet>
+	<tabTrigger>OnCellLoad</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>ObjectReference.OnCellLoad</description>
+	<content><![CDATA[Event OnCellLoad()
+${0}
+EndEvent]]></content>
+</snippet>

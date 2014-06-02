@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>IsActionComplete</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Scene.IsActionComplete</description>
+	<content><![CDATA[IsActionComplete(${1:int aiActionID})]]></content>
+</snippet>

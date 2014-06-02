@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>IsArrested</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Actor.IsArrested</description>
+	<content><![CDATA[IsArrested()]]></content>
+</snippet>

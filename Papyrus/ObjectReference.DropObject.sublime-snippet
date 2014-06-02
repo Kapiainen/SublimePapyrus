@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>DropObject</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>ObjectReference.DropObject</description>
+	<content><![CDATA[DropObject(${1:Form akObject}, ${2:int aiCount = 1})]]></content>
+</snippet>

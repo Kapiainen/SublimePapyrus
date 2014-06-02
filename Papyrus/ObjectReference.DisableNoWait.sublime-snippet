@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>DisableNoWait</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>ObjectReference.DisableNoWait</description>
+	<content><![CDATA[DisableNoWait(${1:bool abFadeOut = false})]]></content>
+</snippet>

@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>TryToClear</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>ReferenceAlias.TryToClear</description>
+	<content><![CDATA[TryToClear()]]></content>
+</snippet>

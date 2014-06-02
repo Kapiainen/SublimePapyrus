@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>ForceLocationTo</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>LocationAlias.ForceLocationTo</description>
+	<content><![CDATA[ForceLocationTo(${1:Location akNewLocation})]]></content>
+</snippet>

@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>HasForm</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>FormList.HasForm</description>
+	<content><![CDATA[HasForm(${1:Form akForm})]]></content>
+</snippet>

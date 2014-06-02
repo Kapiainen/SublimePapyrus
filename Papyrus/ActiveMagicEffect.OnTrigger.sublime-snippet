@@ -1,0 +1,8 @@
+<snippet>
+	<tabTrigger>OnTrigger</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>ActiveMagicEffect.OnTrigger</description>
+	<content><![CDATA[Event OnTrigger(${1:ObjectReference akActionRef})
+${0}
+EndEvent]]></content>
+</snippet>

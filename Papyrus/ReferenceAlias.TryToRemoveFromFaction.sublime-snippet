@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>TryToRemoveFromFaction</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>ReferenceAlias.TryToRemoveFromFaction</description>
+	<content><![CDATA[TryToRemoveFromFaction(${1:Faction FactionToRemoveFrom})]]></content>
+</snippet>

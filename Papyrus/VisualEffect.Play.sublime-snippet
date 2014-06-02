@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>Play</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>VisualEffect.Play</description>
+	<content><![CDATA[Play(${1:ObjectReference akObject}, ${2:float afTime}, ${3:ObjectReference akFacingObject = None})]]></content>
+</snippet>

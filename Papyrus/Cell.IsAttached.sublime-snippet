@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>IsAttached</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Cell.IsAttached</description>
+	<content><![CDATA[IsAttached()]]></content>
+</snippet>

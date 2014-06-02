@@ -1,0 +1,8 @@
+<snippet>
+	<tabTrigger>OnTranslationFailed</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>ReferenceAlias.OnTranslationFailed</description>
+	<content><![CDATA[Event OnTranslationFailed()
+${0}
+EndEvent]]></content>
+</snippet>

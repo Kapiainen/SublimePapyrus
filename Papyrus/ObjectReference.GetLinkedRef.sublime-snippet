@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetLinkedRef</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>ObjectReference.GetLinkedRef</description>
+	<content><![CDATA[GetLinkedRef(${1:Keyword apKeyword = NONE})]]></content>
+</snippet>

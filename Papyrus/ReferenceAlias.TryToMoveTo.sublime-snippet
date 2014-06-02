@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>TryToMoveTo</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>ReferenceAlias.TryToMoveTo</description>
+	<content><![CDATA[TryToMoveTo(${1:ObjectReference RefToMoveTo})]]></content>
+</snippet>

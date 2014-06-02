@@ -1,0 +1,8 @@
+<snippet>
+	<tabTrigger>OnLoad</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>ReferenceAlias.OnLoad</description>
+	<content><![CDATA[Event OnLoad()
+${0}
+EndEvent]]></content>
+</snippet>

@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>TryToEvaluatePackage</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>ReferenceAlias.TryToEvaluatePackage</description>
+	<content><![CDATA[TryToEvaluatePackage()]]></content>
+</snippet>

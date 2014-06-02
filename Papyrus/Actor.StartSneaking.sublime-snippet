@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>StartSneaking</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Actor.StartSneaking</description>
+	<content><![CDATA[StartSneaking()]]></content>
+</snippet>

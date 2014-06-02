@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetLevel</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Actor.GetLevel</description>
+	<content><![CDATA[GetLevel()]]></content>
+</snippet>

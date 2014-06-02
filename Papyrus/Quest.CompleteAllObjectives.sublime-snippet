@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>CompleteAllObjectives</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Quest.CompleteAllObjectives</description>
+	<content><![CDATA[CompleteAllObjectives()]]></content>
+</snippet>

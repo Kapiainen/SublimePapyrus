@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>IsPlaying</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Scene.IsPlaying</description>
+	<content><![CDATA[IsPlaying()]]></content>
+</snippet>

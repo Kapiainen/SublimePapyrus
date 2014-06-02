@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>TryToAddToFaction</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>ReferenceAlias.TryToAddToFaction</description>
+	<content><![CDATA[TryToAddToFaction(${1:Faction FactionToAddTo})]]></content>
+</snippet>

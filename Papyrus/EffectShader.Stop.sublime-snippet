@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>Stop</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>EffectShader.Stop</description>
+	<content><![CDATA[Stop(${1:ObjectReference akObject})]]></content>
+</snippet>

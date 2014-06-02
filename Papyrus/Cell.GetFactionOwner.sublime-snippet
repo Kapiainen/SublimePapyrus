@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetFactionOwner</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Cell.GetFactionOwner</description>
+	<content><![CDATA[GetFactionOwner()]]></content>
+</snippet>

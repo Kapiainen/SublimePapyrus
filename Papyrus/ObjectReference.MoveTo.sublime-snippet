@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>MoveTo</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>ObjectReference.MoveTo</description>
+	<content><![CDATA[MoveTo(${1:ObjectReference akTarget}, ${2:float afXOffset = 0}, ${3:float afYOffset = 0}, ${4:float afZOffset = 0}, ${5:bool abMatchRotation = true})]]></content>
+</snippet>

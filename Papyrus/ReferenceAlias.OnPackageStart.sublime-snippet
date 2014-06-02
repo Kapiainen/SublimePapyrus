@@ -1,0 +1,8 @@
+<snippet>
+	<tabTrigger>OnPackageStart</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>ReferenceAlias.OnPackageStart</description>
+	<content><![CDATA[Event OnPackageStart(${1:Package akNewPackage})
+${0}
+EndEvent]]></content>
+</snippet>

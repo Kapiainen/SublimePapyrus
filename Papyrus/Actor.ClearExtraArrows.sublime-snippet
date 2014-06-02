@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>ClearExtraArrows</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Actor.ClearExtraArrows</description>
+	<content><![CDATA[ClearExtraArrows()]]></content>
+</snippet>

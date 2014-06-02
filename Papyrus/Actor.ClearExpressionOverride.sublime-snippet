@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>ClearExpressionOverride</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Actor.ClearExpressionOverride</description>
+	<content><![CDATA[ClearExpressionOverride()]]></content>
+</snippet>

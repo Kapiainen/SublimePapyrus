@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>IsChild</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Location.IsChild</description>
+	<content><![CDATA[IsChild(${1:Location akOther})]]></content>
+</snippet>

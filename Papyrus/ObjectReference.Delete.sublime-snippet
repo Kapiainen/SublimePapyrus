@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>Delete</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>ObjectReference.Delete</description>
+	<content><![CDATA[Delete()]]></content>
+</snippet>

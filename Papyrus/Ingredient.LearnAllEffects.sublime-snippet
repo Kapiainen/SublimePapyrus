@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>LearnAllEffects</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Ingredient.LearnAllEffects</description>
+	<content><![CDATA[LearnAllEffects()]]></content>
+</snippet>

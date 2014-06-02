@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>SetPlayerExpelled</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Faction.SetPlayerExpelled</description>
+	<content><![CDATA[SetPlayerExpelled(${1:bool abIsExpelled = true})]]></content>
+</snippet>

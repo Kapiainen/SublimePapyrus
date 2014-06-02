@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>SetSunGazeImageSpaceModifier</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Game.SetSunGazeImageSpaceModifier</description>
+	<content><![CDATA[SetSunGazeImageSpaceModifier(${1:ImageSpaceModifier apImod = NONE})]]></content>
+</snippet>

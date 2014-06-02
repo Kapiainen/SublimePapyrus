@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>SetPlayerEnemy</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Faction.SetPlayerEnemy</description>
+	<content><![CDATA[SetPlayerEnemy(${1:bool abIsEnemy = true})]]></content>
+</snippet>

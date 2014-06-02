@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>RegisterForSingleLOSGain</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Form.RegisterForSingleLOSGain</description>
+	<content><![CDATA[RegisterForSingleLOSGain(${1:Actor akViewer}, ${2:ObjectReference akTarget})]]></content>
+</snippet>

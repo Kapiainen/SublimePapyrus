@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetPlayerGrabbedRef</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Game.GetPlayerGrabbedRef</description>
+	<content><![CDATA[GetPlayerGrabbedRef()]]></content>
+</snippet>

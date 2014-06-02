@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>SetCrimeGoldViolent</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Faction.SetCrimeGoldViolent</description>
+	<content><![CDATA[SetCrimeGoldViolent(${1:int aiGold})]]></content>
+</snippet>

@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>TryToStopCombat</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>ReferenceAlias.TryToStopCombat</description>
+	<content><![CDATA[TryToStopCombat()]]></content>
+</snippet>

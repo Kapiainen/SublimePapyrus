@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>LearnEffect</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Ingredient.LearnEffect</description>
+	<content><![CDATA[LearnEffect(${1:int aiIndex})]]></content>
+</snippet>

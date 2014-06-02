@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>IsNearPlayer</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>ObjectReference.IsNearPlayer</description>
+	<content><![CDATA[IsNearPlayer()]]></content>
+</snippet>

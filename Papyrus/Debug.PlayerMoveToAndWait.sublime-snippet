@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>PlayerMoveToAndWait</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Debug.PlayerMoveToAndWait</description>
+	<content><![CDATA[PlayerMoveToAndWait(${1:string asDestRef})]]></content>
+</snippet>

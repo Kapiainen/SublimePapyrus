@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>IsBribed</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Actor.IsBribed</description>
+	<content><![CDATA[IsBribed()]]></content>
+</snippet>

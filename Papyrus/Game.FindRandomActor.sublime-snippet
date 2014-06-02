@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>FindRandomActor</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Game.FindRandomActor</description>
+	<content><![CDATA[FindRandomActor(${1:float afX}, ${2:float afY}, ${3:float afZ}, ${4:float afRadius})]]></content>
+</snippet>

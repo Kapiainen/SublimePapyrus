@@ -1,0 +1,8 @@
+<snippet>
+	<tabTrigger>OnLockStateChanged</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>ReferenceAlias.OnLockStateChanged</description>
+	<content><![CDATA[Event OnLockStateChanged()
+${0}
+EndEvent]]></content>
+</snippet>

@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>IsFastTravelEnabled</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Game.IsFastTravelEnabled</description>
+	<content><![CDATA[IsFastTravelEnabled()]]></content>
+</snippet>

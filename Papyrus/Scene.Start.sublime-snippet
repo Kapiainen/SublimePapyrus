@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>Start</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Scene.Start</description>
+	<content><![CDATA[Start()]]></content>
+</snippet>

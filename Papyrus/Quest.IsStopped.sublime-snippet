@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>IsStopped</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Quest.IsStopped</description>
+	<content><![CDATA[IsStopped()]]></content>
+</snippet>

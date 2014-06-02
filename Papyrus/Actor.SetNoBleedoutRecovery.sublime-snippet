@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>SetNoBleedoutRecovery</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Actor.SetNoBleedoutRecovery</description>
+	<content><![CDATA[SetNoBleedoutRecovery(${1:bool abAllowed})]]></content>
+</snippet>

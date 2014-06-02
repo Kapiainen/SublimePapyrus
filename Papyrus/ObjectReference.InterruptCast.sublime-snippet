@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>InterruptCast</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>ObjectReference.InterruptCast</description>
+	<content><![CDATA[InterruptCast()]]></content>
+</snippet>

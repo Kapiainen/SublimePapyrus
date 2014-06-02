@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>TryToReset</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>ReferenceAlias.TryToReset</description>
+	<content><![CDATA[TryToReset()]]></content>
+</snippet>

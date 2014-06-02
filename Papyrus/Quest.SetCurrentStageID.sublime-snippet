@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>SetCurrentStageID</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Quest.SetCurrentStageID</description>
+	<content><![CDATA[SetCurrentStageID(${1:int aiStageID})]]></content>
+</snippet>

@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>SetSittingRotation</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Game.SetSittingRotation</description>
+	<content><![CDATA[SetSittingRotation(${1:float afValue})]]></content>
+</snippet>

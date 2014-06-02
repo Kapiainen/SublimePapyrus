@@ -1,0 +1,8 @@
+<snippet>
+	<tabTrigger>OnDying</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Actor.OnDying</description>
+	<content><![CDATA[Event OnDying(${1:Actor akKiller})
+${0}
+EndEvent]]></content>
+</snippet>

@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>get</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>GlobalVariable.get</description>
+	<content><![CDATA[get()]]></content>
+</snippet>

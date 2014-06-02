@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetPositionY</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>ObjectReference.GetPositionY</description>
+	<content><![CDATA[GetPositionY()]]></content>
+</snippet>

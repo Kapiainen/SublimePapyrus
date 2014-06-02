@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>ShowGiftMenu</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Actor.ShowGiftMenu</description>
+	<content><![CDATA[ShowGiftMenu(${1:bool abGivingGift}, ${2:FormList apFilterList = None}, ${3:bool abShowStolenItems = false}, ${4:bool abUseFavorPoints = true})]]></content>
+</snippet>

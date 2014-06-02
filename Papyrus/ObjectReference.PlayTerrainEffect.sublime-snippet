@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>PlayTerrainEffect</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>ObjectReference.PlayTerrainEffect</description>
+	<content><![CDATA[PlayTerrainEffect(${1:string asEffectModelName}, ${2:string asAttachBoneName})]]></content>
+</snippet>

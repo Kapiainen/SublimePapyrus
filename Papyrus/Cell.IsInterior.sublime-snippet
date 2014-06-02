@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>IsInterior</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Cell.IsInterior</description>
+	<content><![CDATA[IsInterior()]]></content>
+</snippet>

@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>HasAssociation</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Actor.HasAssociation</description>
+	<content><![CDATA[HasAssociation(${1:AssociationType akAssociation}, ${2:Actor akOther = None})]]></content>
+</snippet>

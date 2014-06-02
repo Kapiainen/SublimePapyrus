@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>IsMenuControlsEnabled</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Game.IsMenuControlsEnabled</description>
+	<content><![CDATA[IsMenuControlsEnabled()]]></content>
+</snippet>

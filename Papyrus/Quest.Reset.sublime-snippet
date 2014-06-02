@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>Reset</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Quest.Reset</description>
+	<content><![CDATA[Reset()]]></content>
+</snippet>

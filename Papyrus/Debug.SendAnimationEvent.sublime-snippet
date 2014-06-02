@@ -1,0 +1,8 @@
+<snippet>
+	<tabTrigger>SendAnimationEvent</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Debug.SendAnimationEvent</description>
+	<content><![CDATA[Event SendAnimationEvent(${1:ObjectReference arRef}, ${2:string asEventName})
+${0}
+EndEvent]]></content>
+</snippet>

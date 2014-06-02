@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>IsFactionInCrimeGroup</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Faction.IsFactionInCrimeGroup</description>
+	<content><![CDATA[IsFactionInCrimeGroup(${1:Faction akOther})]]></content>
+</snippet>

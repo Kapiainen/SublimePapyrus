@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>IsFurnitureMarkerInUse</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>ObjectReference.IsFurnitureMarkerInUse</description>
+	<content><![CDATA[IsFurnitureMarkerInUse(${1:int aiMarker}, ${2:bool abIgnoreReserved = false})]]></content>
+</snippet>

@@ -1,0 +1,8 @@
+<snippet>
+	<tabTrigger>OnReset</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>ReferenceAlias.OnReset</description>
+	<content><![CDATA[Event OnReset()
+${0}
+EndEvent]]></content>
+</snippet>

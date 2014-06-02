@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>TrapSoul</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Actor.TrapSoul</description>
+	<content><![CDATA[TrapSoul(${1:Actor akTarget})]]></content>
+</snippet>

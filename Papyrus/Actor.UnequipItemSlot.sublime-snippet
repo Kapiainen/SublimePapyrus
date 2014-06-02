@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>UnequipItemSlot</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Actor.UnequipItemSlot</description>
+	<content><![CDATA[UnequipItemSlot(${1:int aiSlot})]]></content>
+</snippet>

@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetReaction</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Faction.GetReaction</description>
+	<content><![CDATA[GetReaction(${1:Faction akOther})]]></content>
+</snippet>

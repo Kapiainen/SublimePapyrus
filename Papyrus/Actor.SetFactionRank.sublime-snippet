@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>SetFactionRank</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Actor.SetFactionRank</description>
+	<content><![CDATA[SetFactionRank(${1:Faction akFaction}, ${2:int aiRank})]]></content>
+</snippet>

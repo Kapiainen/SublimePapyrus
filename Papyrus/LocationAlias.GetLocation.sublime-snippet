@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetLocation</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>LocationAlias.GetLocation</description>
+	<content><![CDATA[GetLocation()]]></content>
+</snippet>

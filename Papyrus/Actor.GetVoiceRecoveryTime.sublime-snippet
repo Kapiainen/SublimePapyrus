@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetVoiceRecoveryTime</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Actor.GetVoiceRecoveryTime</description>
+	<content><![CDATA[GetVoiceRecoveryTime()]]></content>
+</snippet>

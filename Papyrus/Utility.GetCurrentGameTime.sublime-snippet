@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetCurrentGameTime</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Utility.GetCurrentGameTime</description>
+	<content><![CDATA[GetCurrentGameTime()]]></content>
+</snippet>

@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetKeywordData</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Location.GetKeywordData</description>
+	<content><![CDATA[GetKeywordData(${1:Keyword akKeyword})]]></content>
+</snippet>

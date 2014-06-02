@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>ClearTempEffects</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Game.ClearTempEffects</description>
+	<content><![CDATA[ClearTempEffects()]]></content>
+</snippet>

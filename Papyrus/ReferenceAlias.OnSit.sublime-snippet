@@ -1,0 +1,8 @@
+<snippet>
+	<tabTrigger>OnSit</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>ReferenceAlias.OnSit</description>
+	<content><![CDATA[Event OnSit(${1:ObjectReference akFurniture})
+${0}
+EndEvent]]></content>
+</snippet>

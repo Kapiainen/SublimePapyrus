@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>SetDontMove</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Actor.SetDontMove</description>
+	<content><![CDATA[SetDontMove(${1:bool abDontMove = true})]]></content>
+</snippet>

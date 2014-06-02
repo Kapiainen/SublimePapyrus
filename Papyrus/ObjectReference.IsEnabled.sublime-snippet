@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>IsEnabled</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>ObjectReference.IsEnabled</description>
+	<content><![CDATA[IsEnabled()]]></content>
+</snippet>

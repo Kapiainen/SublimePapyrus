@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>TryToDisableNoWait</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>ReferenceAlias.TryToDisableNoWait</description>
+	<content><![CDATA[TryToDisableNoWait()]]></content>
+</snippet>

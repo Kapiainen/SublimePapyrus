@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>QueryStat</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Game.QueryStat</description>
+	<content><![CDATA[QueryStat(${1:string asStat})]]></content>
+</snippet>

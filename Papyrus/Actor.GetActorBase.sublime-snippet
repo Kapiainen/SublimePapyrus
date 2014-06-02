@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetActorBase</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Actor.GetActorBase</description>
+	<content><![CDATA[GetActorBase()]]></content>
+</snippet>

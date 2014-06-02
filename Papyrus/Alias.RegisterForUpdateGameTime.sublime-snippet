@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>RegisterForUpdateGameTime</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Alias.RegisterForUpdateGameTime</description>
+	<content><![CDATA[RegisterForUpdateGameTime(${1:float afInterval})]]></content>
+</snippet>

@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>UnregisterForUpdateGameTime</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>ActiveMagicEffect.UnregisterForUpdateGameTime</description>
+	<content><![CDATA[UnregisterForUpdateGameTime()]]></content>
+</snippet>

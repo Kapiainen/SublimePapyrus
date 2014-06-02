@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>IncrementSkillBy</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Game.IncrementSkillBy</description>
+	<content><![CDATA[IncrementSkillBy(${1:string asSkillName}, ${2:int aiCount})]]></content>
+</snippet>

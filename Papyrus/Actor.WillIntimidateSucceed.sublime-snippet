@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>WillIntimidateSucceed</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Actor.WillIntimidateSucceed</description>
+	<content><![CDATA[WillIntimidateSucceed()]]></content>
+</snippet>

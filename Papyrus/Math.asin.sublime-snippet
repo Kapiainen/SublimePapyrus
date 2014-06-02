@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>asin</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Math.asin</description>
+	<content><![CDATA[asin(${1:float afValue})]]></content>
+</snippet>

@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetOwningQuest</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Scene.GetOwningQuest</description>
+	<content><![CDATA[GetOwningQuest()]]></content>
+</snippet>

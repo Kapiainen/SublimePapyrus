@@ -1,0 +1,8 @@
+<snippet>
+	<tabTrigger>OnEnterBleedout</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>ReferenceAlias.OnEnterBleedout</description>
+	<content><![CDATA[Event OnEnterBleedout()
+${0}
+EndEvent]]></content>
+</snippet>

@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetConfigName</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Debug.GetConfigName</description>
+	<content><![CDATA[GetConfigName()]]></content>
+</snippet>

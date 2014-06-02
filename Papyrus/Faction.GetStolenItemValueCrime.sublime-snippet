@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetStolenItemValueCrime</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Faction.GetStolenItemValueCrime</description>
+	<content><![CDATA[GetStolenItemValueCrime()]]></content>
+</snippet>

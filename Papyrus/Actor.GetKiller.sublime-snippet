@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetKiller</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Actor.GetKiller</description>
+	<content><![CDATA[GetKiller()]]></content>
+</snippet>

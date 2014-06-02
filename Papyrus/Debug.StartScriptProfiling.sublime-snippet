@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>StartScriptProfiling</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Debug.StartScriptProfiling</description>
+	<content><![CDATA[StartScriptProfiling(${1:string asScriptName})]]></content>
+</snippet>

@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>DispelSpell</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Actor.DispelSpell</description>
+	<content><![CDATA[DispelSpell(${1:Spell akSpell})]]></content>
+</snippet>

@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>SetGodMode</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Debug.SetGodMode</description>
+	<content><![CDATA[SetGodMode(${1:bool abGodMode})]]></content>
+</snippet>

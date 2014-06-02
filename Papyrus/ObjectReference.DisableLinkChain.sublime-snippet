@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>DisableLinkChain</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>ObjectReference.DisableLinkChain</description>
+	<content><![CDATA[DisableLinkChain(${1:Keyword apKeyword = None}, ${2:bool abFadeOut = false})]]></content>
+</snippet>

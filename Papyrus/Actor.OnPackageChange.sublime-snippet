@@ -1,0 +1,8 @@
+<snippet>
+	<tabTrigger>OnPackageChange</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Actor.OnPackageChange</description>
+	<content><![CDATA[Event OnPackageChange(${1:Package akOldPackage})
+${0}
+EndEvent]]></content>
+</snippet>
