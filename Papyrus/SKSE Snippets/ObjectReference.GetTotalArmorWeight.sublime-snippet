@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetTotalArmorWeight</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>ObjectReference.GetTotalArmorWeight</description>
+	<content><![CDATA[GetTotalArmorWeight()]]></content>
+</snippet>

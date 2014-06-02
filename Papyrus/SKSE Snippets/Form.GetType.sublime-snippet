@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetType</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Form.GetType</description>
+	<content><![CDATA[GetType()]]></content>
+</snippet>

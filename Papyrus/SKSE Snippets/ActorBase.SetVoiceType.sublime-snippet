@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>SetVoiceType</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>ActorBase.SetVoiceType</description>
+	<content><![CDATA[SetVoiceType(${1:VoiceType nVoice})]]></content>
+</snippet>

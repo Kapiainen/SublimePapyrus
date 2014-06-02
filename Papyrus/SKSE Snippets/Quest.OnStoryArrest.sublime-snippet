@@ -1,0 +1,8 @@
+<snippet>
+	<tabTrigger>OnStoryArrest</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Quest.OnStoryArrest</description>
+	<content><![CDATA[Event OnStoryArrest(${1:ObjectReference akArrestingGuard}, ${2:ObjectReference akCriminal})
+${0}
+EndEvent]]></content>
+</snippet>

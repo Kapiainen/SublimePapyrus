@@ -1,0 +1,8 @@
+<snippet>
+	<tabTrigger>OnStoryAddToPlayer</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Quest.OnStoryAddToPlayer</description>
+	<content><![CDATA[Event OnStoryAddToPlayer(${1:ObjectReference akOwner}, ${2:ObjectReference akContainer})
+${0}
+EndEvent]]></content>
+</snippet>

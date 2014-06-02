@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetCurrentMemory</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Utility.GetCurrentMemory</description>
+	<content><![CDATA[GetCurrentMemory(${1:it sets})]]></content>
+</snippet>

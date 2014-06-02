@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetEnchantShader</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>MagicEffect.GetEnchantShader</description>
+	<content><![CDATA[GetEnchantShader()]]></content>
+</snippet>

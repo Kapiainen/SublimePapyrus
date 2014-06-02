@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>SetActorOwner</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>ObjectReference.SetActorOwner</description>
+	<content><![CDATA[SetActorOwner(${1:ActorBase akActorBase})]]></content>
+</snippet>

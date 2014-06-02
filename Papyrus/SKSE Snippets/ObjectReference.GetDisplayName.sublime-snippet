@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetDisplayName</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>ObjectReference.GetDisplayName</description>
+	<content><![CDATA[GetDisplayName()]]></content>
+</snippet>

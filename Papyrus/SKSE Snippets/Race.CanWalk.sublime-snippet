@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>CanWalk</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Race.CanWalk</description>
+	<content><![CDATA[CanWalk()]]></content>
+</snippet>

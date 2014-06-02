@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetMaxRange</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Weapon.GetMaxRange</description>
+	<content><![CDATA[GetMaxRange()]]></content>
+</snippet>

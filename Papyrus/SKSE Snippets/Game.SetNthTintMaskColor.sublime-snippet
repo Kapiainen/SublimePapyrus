@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>SetNthTintMaskColor</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Game.SetNthTintMaskColor</description>
+	<content><![CDATA[SetNthTintMaskColor(${1:int n}, ${2:int color})]]></content>
+</snippet>

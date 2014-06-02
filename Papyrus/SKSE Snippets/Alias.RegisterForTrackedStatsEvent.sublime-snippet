@@ -1,0 +1,8 @@
+<snippet>
+	<tabTrigger>RegisterForTrackedStatsEvent</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Alias.RegisterForTrackedStatsEvent</description>
+	<content><![CDATA[Event RegisterForTrackedStatsEvent()
+${0}
+EndEvent]]></content>
+</snippet>

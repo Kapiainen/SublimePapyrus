@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetBudgetCount</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Utility.GetBudgetCount</description>
+	<content><![CDATA[GetBudgetCount()]]></content>
+</snippet>

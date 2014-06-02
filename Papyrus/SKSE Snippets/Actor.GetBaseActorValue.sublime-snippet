@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetBaseActorValue</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Actor.GetBaseActorValue</description>
+	<content><![CDATA[GetBaseActorValue(${1:string asValueName})]]></content>
+</snippet>

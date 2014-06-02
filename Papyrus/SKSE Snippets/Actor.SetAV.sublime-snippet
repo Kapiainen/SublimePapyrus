@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>SetAV</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Actor.SetAV</description>
+	<content><![CDATA[SetAV(${1:string asValueName}, ${2:float afValue})]]></content>
+</snippet>

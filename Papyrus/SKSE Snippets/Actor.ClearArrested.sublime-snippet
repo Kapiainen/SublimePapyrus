@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>ClearArrested</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Actor.ClearArrested</description>
+	<content><![CDATA[ClearArrested()]]></content>
+</snippet>

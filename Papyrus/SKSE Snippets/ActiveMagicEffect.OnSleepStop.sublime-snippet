@@ -1,0 +1,8 @@
+<snippet>
+	<tabTrigger>OnSleepStop</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>ActiveMagicEffect.OnSleepStop</description>
+	<content><![CDATA[Event OnSleepStop(${1:bool abInterrupted})
+${0}
+EndEvent]]></content>
+</snippet>

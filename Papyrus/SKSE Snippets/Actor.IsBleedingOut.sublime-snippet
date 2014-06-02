@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>IsBleedingOut</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Actor.IsBleedingOut</description>
+	<content><![CDATA[IsBleedingOut()]]></content>
+</snippet>

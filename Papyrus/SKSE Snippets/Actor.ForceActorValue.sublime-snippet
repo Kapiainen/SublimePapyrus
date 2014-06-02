@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>ForceActorValue</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Actor.ForceActorValue</description>
+	<content><![CDATA[ForceActorValue(${1:string asValueName}, ${2:float afNewValue})]]></content>
+</snippet>

@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>MakePlayerFriend</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Actor.MakePlayerFriend</description>
+	<content><![CDATA[MakePlayerFriend()]]></content>
+</snippet>

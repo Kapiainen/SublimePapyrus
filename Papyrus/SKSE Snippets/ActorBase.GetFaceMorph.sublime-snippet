@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetFaceMorph</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>ActorBase.GetFaceMorph</description>
+	<content><![CDATA[GetFaceMorph(${1:int index})]]></content>
+</snippet>

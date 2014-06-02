@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetSkillOffsetMult</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>ActorValueInfo.GetSkillOffsetMult</description>
+	<content><![CDATA[GetSkillOffsetMult()]]></content>
+</snippet>

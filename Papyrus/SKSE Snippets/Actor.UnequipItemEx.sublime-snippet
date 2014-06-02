@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>UnequipItemEx</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Actor.UnequipItemEx</description>
+	<content><![CDATA[UnequipItemEx(${1:Form item}, ${2:int equipSlot = 0}, ${3:bool preventEquip = false})]]></content>
+</snippet>

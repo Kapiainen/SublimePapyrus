@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>UnregisterForMenu</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Alias.UnregisterForMenu</description>
+	<content><![CDATA[UnregisterForMenu(${1:string menuName})]]></content>
+</snippet>

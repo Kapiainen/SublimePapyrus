@@ -1,0 +1,8 @@
+<snippet>
+	<tabTrigger>OnUpdateGameTime</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Form.OnUpdateGameTime</description>
+	<content><![CDATA[Event OnUpdateGameTime()
+${0}
+EndEvent]]></content>
+</snippet>

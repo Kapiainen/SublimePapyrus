@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetParentCell</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>ObjectReference.GetParentCell</description>
+	<content><![CDATA[GetParentCell()]]></content>
+</snippet>

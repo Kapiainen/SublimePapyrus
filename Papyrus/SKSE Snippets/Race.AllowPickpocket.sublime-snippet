@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>AllowPickpocket</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Race.AllowPickpocket</description>
+	<content><![CDATA[AllowPickpocket()]]></content>
+</snippet>

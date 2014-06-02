@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetSitState</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Actor.GetSitState</description>
+	<content><![CDATA[GetSitState()]]></content>
+</snippet>

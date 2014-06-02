@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>SetFogColor</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Cell.SetFogColor</description>
+	<content><![CDATA[SetFogColor(${1:int aiNearRed}, ${2:int aiNearGreen}, ${3:int aiNearBlue})]]></content>
+</snippet>

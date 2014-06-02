@@ -1,0 +1,8 @@
+<snippet>
+	<tabTrigger>OnCombatStateChanged</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Actor.OnCombatStateChanged</description>
+	<content><![CDATA[Event OnCombatStateChanged(${1:Actor akTarget}, ${2:int aeCombatState})
+${0}
+EndEvent]]></content>
+</snippet>

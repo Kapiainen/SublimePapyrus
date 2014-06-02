@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>SetRaceFlag</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Race.SetRaceFlag</description>
+	<content><![CDATA[SetRaceFlag(${1:int n})]]></content>
+</snippet>

@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>UpdateHairColor</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Game.UpdateHairColor</description>
+	<content><![CDATA[UpdateHairColor()]]></content>
+</snippet>

@@ -1,0 +1,8 @@
+<snippet>
+	<tabTrigger>OnStoryScript</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Quest.OnStoryScript</description>
+	<content><![CDATA[Event OnStoryScript(${1:Keyword akKeyword}, ${2:Location akLocation}, ${3:ObjectReference akRef1})
+${0}
+EndEvent]]></content>
+</snippet>

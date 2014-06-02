@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>IsCommandedActor</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Actor.IsCommandedActor</description>
+	<content><![CDATA[IsCommandedActor()]]></content>
+</snippet>

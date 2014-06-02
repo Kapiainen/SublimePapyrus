@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>RemoveDependentAnimatedObjectReference</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>ObjectReference.RemoveDependentAnimatedObjectReference</description>
+	<content><![CDATA[RemoveDependentAnimatedObjectReference(${1:ObjectReference akDependent})]]></content>
+</snippet>

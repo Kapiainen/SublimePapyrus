@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>EquipItem</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Actor.EquipItem</description>
+	<content><![CDATA[EquipItem(${1:Form akItem}, ${2:bool abPreventRemoval = false}, ${3:bool abSilent = false})]]></content>
+</snippet>

@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>SetActorCause</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>ObjectReference.SetActorCause</description>
+	<content><![CDATA[SetActorCause(${1:Actor akActor})]]></content>
+</snippet>

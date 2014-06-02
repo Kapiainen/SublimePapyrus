@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>IsWordUnlocked</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Game.IsWordUnlocked</description>
+	<content><![CDATA[IsWordUnlocked(${1:WordOfPower akWord})]]></content>
+</snippet>

@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>SetFogPower</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Cell.SetFogPower</description>
+	<content><![CDATA[SetFogPower(${1:float afPower})]]></content>
+</snippet>

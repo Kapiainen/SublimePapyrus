@@ -1,0 +1,8 @@
+<snippet>
+	<tabTrigger>OnTrapHitStop</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>ObjectReference.OnTrapHitStop</description>
+	<content><![CDATA[Event OnTrapHitStop(${1:ObjectReference akTarget})
+${0}
+EndEvent]]></content>
+</snippet>

@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>IsOnMount</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Actor.IsOnMount</description>
+	<content><![CDATA[IsOnMount()]]></content>
+</snippet>

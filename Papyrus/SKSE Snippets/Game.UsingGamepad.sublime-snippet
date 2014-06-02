@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>UsingGamepad</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Game.UsingGamepad</description>
+	<content><![CDATA[UsingGamepad()]]></content>
+</snippet>

@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetItemHealthPercent</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>ObjectReference.GetItemHealthPercent</description>
+	<content><![CDATA[GetItemHealthPercent()]]></content>
+</snippet>

@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>ClearEffectFlag</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>MagicEffect.ClearEffectFlag</description>
+	<content><![CDATA[ClearEffectFlag(${1:int flag})]]></content>
+</snippet>

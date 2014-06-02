@@ -1,0 +1,8 @@
+<snippet>
+	<tabTrigger>OnRelease</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>ActiveMagicEffect.OnRelease</description>
+	<content><![CDATA[Event OnRelease()
+${0}
+EndEvent]]></content>
+</snippet>

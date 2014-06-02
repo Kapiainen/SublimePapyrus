@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>DisablePlayerControls</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Game.DisablePlayerControls</description>
+	<content><![CDATA[DisablePlayerControls(${1:bool abMovement = true}, ${2:bool abFighting = true}, ${3:bool abCamSwitch = false}, ${4:bool abLooking = false})]]></content>
+</snippet>

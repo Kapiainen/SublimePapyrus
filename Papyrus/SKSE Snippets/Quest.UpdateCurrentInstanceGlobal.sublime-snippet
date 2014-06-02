@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>UpdateCurrentInstanceGlobal</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Quest.UpdateCurrentInstanceGlobal</description>
+	<content><![CDATA[UpdateCurrentInstanceGlobal(${1:GlobalVariable aUpdateGlobal})]]></content>
+</snippet>

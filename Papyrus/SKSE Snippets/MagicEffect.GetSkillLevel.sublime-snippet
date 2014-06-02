@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetSkillLevel</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>MagicEffect.GetSkillLevel</description>
+	<content><![CDATA[GetSkillLevel()]]></content>
+</snippet>

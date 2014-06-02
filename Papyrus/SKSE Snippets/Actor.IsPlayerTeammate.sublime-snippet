@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>IsPlayerTeammate</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Actor.IsPlayerTeammate</description>
+	<content><![CDATA[IsPlayerTeammate()]]></content>
+</snippet>

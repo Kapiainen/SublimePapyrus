@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>Is3DLoaded</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>ObjectReference.Is3DLoaded</description>
+	<content><![CDATA[Is3DLoaded()]]></content>
+</snippet>

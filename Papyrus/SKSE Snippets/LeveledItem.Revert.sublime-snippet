@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>Revert</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>LeveledItem.Revert</description>
+	<content><![CDATA[Revert()]]></content>
+</snippet>

@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetNumArmorAddons</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Armor.GetNumArmorAddons</description>
+	<content><![CDATA[GetNumArmorAddons()]]></content>
+</snippet>

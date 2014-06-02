@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>tan</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Math.tan</description>
+	<content><![CDATA[tan(${1:float afValue})]]></content>
+</snippet>

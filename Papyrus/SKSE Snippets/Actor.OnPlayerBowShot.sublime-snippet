@@ -1,0 +1,8 @@
+<snippet>
+	<tabTrigger>OnPlayerBowShot</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Actor.OnPlayerBowShot</description>
+	<content><![CDATA[Event OnPlayerBowShot(${1:Weapon akWeapon}, ${2:Ammo akAmmo}, ${3:float afPower}, ${4:bool abSunGazing})
+${0}
+EndEvent]]></content>
+</snippet>

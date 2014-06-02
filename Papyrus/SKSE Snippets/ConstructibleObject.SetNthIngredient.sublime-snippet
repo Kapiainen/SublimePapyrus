@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>SetNthIngredient</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>ConstructibleObject.SetNthIngredient</description>
+	<content><![CDATA[SetNthIngredient(${1:Form required}, ${2:int n})]]></content>
+</snippet>

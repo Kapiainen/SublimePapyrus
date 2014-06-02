@@ -1,0 +1,8 @@
+<snippet>
+	<tabTrigger>OnLocationChange</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>ActiveMagicEffect.OnLocationChange</description>
+	<content><![CDATA[Event OnLocationChange(${1:Location akOldLoc}, ${2:Location akNewLoc})
+${0}
+EndEvent]]></content>
+</snippet>

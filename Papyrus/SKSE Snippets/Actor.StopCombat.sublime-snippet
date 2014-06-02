@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>StopCombat</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Actor.StopCombat</description>
+	<content><![CDATA[StopCombat()]]></content>
+</snippet>

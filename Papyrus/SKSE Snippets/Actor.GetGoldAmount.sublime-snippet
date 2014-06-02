@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetGoldAmount</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Actor.GetGoldAmount</description>
+	<content><![CDATA[GetGoldAmount()]]></content>
+</snippet>

@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetItemMaxCharge</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>ObjectReference.GetItemMaxCharge</description>
+	<content><![CDATA[GetItemMaxCharge()]]></content>
+</snippet>

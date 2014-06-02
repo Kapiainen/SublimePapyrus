@@ -1,0 +1,8 @@
+<snippet>
+	<tabTrigger>OnDeath</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Actor.OnDeath</description>
+	<content><![CDATA[Event OnDeath(${1:Actor akKiller})
+${0}
+EndEvent]]></content>
+</snippet>

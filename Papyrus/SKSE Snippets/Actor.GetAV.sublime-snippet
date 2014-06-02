@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetAV</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Actor.GetAV</description>
+	<content><![CDATA[GetAV(${1:string asValueName})]]></content>
+</snippet>

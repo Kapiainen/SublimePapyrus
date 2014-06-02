@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>IsFood</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Potion.IsFood</description>
+	<content><![CDATA[IsFood()]]></content>
+</snippet>

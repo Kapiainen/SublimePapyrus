@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>IsInKillMove</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Actor.IsInKillMove</description>
+	<content><![CDATA[IsInKillMove()]]></content>
+</snippet>

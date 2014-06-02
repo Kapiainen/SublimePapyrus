@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>DispelAllSpells</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Actor.DispelAllSpells</description>
+	<content><![CDATA[DispelAllSpells()]]></content>
+</snippet>

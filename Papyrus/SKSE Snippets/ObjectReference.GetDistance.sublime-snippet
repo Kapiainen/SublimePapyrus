@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetDistance</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>ObjectReference.GetDistance</description>
+	<content><![CDATA[GetDistance(${1:ObjectReference akOther})]]></content>
+</snippet>

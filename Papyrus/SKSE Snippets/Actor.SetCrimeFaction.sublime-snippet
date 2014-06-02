@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>SetCrimeFaction</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Actor.SetCrimeFaction</description>
+	<content><![CDATA[SetCrimeFaction(${1:Faction akFaction})]]></content>
+</snippet>

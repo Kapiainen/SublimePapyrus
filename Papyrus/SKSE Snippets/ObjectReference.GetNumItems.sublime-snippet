@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetNumItems</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>ObjectReference.GetNumItems</description>
+	<content><![CDATA[GetNumItems()]]></content>
+</snippet>

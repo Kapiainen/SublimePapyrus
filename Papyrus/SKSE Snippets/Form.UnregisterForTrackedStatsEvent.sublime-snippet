@@ -1,0 +1,8 @@
+<snippet>
+	<tabTrigger>UnregisterForTrackedStatsEvent</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Form.UnregisterForTrackedStatsEvent</description>
+	<content><![CDATA[Event UnregisterForTrackedStatsEvent()
+${0}
+EndEvent]]></content>
+</snippet>

@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>IsMovementControlsEnabled</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Game.IsMovementControlsEnabled</description>
+	<content><![CDATA[IsMovementControlsEnabled()]]></content>
+</snippet>

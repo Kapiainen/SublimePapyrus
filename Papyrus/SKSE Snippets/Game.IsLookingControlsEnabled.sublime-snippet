@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>IsLookingControlsEnabled</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Game.IsLookingControlsEnabled</description>
+	<content><![CDATA[IsLookingControlsEnabled()]]></content>
+</snippet>

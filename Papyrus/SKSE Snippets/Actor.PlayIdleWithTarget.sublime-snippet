@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>PlayIdleWithTarget</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Actor.PlayIdleWithTarget</description>
+	<content><![CDATA[PlayIdleWithTarget(${1:Idle akIdle}, ${2:ObjectReference akTarget})]]></content>
+</snippet>

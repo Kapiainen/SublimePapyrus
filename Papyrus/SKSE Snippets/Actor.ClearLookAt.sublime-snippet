@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>ClearLookAt</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Actor.ClearLookAt</description>
+	<content><![CDATA[ClearLookAt()]]></content>
+</snippet>

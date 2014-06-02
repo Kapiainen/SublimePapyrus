@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>rampRumble</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>ObjectReference.rampRumble</description>
+	<content><![CDATA[rampRumble(${1:float power = 0}, ${2:float duration = 0}, ${3:float falloff = 1600})]]></content>
+</snippet>

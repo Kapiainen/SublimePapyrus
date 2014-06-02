@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetBlue</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>ColorForm.GetBlue</description>
+	<content><![CDATA[GetBlue()]]></content>
+</snippet>

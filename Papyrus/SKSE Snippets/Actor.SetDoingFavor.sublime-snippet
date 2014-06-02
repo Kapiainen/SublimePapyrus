@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>SetDoingFavor</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Actor.SetDoingFavor</description>
+	<content><![CDATA[SetDoingFavor(${1:bool abDoingFavor = true})]]></content>
+</snippet>

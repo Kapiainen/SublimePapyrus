@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetFaceTextureSet</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>ActorBase.GetFaceTextureSet</description>
+	<content><![CDATA[GetFaceTextureSet()]]></content>
+</snippet>

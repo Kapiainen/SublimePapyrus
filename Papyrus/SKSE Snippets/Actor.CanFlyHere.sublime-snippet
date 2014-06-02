@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>CanFlyHere</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Actor.CanFlyHere</description>
+	<content><![CDATA[CanFlyHere()]]></content>
+</snippet>

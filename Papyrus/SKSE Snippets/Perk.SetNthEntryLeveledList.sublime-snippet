@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>SetNthEntryLeveledList</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Perk.SetNthEntryLeveledList</description>
+	<content><![CDATA[SetNthEntryLeveledList(${1:int n}, ${2:LeveledItem lList})]]></content>
+</snippet>

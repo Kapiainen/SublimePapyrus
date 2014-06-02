@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>OverBudget</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Utility.OverBudget</description>
+	<content><![CDATA[OverBudget(${1:int aiBudgetNumber})]]></content>
+</snippet>

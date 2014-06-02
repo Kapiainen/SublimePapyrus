@@ -1,0 +1,8 @@
+<snippet>
+	<tabTrigger>OnUpdate</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>ActiveMagicEffect.OnUpdate</description>
+	<content><![CDATA[Event OnUpdate()
+${0}
+EndEvent]]></content>
+</snippet>

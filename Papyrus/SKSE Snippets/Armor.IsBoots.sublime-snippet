@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>IsBoots</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Armor.IsBoots</description>
+	<content><![CDATA[IsBoots()]]></content>
+</snippet>

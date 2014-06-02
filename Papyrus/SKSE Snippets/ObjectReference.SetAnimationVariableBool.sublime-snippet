@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>SetAnimationVariableBool</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>ObjectReference.SetAnimationVariableBool</description>
+	<content><![CDATA[SetAnimationVariableBool(${1:string arVariableName}, ${2:bool abNewValue})]]></content>
+</snippet>

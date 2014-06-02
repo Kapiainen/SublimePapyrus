@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetKey</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>ObjectReference.GetKey</description>
+	<content><![CDATA[GetKey()]]></content>
+</snippet>

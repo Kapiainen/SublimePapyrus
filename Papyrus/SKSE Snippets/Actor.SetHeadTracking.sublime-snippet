@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>SetHeadTracking</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Actor.SetHeadTracking</description>
+	<content><![CDATA[SetHeadTracking(${1:bool abEnable = true})]]></content>
+</snippet>

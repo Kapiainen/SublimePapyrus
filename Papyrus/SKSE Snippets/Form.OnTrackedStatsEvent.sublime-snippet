@@ -1,0 +1,8 @@
+<snippet>
+	<tabTrigger>OnTrackedStatsEvent</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Form.OnTrackedStatsEvent</description>
+	<content><![CDATA[Event OnTrackedStatsEvent(${1:string arStatName}, ${2:int aiStatValue})
+${0}
+EndEvent]]></content>
+</snippet>

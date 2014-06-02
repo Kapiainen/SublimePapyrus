@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetActorValueInfoByName</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>ActorValueInfo.GetActorValueInfoByName</description>
+	<content><![CDATA[GetActorValueInfoByName(${1:string avName})]]></content>
+</snippet>

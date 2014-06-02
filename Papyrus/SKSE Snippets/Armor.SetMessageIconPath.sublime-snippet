@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>SetMessageIconPath</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Armor.SetMessageIconPath</description>
+	<content><![CDATA[SetMessageIconPath(${1:string path}, ${2:bool bFemalePath})]]></content>
+</snippet>

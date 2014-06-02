@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>AddToFaction</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Actor.AddToFaction</description>
+	<content><![CDATA[AddToFaction(${1:Faction akFaction})]]></content>
+</snippet>

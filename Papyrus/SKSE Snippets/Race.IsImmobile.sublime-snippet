@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>IsImmobile</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Race.IsImmobile</description>
+	<content><![CDATA[IsImmobile()]]></content>
+</snippet>

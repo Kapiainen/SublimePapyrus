@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>IsMapMarkerVisible</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>ObjectReference.IsMapMarkerVisible</description>
+	<content><![CDATA[IsMapMarkerVisible()]]></content>
+</snippet>

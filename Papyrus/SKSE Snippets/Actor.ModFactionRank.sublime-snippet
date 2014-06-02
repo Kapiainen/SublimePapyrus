@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>ModFactionRank</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Actor.ModFactionRank</description>
+	<content><![CDATA[ModFactionRank(${1:Faction akFaction}, ${2:int aiMod})]]></content>
+</snippet>

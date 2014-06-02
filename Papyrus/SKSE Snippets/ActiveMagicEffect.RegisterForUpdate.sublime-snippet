@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>RegisterForUpdate</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>ActiveMagicEffect.RegisterForUpdate</description>
+	<content><![CDATA[RegisterForUpdate(${1:float afInterval})]]></content>
+</snippet>

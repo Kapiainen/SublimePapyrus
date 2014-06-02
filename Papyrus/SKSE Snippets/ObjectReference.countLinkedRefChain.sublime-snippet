@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>countLinkedRefChain</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>ObjectReference.countLinkedRefChain</description>
+	<content><![CDATA[countLinkedRefChain(${1:keyword apKeyword = None}, ${2:int maxExpectedLinkedRefs = 100})]]></content>
+</snippet>

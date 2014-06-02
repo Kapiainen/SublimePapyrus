@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetEquippedShield</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Actor.GetEquippedShield</description>
+	<content><![CDATA[GetEquippedShield()]]></content>
+</snippet>

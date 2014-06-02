@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>SetClass</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>ActorBase.SetClass</description>
+	<content><![CDATA[SetClass(${1:Class c})]]></content>
+</snippet>

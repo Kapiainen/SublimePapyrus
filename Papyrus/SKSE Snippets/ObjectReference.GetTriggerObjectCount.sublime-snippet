@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetTriggerObjectCount</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>ObjectReference.GetTriggerObjectCount</description>
+	<content><![CDATA[GetTriggerObjectCount()]]></content>
+</snippet>

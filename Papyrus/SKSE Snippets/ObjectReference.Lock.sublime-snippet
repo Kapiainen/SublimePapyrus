@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>Lock</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>ObjectReference.Lock</description>
+	<content><![CDATA[Lock(${1:bool abLock = true}, ${2:bool abAsOwner = false})]]></content>
+</snippet>

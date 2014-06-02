@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>ModObjectiveGlobal</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Quest.ModObjectiveGlobal</description>
+	<content><![CDATA[ModObjectiveGlobal(${1:float afModValue}, ${2:GlobalVariable aModGlobal}, ${3:int aiObjectiveID}, ${4:float afTargetValue}, ${5:bool abCountingUp = true}, ${6:bool abCompleteObjective = true}, ${7:bool abRedisplayObjective = true})]]></content>
+</snippet>

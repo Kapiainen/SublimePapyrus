@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetMagickaCost</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Spell.GetMagickaCost</description>
+	<content><![CDATA[GetMagickaCost()]]></content>
+</snippet>

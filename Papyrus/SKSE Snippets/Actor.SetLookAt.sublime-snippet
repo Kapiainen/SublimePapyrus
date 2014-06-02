@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>SetLookAt</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Actor.SetLookAt</description>
+	<content><![CDATA[SetLookAt(${1:ObjectReference akTarget}, ${2:bool abPathingLookAt = false})]]></content>
+</snippet>

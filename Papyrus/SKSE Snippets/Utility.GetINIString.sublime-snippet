@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetINIString</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Utility.GetINIString</description>
+	<content><![CDATA[GetINIString(${1:string ini})]]></content>
+</snippet>

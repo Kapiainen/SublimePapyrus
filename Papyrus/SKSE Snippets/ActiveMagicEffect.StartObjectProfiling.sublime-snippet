@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>StartObjectProfiling</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>ActiveMagicEffect.StartObjectProfiling</description>
+	<content><![CDATA[StartObjectProfiling()]]></content>
+</snippet>

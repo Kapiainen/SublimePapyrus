@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>SetNthRecoveryTime</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Shout.SetNthRecoveryTime</description>
+	<content><![CDATA[SetNthRecoveryTime(${1:int n}, ${2:float time})]]></content>
+</snippet>

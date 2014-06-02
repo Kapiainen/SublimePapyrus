@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>EquipShout</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Actor.EquipShout</description>
+	<content><![CDATA[EquipShout(${1:Shout akShout})]]></content>
+</snippet>

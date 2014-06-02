@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetQuality</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Apparatus.GetQuality</description>
+	<content><![CDATA[GetQuality()]]></content>
+</snippet>

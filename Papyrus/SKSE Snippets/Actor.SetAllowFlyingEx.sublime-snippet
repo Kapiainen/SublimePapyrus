@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>SetAllowFlyingEx</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Actor.SetAllowFlyingEx</description>
+	<content><![CDATA[SetAllowFlyingEx(${1:bool abAllowed = true}, ${2:bool abAllowCrash = true}, ${3:bool abAllowSearch = false})]]></content>
+</snippet>

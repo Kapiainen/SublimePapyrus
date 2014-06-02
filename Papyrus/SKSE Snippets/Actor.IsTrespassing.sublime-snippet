@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>IsTrespassing</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Actor.IsTrespassing</description>
+	<content><![CDATA[IsTrespassing()]]></content>
+</snippet>

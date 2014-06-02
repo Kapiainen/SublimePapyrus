@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetDescriptor</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Sound.GetDescriptor</description>
+	<content><![CDATA[GetDescriptor()]]></content>
+</snippet>

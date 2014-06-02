@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetWornItemId</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Actor.GetWornItemId</description>
+	<content><![CDATA[GetWornItemId(${1:int slotMask})]]></content>
+</snippet>

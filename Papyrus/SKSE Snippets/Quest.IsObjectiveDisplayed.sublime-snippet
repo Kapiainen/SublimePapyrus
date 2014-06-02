@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>IsObjectiveDisplayed</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Quest.IsObjectiveDisplayed</description>
+	<content><![CDATA[IsObjectiveDisplayed(${1:int aiObjective})]]></content>
+</snippet>

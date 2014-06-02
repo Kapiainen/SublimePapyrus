@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetNumEffects</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Enchantment.GetNumEffects</description>
+	<content><![CDATA[GetNumEffects()]]></content>
+</snippet>

@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>PathToReference</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Actor.PathToReference</description>
+	<content><![CDATA[PathToReference(${1:ObjectReference aTarget}, ${2:float afWalkRunPercent})]]></content>
+</snippet>

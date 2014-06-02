@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetOpenState</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>ObjectReference.GetOpenState</description>
+	<content><![CDATA[GetOpenState()]]></content>
+</snippet>

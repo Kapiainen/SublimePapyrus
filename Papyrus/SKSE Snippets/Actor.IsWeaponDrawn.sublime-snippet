@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>IsWeaponDrawn</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Actor.IsWeaponDrawn</description>
+	<content><![CDATA[IsWeaponDrawn()]]></content>
+</snippet>
