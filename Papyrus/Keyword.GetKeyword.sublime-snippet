@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>getkeyword</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Keyword.GetKeyword (SKSE)</description>
-	<content><![CDATA[GetKeyword(${1:String asKey})]]></content>
-</snippet>

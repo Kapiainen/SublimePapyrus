@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>setnthlevel</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>LeveledSpell.SetNthLevel (SKSE)</description>
-	<content><![CDATA[SetNthLevel(${1:Int aiN}, ${2:Int aiLevel})]]></content>
-</snippet>

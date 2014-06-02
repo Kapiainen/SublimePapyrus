@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>getstring</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Keyword.GetString (SKSE)</description>
-	<content><![CDATA[GetString()]]></content>
-</snippet>
