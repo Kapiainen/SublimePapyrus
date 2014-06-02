@@ -1,0 +1,8 @@
+<snippet>
+	<tabTrigger>OnPageReset</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>SKI_ConfigBase.OnPageReset</description>
+	<content><![CDATA[Event OnPageReset(${1:string a_page})
+${0}
+EndEvent]]></content>
+</snippet>

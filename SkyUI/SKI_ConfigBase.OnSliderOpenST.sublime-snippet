@@ -1,0 +1,8 @@
+<snippet>
+	<tabTrigger>OnSliderOpenST</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>SKI_ConfigBase.OnSliderOpenST</description>
+	<content><![CDATA[Event OnSliderOpenST()
+${0}
+EndEvent]]></content>
+</snippet>

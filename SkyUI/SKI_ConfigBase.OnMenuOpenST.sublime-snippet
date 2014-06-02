@@ -1,0 +1,8 @@
+<snippet>
+	<tabTrigger>OnMenuOpenST</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>SKI_ConfigBase.OnMenuOpenST</description>
+	<content><![CDATA[Event OnMenuOpenST()
+${0}
+EndEvent]]></content>
+</snippet>

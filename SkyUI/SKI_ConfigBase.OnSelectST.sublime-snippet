@@ -1,0 +1,8 @@
+<snippet>
+	<tabTrigger>OnSelectST</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>SKI_ConfigBase.OnSelectST</description>
+	<content><![CDATA[Event OnSelectST()
+${0}
+EndEvent]]></content>
+</snippet>

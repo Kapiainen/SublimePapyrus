@@ -1,0 +1,8 @@
+<snippet>
+	<tabTrigger>OnOptionKeyMapChange</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>SKI_ConfigBase.OnOptionKeyMapChange</description>
+	<content><![CDATA[Event OnOptionKeyMapChange(${1:int a_option}, ${2:int a_keyCode}, ${3:string a_conflictControl}, ${4:string a_conflictName})
+${0}
+EndEvent]]></content>
+</snippet>

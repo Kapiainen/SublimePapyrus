@@ -1,0 +1,8 @@
+<snippet>
+	<tabTrigger>OnColorOpenST</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>SKI_ConfigBase.OnColorOpenST</description>
+	<content><![CDATA[Event OnColorOpenST()
+${0}
+EndEvent]]></content>
+</snippet>

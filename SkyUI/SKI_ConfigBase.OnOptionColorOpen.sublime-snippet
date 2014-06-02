@@ -1,0 +1,8 @@
+<snippet>
+	<tabTrigger>OnOptionColorOpen</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>SKI_ConfigBase.OnOptionColorOpen</description>
+	<content><![CDATA[Event OnOptionColorOpen(${1:int a_option})
+${0}
+EndEvent]]></content>
+</snippet>

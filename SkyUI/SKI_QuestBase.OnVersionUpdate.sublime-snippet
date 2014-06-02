@@ -1,0 +1,8 @@
+<snippet>
+	<tabTrigger>OnVersionUpdate</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>SKI_QuestBase.OnVersionUpdate</description>
+	<content><![CDATA[Event OnVersionUpdate(${1:int a_version})
+${0}
+EndEvent]]></content>
+</snippet>

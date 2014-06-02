@@ -1,0 +1,8 @@
+<snippet>
+	<tabTrigger>OnOptionColorAccept</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>SKI_ConfigBase.OnOptionColorAccept</description>
+	<content><![CDATA[Event OnOptionColorAccept(${1:int a_option}, ${2:int a_color})
+${0}
+EndEvent]]></content>
+</snippet>

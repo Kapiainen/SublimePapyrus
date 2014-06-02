@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>AddTextOption</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>SKI_ConfigBase.AddTextOption</description>
+	<content><![CDATA[AddTextOption(${1:string a_text}, ${2:string a_value}, ${3:int a_flags = 0})]]></content>
+</snippet>

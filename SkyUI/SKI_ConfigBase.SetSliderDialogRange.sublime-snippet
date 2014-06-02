@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>SetSliderDialogRange</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>SKI_ConfigBase.SetSliderDialogRange</description>
+	<content><![CDATA[SetSliderDialogRange(${1:float a_minValue}, ${2:float a_maxValue})]]></content>
+</snippet>
