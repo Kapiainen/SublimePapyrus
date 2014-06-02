@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>StartFrameRateCapture</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Utility.StartFrameRateCapture</description>
-	<content><![CDATA[StartFrameRateCapture()]]></content>
-</snippet>

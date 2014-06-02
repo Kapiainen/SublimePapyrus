@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetMaxRange</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Weapon.SetMaxRange</description>
-	<content><![CDATA[SetMaxRange(${1:float maxRange})]]></content>
-</snippet>

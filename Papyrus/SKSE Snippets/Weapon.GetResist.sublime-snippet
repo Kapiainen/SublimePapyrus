@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetResist</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Weapon.GetResist</description>
-	<content><![CDATA[GetResist()]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetEnchantment</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Weapon.GetEnchantment</description>
-	<content><![CDATA[GetEnchantment()]]></content>
-</snippet>

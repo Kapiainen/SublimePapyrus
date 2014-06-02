@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetStagger</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Weapon.SetStagger</description>
-	<content><![CDATA[SetStagger(${1:float stagger})]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>RandomFloat</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Utility.RandomFloat</description>
-	<content><![CDATA[RandomFloat(${1:float afMin = 0}, ${2:float afMax = 1})]]></content>
-</snippet>
