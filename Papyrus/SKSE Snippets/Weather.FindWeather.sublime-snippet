@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>FindWeather</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Weather.FindWeather</description>
+	<content><![CDATA[FindWeather(${1:int auiType})]]></content>
+</snippet>

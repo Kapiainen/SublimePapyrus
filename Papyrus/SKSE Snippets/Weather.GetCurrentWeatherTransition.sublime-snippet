@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetCurrentWeatherTransition</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Weather.GetCurrentWeatherTransition</description>
+	<content><![CDATA[GetCurrentWeatherTransition()]]></content>
+</snippet>

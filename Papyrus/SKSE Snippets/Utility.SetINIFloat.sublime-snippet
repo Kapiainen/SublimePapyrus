@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>SetINIFloat</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Utility.SetINIFloat</description>
+	<content><![CDATA[SetINIFloat(${1:string ini}, ${2:float value})]]></content>
+</snippet>

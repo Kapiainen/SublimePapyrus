@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetINIFloat</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Utility.GetINIFloat</description>
+	<content><![CDATA[GetINIFloat(${1:string ini})]]></content>
+</snippet>

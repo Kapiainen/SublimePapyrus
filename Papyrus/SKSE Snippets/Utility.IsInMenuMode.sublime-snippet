@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>IsInMenuMode</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Utility.IsInMenuMode</description>
+	<content><![CDATA[IsInMenuMode()]]></content>
+</snippet>

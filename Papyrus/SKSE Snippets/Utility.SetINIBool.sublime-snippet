@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>SetINIBool</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Utility.SetINIBool</description>
+	<content><![CDATA[SetINIBool(${1:string ini}, ${2:bool value})]]></content>
+</snippet>

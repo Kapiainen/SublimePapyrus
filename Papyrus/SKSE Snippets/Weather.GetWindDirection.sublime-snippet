@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetWindDirection</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Weather.GetWindDirection</description>
+	<content><![CDATA[GetWindDirection()]]></content>
+</snippet>
