@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetNodePropertyFloat</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>NiOverride.GetNodePropertyFloat</description>
+	<content><![CDATA[GetNodePropertyFloat(${1:ObjectReference ref}, ${2:bool firstPerson}, ${3:string node}, ${4:int key}, ${5:int index})]]></content>
+</snippet>

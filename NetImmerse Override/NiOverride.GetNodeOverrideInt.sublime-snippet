@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetNodeOverrideInt</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>NiOverride.GetNodeOverrideInt</description>
+	<content><![CDATA[GetNodeOverrideInt(${1:ObjectReference ref}, ${2:bool isFemale}, ${3:string node}, ${4:int key}, ${5:int index})]]></content>
+</snippet>

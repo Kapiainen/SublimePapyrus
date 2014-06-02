@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>AddNodeOverrideBool</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>NiOverride.AddNodeOverrideBool</description>
+	<content><![CDATA[AddNodeOverrideBool(${1:ObjectReference ref}, ${2:bool isFemale}, ${3:string node}, ${4:int key}, ${5:int index}, ${6:bool value}, ${7:bool persist})]]></content>
+</snippet>

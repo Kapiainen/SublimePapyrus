@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>RevertOverlay</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>NiOverride.RevertOverlay</description>
+	<content><![CDATA[RevertOverlay(${1:ObjectReference ref}, ${2:string nodeName}, ${3:int armorMask}, ${4:int addonMask})]]></content>
+</snippet>

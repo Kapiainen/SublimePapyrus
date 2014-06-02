@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetNumSpellFaceOverlays</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>NiOverride.GetNumSpellFaceOverlays</description>
+	<content><![CDATA[GetNumSpellFaceOverlays()]]></content>
+</snippet>

@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>saveTextToTxtFile</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>FISSInterface.saveTextToTxtFile</description>
+	<content><![CDATA[saveTextToTxtFile(${1:string filename}, ${2:string text})]]></content>
+</snippet>

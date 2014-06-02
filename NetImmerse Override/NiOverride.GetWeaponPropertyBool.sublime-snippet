@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetWeaponPropertyBool</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>NiOverride.GetWeaponPropertyBool</description>
+	<content><![CDATA[GetWeaponPropertyBool(${1:ObjectReference ref}, ${2:bool firstPerson}, ${3:Weapon weap}, ${4:string node}, ${5:int key}, ${6:int index})]]></content>
+</snippet>

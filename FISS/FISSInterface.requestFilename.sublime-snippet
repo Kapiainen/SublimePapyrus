@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>requestFilename</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>FISSInterface.requestFilename</description>
+	<content><![CDATA[requestFilename()]]></content>
+</snippet>

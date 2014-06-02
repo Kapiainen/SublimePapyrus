@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>RemoveAllNodeOverrides</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>NiOverride.RemoveAllNodeOverrides</description>
+	<content><![CDATA[RemoveAllNodeOverrides()]]></content>
+</snippet>

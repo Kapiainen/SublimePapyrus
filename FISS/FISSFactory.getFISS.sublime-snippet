@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>getFISS</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>FISSFactory.getFISS</description>
+	<content><![CDATA[getFISS()]]></content>
+</snippet>

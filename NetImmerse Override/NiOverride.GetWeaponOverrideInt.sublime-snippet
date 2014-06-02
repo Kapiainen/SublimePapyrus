@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetWeaponOverrideInt</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>NiOverride.GetWeaponOverrideInt</description>
+	<content><![CDATA[GetWeaponOverrideInt(${1:ObjectReference ref}, ${2:bool isFemale}, ${3:bool firstPerson}, ${4:Weapon weap}, ${5:string node}, ${6:int key}, ${7:int index})]]></content>
+</snippet>

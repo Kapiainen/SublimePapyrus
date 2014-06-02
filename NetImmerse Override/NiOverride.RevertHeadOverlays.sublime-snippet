@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>RevertHeadOverlays</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>NiOverride.RevertHeadOverlays</description>
+	<content><![CDATA[RevertHeadOverlays(${1:ObjectReference ref})]]></content>
+</snippet>

@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>HasArmorAddonNode</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>NiOverride.HasArmorAddonNode</description>
+	<content><![CDATA[HasArmorAddonNode(${1:ObjectReference ref}, ${2:bool firstPerson}, ${3:Armor arm}, ${4:ArmorAddon addon}, ${5:string node}, ${6:bool debug = false})]]></content>
+</snippet>

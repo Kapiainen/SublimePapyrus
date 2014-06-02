@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>ClearMorphValue</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>NiOverride.ClearMorphValue</description>
+	<content><![CDATA[ClearMorphValue(${1:ObjectReference ref}, ${2:string morphName})]]></content>
+</snippet>

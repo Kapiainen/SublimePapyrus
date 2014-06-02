@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>SetMorphValue</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>NiOverride.SetMorphValue</description>
+	<content><![CDATA[SetMorphValue(${1:ObjectReference ref}, ${2:string morphName}, ${3:float value})]]></content>
+</snippet>

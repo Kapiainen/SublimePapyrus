@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>endSave</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>FISSInterface.endSave</description>
+	<content><![CDATA[endSave()]]></content>
+</snippet>

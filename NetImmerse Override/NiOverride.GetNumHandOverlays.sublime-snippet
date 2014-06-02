@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetNumHandOverlays</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>NiOverride.GetNumHandOverlays</description>
+	<content><![CDATA[GetNumHandOverlays()]]></content>
+</snippet>
