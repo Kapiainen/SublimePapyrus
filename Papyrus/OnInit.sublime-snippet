@@ -1,7 +1,7 @@
 <snippet>
 	<tabTrigger>OnInit</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>SKI_QuestBase.OnInit</description>
+	<description>OnInit</description>
 	<content><![CDATA[Event OnInit()
 ${0}
 EndEvent]]></content>

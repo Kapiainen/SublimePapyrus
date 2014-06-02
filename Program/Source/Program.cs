@@ -13,10 +13,18 @@ namespace PapyrusToSublimeSnippets
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("insert papyrus directory\n(example: C:\\Downloads\\skse_1_07_00\\Data\\scripts\\Source)");
+            Console.WriteLine("Insert path to directory containing Papyrus source files (defaults to executable's current location, if left empty)\n(example: C:\\Downloads\\skse_1_07_00\\Data\\scripts\\Source)");
             string PapyrusDir = Console.ReadLine();
-            Console.WriteLine("insert output directory\n(example: C:\\Downloads\\skse_1_07_00\\Data\\scripts\\Source\\out)");
+            Console.WriteLine("Insert path to output directory (defaults to \"snippets\" subfolder in executable's current location, if left empty)\n(example: C:\\Downloads\\skse_1_07_00\\Data\\scripts\\Source\\out)");
             string OutputDir = Console.ReadLine();
+            if (PapyrusDir.Equals(""))
+            {
+                PapyrusDir = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
+            }
+            if (OutputDir.Equals(""))
+            {
+                OutputDir = PapyrusDir + "\\snippets";
+            }
             if (!Directory.Exists(OutputDir))
             {
                 Directory.CreateDirectory(OutputDir);
@@ -27,6 +35,8 @@ namespace PapyrusToSublimeSnippets
             int CountEvent = 0;
             Regex rx = new Regex(@"(?<=[(|,]\s*)\w+\s+\w+(\s+[=]+\s+\w+)?");
             Regex InvalideStartPattern = new Regex(@"^\s*[;|{]");
+            StreamWriter funcLog = new StreamWriter(OutputDir + "\\FunctionLog.txt", false);
+            StreamWriter classLog = new StreamWriter(OutputDir + "\\ClassLog.txt", false);
             foreach (string file in files)
             {
                 string FileName = Path.GetFileNameWithoutExtension(file);
@@ -98,12 +108,16 @@ namespace PapyrusToSublimeSnippets
                             sw.WriteLine("</snippet>");
                             CountFunctions++;
                         }
+                        funcLog.Write(FunctionName.ToLower() + "|");
                         sw.Close();
                         Console.WriteLine("\t" + FileName + "." + FunctionName + ".sublime-snippet" + " Created!");
                     }
                 }
+                classLog.Write(FileName.ToLower() + "|");
                 sr.Close();
             }
+            funcLog.Close();
+            classLog.Close();
             Console.WriteLine("Created {0} Function-snippets!\nCreated {1} Event-Snippets!", CountFunctions, CountEvent);
             Console.WriteLine("Press a button to close the console...");
             Console.ReadKey();
