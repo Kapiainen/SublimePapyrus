@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetPlayer</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Game.GetPlayer</description>
-	<content><![CDATA[GetPlayer()]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>AddForm</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>LeveledSpell.AddForm</description>
-	<content><![CDATA[AddForm(${1:Form apForm}, ${2:int aiLevel})]]></content>
-</snippet>

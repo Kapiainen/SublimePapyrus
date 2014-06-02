@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetProtected</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ActorBase.SetProtected</description>
-	<content><![CDATA[SetProtected(${1:bool abProtected = true})]]></content>
-</snippet>

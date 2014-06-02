@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetNthHeadPart</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ActorBase.SetNthHeadPart</description>
-	<content><![CDATA[SetNthHeadPart(${1:HeadPart headPart}, ${2:int slotPart})]]></content>
-</snippet>

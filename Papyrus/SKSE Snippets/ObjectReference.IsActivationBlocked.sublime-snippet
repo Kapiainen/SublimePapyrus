@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>IsActivationBlocked</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ObjectReference.IsActivationBlocked</description>
-	<content><![CDATA[IsActivationBlocked()]]></content>
-</snippet>

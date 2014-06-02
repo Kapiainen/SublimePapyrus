@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>Dispel</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ActiveMagicEffect.Dispel</description>
-	<content><![CDATA[Dispel()]]></content>
-</snippet>

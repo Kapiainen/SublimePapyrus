@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>ForceMovementDirectionRamp</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Actor.ForceMovementDirectionRamp</description>
-	<content><![CDATA[ForceMovementDirectionRamp(${1:float afXAngle = 0}, ${2:float afYAngle = 0}, ${3:float afZAngle = 0}, ${4:float afRampTime = 0})]]></content>
-</snippet>

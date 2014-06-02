@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>ClearKeepOffsetFromActor</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Actor.ClearKeepOffsetFromActor</description>
-	<content><![CDATA[ClearKeepOffsetFromActor()]]></content>
-</snippet>

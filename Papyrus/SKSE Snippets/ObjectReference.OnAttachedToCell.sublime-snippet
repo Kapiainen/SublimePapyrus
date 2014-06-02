@@ -1,8 +1,0 @@
-<snippet>
-	<tabTrigger>OnAttachedToCell</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ObjectReference.OnAttachedToCell</description>
-	<content><![CDATA[Event OnAttachedToCell()
-${0}
-EndEvent]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetLight</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>MagicEffect.GetLight</description>
-	<content><![CDATA[GetLight()]]></content>
-</snippet>

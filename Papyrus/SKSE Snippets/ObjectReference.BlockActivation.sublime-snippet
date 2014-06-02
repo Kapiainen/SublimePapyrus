@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>BlockActivation</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ObjectReference.BlockActivation</description>
-	<content><![CDATA[BlockActivation(${1:bool abBlocked = true})]]></content>
-</snippet>

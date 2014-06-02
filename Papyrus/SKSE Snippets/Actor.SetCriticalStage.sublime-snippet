@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetCriticalStage</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Actor.SetCriticalStage</description>
-	<content><![CDATA[SetCriticalStage(${1:int aiStage})]]></content>
-</snippet>

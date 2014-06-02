@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetFacePreset</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ActorBase.GetFacePreset</description>
-	<content><![CDATA[GetFacePreset(${1:int index})]]></content>
-</snippet>

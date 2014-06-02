@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetMeleePowerAttackBlockingMult</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>CombatStyle.GetMeleePowerAttackBlockingMult</description>
-	<content><![CDATA[GetMeleePowerAttackBlockingMult()]]></content>
-</snippet>

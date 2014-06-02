@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>RegisterForControl</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Form.RegisterForControl</description>
-	<content><![CDATA[RegisterForControl(${1:string control})]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetSkillLevel</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>MagicEffect.SetSkillLevel</description>
-	<content><![CDATA[SetSkillLevel(${1:int level})]]></content>
-</snippet>

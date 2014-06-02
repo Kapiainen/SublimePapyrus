@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetCloseRangeFlankingStalkTime</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>CombatStyle.GetCloseRangeFlankingStalkTime</description>
-	<content><![CDATA[GetCloseRangeFlankingStalkTime()]]></content>
-</snippet>

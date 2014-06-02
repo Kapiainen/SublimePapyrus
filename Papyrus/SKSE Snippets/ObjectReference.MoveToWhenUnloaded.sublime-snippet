@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>MoveToWhenUnloaded</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ObjectReference.MoveToWhenUnloaded</description>
-	<content><![CDATA[MoveToWhenUnloaded(${1:ObjectReference akTarget}, ${2:float afXOffset = 0}, ${3:float afYOffset = 0}, ${4:float afZOffset = 0})]]></content>
-</snippet>

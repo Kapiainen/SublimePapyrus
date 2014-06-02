@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetAVIByID</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ActorValueInfo.GetAVIByID</description>
-	<content><![CDATA[GetAVIByID(${1:int id})]]></content>
-</snippet>

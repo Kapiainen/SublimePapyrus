@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetNumEffects</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Ingredient.GetNumEffects</description>
-	<content><![CDATA[GetNumEffects()]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>KeepOffsetFromActor</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Actor.KeepOffsetFromActor</description>
-	<content><![CDATA[KeepOffsetFromActor(${1:Actor arTarget}, ${2:float afOffsetX}, ${3:float afOffsetY}, ${4:float afOffsetZ}, ${5:float afOffsetAngleX = 0}, ${6:float afOffsetAngleY = 0}, ${7:float afOffsetAngleZ = 0}, ${8:float afCatchUpRadius = 20}, ${9:float afFollowRadius = 5})]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetNoCombatInWater</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Race.SetNoCombatInWater</description>
-	<content><![CDATA[SetNoCombatInWater()]]></content>
-</snippet>

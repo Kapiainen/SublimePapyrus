@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>IsRaceFlagSet</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Race.IsRaceFlagSet</description>
-	<content><![CDATA[IsRaceFlagSet(${1:int n})]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetNthEffectDuration</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Enchantment.SetNthEffectDuration</description>
-	<content><![CDATA[SetNthEffectDuration(${1:int index}, ${2:int value})]]></content>
-</snippet>

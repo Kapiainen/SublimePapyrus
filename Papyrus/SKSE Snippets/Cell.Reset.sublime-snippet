@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>Reset</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Cell.Reset</description>
-	<content><![CDATA[Reset()]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetNumParts</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Outfit.GetNumParts</description>
-	<content><![CDATA[GetNumParts()]]></content>
-</snippet>

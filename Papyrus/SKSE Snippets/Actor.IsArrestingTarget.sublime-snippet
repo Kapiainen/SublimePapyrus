@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>IsArrestingTarget</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Actor.IsArrestingTarget</description>
-	<content><![CDATA[IsArrestingTarget()]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetLowestRelationshipRank</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Actor.GetLowestRelationshipRank</description>
-	<content><![CDATA[GetLowestRelationshipRank()]]></content>
-</snippet>

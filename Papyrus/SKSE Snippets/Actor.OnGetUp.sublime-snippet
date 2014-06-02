@@ -1,8 +1,0 @@
-<snippet>
-	<tabTrigger>OnGetUp</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Actor.OnGetUp</description>
-	<content><![CDATA[Event OnGetUp(${1:ObjectReference akFurniture})
-${0}
-EndEvent]]></content>
-</snippet>

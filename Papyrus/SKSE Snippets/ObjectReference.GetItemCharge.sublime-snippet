@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetItemCharge</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ObjectReference.GetItemCharge</description>
-	<content><![CDATA[GetItemCharge()]]></content>
-</snippet>

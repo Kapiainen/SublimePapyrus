@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetMeleeMult</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>CombatStyle.SetMeleeMult</description>
-	<content><![CDATA[SetMeleeMult(${1:float mult})]]></content>
-</snippet>

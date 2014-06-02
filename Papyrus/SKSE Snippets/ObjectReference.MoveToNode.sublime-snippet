@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>MoveToNode</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ObjectReference.MoveToNode</description>
-	<content><![CDATA[MoveToNode(${1:ObjectReference akTarget}, ${2:string asNodeName})]]></content>
-</snippet>

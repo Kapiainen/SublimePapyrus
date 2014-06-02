@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>Activate</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ObjectReference.Activate</description>
-	<content><![CDATA[Activate(${1:ObjectReference akActivator}, ${2:bool abDefaultProcessingOnly = false})]]></content>
-</snippet>

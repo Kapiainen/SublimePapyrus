@@ -1,8 +1,0 @@
-<snippet>
-	<tabTrigger>OnMenuClose</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Alias.OnMenuClose</description>
-	<content><![CDATA[Event OnMenuClose(${1:string menuName})
-${0}
-EndEvent]]></content>
-</snippet>

@@ -1,8 +1,0 @@
-<snippet>
-	<tabTrigger>OnLostLOS</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ActiveMagicEffect.OnLostLOS</description>
-	<content><![CDATA[Event OnLostLOS(${1:Actor akViewer}, ${2:ObjectReference akTarget})
-${0}
-EndEvent]]></content>
-</snippet>

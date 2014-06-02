@@ -1,8 +1,0 @@
-<snippet>
-	<tabTrigger>OnPlayerCameraState</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Alias.OnPlayerCameraState</description>
-	<content><![CDATA[Event OnPlayerCameraState(${1:int oldState}, ${2:int newState})
-${0}
-EndEvent]]></content>
-</snippet>

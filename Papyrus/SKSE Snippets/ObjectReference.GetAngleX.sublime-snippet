@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetAngleX</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ObjectReference.GetAngleX</description>
-	<content><![CDATA[GetAngleX()]]></content>
-</snippet>

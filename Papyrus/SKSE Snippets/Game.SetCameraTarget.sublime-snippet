@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetCameraTarget</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Game.SetCameraTarget</description>
-	<content><![CDATA[SetCameraTarget(${1:Actor arTarget})]]></content>
-</snippet>

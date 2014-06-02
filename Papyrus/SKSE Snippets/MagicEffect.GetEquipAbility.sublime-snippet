@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetEquipAbility</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>MagicEffect.GetEquipAbility</description>
-	<content><![CDATA[GetEquipAbility()]]></content>
-</snippet>

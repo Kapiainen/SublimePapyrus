@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>CanSwim</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Race.CanSwim</description>
-	<content><![CDATA[CanSwim()]]></content>
-</snippet>

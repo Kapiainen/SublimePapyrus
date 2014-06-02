@@ -1,8 +1,0 @@
-<snippet>
-	<tabTrigger>OnCellDetach</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ActiveMagicEffect.OnCellDetach</description>
-	<content><![CDATA[Event OnCellDetach()
-${0}
-EndEvent]]></content>
-</snippet>

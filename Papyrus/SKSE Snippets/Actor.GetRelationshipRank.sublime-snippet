@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetRelationshipRank</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Actor.GetRelationshipRank</description>
-	<content><![CDATA[GetRelationshipRank(${1:Actor akOther})]]></content>
-</snippet>

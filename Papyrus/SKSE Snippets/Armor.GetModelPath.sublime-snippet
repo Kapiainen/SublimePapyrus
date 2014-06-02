@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetModelPath</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Armor.GetModelPath</description>
-	<content><![CDATA[GetModelPath(${1:bool bFemalePath})]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetPerkPoints</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Game.SetPerkPoints</description>
-	<content><![CDATA[SetPerkPoints(${1:int perkPoints})]]></content>
-</snippet>

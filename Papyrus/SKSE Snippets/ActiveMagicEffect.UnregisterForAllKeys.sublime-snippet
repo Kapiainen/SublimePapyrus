@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>UnregisterForAllKeys</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ActiveMagicEffect.UnregisterForAllKeys</description>
-	<content><![CDATA[UnregisterForAllKeys()]]></content>
-</snippet>

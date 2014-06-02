@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SendWereWolfTransformation</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Game.SendWereWolfTransformation</description>
-	<content><![CDATA[SendWereWolfTransformation()]]></content>
-</snippet>

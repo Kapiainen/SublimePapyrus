@@ -1,8 +1,0 @@
-<snippet>
-	<tabTrigger>OnContainerChanged</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ActiveMagicEffect.OnContainerChanged</description>
-	<content><![CDATA[Event OnContainerChanged(${1:ObjectReference akNewContainer}, ${2:ObjectReference akOldContainer})
-${0}
-EndEvent]]></content>
-</snippet>

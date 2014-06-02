@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetAngle</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ObjectReference.SetAngle</description>
-	<content><![CDATA[SetAngle(${1:float afXAngle}, ${2:float afYAngle}, ${3:float afZAngle})]]></content>
-</snippet>

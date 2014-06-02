@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetHeight</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ObjectReference.GetHeight</description>
-	<content><![CDATA[GetHeight()]]></content>
-</snippet>

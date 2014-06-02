@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>ShowBarterMenu</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Actor.ShowBarterMenu</description>
-	<content><![CDATA[ShowBarterMenu()]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>IsClothingRich</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Armor.IsClothingRich</description>
-	<content><![CDATA[IsClothingRich()]]></content>
-</snippet>

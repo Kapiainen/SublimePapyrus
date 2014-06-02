@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>ApplyHavokImpulse</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ObjectReference.ApplyHavokImpulse</description>
-	<content><![CDATA[ApplyHavokImpulse(${1:float afX}, ${2:float afY}, ${3:float afZ}, ${4:float afMagnitude})]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetNthEntryStage</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Perk.SetNthEntryStage</description>
-	<content><![CDATA[SetNthEntryStage(${1:int n}, ${2:int stage})]]></content>
-</snippet>

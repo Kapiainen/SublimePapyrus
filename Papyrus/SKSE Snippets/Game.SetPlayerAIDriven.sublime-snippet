@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetPlayerAIDriven</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Game.SetPlayerAIDriven</description>
-	<content><![CDATA[SetPlayerAIDriven(${1:bool abAIDriven = true})]]></content>
-</snippet>

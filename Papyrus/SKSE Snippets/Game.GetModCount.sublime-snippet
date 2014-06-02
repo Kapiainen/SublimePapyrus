@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetModCount</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Game.GetModCount</description>
-	<content><![CDATA[GetModCount()]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>UnregisterForLOS</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Alias.UnregisterForLOS</description>
-	<content><![CDATA[UnregisterForLOS(${1:Actor akViewer}, ${2:ObjectReference akTarget})]]></content>
-</snippet>

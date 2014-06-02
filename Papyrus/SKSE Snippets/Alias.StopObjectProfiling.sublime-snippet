@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>StopObjectProfiling</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Alias.StopObjectProfiling</description>
-	<content><![CDATA[StopObjectProfiling()]]></content>
-</snippet>

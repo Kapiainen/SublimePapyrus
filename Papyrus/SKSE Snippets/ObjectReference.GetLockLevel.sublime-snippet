@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetLockLevel</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ObjectReference.GetLockLevel</description>
-	<content><![CDATA[GetLockLevel()]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetTimeElapsed</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ActiveMagicEffect.GetTimeElapsed</description>
-	<content><![CDATA[GetTimeElapsed()]]></content>
-</snippet>

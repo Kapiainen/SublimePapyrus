@@ -1,8 +1,0 @@
-<snippet>
-	<tabTrigger>OnTranslationComplete</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ObjectReference.OnTranslationComplete</description>
-	<content><![CDATA[Event OnTranslationComplete()
-${0}
-EndEvent]]></content>
-</snippet>

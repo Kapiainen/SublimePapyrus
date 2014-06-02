@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>EquipSpell</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Actor.EquipSpell</description>
-	<content><![CDATA[EquipSpell(${1:Spell akSpell}, ${2:int aiSource})]]></content>
-</snippet>

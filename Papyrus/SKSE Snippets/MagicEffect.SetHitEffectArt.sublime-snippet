@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetHitEffectArt</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>MagicEffect.SetHitEffectArt</description>
-	<content><![CDATA[SetHitEffectArt(${1:Art obj})]]></content>
-</snippet>

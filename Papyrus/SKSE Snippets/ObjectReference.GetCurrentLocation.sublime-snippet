@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetCurrentLocation</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ObjectReference.GetCurrentLocation</description>
-	<content><![CDATA[GetCurrentLocation()]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>IsActivateControlsEnabled</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Game.IsActivateControlsEnabled</description>
-	<content><![CDATA[IsActivateControlsEnabled()]]></content>
-</snippet>

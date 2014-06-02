@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>StopTranslation</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ObjectReference.StopTranslation</description>
-	<content><![CDATA[StopTranslation()]]></content>
-</snippet>

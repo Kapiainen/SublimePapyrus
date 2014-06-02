@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>LoadGame</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Game.LoadGame</description>
-	<content><![CDATA[LoadGame(${1:string name})]]></content>
-</snippet>

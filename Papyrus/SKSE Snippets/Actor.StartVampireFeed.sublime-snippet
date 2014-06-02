@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>StartVampireFeed</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Actor.StartVampireFeed</description>
-	<content><![CDATA[StartVampireFeed(${1:Actor akTarget})]]></content>
-</snippet>

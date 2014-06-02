@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetHeadPart</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>HeadPart.GetHeadPart</description>
-	<content><![CDATA[GetHeadPart(${1:string name})]]></content>
-</snippet>

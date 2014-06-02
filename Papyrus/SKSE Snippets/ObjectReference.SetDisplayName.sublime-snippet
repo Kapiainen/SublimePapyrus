@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetDisplayName</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ObjectReference.SetDisplayName</description>
-	<content><![CDATA[SetDisplayName(${1:string name}, ${2:bool force = false})]]></content>
-</snippet>

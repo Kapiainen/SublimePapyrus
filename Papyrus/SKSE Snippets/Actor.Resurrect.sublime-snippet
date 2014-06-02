@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>Resurrect</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Actor.Resurrect</description>
-	<content><![CDATA[Resurrect()]]></content>
-</snippet>

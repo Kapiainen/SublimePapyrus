@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SheatheWeapon</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Actor.SheatheWeapon</description>
-	<content><![CDATA[SheatheWeapon()]]></content>
-</snippet>

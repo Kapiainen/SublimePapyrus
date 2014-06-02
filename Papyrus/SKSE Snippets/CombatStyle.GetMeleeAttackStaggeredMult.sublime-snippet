@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetMeleeAttackStaggeredMult</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>CombatStyle.GetMeleeAttackStaggeredMult</description>
-	<content><![CDATA[GetMeleeAttackStaggeredMult()]]></content>
-</snippet>

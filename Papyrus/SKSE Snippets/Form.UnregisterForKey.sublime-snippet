@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>UnregisterForKey</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Form.UnregisterForKey</description>
-	<content><![CDATA[UnregisterForKey(${1:int keyCode})]]></content>
-</snippet>

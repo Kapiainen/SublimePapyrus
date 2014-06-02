@@ -1,8 +1,0 @@
-<snippet>
-	<tabTrigger>RemoveInventoryEventFilter</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ActiveMagicEffect.RemoveInventoryEventFilter</description>
-	<content><![CDATA[Event RemoveInventoryEventFilter(${1:Form akFilter})
-${0}
-EndEvent]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>ModAV</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Actor.ModAV</description>
-	<content><![CDATA[ModAV(${1:string asValueName}, ${2:float afAmount})]]></content>
-</snippet>

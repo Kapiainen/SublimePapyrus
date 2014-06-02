@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetNthRecoveryTime</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Shout.GetNthRecoveryTime</description>
-	<content><![CDATA[GetNthRecoveryTime(${1:int n})]]></content>
-</snippet>

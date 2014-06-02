@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetChanceNone</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>LeveledSpell.GetChanceNone</description>
-	<content><![CDATA[GetChanceNone()]]></content>
-</snippet>

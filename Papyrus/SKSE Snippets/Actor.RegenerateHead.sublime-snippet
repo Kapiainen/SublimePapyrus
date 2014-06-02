@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>RegenerateHead</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Actor.RegenerateHead</description>
-	<content><![CDATA[RegenerateHead()]]></content>
-</snippet>

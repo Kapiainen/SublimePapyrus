@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetArmorRating</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Armor.SetArmorRating</description>
-	<content><![CDATA[SetArmorRating(${1:int armorRating})]]></content>
-</snippet>

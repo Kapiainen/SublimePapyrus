@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>IsIntimidated</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Actor.IsIntimidated</description>
-	<content><![CDATA[IsIntimidated()]]></content>
-</snippet>

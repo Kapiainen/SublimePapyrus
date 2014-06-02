@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>IsStageDone</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Quest.IsStageDone</description>
-	<content><![CDATA[IsStageDone(${1:int aiStage})]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetValue</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ColorComponent.GetValue</description>
-	<content><![CDATA[GetValue(${1:int argb})]]></content>
-</snippet>

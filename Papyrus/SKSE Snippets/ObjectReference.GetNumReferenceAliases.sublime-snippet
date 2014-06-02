@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetNumReferenceAliases</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ObjectReference.GetNumReferenceAliases</description>
-	<content><![CDATA[GetNumReferenceAliases()]]></content>
-</snippet>

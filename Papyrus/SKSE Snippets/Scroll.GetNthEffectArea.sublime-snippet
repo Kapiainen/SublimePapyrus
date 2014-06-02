@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetNthEffectArea</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Scroll.GetNthEffectArea</description>
-	<content><![CDATA[GetNthEffectArea(${1:int index})]]></content>
-</snippet>

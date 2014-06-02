@@ -1,8 +1,0 @@
-<snippet>
-	<tabTrigger>OnMagicEffectApply</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ObjectReference.OnMagicEffectApply</description>
-	<content><![CDATA[Event OnMagicEffectApply(${1:ObjectReference akCaster}, ${2:MagicEffect akEffect})
-${0}
-EndEvent]]></content>
-</snippet>

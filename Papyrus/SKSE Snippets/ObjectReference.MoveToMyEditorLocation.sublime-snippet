@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>MoveToMyEditorLocation</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ObjectReference.MoveToMyEditorLocation</description>
-	<content><![CDATA[MoveToMyEditorLocation()]]></content>
-</snippet>

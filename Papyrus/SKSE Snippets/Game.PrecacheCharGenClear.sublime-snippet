@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>PrecacheCharGenClear</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Game.PrecacheCharGenClear</description>
-	<content><![CDATA[PrecacheCharGenClear()]]></content>
-</snippet>

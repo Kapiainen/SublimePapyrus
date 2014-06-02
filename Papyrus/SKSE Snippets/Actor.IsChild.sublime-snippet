@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>IsChild</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Actor.IsChild</description>
-	<content><![CDATA[IsChild()]]></content>
-</snippet>

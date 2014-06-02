@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>Ceiling</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Math.Ceiling</description>
-	<content><![CDATA[Ceiling(${1:float afValue})]]></content>
-</snippet>

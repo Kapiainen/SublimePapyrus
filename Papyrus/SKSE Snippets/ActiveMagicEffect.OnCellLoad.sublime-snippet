@@ -1,8 +1,0 @@
-<snippet>
-	<tabTrigger>OnCellLoad</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ActiveMagicEffect.OnCellLoad</description>
-	<content><![CDATA[Event OnCellLoad()
-${0}
-EndEvent]]></content>
-</snippet>

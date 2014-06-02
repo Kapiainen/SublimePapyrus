@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>Dismount</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Actor.Dismount</description>
-	<content><![CDATA[Dismount()]]></content>
-</snippet>

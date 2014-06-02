@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetCastingArt</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>MagicEffect.SetCastingArt</description>
-	<content><![CDATA[SetCastingArt(${1:Art obj})]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>ShowLimitedRaceMenu</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Game.ShowLimitedRaceMenu</description>
-	<content><![CDATA[ShowLimitedRaceMenu()]]></content>
-</snippet>

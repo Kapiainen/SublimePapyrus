@@ -1,8 +1,0 @@
-<snippet>
-	<tabTrigger>OnStoryCraftItem</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Quest.OnStoryCraftItem</description>
-	<content><![CDATA[Event OnStoryCraftItem(${1:ObjectReference akBench}, ${2:Location akLocation}, ${3:Form akCreatedItem})
-${0}
-EndEvent]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetIndexOfExtraPart</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>HeadPart.GetIndexOfExtraPart</description>
-	<content><![CDATA[GetIndexOfExtraPart(${1:HeadPart p})]]></content>
-</snippet>

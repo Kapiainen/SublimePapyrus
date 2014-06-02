@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetUnarmedMult</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>CombatStyle.SetUnarmedMult</description>
-	<content><![CDATA[SetUnarmedMult(${1:float mult})]]></content>
-</snippet>

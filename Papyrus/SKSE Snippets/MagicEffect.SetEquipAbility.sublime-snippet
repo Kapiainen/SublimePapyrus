@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetEquipAbility</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>MagicEffect.SetEquipAbility</description>
-	<content><![CDATA[SetEquipAbility(${1:Spell obj})]]></content>
-</snippet>

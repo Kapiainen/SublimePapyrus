@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetPublic</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Cell.SetPublic</description>
-	<content><![CDATA[SetPublic(${1:bool abPublic = true})]]></content>
-</snippet>

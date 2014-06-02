@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>CantOpenDoors</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Race.CantOpenDoors</description>
-	<content><![CDATA[CantOpenDoors()]]></content>
-</snippet>

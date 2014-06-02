@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetActorValuePercentage</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Actor.GetActorValuePercentage</description>
-	<content><![CDATA[GetActorValuePercentage(${1:string asValueName})]]></content>
-</snippet>

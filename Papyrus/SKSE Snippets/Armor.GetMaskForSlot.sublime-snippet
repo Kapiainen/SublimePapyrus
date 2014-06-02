@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetMaskForSlot</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Armor.GetMaskForSlot</description>
-	<content><![CDATA[GetMaskForSlot(${1:int slot})]]></content>
-</snippet>

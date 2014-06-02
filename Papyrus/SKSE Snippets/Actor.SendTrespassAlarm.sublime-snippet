@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SendTrespassAlarm</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Actor.SendTrespassAlarm</description>
-	<content><![CDATA[SendTrespassAlarm(${1:Actor akCriminal})]]></content>
-</snippet>
