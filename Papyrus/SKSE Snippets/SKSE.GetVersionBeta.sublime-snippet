@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetVersionBeta</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>SKSE.GetVersionBeta</description>
-	<content><![CDATA[GetVersionBeta()]]></content>
-</snippet>

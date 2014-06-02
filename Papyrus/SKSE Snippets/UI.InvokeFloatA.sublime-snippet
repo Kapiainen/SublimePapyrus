@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>InvokeFloatA</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>UI.InvokeFloatA</description>
-	<content><![CDATA[InvokeFloatA(${1:string menuName}, ${2:string target})]]></content>
-</snippet>

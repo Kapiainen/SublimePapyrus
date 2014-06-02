@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>IsPunctuation</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>StringUtil.IsPunctuation</description>
-	<content><![CDATA[IsPunctuation(${1:string c})]]></content>
-</snippet>

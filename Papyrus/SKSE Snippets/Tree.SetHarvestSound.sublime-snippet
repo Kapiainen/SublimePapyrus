@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetHarvestSound</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Tree.SetHarvestSound</description>
-	<content><![CDATA[SetHarvestSound(${1:SoundDescriptor akSoundDescriptor})]]></content>
-</snippet>

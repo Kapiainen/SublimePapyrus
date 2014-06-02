@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>PushBoolA</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>UICallback.PushBoolA</description>
-	<content><![CDATA[PushBoolA(${1:int handle})]]></content>
-</snippet>

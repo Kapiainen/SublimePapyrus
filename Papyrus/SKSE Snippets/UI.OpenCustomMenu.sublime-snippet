@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>OpenCustomMenu</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>UI.OpenCustomMenu</description>
-	<content><![CDATA[OpenCustomMenu(${1:string swfPath}, ${2:int flags = 0})]]></content>
-</snippet>

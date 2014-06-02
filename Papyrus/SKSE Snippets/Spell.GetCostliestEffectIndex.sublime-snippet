@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetCostliestEffectIndex</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Spell.GetCostliestEffectIndex</description>
-	<content><![CDATA[GetCostliestEffectIndex()]]></content>
-</snippet>
