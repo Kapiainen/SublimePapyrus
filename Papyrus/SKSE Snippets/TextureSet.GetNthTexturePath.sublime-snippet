@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetNthTexturePath</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>TextureSet.GetNthTexturePath</description>
-	<content><![CDATA[GetNthTexturePath(${1:int n})]]></content>
-</snippet>

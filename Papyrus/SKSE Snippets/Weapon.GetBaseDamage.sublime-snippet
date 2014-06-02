@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetBaseDamage</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Weapon.GetBaseDamage</description>
-	<content><![CDATA[GetBaseDamage()]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetCritMultiplier</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Weapon.GetCritMultiplier</description>
-	<content><![CDATA[GetCritMultiplier()]]></content>
-</snippet>

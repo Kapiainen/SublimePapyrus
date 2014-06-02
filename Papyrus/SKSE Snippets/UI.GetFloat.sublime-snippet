@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetFloat</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>UI.GetFloat</description>
-	<content><![CDATA[GetFloat(${1:string menuName}, ${2:string target})]]></content>
-</snippet>

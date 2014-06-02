@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetItemHealthPercent</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>WornObject.SetItemHealthPercent</description>
-	<content><![CDATA[SetItemHealthPercent(${1:Actor akActor}, ${2:int handSlot}, ${3:int slotMask}, ${4:float health})]]></content>
-</snippet>

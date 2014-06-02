@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>IsDagger</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Weapon.IsDagger</description>
-	<content><![CDATA[IsDagger()]]></content>
-</snippet>

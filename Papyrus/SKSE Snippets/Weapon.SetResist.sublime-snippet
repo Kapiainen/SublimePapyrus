@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetResist</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Weapon.SetResist</description>
-	<content><![CDATA[SetResist(${1:string resist})]]></content>
-</snippet>

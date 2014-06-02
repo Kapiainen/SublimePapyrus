@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetSunDamage</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Weather.GetSunDamage</description>
-	<content><![CDATA[GetSunDamage()]]></content>
-</snippet>

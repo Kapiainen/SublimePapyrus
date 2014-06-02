@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetCurrentBudget</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Utility.GetCurrentBudget</description>
-	<content><![CDATA[GetCurrentBudget(${1:int aiBudgetNumber})]]></content>
-</snippet>

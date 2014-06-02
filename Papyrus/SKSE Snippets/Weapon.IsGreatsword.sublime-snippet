@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>IsGreatsword</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Weapon.IsGreatsword</description>
-	<content><![CDATA[IsGreatsword()]]></content>
-</snippet>

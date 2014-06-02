@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>Send</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>UICallback.Send</description>
-	<content><![CDATA[Send(${1:int handle})]]></content>
-</snippet>

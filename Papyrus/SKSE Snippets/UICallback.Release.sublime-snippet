@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>Release</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>UICallback.Release</description>
-	<content><![CDATA[Release(${1:int handle})]]></content>
-</snippet>

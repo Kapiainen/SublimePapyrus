@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetReach</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Weapon.GetReach</description>
-	<content><![CDATA[GetReach()]]></content>
-</snippet>

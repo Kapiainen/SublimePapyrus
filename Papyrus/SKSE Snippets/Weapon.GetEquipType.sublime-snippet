@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetEquipType</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Weapon.GetEquipType</description>
-	<content><![CDATA[GetEquipType()]]></content>
-</snippet>

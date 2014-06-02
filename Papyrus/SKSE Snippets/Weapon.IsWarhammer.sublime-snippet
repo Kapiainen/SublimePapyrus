@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>IsWarhammer</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Weapon.IsWarhammer</description>
-	<content><![CDATA[IsWarhammer()]]></content>
-</snippet>

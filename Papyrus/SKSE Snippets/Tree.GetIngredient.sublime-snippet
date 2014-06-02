@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetIngredient</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Tree.GetIngredient</description>
-	<content><![CDATA[GetIngredient()]]></content>
-</snippet>

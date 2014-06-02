@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetEffectiveMagickaCost</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Spell.GetEffectiveMagickaCost</description>
-	<content><![CDATA[GetEffectiveMagickaCost(${1:Actor caster})]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetStagger</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Weapon.GetStagger</description>
-	<content><![CDATA[GetStagger()]]></content>
-</snippet>

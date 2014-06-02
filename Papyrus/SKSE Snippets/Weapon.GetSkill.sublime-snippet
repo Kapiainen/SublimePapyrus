@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetSkill</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Weapon.GetSkill</description>
-	<content><![CDATA[GetSkill()]]></content>
-</snippet>

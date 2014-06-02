@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetBudgetName</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Utility.GetBudgetName</description>
-	<content><![CDATA[GetBudgetName(${1:int aiBudgetNumber})]]></content>
-</snippet>

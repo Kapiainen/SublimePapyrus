@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetCritEffectOnDeath</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Weapon.GetCritEffectOnDeath</description>
-	<content><![CDATA[GetCritEffectOnDeath()]]></content>
-</snippet>

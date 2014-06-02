@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>RemoteCast</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Spell.RemoteCast</description>
-	<content><![CDATA[RemoteCast(${1:ObjectReference akSource}, ${2:Actor akBlameActor}, ${3:ObjectReference akTarget})]]></content>
-</snippet>
