@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>getequippedmodel</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Weapon.GetEquippedModel (SKSE)</description>
-	<content><![CDATA[GetEquippedModel()]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-    <tabTrigger>getnthreferencealias</tabTrigger>
-    <scope>source.papyrus</scope>
-    <description>WornObject.GetNthReferenceAlias (SKSE)</description>
-    <content><![CDATA[GetNthmReferenceAlias(${1:Actor akActor}, ${2:Int aiHandSlot}, ${3:Int aiSlotMask}, ${4:Int aiN})]]></content>
-</snippet>

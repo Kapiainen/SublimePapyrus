@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>getbool</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>UI.GetBool (SKSE)</description>
-	<content><![CDATA[GetBool(${1:String asMenuName}, ${2:String asTarget})]]></content>
-</snippet>

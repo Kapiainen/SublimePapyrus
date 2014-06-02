@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>getsunglare</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Weather.GetSunGlare (SKSE)</description>
-	<content><![CDATA[GetSunGlare()]]></content>
-</snippet>

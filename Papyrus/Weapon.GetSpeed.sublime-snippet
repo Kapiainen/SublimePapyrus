@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>getspeed</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Weapon.GetSpeed (SKSE)</description>
-	<content><![CDATA[GetSpeed()]]></content>
-</snippet>

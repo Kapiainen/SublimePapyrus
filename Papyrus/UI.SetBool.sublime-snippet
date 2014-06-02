@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>setbool</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>UI.SetBool (SKSE)</description>
-	<content><![CDATA[SetBool(${1:String asMenuName}, ${2:String asTarget}, ${3:Bool abValue})]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>setcritmultiplier</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Weapon.SetCritMultiplier (SKSE)</description>
-	<content><![CDATA[SetCritMultiplier(${1:Float afCrit})]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>setequippedmodel</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Weapon.SetEquippedModel (SKSE)</description>
-	<content><![CDATA[SetEquippedModel(${1:Static akModel})]]></content>
-</snippet>

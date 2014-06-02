@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>release</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>UICallback.Release (SKSE)</description>
-	<content><![CDATA[Release(${1:Int aiHandle})]]></content>
-</snippet>

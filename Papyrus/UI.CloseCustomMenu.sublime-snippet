@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>closecustommenu</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>UI.CloseCustomMenu (SKSE)</description>
-	<content><![CDATA[CloseCustomMenu()]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>getharvestsound</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Tree.GetHarvestSound (SKSE)</description>
-	<content><![CDATA[GetHarvestSound()]]></content>
-</snippet>

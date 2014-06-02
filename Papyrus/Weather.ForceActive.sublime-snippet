@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>forceactive</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Weather.ForceActive</description>
-	<content><![CDATA[ForceActive(${1:Bool abOverride = False})]]></content>
-</snippet>

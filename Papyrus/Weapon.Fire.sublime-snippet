@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>fire</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Weapon.Fire</description>
-	<content><![CDATA[Fire(${1:ObjectReference akSource}, ${2:Ammo akAmmo = None})]]></content>
-</snippet>

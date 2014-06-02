@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>setminrange</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Weapon.SetMinRange (SKSE)</description>
-	<content><![CDATA[SetMinRange(${1:Float afMinRange})]]></content>
-</snippet>

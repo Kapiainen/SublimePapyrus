@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>wait</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Utility.Wait</description>
-	<content><![CDATA[Wait(${1:Float afSeconds})]]></content>
-</snippet>

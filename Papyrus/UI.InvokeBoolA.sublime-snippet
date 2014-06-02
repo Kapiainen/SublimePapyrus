@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>invokeboola</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>UI.InvokeBoolA (SKSE)</description>
-	<content><![CDATA[InvokeBoolA(${1:String asMenuName}, ${2:String asTarget}, ${3:Bool[] abValues})]]></content>
-</snippet>

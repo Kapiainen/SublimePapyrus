@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>getlength</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>StringUtil.GetLength (SKSE)</description>
-	<content><![CDATA[GetLength(${1:String asString})]]></content>
-</snippet>

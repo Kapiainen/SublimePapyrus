@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>getaverageframerate</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Utility.GetAverageFrameRate</description>
-	<content><![CDATA[GetAverageFrameRate()]]></content>
-</snippet>

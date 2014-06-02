@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>releaseoverride</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Weather.ReleaseOverride</description>
-	<content><![CDATA[ReleaseOverride()]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>getcriteffect</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Weapon.GetCritEffect (SKSE)</description>
-	<content><![CDATA[GetCritEffect()]]></content>
-</snippet>

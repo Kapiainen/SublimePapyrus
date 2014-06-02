@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>setenchantmentvalue</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Weapon.SetEnchantmentValue (SKSE)</description>
-	<content><![CDATA[SetEnchantmentValue(${1:Int aiValue})]]></content>
-</snippet>

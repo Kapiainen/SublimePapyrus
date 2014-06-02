@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>pushbool</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>UICallback.PushBool (SKSE)</description>
-	<content><![CDATA[PushBool(${1:Int aiHandle}, ${2:Bool abValue})]]></content>
-</snippet>

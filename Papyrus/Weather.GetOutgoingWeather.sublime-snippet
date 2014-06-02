@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>getoutgoingweather</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Weather.GetOutgoingWeather</description>
-	<content><![CDATA[GetOutgoingWeather()]]></content>
-</snippet>

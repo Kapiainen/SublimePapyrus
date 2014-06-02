@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>isletter</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>StringUtil.IsLetter (SKSE)</description>
-	<content><![CDATA[IsLetter(${1:String asChar})]]></content>
-</snippet>

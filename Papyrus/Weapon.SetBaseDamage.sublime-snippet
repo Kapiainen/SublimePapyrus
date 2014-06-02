@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>setbasedamage</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Weapon.SetBaseDamage (SKSE)</description>
-	<content><![CDATA[SetBaseDamage(${1:Int aiDamage})]]></content>
-</snippet>

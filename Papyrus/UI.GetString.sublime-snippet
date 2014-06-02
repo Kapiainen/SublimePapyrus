@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>getstring</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>UI.GetString (SKSE)</description>
-	<content><![CDATA[GetString(${1:String asMenuName}, ${2:String asTarget})]]></content>
-</snippet>

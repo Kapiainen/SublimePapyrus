@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>getingredient</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Tree.GetIngredient (SKSE)</description>
-	<content><![CDATA[GetIngredient()]]></content>
-</snippet>

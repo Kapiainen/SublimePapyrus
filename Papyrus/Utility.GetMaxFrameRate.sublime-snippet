@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>getmaxframerate</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Utility.GetMaxFrameRate</description>
-	<content><![CDATA[GetMaxFrameRate()]]></content>
-</snippet>

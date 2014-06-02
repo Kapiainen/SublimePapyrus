@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>invokenumbera</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>UI.InvokeNumberA (SKSE)</description>
-	<content><![CDATA[InvokeNumberA(${1:String asMenuName}, ${2:String asTarget}, ${3:Float[] afValues})]]></content>
-</snippet>

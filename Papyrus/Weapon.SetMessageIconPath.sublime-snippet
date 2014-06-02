@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>setmessageiconpath</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Weapon.SetMessageIconPath (SKSE)</description>
-	<content><![CDATA[SetMessageIconPath(${1:String asPath})]]></content>
-</snippet>

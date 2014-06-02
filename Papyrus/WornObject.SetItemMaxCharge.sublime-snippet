@@ -1,6 +1,0 @@
-<snippet>
-    <tabTrigger>setitemmaxcharge</tabTrigger>
-    <scope>source.papyrus</scope>
-    <description>WornObject.SetItemMaxCharge (SKSE)</description>
-    <content><![CDATA[SetItemMaxCharge(${1:Actor akActor}, ${2:Int aiHandSlot}, ${3:Int aiSlotMask}, ${4:Float afMaxCharge})]]></content>
-</snippet>

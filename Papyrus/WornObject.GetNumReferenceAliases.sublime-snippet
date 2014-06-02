@@ -1,6 +1,0 @@
-<snippet>
-    <tabTrigger>getnumreferencealiases</tabTrigger>
-    <scope>source.papyrus</scope>
-    <description>WornObject.GetNumReferenceAliases (SKSE)</description>
-    <content><![CDATA[GetNumReferenceAliases(${1:Actor akActor}, ${2:Int aiHandSlot}, ${3:Int aiSlotMask})]]></content>
-</snippet>

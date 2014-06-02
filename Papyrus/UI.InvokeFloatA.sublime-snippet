@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>invokefloata</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>UI.InvokeFloatA (SKSE)</description>
-	<content><![CDATA[InvokeFloatA(${1:String asMenuName}, ${2:String asTarget}, ${3:Float[] afValues})]]></content>
-</snippet>

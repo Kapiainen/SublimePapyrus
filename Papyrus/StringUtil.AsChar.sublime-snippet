@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>aschar</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>StringUtil.AsChar (SKSE)</description>
-	<content><![CDATA[AsChar(${1:Int aiChar})]]></content>
-</snippet>

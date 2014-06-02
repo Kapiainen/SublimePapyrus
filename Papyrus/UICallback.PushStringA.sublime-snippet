@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>pushstringa</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>UICallback.PushStringA (SKSE)</description>
-	<content><![CDATA[PushStringA(${1:Int aiHandle}, ${2:String[] asValues})]]></content>
-</snippet>
