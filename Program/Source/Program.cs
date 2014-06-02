@@ -38,12 +38,12 @@ namespace PapyrusToSublimeSnippets
                     string checkingline = line.ToLower();
                     if (((checkingline.Contains("function")) || (checkingline.Contains("event"))) && !(checkingline.Contains("kstoryeventnode") || checkingline.Contains("modevent") || checkingline.Contains("endevent") || checkingline.Contains("endfunction") || (InvalideStartPattern.IsMatch(line))))
                     {
-                        int startName = 0; 
+                        int startName = 0;
                         if (checkingline.Contains("function"))
-	                    {
-	                     startName = checkingline.IndexOf("function") + 9;	 
-	                    }
-                        else if(checkingline.Contains("event"))
+                        {
+                            startName = checkingline.IndexOf("function") + 9;
+                        }
+                        else if (checkingline.Contains("event"))
                         {
                             startName = checkingline.IndexOf("event") + 6;
                         }
@@ -57,10 +57,10 @@ namespace PapyrusToSublimeSnippets
                         sw.WriteLine("\t<tabTrigger>" + FunctionName + "</tabTrigger>");
                         sw.WriteLine("\t<scope>source.papyrus</scope>");
                         sw.WriteLine("\t<description>" + FileName + "." + FunctionName + "</description>");
-                        
-                        if (line.Contains("Event"))
-	                    {
-		                    sw.Write("\t<content><![CDATA[Event " + FunctionName + "(");
+
+                        if (checkingline.Contains("event"))
+                        {
+                            sw.Write("\t<content><![CDATA[Event " + FunctionName + "(");
                             int i = 1;
                             if (matches.Count > 0)
                             {
@@ -77,7 +77,7 @@ namespace PapyrusToSublimeSnippets
                             sw.Write(")\n${0}\nEndEvent]]></content>\n");
                             sw.WriteLine("</snippet>");
                             CountEvent++;
-	                    }
+                        }
                         else
                         {
                             sw.Write("\t<content><![CDATA[" + FunctionName + "(");
@@ -97,10 +97,10 @@ namespace PapyrusToSublimeSnippets
                             sw.Write(")]]></content>\n");
                             sw.WriteLine("</snippet>");
                             CountFunctions++;
-                            }
+                        }
                         sw.Close();
                         Console.WriteLine("\t" + FileName + "." + FunctionName + ".sublime-snippet" + " Created!");
-                    }                    
+                    }
                 }
                 sr.Close();
             }
