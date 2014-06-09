@@ -32,7 +32,7 @@ namespace PapyrusToSublimeSnippets
             Console.WriteLine("{0} files found", files.Length);
             int CountFunctions = 0;
             int CountEvent = 0;
-            Regex rx = new Regex(@"(?<=[(|,]\s*)\w+\s+\w+(\s+[=]+\s+\w+)?");
+            Regex rx = new Regex(@"(?<=[(|,]\s*)\w+(\[\])?\s+\w+(\s+[=]+\s+\w+)?");
             Regex EventPattern = new Regex(@"(?i)^\s*\b(event)");
             Regex FunctionPattern = new Regex(@"(?i)^(\s*\w+\s+)?\b(function)");
             StreamWriter funcLog = new StreamWriter(OutputDir + "\\FunctionLog.txt", false);
