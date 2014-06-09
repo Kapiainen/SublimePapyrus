@@ -2,7 +2,5 @@
 	<tabTrigger>RemoveAllInventoryEventFilters</tabTrigger>
 	<scope>source.papyrus</scope>
 	<description>ReferenceAlias.RemoveAllInventoryEventFilters</description>
-	<content><![CDATA[Event RemoveAllInventoryEventFilters()
-${0}
-EndEvent]]></content>
+	<content><![CDATA[RemoveAllInventoryEventFilters()]]></content>
 </snippet>

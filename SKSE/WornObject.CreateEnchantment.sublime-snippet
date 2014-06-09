@@ -2,5 +2,5 @@
 	<tabTrigger>CreateEnchantment</tabTrigger>
 	<scope>source.papyrus</scope>
 	<description>WornObject.CreateEnchantment</description>
-	<content><![CDATA[CreateEnchantment(${1:Actor akActor}, ${2:int handSlot}, ${3:int slotMask}, ${4:float maxCharge})]]></content>
+	<content><![CDATA[CreateEnchantment(${1:Actor akActor}, ${2:int handSlot}, ${3:int slotMask}, ${4:float maxCharge}, ${5:MagicEffect[] effects}, ${6:float[] magnitudes}, ${7:int[] areas}, ${8:int[] durations})]]></content>
 </snippet>

@@ -2,5 +2,5 @@
 	<tabTrigger>CreateEnchantment</tabTrigger>
 	<scope>source.papyrus</scope>
 	<description>ObjectReference.CreateEnchantment</description>
-	<content><![CDATA[CreateEnchantment(${1:float maxCharge})]]></content>
+	<content><![CDATA[CreateEnchantment(${1:float maxCharge}, ${2:MagicEffect[] effects}, ${3:float[] magnitudes}, ${4:int[] areas}, ${5:int[] durations})]]></content>
 </snippet>

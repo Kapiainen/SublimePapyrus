@@ -2,7 +2,5 @@
 	<tabTrigger>RegisterForAnimationEvent</tabTrigger>
 	<scope>source.papyrus</scope>
 	<description>Alias.RegisterForAnimationEvent</description>
-	<content><![CDATA[Event RegisterForAnimationEvent(${1:ObjectReference akSender}, ${2:string asEventName})
-${0}
-EndEvent]]></content>
+	<content><![CDATA[RegisterForAnimationEvent(${1:ObjectReference akSender}, ${2:string asEventName})]]></content>
 </snippet>

@@ -2,7 +2,5 @@
 	<tabTrigger>PlayAnimationAndWait</tabTrigger>
 	<scope>source.papyrus</scope>
 	<description>ObjectReference.PlayAnimationAndWait</description>
-	<content><![CDATA[Event PlayAnimationAndWait(${1:string asAnimation}, ${2:string asEventName})
-${0}
-EndEvent]]></content>
+	<content><![CDATA[PlayAnimationAndWait(${1:string asAnimation}, ${2:string asEventName})]]></content>
 </snippet>

@@ -2,7 +2,5 @@
 	<tabTrigger>SendStoryEventAndWait</tabTrigger>
 	<scope>source.papyrus</scope>
 	<description>Keyword.SendStoryEventAndWait</description>
-	<content><![CDATA[Event SendStoryEventAndWait(${1:Location akLoc = None}, ${2:ObjectReference akRef1 = None}, ${3:ObjectReference akRef2 = None})
-${0}
-EndEvent]]></content>
+	<content><![CDATA[SendStoryEventAndWait(${1:Location akLoc = None}, ${2:ObjectReference akRef1 = None}, ${3:ObjectReference akRef2 = None})]]></content>
 </snippet>

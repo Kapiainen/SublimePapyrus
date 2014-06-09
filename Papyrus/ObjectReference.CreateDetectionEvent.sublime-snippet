@@ -2,7 +2,5 @@
 	<tabTrigger>CreateDetectionEvent</tabTrigger>
 	<scope>source.papyrus</scope>
 	<description>ObjectReference.CreateDetectionEvent</description>
-	<content><![CDATA[Event CreateDetectionEvent(${1:Actor akOwner}, ${2:int aiSoundLevel = 0})
-${0}
-EndEvent]]></content>
+	<content><![CDATA[CreateDetectionEvent(${1:Actor akOwner}, ${2:int aiSoundLevel = 0})]]></content>
 </snippet>

@@ -2,7 +2,5 @@
 	<tabTrigger>UnregisterForAnimationEvent</tabTrigger>
 	<scope>source.papyrus</scope>
 	<description>Form.UnregisterForAnimationEvent</description>
-	<content><![CDATA[Event UnregisterForAnimationEvent(${1:ObjectReference akSender}, ${2:string asEventName})
-${0}
-EndEvent]]></content>
+	<content><![CDATA[UnregisterForAnimationEvent(${1:ObjectReference akSender}, ${2:string asEventName})]]></content>
 </snippet>

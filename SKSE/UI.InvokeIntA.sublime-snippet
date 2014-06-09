@@ -2,5 +2,5 @@
 	<tabTrigger>InvokeIntA</tabTrigger>
 	<scope>source.papyrus</scope>
 	<description>UI.InvokeIntA</description>
-	<content><![CDATA[InvokeIntA(${1:string menuName}, ${2:string target})]]></content>
+	<content><![CDATA[InvokeIntA(${1:string menuName}, ${2:string target}, ${3:int[] args})]]></content>
 </snippet>

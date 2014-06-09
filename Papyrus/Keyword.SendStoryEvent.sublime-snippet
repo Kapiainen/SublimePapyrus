@@ -2,7 +2,5 @@
 	<tabTrigger>SendStoryEvent</tabTrigger>
 	<scope>source.papyrus</scope>
 	<description>Keyword.SendStoryEvent</description>
-	<content><![CDATA[Event SendStoryEvent(${1:Location akLoc = None}, ${2:ObjectReference akRef1 = None}, ${3:ObjectReference akRef2 = None}, ${4:int aiValue1 = 0})
-${0}
-EndEvent]]></content>
+	<content><![CDATA[SendStoryEvent(${1:Location akLoc = None}, ${2:ObjectReference akRef1 = None}, ${3:ObjectReference akRef2 = None}, ${4:int aiValue1 = 0})]]></content>
 </snippet>

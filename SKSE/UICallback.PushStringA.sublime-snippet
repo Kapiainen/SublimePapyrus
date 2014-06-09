@@ -2,5 +2,5 @@
 	<tabTrigger>PushStringA</tabTrigger>
 	<scope>source.papyrus</scope>
 	<description>UICallback.PushStringA</description>
-	<content><![CDATA[PushStringA(${1:int handle})]]></content>
+	<content><![CDATA[PushStringA(${1:int handle}, ${2:string[] args})]]></content>
 </snippet>

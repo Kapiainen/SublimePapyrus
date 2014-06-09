@@ -2,5 +2,5 @@
 	<tabTrigger>SetMenuDialogOptions</tabTrigger>
 	<scope>source.papyrus</scope>
 	<description>SKI_ConfigBase.SetMenuDialogOptions</description>
-	<content><![CDATA[SetMenuDialogOptions()]]></content>
+	<content><![CDATA[SetMenuDialogOptions(${1:string[] a_options})]]></content>
 </snippet>

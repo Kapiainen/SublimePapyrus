@@ -2,7 +2,5 @@
 	<tabTrigger>RemoveInventoryEventFilter</tabTrigger>
 	<scope>source.papyrus</scope>
 	<description>ObjectReference.RemoveInventoryEventFilter</description>
-	<content><![CDATA[Event RemoveInventoryEventFilter(${1:Form akFilter})
-${0}
-EndEvent]]></content>
+	<content><![CDATA[RemoveInventoryEventFilter(${1:Form akFilter})]]></content>
 </snippet>
