@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>IsBolt</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Ammo.IsBolt</description>
+	<content><![CDATA[IsBolt()]]></content>
+</snippet>

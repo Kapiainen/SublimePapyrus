@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetWorldModelPath</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Form.GetWorldModelPath</description>
+	<content><![CDATA[GetWorldModelPath()]]></content>
+</snippet>

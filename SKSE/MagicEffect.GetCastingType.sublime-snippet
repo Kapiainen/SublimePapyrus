@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetCastingType</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>MagicEffect.GetCastingType</description>
+	<content><![CDATA[GetCastingType()]]></content>
+</snippet>

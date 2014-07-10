@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetFurnitureReference</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Actor.GetFurnitureReference</description>
+	<content><![CDATA[GetFurnitureReference()]]></content>
+</snippet>

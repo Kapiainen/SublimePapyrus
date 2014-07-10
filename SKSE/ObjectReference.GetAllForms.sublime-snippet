@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetAllForms</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>ObjectReference.GetAllForms</description>
+	<content><![CDATA[GetAllForms(${1:FormList toFill})]]></content>
+</snippet>
