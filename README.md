@@ -15,7 +15,7 @@ How do I use the package?
 
 How do I use the program PapyrusToSublimeSnippets?
 
-The program can be launched from anywhere and allows you to type in the path to the folder containing the Papyrus source files you wish to process. The first level of subfolders in the input folder will also be processed. If you do not type in a path, then the program will process the folder, which the program is in. The generated snippets will be placed in subfolder(s) called "snippets".
+The program can be launched from anywhere and allows you to type in the path to the folder containing the Papyrus source files you wish to process. The first level of subfolders in the input folder will also be processed. If you do not type in a path, then the program will process the folder, which the program is in. The generated snippets will be placed in subfolders called "snippets".
 
 The program creates two logs: FunctionLog.txt and ClassLog.txt. The log files will be placed in the input folder and the log files contain keywords, which are formatted for use in the Papyrus syntax definition (Papyrus.tmLanguage), based on the processed source files. The syntax definition can be found in the Papyrus package.
 
