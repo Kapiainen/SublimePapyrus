@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>IntListInsert</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>StorageUtil.IntListInsert</description>
+	<content><![CDATA[IntListInsert(${1:Form obj}, ${2:string key}, ${3:int index}, ${4:int value})]]></content>
+</snippet>

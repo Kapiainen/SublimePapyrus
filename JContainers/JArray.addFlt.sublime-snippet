@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>addFlt</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>JArray.addFlt</description>
+	<content><![CDATA[addFlt(${1:int object}, ${2:float value}, ${3:int addToIndex})]]></content>
+</snippet>

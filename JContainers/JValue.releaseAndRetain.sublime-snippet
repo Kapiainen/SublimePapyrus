@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>releaseAndRetain</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>JValue.releaseAndRetain</description>
+	<content><![CDATA[releaseAndRetain(${1:int previousObject}, ${2:int newObject})]]></content>
+</snippet>

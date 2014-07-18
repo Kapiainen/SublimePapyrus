@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>FileStringListGet</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>StorageUtil.FileStringListGet</description>
+	<content><![CDATA[FileStringListGet(${1:string key}, ${2:int index})]]></content>
+</snippet>

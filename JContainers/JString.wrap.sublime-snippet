@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>wrap</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>JString.wrap</description>
+	<content><![CDATA[wrap(${1:string sourceText}, ${2:int charactersPerLine})]]></content>
+</snippet>

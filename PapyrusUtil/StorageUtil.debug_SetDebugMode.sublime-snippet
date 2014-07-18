@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>debug_SetDebugMode</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>StorageUtil.debug_SetDebugMode</description>
+	<content><![CDATA[debug_SetDebugMode(${1:bool enabled})]]></content>
+</snippet>

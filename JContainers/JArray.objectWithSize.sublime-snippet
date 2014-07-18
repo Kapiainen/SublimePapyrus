@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>objectWithSize</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>JArray.objectWithSize</description>
+	<content><![CDATA[objectWithSize(${1:int size})]]></content>
+</snippet>

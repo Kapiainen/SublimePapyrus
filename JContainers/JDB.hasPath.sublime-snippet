@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>hasPath</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>JDB.hasPath</description>
+	<content><![CDATA[hasPath(${1:string path})]]></content>
+</snippet>

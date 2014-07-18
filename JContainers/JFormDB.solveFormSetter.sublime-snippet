@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>solveFormSetter</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>JFormDB.solveFormSetter</description>
+	<content><![CDATA[solveFormSetter(${1:form fKey}, ${2:string path}, ${3:form value})]]></content>
+</snippet>

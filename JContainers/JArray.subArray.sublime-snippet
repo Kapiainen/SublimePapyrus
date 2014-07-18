@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>subArray</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>JArray.subArray</description>
+	<content><![CDATA[subArray(${1:int object}, ${2:int startIndex}, ${3:int endIndex})]]></content>
+</snippet>

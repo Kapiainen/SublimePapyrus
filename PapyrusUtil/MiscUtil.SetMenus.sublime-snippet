@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>SetMenus</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>MiscUtil.SetMenus</description>
+	<content><![CDATA[SetMenus(${1:bool enabled})]]></content>
+</snippet>

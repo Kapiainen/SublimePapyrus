@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>getInt</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>JArray.getInt</description>
+	<content><![CDATA[getInt(${1:int object}, ${2:int index})]]></content>
+</snippet>

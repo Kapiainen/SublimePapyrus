@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>objectWithBooleans</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>JArray.objectWithBooleans</description>
+	<content><![CDATA[objectWithBooleans(${1:bool[] values})]]></content>
+</snippet>

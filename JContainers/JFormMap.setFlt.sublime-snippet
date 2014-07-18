@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>setFlt</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>JFormMap.setFlt</description>
+	<content><![CDATA[setFlt(${1:int object}, ${2:form key}, ${3:float value})]]></content>
+</snippet>

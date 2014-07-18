@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>getFlt</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>JFormDB.getFlt</description>
+	<content><![CDATA[getFlt(${1:form fKey}, ${2:string key})]]></content>
+</snippet>

@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>findForm</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>JArray.findForm</description>
+	<content><![CDATA[findForm(${1:int object}, ${2:form value}, ${3:int searchStartIndex})]]></content>
+</snippet>

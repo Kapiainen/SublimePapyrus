@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>FileUnsetStringValue</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>StorageUtil.FileUnsetStringValue</description>
+	<content><![CDATA[FileUnsetStringValue(${1:string key})]]></content>
+</snippet>

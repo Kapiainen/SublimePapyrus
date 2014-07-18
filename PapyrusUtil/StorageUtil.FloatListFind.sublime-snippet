@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>FloatListFind</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>StorageUtil.FloatListFind</description>
+	<content><![CDATA[FloatListFind(${1:Form obj}, ${2:string key}, ${3:float value})]]></content>
+</snippet>

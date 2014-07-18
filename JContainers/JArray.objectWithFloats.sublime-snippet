@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>objectWithFloats</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>JArray.objectWithFloats</description>
+	<content><![CDATA[objectWithFloats(${1:float[] values})]]></content>
+</snippet>

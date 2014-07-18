@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>FileHasFloatValue</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>StorageUtil.FileHasFloatValue</description>
+	<content><![CDATA[FileHasFloatValue(${1:string key})]]></content>
+</snippet>

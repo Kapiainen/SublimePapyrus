@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>readFromDirectory</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>JValue.readFromDirectory</description>
+	<content><![CDATA[readFromDirectory(${1:string directoryPath}, ${2:string extension})]]></content>
+</snippet>

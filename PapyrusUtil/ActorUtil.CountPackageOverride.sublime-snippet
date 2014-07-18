@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>CountPackageOverride</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>ActorUtil.CountPackageOverride</description>
+	<content><![CDATA[CountPackageOverride(${1:Actor targetActor})]]></content>
+</snippet>

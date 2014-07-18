@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>allValues</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>JFormDB.allValues</description>
+	<content><![CDATA[allValues(${1:form fKey}, ${2:string key})]]></content>
+</snippet>

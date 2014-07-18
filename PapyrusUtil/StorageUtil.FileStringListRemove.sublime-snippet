@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>FileStringListRemove</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>StorageUtil.FileStringListRemove</description>
+	<content><![CDATA[FileStringListRemove(${1:string key}, ${2:string value}, ${3:bool allInstances = false})]]></content>
+</snippet>

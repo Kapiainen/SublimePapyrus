@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>debug_FileGetIntListKeysCount</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>StorageUtil.debug_FileGetIntListKeysCount</description>
+	<content><![CDATA[debug_FileGetIntListKeysCount()]]></content>
+</snippet>

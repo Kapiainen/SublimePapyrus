@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>isArray</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>JValue.isArray</description>
+	<content><![CDATA[isArray(${1:int object})]]></content>
+</snippet>

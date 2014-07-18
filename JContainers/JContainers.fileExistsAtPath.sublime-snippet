@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>fileExistsAtPath</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>JContainers.fileExistsAtPath</description>
+	<content><![CDATA[fileExistsAtPath(${1:string path})]]></content>
+</snippet>

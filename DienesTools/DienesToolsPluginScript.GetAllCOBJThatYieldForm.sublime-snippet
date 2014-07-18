@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetAllCOBJThatYieldForm</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>DienesToolsPluginScript.GetAllCOBJThatYieldForm</description>
+	<content><![CDATA[GetAllCOBJThatYieldForm(${1:Form akForm}, ${2:FormList akList})]]></content>
+</snippet>

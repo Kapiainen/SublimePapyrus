@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>solveForm</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>JDB.solveForm</description>
+	<content><![CDATA[solveForm(${1:string path})]]></content>
+</snippet>

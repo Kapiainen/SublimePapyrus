@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>IntListSort</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>StorageUtil.IntListSort</description>
+	<content><![CDATA[IntListSort(${1:Form obj}, ${2:string key})]]></content>
+</snippet>

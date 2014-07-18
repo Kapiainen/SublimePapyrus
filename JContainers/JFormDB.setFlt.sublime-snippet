@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>setFlt</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>JFormDB.setFlt</description>
+	<content><![CDATA[setFlt(${1:form fKey}, ${2:string key}, ${3:float value})]]></content>
+</snippet>

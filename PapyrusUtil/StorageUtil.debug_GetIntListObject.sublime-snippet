@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>debug_GetIntListObject</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>StorageUtil.debug_GetIntListObject</description>
+	<content><![CDATA[debug_GetIntListObject(${1:int index})]]></content>
+</snippet>

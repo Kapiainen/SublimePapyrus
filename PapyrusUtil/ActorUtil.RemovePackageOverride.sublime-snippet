@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>RemovePackageOverride</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>ActorUtil.RemovePackageOverride</description>
+	<content><![CDATA[RemovePackageOverride(${1:Actor targetActor}, ${2:Package targetPackage})]]></content>
+</snippet>

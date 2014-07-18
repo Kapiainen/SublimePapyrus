@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>solveInt</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>JFormDB.solveInt</description>
+	<content><![CDATA[solveInt(${1:form fKey}, ${2:string path})]]></content>
+</snippet>

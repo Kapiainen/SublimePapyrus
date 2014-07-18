@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>debug_GetIntListKeysCount</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>StorageUtil.debug_GetIntListKeysCount</description>
+	<content><![CDATA[debug_GetIntListKeysCount(${1:Form obj})]]></content>
+</snippet>

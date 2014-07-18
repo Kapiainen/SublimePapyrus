@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>ReadFromFile</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>MiscUtil.ReadFromFile</description>
+	<content><![CDATA[ReadFromFile(${1:string fileName})]]></content>
+</snippet>

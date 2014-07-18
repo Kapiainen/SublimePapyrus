@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetRaceEditorID</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>MiscUtil.GetRaceEditorID</description>
+	<content><![CDATA[GetRaceEditorID(${1:Race raceForm})]]></content>
+</snippet>

@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>StringListSort</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>StorageUtil.StringListSort</description>
+	<content><![CDATA[StringListSort(${1:Form obj}, ${2:string key})]]></content>
+</snippet>

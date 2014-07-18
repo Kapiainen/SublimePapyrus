@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>FileUnsetFloatValue</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>StorageUtil.FileUnsetFloatValue</description>
+	<content><![CDATA[FileUnsetFloatValue(${1:string key})]]></content>
+</snippet>

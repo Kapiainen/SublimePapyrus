@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>allKeys</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>JDB.allKeys</description>
+	<content><![CDATA[allKeys()]]></content>
+</snippet>

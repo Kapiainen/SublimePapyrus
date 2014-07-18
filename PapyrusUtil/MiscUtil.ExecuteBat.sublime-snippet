@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>ExecuteBat</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>MiscUtil.ExecuteBat</description>
+	<content><![CDATA[ExecuteBat(${1:string fileName})]]></content>
+</snippet>
