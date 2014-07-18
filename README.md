@@ -3,7 +3,7 @@ SublimePapyrus
 
 Sublime Text 2 package for the Papyrus scripting language.
 
-Includes function/event snippets and syntax definitions for Skyrim (1.9.32.0.8), [SKSE](http://skse.silverlock.org) (1.7.1), [SkyUI SDK](https://github.com/schlangster/skyui/wiki) (4.1), [FISS](http://www.nexusmods.com/skyrim/mods/48265/) (1.21), and [NetImmerse Override](http://www.nexusmods.com/skyrim/mods/37481/) (2.8.0).
+Includes function/event snippets and syntax definitions for Skyrim (1.9.32.0.8), [SKSE](http://skse.silverlock.org) (1.7.1), [SkyUI SDK](https://github.com/schlangster/skyui/wiki) (4.1), [FISS](http://www.nexusmods.com/skyrim/mods/48265/) (1.21), [NetImmerse Override](http://www.nexusmods.com/skyrim/mods/37481/) (2.8.0), [DienesTools](http://www.nexusmods.com/skyrim/mods/54325/) (1.0), [JContainers](http://www.nexusmods.com/skyrim/mods/49743/) (0.67.4), and [PapyrusUtil](http://www.nexusmods.com/skyrim/mods/49098/) (2.3).
 
 How do I use the package?
 - Install Sublime Text 2, if you do not have it yet. Launch it once in order to make sure all necessary folders are created. Check the Creation Kit wiki for instructions on how to set up the Papyrus compiler for use with external editors.
