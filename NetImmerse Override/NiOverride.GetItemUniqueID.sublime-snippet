@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetItemUniqueID</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>NiOverride.GetItemUniqueID</description>
+	<content><![CDATA[GetItemUniqueID(${1:ObjectReference akActor}, ${2:int weaponSlot}, ${3:int slotMask}, ${4:bool makeUnique = true})]]></content>
+</snippet>

@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetItemDyeColor</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>NiOverride.GetItemDyeColor</description>
+	<content><![CDATA[GetItemDyeColor(${1:int uniqueId}, ${2:int maskIndex})]]></content>
+</snippet>
