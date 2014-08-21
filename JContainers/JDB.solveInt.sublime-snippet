@@ -2,5 +2,5 @@
 	<tabTrigger>solveInt</tabTrigger>
 	<scope>source.papyrus</scope>
 	<description>JDB.solveInt</description>
-	<content><![CDATA[solveInt(${1:string path})]]></content>
+	<content><![CDATA[solveInt(${1:string path}, ${2:int default})]]></content>
 </snippet>

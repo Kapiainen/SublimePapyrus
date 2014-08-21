@@ -2,5 +2,5 @@
 	<tabTrigger>getInt</tabTrigger>
 	<scope>source.papyrus</scope>
 	<description>JArray.getInt</description>
-	<content><![CDATA[getInt(${1:int object}, ${2:int index})]]></content>
+	<content><![CDATA[getInt(${1:int object}, ${2:int index}, ${3:int default})]]></content>
 </snippet>

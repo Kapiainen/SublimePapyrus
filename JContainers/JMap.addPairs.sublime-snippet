@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>addPairs</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>JMap.addPairs</description>
+	<content><![CDATA[addPairs(${1:int object}, ${2:int source}, ${3:bool overrideDuplicates})]]></content>
+</snippet>

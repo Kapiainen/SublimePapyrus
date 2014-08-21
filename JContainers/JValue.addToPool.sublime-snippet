@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>addToPool</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>JValue.addToPool</description>
+	<content><![CDATA[addToPool(${1:int object}, ${2:string poolName})]]></content>
+</snippet>

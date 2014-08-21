@@ -2,5 +2,5 @@
 	<tabTrigger>solveFlt</tabTrigger>
 	<scope>source.papyrus</scope>
 	<description>JDB.solveFlt</description>
-	<content><![CDATA[solveFlt(${1:string path})]]></content>
+	<content><![CDATA[solveFlt(${1:string path}, ${2:float default})]]></content>
 </snippet>

@@ -2,5 +2,5 @@
 	<tabTrigger>addFromArray</tabTrigger>
 	<scope>source.papyrus</scope>
 	<description>JArray.addFromArray</description>
-	<content><![CDATA[addFromArray(${1:int object}, ${2:int sourceArray}, ${3:int insertAtIndex})]]></content>
+	<content><![CDATA[addFromArray(${1:int object}, ${2:int source}, ${3:int insertAtIndex})]]></content>
 </snippet>

@@ -2,5 +2,5 @@
 	<tabTrigger>getFlt</tabTrigger>
 	<scope>source.papyrus</scope>
 	<description>JMap.getFlt</description>
-	<content><![CDATA[getFlt(${1:int object}, ${2:string key})]]></content>
+	<content><![CDATA[getFlt(${1:int object}, ${2:string key}, ${3:float default})]]></content>
 </snippet>

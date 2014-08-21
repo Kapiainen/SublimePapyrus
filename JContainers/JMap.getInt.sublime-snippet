@@ -2,5 +2,5 @@
 	<tabTrigger>getInt</tabTrigger>
 	<scope>source.papyrus</scope>
 	<description>JMap.getInt</description>
-	<content><![CDATA[getInt(${1:int object}, ${2:string key})]]></content>
+	<content><![CDATA[getInt(${1:int object}, ${2:string key}, ${3:int default})]]></content>
 </snippet>

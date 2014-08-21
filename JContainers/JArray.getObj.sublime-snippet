@@ -2,5 +2,5 @@
 	<tabTrigger>getObj</tabTrigger>
 	<scope>source.papyrus</scope>
 	<description>JArray.getObj</description>
-	<content><![CDATA[getObj(${1:int object}, ${2:int index})]]></content>
+	<content><![CDATA[getObj(${1:int object}, ${2:int index}, ${3:int default})]]></content>
 </snippet>

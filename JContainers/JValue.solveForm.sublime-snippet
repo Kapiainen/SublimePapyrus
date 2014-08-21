@@ -2,5 +2,5 @@
 	<tabTrigger>solveForm</tabTrigger>
 	<scope>source.papyrus</scope>
 	<description>JValue.solveForm</description>
-	<content><![CDATA[solveForm(${1:int object}, ${2:string path})]]></content>
+	<content><![CDATA[solveForm(${1:int object}, ${2:string path}, ${3:form default})]]></content>
 </snippet>

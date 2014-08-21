@@ -2,5 +2,5 @@
 	<tabTrigger>solveFlt</tabTrigger>
 	<scope>source.papyrus</scope>
 	<description>JValue.solveFlt</description>
-	<content><![CDATA[solveFlt(${1:int object}, ${2:string path})]]></content>
+	<content><![CDATA[solveFlt(${1:int object}, ${2:string path}, ${3:float default})]]></content>
 </snippet>

@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>isExists</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>JValue.isExists</description>
+	<content><![CDATA[isExists(${1:int object})]]></content>
+</snippet>

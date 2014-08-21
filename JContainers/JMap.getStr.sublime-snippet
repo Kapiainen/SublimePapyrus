@@ -2,5 +2,5 @@
 	<tabTrigger>getStr</tabTrigger>
 	<scope>source.papyrus</scope>
 	<description>JMap.getStr</description>
-	<content><![CDATA[getStr(${1:int object}, ${2:string key})]]></content>
+	<content><![CDATA[getStr(${1:int object}, ${2:string key}, ${3:string default})]]></content>
 </snippet>

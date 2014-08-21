@@ -2,5 +2,5 @@
 	<tabTrigger>getForm</tabTrigger>
 	<scope>source.papyrus</scope>
 	<description>JArray.getForm</description>
-	<content><![CDATA[getForm(${1:int object}, ${2:int index})]]></content>
+	<content><![CDATA[getForm(${1:int object}, ${2:int index}, ${3:form default})]]></content>
 </snippet>

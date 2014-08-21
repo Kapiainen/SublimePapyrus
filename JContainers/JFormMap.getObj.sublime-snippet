@@ -2,5 +2,5 @@
 	<tabTrigger>getObj</tabTrigger>
 	<scope>source.papyrus</scope>
 	<description>JFormMap.getObj</description>
-	<content><![CDATA[getObj(${1:int object}, ${2:form key})]]></content>
+	<content><![CDATA[getObj(${1:int object}, ${2:form key}, ${3:int default})]]></content>
 </snippet>

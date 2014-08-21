@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>valueType</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>JArray.valueType</description>
+	<content><![CDATA[valueType(${1:int object}, ${2:int index})]]></content>
+</snippet>

@@ -2,5 +2,5 @@
 	<tabTrigger>solveObjSetter</tabTrigger>
 	<scope>source.papyrus</scope>
 	<description>JFormDB.solveObjSetter</description>
-	<content><![CDATA[solveObjSetter(${1:form fKey}, ${2:string path}, ${3:int value})]]></content>
+	<content><![CDATA[solveObjSetter(${1:form fKey}, ${2:string path}, ${3:int value}, ${4:bool createMissingKeys})]]></content>
 </snippet>
