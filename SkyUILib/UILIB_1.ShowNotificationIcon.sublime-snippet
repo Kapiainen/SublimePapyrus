@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>ShowNotificationIcon</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>UILIB_1.ShowNotificationIcon</description>
+	<content><![CDATA[ShowNotificationIcon(${1:String asMessage}, ${2:String asIconPath}, ${3:Int aiIconFrame = 0}, ${4:String asColor})]]></content>
+</snippet>
