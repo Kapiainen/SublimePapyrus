@@ -76,6 +76,15 @@ namespace PapyrusToSublimeSnippets
                                         if (!generatedSnippets.Contains(SnippetPattern)) //If a snippet has been generated for the current function/event, then duplicates shouldn't be generated.
                                         {
                                             string Parameters = line.Substring(endName, (line.Length - endName));
+
+                                            // Check if parameters are spread across multiple lines
+                                            while (Parameters.Contains('\\'))
+                                            {
+                                                Parameters = Parameters.Substring(0, (Parameters.IndexOf('\\') - 1));
+                                                string nextLine = sr.ReadLine();
+                                                Parameters += nextLine;
+                                            }
+
                                             string OutputDir = SubDir + OutputDirName;
                                             if (!Directory.Exists(OutputDir))
                                             {
