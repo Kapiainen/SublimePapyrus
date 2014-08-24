@@ -2,5 +2,5 @@
 	<tabTrigger>PlayBink</tabTrigger>
 	<scope>source.papyrus</scope>
 	<description>Game.PlayBink</description>
-	<content><![CDATA[PlayBink(${1:string asFileName}, ${2:bool abInterruptible = false}, ${3:bool abMuteAudio = true}, ${4:bool abMuteMusic = true})]]></content>
+	<content><![CDATA[PlayBink(${1:string asFileName}, ${2:bool abInterruptible = false}, ${3:bool abMuteAudio = true}, ${4:bool abMuteMusic = true}, ${5:bool abLetterbox = true})]]></content>
 </snippet>

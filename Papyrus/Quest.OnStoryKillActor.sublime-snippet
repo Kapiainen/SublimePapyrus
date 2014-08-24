@@ -2,7 +2,7 @@
 	<tabTrigger>OnStoryKillActor</tabTrigger>
 	<scope>source.papyrus</scope>
 	<description>Quest.OnStoryKillActor</description>
-	<content><![CDATA[Event OnStoryKillActor(${1:ObjectReference akVictim}, ${2:ObjectReference akKiller})
+	<content><![CDATA[Event OnStoryKillActor(${1:ObjectReference akVictim}, ${2:ObjectReference akKiller}, ${3:Location akLocation}, ${4:int aiCrimeStatus}, ${5:int aiRelationshipRank})
 ${0}
 EndEvent]]></content>
 </snippet>

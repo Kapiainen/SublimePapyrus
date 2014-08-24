@@ -2,7 +2,7 @@
 	<tabTrigger>OnStoryRemoveFromPlayer</tabTrigger>
 	<scope>source.papyrus</scope>
 	<description>Quest.OnStoryRemoveFromPlayer</description>
-	<content><![CDATA[Event OnStoryRemoveFromPlayer(${1:ObjectReference akOwner}, ${2:ObjectReference akItem})
+	<content><![CDATA[Event OnStoryRemoveFromPlayer(${1:ObjectReference akOwner}, ${2:ObjectReference akItem}, ${3:Location akLocation}, ${4:Form akItemBase}, ${5:int aiRemoveType})
 ${0}
 EndEvent]]></content>
 </snippet>

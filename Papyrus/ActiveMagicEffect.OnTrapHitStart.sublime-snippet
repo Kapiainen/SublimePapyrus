@@ -2,7 +2,7 @@
 	<tabTrigger>OnTrapHitStart</tabTrigger>
 	<scope>source.papyrus</scope>
 	<description>ActiveMagicEffect.OnTrapHitStart</description>
-	<content><![CDATA[Event OnTrapHitStart(${1:ObjectReference akTarget}, ${2:float afXVel}, ${3:float afYVel}, ${4:float afZVel}, ${5:float afXPos}, ${6:float afYPos}, ${7:float afZPos})
+	<content><![CDATA[Event OnTrapHitStart(${1:ObjectReference akTarget}, ${2:float afXVel}, ${3:float afYVel}, ${4:float afZVel}, ${5:float afXPos}, ${6:float afYPos}, ${7:float afZPos}, ${8:int aeMaterial}, ${9:bool abInitialHit}, ${10:int aeMotionType})
 ${0}
 EndEvent]]></content>
 </snippet>

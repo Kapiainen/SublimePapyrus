@@ -2,7 +2,7 @@
 	<tabTrigger>OnStoryCastMagic</tabTrigger>
 	<scope>source.papyrus</scope>
 	<description>Quest.OnStoryCastMagic</description>
-	<content><![CDATA[Event OnStoryCastMagic(${1:ObjectReference akCastingActor}, ${2:ObjectReference akSpellTarget})
+	<content><![CDATA[Event OnStoryCastMagic(${1:ObjectReference akCastingActor}, ${2:ObjectReference akSpellTarget}, ${3:Location akLocation}, ${4:Form akSpell})
 ${0}
 EndEvent]]></content>
 </snippet>
