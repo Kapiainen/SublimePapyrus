@@ -1,5 +1,5 @@
 <snippet>
-    <tabTrigger>astate</tabTrigger>
+    <tabTrigger>AutoState</tabTrigger>
     <scope>source.papyrus</scope>
     <description>Auto State</description>
 	<content><![CDATA[Auto State ${1:state}

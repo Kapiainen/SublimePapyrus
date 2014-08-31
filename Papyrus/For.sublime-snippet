@@ -1,5 +1,5 @@
 <snippet>
-    <tabTrigger>for</tabTrigger>
+    <tabTrigger>For</tabTrigger>
     <scope>source.papyrus</scope>
     <description>Pseudo For Loop</description>
     <content><![CDATA[Int ${1:iCount} = 0

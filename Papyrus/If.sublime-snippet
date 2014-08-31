@@ -1,5 +1,5 @@
 <snippet>
-    <tabTrigger>if</tabTrigger>
+    <tabTrigger>If</tabTrigger>
     <scope>source.papyrus</scope>
     <description>If Condition</description>
     <content><![CDATA[If(${1:$SELECTION})
