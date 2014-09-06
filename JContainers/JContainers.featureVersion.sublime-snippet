@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>featureVersion</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>JContainers.featureVersion</description>
+	<content><![CDATA[featureVersion()]]></content>
+</snippet>
