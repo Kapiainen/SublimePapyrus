@@ -1,0 +1,1 @@
+Small program that processes all .sublime-snippet files, parses the file names for functions and classes, and then generates an updated Papyrus.tmLanguage file based on an old version.
