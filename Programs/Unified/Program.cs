@@ -64,15 +64,11 @@ namespace SublimePapyrus
             if(iOption > OPTION_CANCEL)
             {
                 string sParentFolder = getParentFolder();
-                //Console.WriteLine(sParentFolder);
-                //Console.ReadLine();
 
                 if((iOption == OPTION_EVERYTHING) || (iOption == OPTION_GENERATESNIPPETS))
                 {
                     List<string> lsSourceFiles = new List<string>();
                     lsSourceFiles.AddRange(Directory.GetFiles(sParentFolder, ("*" + FILE_SOURCEEXTENSION), System.IO.SearchOption.AllDirectories));
-                    
-                    //debugList("Papyrus source files", lsSourceFiles);
 
                     generateSnippets(lsSourceFiles);
 
@@ -114,11 +110,9 @@ namespace SublimePapyrus
                                 {
                                     if(iLanguageDefinition < Int32.MaxValue)
                                     {
-                                        //Console.WriteLine("Compatible input {0}", iOption);
                                         if((iLanguageDefinition >= 0) && (iLanguageDefinition < lsLanguageDefinitions.Count))
                                         {
                                             bRepeat = false;
-                                            //Console.WriteLine("iOption == {0}", iOption);
                                         } else {
                                             Console.WriteLine("Invalid input. Try again.\n");
                                         }
@@ -135,8 +129,6 @@ namespace SublimePapyrus
 
                         List<string> lsSnippets = new List<string>();
                         lsSnippets.AddRange(Directory.GetFiles(sParentFolder, ("*" + FILE_SNIPPETEXTENSION), System.IO.SearchOption.AllDirectories));
-
-                        //debugList("Sublime snippets", lsSnippets);
 
                         updateSyntaxHighlighting(lsLanguageDefinitions[iLanguageDefinition], lsSnippets);
                     }
@@ -310,27 +302,22 @@ namespace SublimePapyrus
             List<string> Functions = new List<string>();
             foreach (string Snippet in alsSnippets) {
                 string FileName = Path.GetFileNameWithoutExtension(Snippet).ToLower();
-                    //Console.WriteLine("FileName = " + FileName);
                 string Class = "";
                 string Function = "";
                 int DotIndex = FileName.IndexOf(".");
-                    //Console.WriteLine("DotIndex = " + DotIndex);
                 if(DotIndex >= 0) {
                     Class = FileName.Substring(0, DotIndex);
                     Function = FileName.Substring(FileName.IndexOf(".") + 1);
                     if(!Classes.Contains(Class)) {
                         Classes.Add(Class);
                     }
-                        //Console.WriteLine("Class = " + Class + ", Function = " + Function);
                 } else {
                     Function = FileName;
-                        //Console.WriteLine("Function = " + Function);
                 }
                 if(!Functions.Contains(Function)) {
                     Functions.Add(Function);
                 }
             }
-                //Console.WriteLine("Classes = " + Classes.Count() + ", Functions = " + Functions.Count());
 
             // Process Papyrus.tmLanguage
             string[] SyntaxLines = File.ReadAllLines(asLanguageDefinition);
@@ -376,7 +363,6 @@ namespace SublimePapyrus
 
             // Rename original Papyrus.tmLanguage file to Papyrus.tmLanguage.old
             string[] OldSyntaxDefinitions = Directory.GetFiles(Path.GetDirectoryName(asLanguageDefinition), "*.tmLanguage.old*");
-            //string[] OldSyntaxDefinitions = Directory.GetFiles(SourceDirectories[0], "*.tmLanguage.old*");
             File.Move(asLanguageDefinition, asLanguageDefinition + ".old" + OldSyntaxDefinitions.Length);
             // Create and write new Papyrus.tmLanguage file
             File.WriteAllLines(asLanguageDefinition, SyntaxLines);
