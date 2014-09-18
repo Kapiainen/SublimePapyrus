@@ -31,7 +31,16 @@ flags=%s
 
 [Import]
 # Additional folders that contain .psc you wish to import when compiling.
-# The folders are processed from the lowest entry (path1) to the highest entry (pathN).
+# The order in which .psc files are processed is:
+# - the path containing the .psc file to compile provided that this path is not the same as the path containing the vanilla Skyrim .psc files
+# - path1
+# .
+# .
+# .
+# - pathN
+# - the path containing the vanilla Skyrim .psc files
+#
+# Template
 # pathN=DriveName:\\FolderName\\SubfolderName\\
 path1=C:\\SKSE\\Scripts\\Source
 """ % (END_USER_SCRIPTS, END_USER_COMPILER, END_USER_OUTPUT, END_USER_FLAGS)
@@ -39,20 +48,17 @@ path1=C:\\SKSE\\Scripts\\Source
 def getPrefs(filePath):
     fileDir, fileName = os.path.split(filePath)
     ret = {}
-    if (not os.path.exists(INI_LOCATION)):
-        ret["compiler"] = END_USER_COMPILER
-        ret["output"] = END_USER_OUTPUT
-        ret["flags"] = END_USER_FLAGS
-        ret["import"] = END_USER_SCRIPTS
-    else:
+    ret["compiler"] = END_USER_COMPILER
+    ret["output"] = END_USER_OUTPUT
+    ret["flags"] = END_USER_FLAGS
+    ret["import"] = END_USER_SCRIPTS
+    if (os.path.exists(INI_LOCATION)):
         parser = ConfigParser.ConfigParser()
         parser.read([INI_LOCATION])
 
         if (parser.has_section("Skyrim")):
             if(parser.has_option("Skyrim", "compiler")):
                 ret["compiler"] = parser.get("Skyrim", "compiler")
-            else:
-                ret["compiler"] = END_USER_COMPILER
 
             if(parser.has_option("Skyrim", "output")):
                 ret["output"] = parser.get("Skyrim", "output")
@@ -61,22 +67,18 @@ def getPrefs(filePath):
 
             if(parser.has_option("Skyrim", "flags")):
                 ret["flags"] = parser.get("Skyrim", "flags")
-            else:
-                ret["flags"] = END_USER_FLAGS
 
-        else:
-            ret["compiler"]  = END_USER_COMPILER
-            ret["output"]    = END_USER_OUTPUT
-            ret["flags"]     = END_USER_FLAGS
-
-        ret["import"] = [fileDir]
+        ret["import"] = []
+        if (fileDir != parser.get("Skyrim", "scripts")):
+            ret["import"].append(fileDir)
         if (parser.has_section("Import")):
             for configKey, configValue in parser.items("Import"):
                 if (configKey.startswith("path")):
                     if (os.path.exists(configValue)):
-                        ret["import"].append(configValue)
-
-        ret["import"].append(parser.get("Skyrim", "scripts"))
+                            ret["import"].append(configValue)
+        
+        if (parser.get("Skyrim", "scripts") not in ret["import"]):
+            ret["import"].append(parser.get("Skyrim", "scripts"))
         ret["import"] = ";".join(filter(None, ret["import"]))
 
     ret["filename"] = fileName
