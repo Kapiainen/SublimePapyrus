@@ -1,10 +1,7 @@
 import sublime, sublime_plugin
-import p4lib
-import sys
 import os
-import tempfile
-import difflib
 import ConfigParser
+from StringIO import StringIO
 
 # This may only work on Windows 7 and up -- fine for our purposes
 INI_LOCATION = os.path.expanduser("~/Documents/SublimePapyrus.ini")
@@ -20,165 +17,82 @@ END_USER_COMPILER = os.path.join(END_USER_ROOT, "Papyrus Compiler\\PapyrusCompil
 END_USER_FLAGS    = "TESV_Papyrus_Flags.flg"
 
 DEFAULT_INI_TEXT = """[Skyrim]
+# The path to the folder containing the vanilla Skyrim .psc files.
 scripts=%s
+
+# The path to PapyrusCompiler.exe
 compiler=%s
+
+# The folder you wish to output the .pex files to. If commented out, then .pex files are placed in the folder one level above the .psc file.
 output=%s
-workspace=
+
+# The name of the file containing Papyrus' flags. The file has to be among the folders that are imported, which includes the scripts folder defined above and the folder containing the .psc file(s) to be compiled.
 flags=%s
+
+[Import]
+# Additional folders that contain .psc you wish to import when compiling.
+# The folders are processed from the lowest entry (path1) to the highest entry (pathN).
+# pathN=DriveName:\\FolderName\\SubfolderName\\
+path1=C:\\SKSE\\Scripts\\Source
 """ % (END_USER_SCRIPTS, END_USER_COMPILER, END_USER_OUTPUT, END_USER_FLAGS)
 
-
-
-
-def recursivePathCheck(path, target):
-    path = os.path.normcase(path)
-    target = os.path.normcase(target)
-    if (path == target):
-        return True
-
-    while True:
-        upPath = os.path.dirname(path)
-        if (upPath == path):
-            return False
-        path = upPath
-        if (path == target):
-            return True
-
-
-
-
-def getPrefs(currentDir):
+def getPrefs(filePath):
+    fileDir, fileName = os.path.split(filePath)
     ret = {}
-
     if (not os.path.exists(INI_LOCATION)):
-        ret["scripts"]   = END_USER_SCRIPTS
-        ret["compiler"]  = END_USER_COMPILER
-        ret["output"]    = END_USER_OUTPUT
-        ret["workspace"] = "" # no P4 access for modders, but let's fill this in anyway
-        ret["flags"]     = END_USER_FLAGS
+        ret["compiler"] = END_USER_COMPILER
+        ret["output"] = END_USER_OUTPUT
+        ret["flags"] = END_USER_FLAGS
+        ret["import"] = END_USER_SCRIPTS
     else:
         parser = ConfigParser.ConfigParser()
-        parser.read(INI_LOCATION)
-        for config in parser.sections():
-            path = parser.get(config, "scripts")
-            if (recursivePathCheck(currentDir, path)):
-                for k in parser.items(config):
-                    ret[k[0]] = k[1]
-                break
+        parser.read([INI_LOCATION])
 
-    if ("import" not in ret):
-        ret["import"] = ret["scripts"]
+        if (parser.has_section("Skyrim")):
+            if(parser.has_option("Skyrim", "compiler")):
+                ret["compiler"] = parser.get("Skyrim", "compiler")
+            else:
+                ret["compiler"] = END_USER_COMPILER
+
+            if(parser.has_option("Skyrim", "output")):
+                ret["output"] = parser.get("Skyrim", "output")
+            else:
+                ret["output"] = os.path.dirname(fileDir)
+
+            if(parser.has_option("Skyrim", "flags")):
+                ret["flags"] = parser.get("Skyrim", "flags")
+            else:
+                ret["flags"] = END_USER_FLAGS
+
+        else:
+            ret["compiler"]  = END_USER_COMPILER
+            ret["output"]    = END_USER_OUTPUT
+            ret["flags"]     = END_USER_FLAGS
+
+        ret["import"] = [fileDir]
+        if (parser.has_section("Import")):
+            for configKey, configValue in parser.items("Import"):
+                if (configKey.startswith("path")):
+                    ret["import"].append(configValue)
+
+        ret["import"].append(parser.get("Skyrim", "scripts"))
+        ret["import"] = ";".join(filter(None, ret["import"]))
+
+    ret["filename"] = fileName
     return ret
 
-def checkout(filename, prefs):
-    user_client = prefs["workspace"]
-    p4 = p4lib.P4(client=user_client)
-    output = p4.edit(filename)
-    sublime.status_message("%s: %s" % (output[0]["depotFile"], output[0]["comment"]))
-
-def getTempFileName(truefilename, rev=None):
-    basename = os.path.basename(truefilename)
-    fname = os.path.join(tempfile.gettempdir(), "SublimePapyrus")
-    if not os.path.exists(fname):
-        os.makedirs(fname)
-    fname = os.path.join(fname, os.path.splitext(basename)[0])
-    if (rev is not None):
-        fname += "#%i" % rev
-    fname += os.path.splitext(truefilename)[1]
-    return fname
-
-def getRevisionListFor(filename, prefs):
-    user_client = prefs["workspace"]
-    p4 = p4lib.P4(client=user_client)
-    revisions = p4.filelog(filename, longOutput=1)[0]["revs"]
-    width = len(str(len(revisions)))
-    revList = []
-    for rev in revisions:
-        revString = "[%s]: %s, %s" % (str(rev["rev"]).zfill(width), rev["user"], rev["date"])
-        descString = rev["description"]
-        revTuple = [revString, descString]
-        revList.append(revTuple)
-    return revList
-
-def openDiffInTab(viewHandle, edit, name, oldText, newText):
-    diffs = difflib.unified_diff(oldText.splitlines(), newText.splitlines())
-    diffText = "\n".join(list(diffs))
-    
-    scratch = viewHandle.window().new_file()
-    scratch.set_scratch(True)
-    scratch.set_name(name)
-    scratch.set_syntax_file("Packages/Diff/Diff.tmLanguage")
-    scratch.insert(edit, 0, diffText)
-
-
-
-
-class ViewOldRevisionCommand(sublime_plugin.TextCommand):
-    def run(self, edit):
-        self.fileName = self.view.file_name()
-        prefs = getPrefs(os.path.dirname(self.fileName))
-        revs = getRevisionListFor(self.fileName, prefs)
-        self.revLength = len(revs)
-        self.view.window().show_quick_panel(revs, self.onSelect)
-
-    def onSelect(self, index):
-        if (index == -1):
-            return
-        rev = self.revLength - index
-        prefs = getPrefs(os.path.dirname(self.fileName))
-        user_client = prefs["workspace"]
-        p4 = p4lib.P4(client=user_client)
-        revText = p4.print_("%s#%i" % (self.fileName, rev))[0]["text"]
-        
-        tempFileName = getTempFileName(self.fileName, rev)
-        tempFileHandle = open(tempFileName, "w")
-        tempFileHandle.write(revText)
-        tempFileHandle.close()
-
-        self.view.window().open_file(tempFileName)
-
-class DiffOldRevisionCommand(sublime_plugin.TextCommand):
-    def run(self, edit):
-        self.edit = edit
-        self.fileName = self.view.file_name()
-        prefs = getPrefs(os.path.dirname(self.fileName))
-        revs = getRevisionListFor(self.fileName, prefs)
-        self.revLength = len(revs)
-        self.view.window().show_quick_panel(revs, self.onSelect)
-
-    def onSelect(self, index):
-        if (index == -1):
-            return
-        rev = self.revLength - index
-        prefs = getPrefs(os.path.dirname(self.fileName))
-        user_client = prefs["workspace"]
-        p4 = p4lib.P4(client=user_client)
-        revText = p4.print_("%s#%i" % (self.fileName, rev))[0]["text"]
-        currText = self.view.substr(sublime.Region(0, self.view.size()))
-
-        openDiffInTab(self.view, self.edit, "Diff of %s and Perforce revision #%i" % (self.fileName, rev), revText, currText)
-
-class DiffAgainstPerforce(sublime_plugin.TextCommand):
-    def run(self, edit):
-        self.fileName = self.view.file_name()
-        prefs = getPrefs(os.path.dirname(self.fileName))
-        user_client = prefs["workspace"]
-        p4 = p4lib.P4(client=user_client)
-        revText = p4.print_(self.fileName)[0]["text"]
-        currText = self.view.substr(sublime.Region(0, self.view.size()))
-
-        openDiffInTab(self.view, edit, "Diff of %s and Perforce head" % (self.fileName), revText, currText)
-
-class CheckOutFromP4Command(sublime_plugin.TextCommand):
-    def run(self, edit):
-        checkout(self.view.file_name())
-
-class PreEmptiveCheckOutPlugin(sublime_plugin.EventListener):
-    def on_pre_save(self, view):
-        prefs = getPrefs(os.path.dirname(view.file_name()))
-        if (len(prefs) > 0):
-            if (not os.access(view.file_name(), os.W_OK)):
-                checkout(view.file_name(), prefs)
+class CompilePapyrusCommand(sublime_plugin.WindowCommand):
+    def run(self, **args):
+        config = getPrefs(args["cmd"])
+        if (len(config) > 0):
+            args["cmd"] = [config["compiler"], config["filename"]]
+            args["cmd"].append("-f=%s" % config["flags"])
+            args["cmd"].append("-i=%s" % config["import"])
+            args["cmd"].append("-o=%s" % config["output"])
+            args["working_dir"] = os.path.dirname(config["compiler"])
+            self.window.run_command("exec", args)
+        else:
+            sublime.status_message("No configuration for %s" % os.path.dirname(args["cmd"]))
 
 class CreateDefaultSettingsFileCommand(sublime_plugin.WindowCommand):
     def run(self, **args):
@@ -189,23 +103,6 @@ class CreateDefaultSettingsFileCommand(sublime_plugin.WindowCommand):
             outHandle.write(DEFAULT_INI_TEXT)
             outHandle.close()
             self.window.open_file(INI_LOCATION)
-
-class CompilePapyrusCommand(sublime_plugin.WindowCommand):
-    def run(self, **args):
-        config = getPrefs(os.path.dirname(args["cmd"]))
-        if (len(config) > 0):
-            scriptPath = args["cmd"][len(config["scripts"])+1:]
-
-            args["cmd"] = [config["compiler"], scriptPath]
-            args["cmd"].append("-f=%s" % config["flags"])
-            args["cmd"].append("-i=%s" % config["import"])
-            args["cmd"].append("-o=%s" % config["output"])
-
-            args["working_dir"] = os.path.dirname(config["compiler"])
-
-            self.window.run_command("exec", args)
-        else:
-            sublime.status_message("No configuration for %s" % os.path.dirname(args["cmd"]))
 
 class DisassemblePapyrusCommand(sublime_plugin.WindowCommand):
     def run(self, **args):
@@ -241,4 +138,3 @@ class AssemblePapyrusCommand(sublime_plugin.WindowCommand):
         args["working_dir"] = scriptDir
 
         self.window.run_command("exec", args)
-

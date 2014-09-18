@@ -1,17 +1,5 @@
 [
     {
-        "caption": "Papyrus Perforce: View Old Revision",
-        "command": "view_old_revision"
-    },
-    {
-        "caption": "Papyrus Perforce: Diff Against Repository",
-        "command": "diff_against_perforce"
-    },
-    {
-        "caption": "Papyrus Perforce: Diff Against Old Revision",
-        "command": "diff_old_revision"
-    },
-    {
         "caption": "Papyrus INI: Create default INI file",
         "command": "create_default_settings_file"
     }
