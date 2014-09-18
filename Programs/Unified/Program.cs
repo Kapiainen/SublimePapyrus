@@ -32,6 +32,7 @@ namespace SublimePapyrus
                 Console.WriteLine("{0}. Do everything above in order.", OPTION_EVERYTHING);
                 Console.WriteLine("{0}. Cancel.\n", OPTION_CANCEL);
                 string sInput = Console.ReadLine();
+                Console.Clear();
                 try
                 {
                     iOption = Convert.ToInt32(sInput);
@@ -64,6 +65,7 @@ namespace SublimePapyrus
             if(iOption > OPTION_CANCEL)
             {
                 string sParentFolder = getParentFolder();
+                Console.Clear();
 
                 if((iOption == OPTION_EVERYTHING) || (iOption == OPTION_GENERATESNIPPETS))
                 {
@@ -74,8 +76,9 @@ namespace SublimePapyrus
 
                     if(iOption == OPTION_EVERYTHING)
                     {
-                        Console.WriteLine("Press a button to continue.");
+                        Console.WriteLine("\nPress a button to continue.");
                         Console.ReadKey();
+                        Console.Clear();
                     }
                 }
 
