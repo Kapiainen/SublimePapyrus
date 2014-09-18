@@ -73,7 +73,8 @@ def getPrefs(filePath):
         if (parser.has_section("Import")):
             for configKey, configValue in parser.items("Import"):
                 if (configKey.startswith("path")):
-                    ret["import"].append(configValue)
+                    if (os.path.exists(configValue)):
+                        ret["import"].append(configValue)
 
         ret["import"].append(parser.get("Skyrim", "scripts"))
         ret["import"] = ";".join(filter(None, ret["import"]))
