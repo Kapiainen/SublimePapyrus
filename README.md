@@ -13,12 +13,9 @@ How do I use the package?
 - If you have Skyrim installed outside of "C:\Program Files (x86)\Steam\steamapps\common\skyrim\" or "C:\Program Files\Steam\steamapps\common\skyrim\", then you need to open the Command Palette (CTRL+SHIFT+P), type in "Papyrus INI". An option called "Papyrus INI: Create default INI file" should show up. Select it and a file called "SublimePapyrus.ini" will be created in My Documents. This file contains paths to compiled scripts, script sources, and the Papyrus compiler. Edit the paths according to where you have installed Skyrim.
  
 
-How do I use the program PapyrusToSublimeSnippets?
+How do I use the program SublimePapyrus?
 
-The program can be launched from anywhere and allows you to type in the path to the folder containing the Papyrus source files you wish to process. The first level of subfolders in the input folder will also be processed. If you do not type in a path, then the program will process the folder, which the program is in. The generated snippets will be placed in subfolders called "snippets".
-
-The program creates two logs: FunctionLog.txt and ClassLog.txt. The log files will be placed in the input folder and the log files contain keywords, which are formatted for use in the Papyrus syntax definition (Papyrus.tmLanguage), based on the processed source files. The syntax definition can be found in the Papyrus package.
-
+The program can be launched from anywhere and allows you to type in the path to the folder containing the Papyrus source files you wish to process. All subfolders in the input folder will also be processed. If you do not type in a path, then the program will process the folder that the program is in. The generated snippets will be placed in subfolders called "Snippets" in the folders containing the Papyrus source files. The program can also update the syntax definition (Papyrus.tmLanguage) to match the snippets it can find. These two functions, snippet generation and syntax update, can be executed in series or individually.
 
 
 Based on the work done by Bethesda Game Studios and Mark Hanna. Used according to the license included in the original package and said license is included in this package.
