@@ -277,7 +277,7 @@ namespace SublimePapyrus
                                         CountFunctions++;
                                     }
                                     sw.Close();
-                                    generatedSnippets.Add(FileName + "." + FunctionName); //Adds the generated snippet to the list so that duplicates aren't generated.
+                                    generatedSnippets.Add(SnippetPattern); //Adds the generated snippet to the list so that duplicates aren't generated.
                                     Console.WriteLine("\t" + SnippetPattern + FILE_SNIPPETEXTENSION + " Created!"); 
                                 }
                             }
