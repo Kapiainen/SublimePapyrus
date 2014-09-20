@@ -18,6 +18,7 @@ How do I use the program SublimePapyrus?
 The program can be launched from anywhere and allows you to type in the path to the folder containing the Papyrus source files you wish to process. All subfolders in the input folder will also be processed. If you do not type in a path, then the program will process the folder that the program is in. The generated snippets will be placed in subfolders called "Snippets" in the folders containing the Papyrus source files. The program can also update the syntax definition (Papyrus.tmLanguage) to match the snippets it can find. These two functions, snippet generation and syntax update, can be executed in series or individually.
 
 
+
 Based on the work done by Bethesda Game Studios and Mark Hanna. Used according to the license included in the original package and said license is included in this package.
 
 Team: Quad2Core, MrJack
