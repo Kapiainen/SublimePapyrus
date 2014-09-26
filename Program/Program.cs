@@ -13,14 +13,34 @@ namespace SublimePapyrus
         const int OPTION_GENERATESNIPPETS = 1;
         const int OPTION_UPDATESYNTAXHIGHLIGHTING = 2;
         const int OPTION_EVERYTHING = 3;
-        //const string OUTPUT_SNIPPETSUBFOLDER = "/Snippets"; // Linux
-        const string OUTPUT_SNIPPETSUBFOLDER = "\\Snippets"; // Windows
+        const string OUTPUT_SNIPPETSUBFOLDER = "Snippets";
         const string FILE_SNIPPETEXTENSION = ".sublime-snippet";
         const string FILE_SOURCEEXTENSION = ".psc";
         const string FILE_LANGUAGEDEFINITION = "Papyrus.tmLanguage";
 
+        static bool OS_UNIX = false;
+
         static void Main(string[] args)
         {
+            // Check the OS that this binary is being executed on in order to use the correct format for paths.
+            OperatingSystem OS = Environment.OSVersion;
+            PlatformID PID = OS.Platform;
+            switch(PID)
+            {
+                case PlatformID.Win32NT:
+                case PlatformID.Win32Windows:
+                case PlatformID.Win32S:
+                case PlatformID.WinCE:
+                    break;
+                case PlatformID.Unix:
+                    OS_UNIX = true;
+                    break;
+                default:
+                    Console.WriteLine("Running on unidentified (possibly incompatible) OS.\n");
+                    break;
+            }
+
+            // Display options available to the user.
             Console.WriteLine("Welcome to SublimePapyrus.");
             int iOption = -1;
             bool bRepeat = true;
@@ -45,11 +65,9 @@ namespace SublimePapyrus
                 {
                     if(iOption < Int32.MaxValue)
                     {
-                        //Console.WriteLine("Compatible input {0}", iOption);
                         if((iOption >= OPTION_CANCEL) && (iOption <= OPTION_EVERYTHING))
                         {
                             bRepeat = false;
-                            //Console.WriteLine("iOption == {0}", iOption);
                         } else {
                             Console.WriteLine("Invalid input. Try again.\n");
                         }
@@ -62,11 +80,14 @@ namespace SublimePapyrus
                 }
             }
 
+            // Non-cancel option was selected.
             if(iOption > OPTION_CANCEL)
             {
+                // Get the folder to process.
                 string sParentFolder = getParentFolder();
                 Console.Clear();
 
+                // Generate snippets.
                 if((iOption == OPTION_EVERYTHING) || (iOption == OPTION_GENERATESNIPPETS))
                 {
                     List<string> lsSourceFiles = new List<string>();
@@ -82,8 +103,10 @@ namespace SublimePapyrus
                     }
                 }
 
+                // Update syntax highlighting.
                 if((iOption == OPTION_EVERYTHING) || (iOption == OPTION_UPDATESYNTAXHIGHLIGHTING))
                 {
+                    // Look for Papyrus.tmLanguage.
                     List<string> lsLanguageDefinitions = new List<string>();
                     lsLanguageDefinitions.AddRange(Directory.GetFiles(sParentFolder, FILE_LANGUAGEDEFINITION, System.IO.SearchOption.AllDirectories));
 
@@ -95,7 +118,7 @@ namespace SublimePapyrus
                             bRepeat = true;
                             while(bRepeat)
                             {
-                                Console.WriteLine("Found {0} copies of " + FILE_LANGUAGEDEFINITION + ".\nSelect the one you want to use by inputting the index:", lsLanguageDefinitions.Count);
+                                Console.WriteLine("Found {0} copies of " + FILE_LANGUAGEDEFINITION + ".\nSelect the one you want to use by inputting the corresponding index:", lsLanguageDefinitions.Count);
                                 for(int i = 0; i < lsLanguageDefinitions.Count; i++)
                                 {
                                     Console.WriteLine("{0}. '" + lsLanguageDefinitions[i] + "'", i);
@@ -130,10 +153,18 @@ namespace SublimePapyrus
                             }
                         }
 
+                        // Look for snippets.
                         List<string> lsSnippets = new List<string>();
                         lsSnippets.AddRange(Directory.GetFiles(sParentFolder, ("*" + FILE_SNIPPETEXTENSION), System.IO.SearchOption.AllDirectories));
 
-                        updateSyntaxHighlighting(lsLanguageDefinitions[iLanguageDefinition], lsSnippets);
+                        if(lsSnippets.Count > 0)
+                        {
+                            updateSyntaxHighlighting(lsLanguageDefinitions[iLanguageDefinition], lsSnippets);
+                        }
+                        else
+                        {
+                            Console.WriteLine("Could not find any " + FILE_SNIPPETEXTENSION + " files.");
+                        }
                     }
                     else
                     {
@@ -159,7 +190,15 @@ namespace SublimePapyrus
         
         static string getParentFolder()
         {
-            Console.WriteLine("Insert path to directory you wish to process or leave empty to use the directory that this executable is in.\nExample: C:\\Papyrus Source Files");
+            Console.WriteLine("Insert path to directory you wish to process or leave empty to use the directory that this executable is in.\n");
+            if(OS_UNIX)
+            {
+                Console.WriteLine("Example: ~/Documents/Papyrus Source Files");
+            }
+            else
+            {
+                Console.WriteLine("Example: C:\\Papyrus Source Files");
+            }
             string sParentFolder = Console.ReadLine();
             if(sParentFolder.Equals(""))
             {
@@ -183,14 +222,14 @@ namespace SublimePapyrus
                 StreamReader sr = new StreamReader(alsSourceFiles[i]);
                 Console.WriteLine("\nWorking on file: " + FileName);
                 string line;
-                bool skipLine = false; //Keeps track of whether or not a comment section is being processed.
+                bool skipLine = false; //Keeps track of whether or not a comment block is being processed.
                 while ((line = sr.ReadLine()) != null)
                 {
                     if (!skipLine)
                     {
                         if (line.Contains(";/"))
                         {
-                            //Comment section has started, so we can disregard all lines from here on until the comment section ends.
+                            //Comment block has started, so we can disregard all lines from here on until the comment block ends.
                             skipLine = true;
                         }
                         else
@@ -223,14 +262,32 @@ namespace SublimePapyrus
                                         Parameters += nextLine;
                                     }
 
-                                    string OutputDir = Path.GetDirectoryName(alsSourceFiles[i]) + OUTPUT_SNIPPETSUBFOLDER;
+                                    // Set the output directory.
+                                    string OutputDir;
+                                    if(OS_UNIX)
+                                    {
+                                        OutputDir = Path.GetDirectoryName(alsSourceFiles[i]) + "/" + OUTPUT_SNIPPETSUBFOLDER;
+                                    }
+                                    else
+                                    {
+                                        OutputDir = Path.GetDirectoryName(alsSourceFiles[i]) + "\\" + OUTPUT_SNIPPETSUBFOLDER;
+                                    }
+
                                     if (!Directory.Exists(OutputDir))
                                     {
                                         Directory.CreateDirectory(OutputDir);
                                     }
-                                    
-                                    //StreamWriter sw = new StreamWriter(OutputDir + "/" + SnippetPattern + FILE_SNIPPETEXTENSION, false); // Linux
-                                    StreamWriter sw = new StreamWriter(OutputDir + "\\" + SnippetPattern + FILE_SNIPPETEXTENSION, false); // Windows
+
+                                    // Create and write the snippet.
+                                    StreamWriter sw;
+                                    if(OS_UNIX)
+                                    {
+                                        sw = new StreamWriter(OutputDir + "/" + SnippetPattern + FILE_SNIPPETEXTENSION, false);
+                                    }
+                                    else
+                                    {
+                                        sw = new StreamWriter(OutputDir + "\\" + SnippetPattern + FILE_SNIPPETEXTENSION, false);
+                                    }
                                     MatchCollection matches = rx.Matches(Parameters);
                                     sw.WriteLine("<snippet>");
                                     sw.WriteLine("\t<tabTrigger>" + FunctionName + "</tabTrigger>");
@@ -253,7 +310,6 @@ namespace SublimePapyrus
                                             }
                                         }
                                         sw.Write(")\n${0}\nEndEvent]]></content>\n");
-                                        sw.WriteLine("</snippet>");
                                         CountEvent++;
                                     }
                                     else if (FunctionPattern.IsMatch(line))
@@ -273,10 +329,11 @@ namespace SublimePapyrus
                                             }
                                         }
                                         sw.Write(")]]></content>\n");
-                                        sw.WriteLine("</snippet>");
                                         CountFunctions++;
                                     }
+                                    sw.WriteLine("</snippet>");
                                     sw.Close();
+
                                     generatedSnippets.Add(SnippetPattern); //Adds the generated snippet to the list so that duplicates aren't generated.
                                     Console.WriteLine("\t" + SnippetPattern + FILE_SNIPPETEXTENSION + " Created!"); 
                                 }
@@ -287,7 +344,7 @@ namespace SublimePapyrus
                     {
                         if (line.Contains("/;"))
                         {
-                            // The comment section has ended, so we need to process the next line.
+                            // The comment block has ended, so we need to process the next line.
                             skipLine = false;
                         }
                     }
@@ -364,11 +421,9 @@ namespace SublimePapyrus
             }
             SyntaxLines[ClassLineIndex] = "            <string>(?i)\\b(" + ClassLine + ")\\b</string>";
 
-            // Rename original Papyrus.tmLanguage file to Papyrus.tmLanguage.old
-            string[] OldSyntaxDefinitions = Directory.GetFiles(Path.GetDirectoryName(asLanguageDefinition), "*.tmLanguage.old*");
-            File.Move(asLanguageDefinition, asLanguageDefinition + ".old" + OldSyntaxDefinitions.Length);
-            // Create and write new Papyrus.tmLanguage file
-            File.WriteAllLines(asLanguageDefinition, SyntaxLines);
+            string[] OldSyntaxDefinitions = Directory.GetFiles(Path.GetDirectoryName(asLanguageDefinition), (FILE_LANGUAGEDEFINITION + ".old*")); // Find old syntax definitions
+            File.Move(asLanguageDefinition, asLanguageDefinition + ".old" + OldSyntaxDefinitions.Length); // Rename original Papyrus.tmLanguage file to Papyrus.tmLanguage.old#
+            File.WriteAllLines(asLanguageDefinition, SyntaxLines); // Create and write a new Papyrus.tmLanguage file
 
             Console.WriteLine("\nFunction count: " + FunctionCount);
             Console.WriteLine("Class count: " + ClassCount);
