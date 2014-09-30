@@ -324,7 +324,7 @@
                 </dict>
                 <dict>
                     <key>match</key>
-                    <string>(?:\G\s*|,\s*)(\w+|\w+[\[]+[\]]+)\s+(\w+)\b(?:\s*(=))?</string>
+                    <string>(?:\G\s*|,\s*)(\w+|\w+[\[]{1}[\]]{1})\s+(\w+)\b(?:\s*(=))?</string>
                     <key>captures</key>
                     <dict>
                         <key>1</key>
