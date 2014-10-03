@@ -84,7 +84,20 @@ namespace SublimePapyrus
             if(iOption > OPTION_CANCEL)
             {
                 // Get the folder to process.
-                string sParentFolder = getParentFolder();
+                string sParentFolder = "";
+                for(int i = 0; i < args.Length; i++)
+                {
+                    if(Directory.Exists(args[i]))
+                    {
+                        sParentFolder = args[i];
+                        break;
+                    }
+                }
+
+                if(sParentFolder.Equals(""))
+                {
+                    sParentFolder = getParentFolder();
+                }
                 Console.Clear();
 
                 // Generate snippets.
@@ -177,17 +190,6 @@ namespace SublimePapyrus
             }
         }
 
-        static void debugList(string asName, List<string> alsList)
-        {
-            Console.WriteLine("Debug - Contents of " + asName + " list:");
-            for(int i = 0; i < alsList.Count; i++)
-            {
-                Console.WriteLine(alsList[i]);
-            }
-            Console.ReadLine();
-        }
-
-        
         static string getParentFolder()
         {
             Console.WriteLine("Insert path to directory you wish to process or leave empty to use the directory that this executable is in.\n");
