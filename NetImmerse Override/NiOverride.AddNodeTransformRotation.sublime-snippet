@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>AddNodeTransformRotation</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>NiOverride.AddNodeTransformRotation</description>
+	<content><![CDATA[AddNodeTransformRotation(${1:ObjectReference akRef}, ${2:bool firstPerson}, ${3:bool isFemale}, ${4:string nodeName}, ${5:string key}, ${6:float[] rotation})]]></content>
+</snippet>

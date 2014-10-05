@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>HasNodeTransformScale</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>NiOverride.HasNodeTransformScale</description>
+	<content><![CDATA[HasNodeTransformScale(${1:ObjectReference akRef}, ${2:bool firstPerson}, ${3:bool isFemale}, ${4:string nodeName}, ${5:string key})]]></content>
+</snippet>
