@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>FormListSlice</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>StorageUtil.FormListSlice</description>
+	<content><![CDATA[FormListSlice(${1:Form obj}, ${2:string key}, ${3:Form[] slice}, ${4:int startIndex = 0})]]></content>
+</snippet>

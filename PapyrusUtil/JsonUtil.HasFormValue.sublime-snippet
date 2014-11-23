@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>HasFormValue</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>JsonUtil.HasFormValue</description>
+	<content><![CDATA[HasFormValue(${1:string FileName}, ${2:string key})]]></content>
+</snippet>

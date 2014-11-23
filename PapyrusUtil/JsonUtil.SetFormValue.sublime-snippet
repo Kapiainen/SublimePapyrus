@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>SetFormValue</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>JsonUtil.SetFormValue</description>
+	<content><![CDATA[SetFormValue(${1:string FileName}, ${2:string key}, ${3:form value})]]></content>
+</snippet>

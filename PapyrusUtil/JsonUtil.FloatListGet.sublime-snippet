@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>FloatListGet</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>JsonUtil.FloatListGet</description>
+	<content><![CDATA[FloatListGet(${1:string FileName}, ${2:string key}, ${3:int index})]]></content>
+</snippet>

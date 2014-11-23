@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>FormListResize</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>JsonUtil.FormListResize</description>
+	<content><![CDATA[FormListResize(${1:string FileName}, ${2:string key}, ${3:int toLength}, ${4:Form filler = none})]]></content>
+</snippet>

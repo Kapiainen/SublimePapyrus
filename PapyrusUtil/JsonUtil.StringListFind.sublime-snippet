@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>StringListFind</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>JsonUtil.StringListFind</description>
+	<content><![CDATA[StringListFind(${1:string FileName}, ${2:string key}, ${3:String value})]]></content>
+</snippet>

@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>FloatListFind</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>JsonUtil.FloatListFind</description>
+	<content><![CDATA[FloatListFind(${1:string FileName}, ${2:string key}, ${3:Float value})]]></content>
+</snippet>

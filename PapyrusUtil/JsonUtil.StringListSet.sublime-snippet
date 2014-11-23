@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>StringListSet</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>JsonUtil.StringListSet</description>
+	<content><![CDATA[StringListSet(${1:string FileName}, ${2:string key}, ${3:int index}, ${4:String value})]]></content>
+</snippet>

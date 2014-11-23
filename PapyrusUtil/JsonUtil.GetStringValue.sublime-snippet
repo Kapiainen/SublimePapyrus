@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetStringValue</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>JsonUtil.GetStringValue</description>
+	<content><![CDATA[GetStringValue(${1:string FileName}, ${2:string key}, ${3:string missing})]]></content>
+</snippet>

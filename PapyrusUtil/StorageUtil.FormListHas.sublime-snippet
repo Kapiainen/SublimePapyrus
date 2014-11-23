@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>FormListHas</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>StorageUtil.FormListHas</description>
+	<content><![CDATA[FormListHas(${1:Form obj}, ${2:string key}, ${3:Form value})]]></content>
+</snippet>

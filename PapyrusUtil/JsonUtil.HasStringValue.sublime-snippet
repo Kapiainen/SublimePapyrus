@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>HasStringValue</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>JsonUtil.HasStringValue</description>
+	<content><![CDATA[HasStringValue(${1:string FileName}, ${2:string key})]]></content>
+</snippet>

@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>getStr</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>JArrayIter.getStr</description>
+	<content><![CDATA[getStr(${1:int iter})]]></content>
+</snippet>

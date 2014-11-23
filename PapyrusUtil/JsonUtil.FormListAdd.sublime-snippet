@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>FormListAdd</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>JsonUtil.FormListAdd</description>
+	<content><![CDATA[FormListAdd(${1:string FileName}, ${2:string key}, ${3:Form value}, ${4:bool allowDuplicate = true})]]></content>
+</snippet>

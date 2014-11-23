@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>ClearAll</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>JsonUtil.ClearAll</description>
+	<content><![CDATA[ClearAll(${1:string FileName})]]></content>
+</snippet>

@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>RemoveAllTransforms</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>NiOverride.RemoveAllTransforms</description>
+	<content><![CDATA[RemoveAllTransforms()]]></content>
+</snippet>

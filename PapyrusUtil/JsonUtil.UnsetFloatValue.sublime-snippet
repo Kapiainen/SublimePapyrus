@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>UnsetFloatValue</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>JsonUtil.UnsetFloatValue</description>
+	<content><![CDATA[UnsetFloatValue(${1:string FileName}, ${2:string key})]]></content>
+</snippet>
