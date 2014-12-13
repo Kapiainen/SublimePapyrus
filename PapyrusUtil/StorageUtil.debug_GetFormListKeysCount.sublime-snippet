@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>debug_GetFormListKeysCount</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>StorageUtil.debug_GetFormListKeysCount</description>
+	<description>StorageUtil.debug_GetFormListKeysCount (PapyrusUtil)</description>
 	<content><![CDATA[debug_GetFormListKeysCount(${1:Form obj})]]></content>
 </snippet>

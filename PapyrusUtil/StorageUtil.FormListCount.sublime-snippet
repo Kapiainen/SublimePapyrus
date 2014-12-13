@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>FormListCount</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>StorageUtil.FormListCount</description>
+	<description>StorageUtil.FormListCount (PapyrusUtil)</description>
 	<content><![CDATA[FormListCount(${1:Form obj}, ${2:string key})]]></content>
 </snippet>

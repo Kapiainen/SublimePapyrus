@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>GetValueReplaceAnimation</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>ObjectUtil.GetValueReplaceAnimation</description>
+	<description>ObjectUtil.GetValueReplaceAnimation (PapyrusUtil)</description>
 	<content><![CDATA[GetValueReplaceAnimation(${1:ObjectReference obj}, ${2:string oldAnim})]]></content>
 </snippet>

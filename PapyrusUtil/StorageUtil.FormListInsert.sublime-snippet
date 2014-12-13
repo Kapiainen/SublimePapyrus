@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>FormListInsert</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>StorageUtil.FormListInsert</description>
+	<description>StorageUtil.FormListInsert (PapyrusUtil)</description>
 	<content><![CDATA[FormListInsert(${1:Form obj}, ${2:string key}, ${3:int index}, ${4:Form value})]]></content>
 </snippet>

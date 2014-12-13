@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>FileStringListHas</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>StorageUtil.FileStringListHas</description>
+	<description>StorageUtil.FileStringListHas (PapyrusUtil)</description>
 	<content><![CDATA[FileStringListHas(${1:string key}, ${2:string value})]]></content>
 </snippet>

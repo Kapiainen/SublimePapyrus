@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>ImportFile</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>StorageUtil.ImportFile</description>
+	<description>StorageUtil.ImportFile (PapyrusUtil)</description>
 	<content><![CDATA[ImportFile(${1:string fileName}, ${2:string restrictKey}, ${3:int restrictType}, ${4:Form restrictForm = none}, ${5:bool restrictGlobal = false}, ${6:bool keyContains = false})]]></content>
 </snippet>

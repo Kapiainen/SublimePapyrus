@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>IntListCount</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>StorageUtil.IntListCount</description>
+	<description>StorageUtil.IntListCount (PapyrusUtil)</description>
 	<content><![CDATA[IntListCount(${1:Form obj}, ${2:string key})]]></content>
 </snippet>

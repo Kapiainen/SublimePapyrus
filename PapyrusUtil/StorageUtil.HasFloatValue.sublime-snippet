@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>HasFloatValue</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>StorageUtil.HasFloatValue</description>
+	<description>StorageUtil.HasFloatValue (PapyrusUtil)</description>
 	<content><![CDATA[HasFloatValue(${1:Form obj}, ${2:string key})]]></content>
 </snippet>

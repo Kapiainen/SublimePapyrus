@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>SetFloatValue</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>StorageUtil.SetFloatValue</description>
+	<description>StorageUtil.SetFloatValue (PapyrusUtil)</description>
 	<content><![CDATA[SetFloatValue(${1:Form obj}, ${2:string key}, ${3:float value})]]></content>
 </snippet>

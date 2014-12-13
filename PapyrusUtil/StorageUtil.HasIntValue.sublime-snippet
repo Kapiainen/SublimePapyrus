@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>HasIntValue</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>StorageUtil.HasIntValue</description>
+	<description>StorageUtil.HasIntValue (PapyrusUtil)</description>
 	<content><![CDATA[HasIntValue(${1:Form obj}, ${2:string key})]]></content>
 </snippet>

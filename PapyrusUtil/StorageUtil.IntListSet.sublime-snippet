@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>IntListSet</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>StorageUtil.IntListSet</description>
+	<description>StorageUtil.IntListSet (PapyrusUtil)</description>
 	<content><![CDATA[IntListSet(${1:Form obj}, ${2:string key}, ${3:int index}, ${4:int value})]]></content>
 </snippet>

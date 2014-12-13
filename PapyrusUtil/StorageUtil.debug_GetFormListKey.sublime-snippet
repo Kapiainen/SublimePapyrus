@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>debug_GetFormListKey</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>StorageUtil.debug_GetFormListKey</description>
+	<description>StorageUtil.debug_GetFormListKey (PapyrusUtil)</description>
 	<content><![CDATA[debug_GetFormListKey(${1:Form obj}, ${2:int index})]]></content>
 </snippet>

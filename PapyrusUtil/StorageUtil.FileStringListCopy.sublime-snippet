@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>FileStringListCopy</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>StorageUtil.FileStringListCopy</description>
+	<description>StorageUtil.FileStringListCopy (PapyrusUtil)</description>
 	<content><![CDATA[FileStringListCopy(${1:string key}, ${2:string[] copy})]]></content>
 </snippet>

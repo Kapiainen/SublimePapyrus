@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>FileIntListSet</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>StorageUtil.FileIntListSet</description>
+	<description>StorageUtil.FileIntListSet (PapyrusUtil)</description>
 	<content><![CDATA[FileIntListSet(${1:string key}, ${2:int index}, ${3:int value})]]></content>
 </snippet>

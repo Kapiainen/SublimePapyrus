@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>FileStringListCount</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>StorageUtil.FileStringListCount</description>
+	<description>StorageUtil.FileStringListCount (PapyrusUtil)</description>
 	<content><![CDATA[FileStringListCount(${1:string key})]]></content>
 </snippet>

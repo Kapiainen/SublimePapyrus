@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>FileFloatListRemove</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>StorageUtil.FileFloatListRemove</description>
+	<description>StorageUtil.FileFloatListRemove (PapyrusUtil)</description>
 	<content><![CDATA[FileFloatListRemove(${1:string key}, ${2:float value}, ${3:bool allInstances = false})]]></content>
 </snippet>

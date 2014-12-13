@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>debug_GetIntKey</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>StorageUtil.debug_GetIntKey</description>
+	<description>StorageUtil.debug_GetIntKey (PapyrusUtil)</description>
 	<content><![CDATA[debug_GetIntKey(${1:Form obj}, ${2:int index})]]></content>
 </snippet>

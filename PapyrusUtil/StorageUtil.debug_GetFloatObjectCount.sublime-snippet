@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>debug_GetFloatObjectCount</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>StorageUtil.debug_GetFloatObjectCount</description>
+	<description>StorageUtil.debug_GetFloatObjectCount (PapyrusUtil)</description>
 	<content><![CDATA[debug_GetFloatObjectCount()]]></content>
 </snippet>

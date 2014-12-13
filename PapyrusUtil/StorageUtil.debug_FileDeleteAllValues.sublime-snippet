@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>debug_FileDeleteAllValues</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>StorageUtil.debug_FileDeleteAllValues</description>
+	<description>StorageUtil.debug_FileDeleteAllValues (PapyrusUtil)</description>
 	<content><![CDATA[debug_FileDeleteAllValues()]]></content>
 </snippet>

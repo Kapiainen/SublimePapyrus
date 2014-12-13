@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>FileSetIntValue</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>StorageUtil.FileSetIntValue</description>
+	<description>StorageUtil.FileSetIntValue (PapyrusUtil)</description>
 	<content><![CDATA[FileSetIntValue(${1:string key}, ${2:int value})]]></content>
 </snippet>

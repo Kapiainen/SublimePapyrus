@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>StringListHas</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>JsonUtil.StringListHas</description>
+	<description>JsonUtil.StringListHas (PapyrusUtil)</description>
 	<content><![CDATA[StringListHas(${1:string FileName}, ${2:string key}, ${3:String value})]]></content>
 </snippet>

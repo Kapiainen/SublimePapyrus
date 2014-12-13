@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>IntListRemoveAt</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>StorageUtil.IntListRemoveAt</description>
+	<description>StorageUtil.IntListRemoveAt (PapyrusUtil)</description>
 	<content><![CDATA[IntListRemoveAt(${1:Form obj}, ${2:string key}, ${3:int index})]]></content>
 </snippet>

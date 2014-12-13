@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>FileAdjustIntValue</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>StorageUtil.FileAdjustIntValue</description>
+	<description>StorageUtil.FileAdjustIntValue (PapyrusUtil)</description>
 	<content><![CDATA[FileAdjustIntValue(${1:string key}, ${2:int amount})]]></content>
 </snippet>

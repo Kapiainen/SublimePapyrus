@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>StringListCount</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>StorageUtil.StringListCount</description>
+	<description>StorageUtil.StringListCount (PapyrusUtil)</description>
 	<content><![CDATA[StringListCount(${1:Form obj}, ${2:string key})]]></content>
 </snippet>

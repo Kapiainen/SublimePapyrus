@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>FormListInsertAt</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>JsonUtil.FormListInsertAt</description>
+	<description>JsonUtil.FormListInsertAt (PapyrusUtil)</description>
 	<content><![CDATA[FormListInsertAt(${1:string FileName}, ${2:string key}, ${3:int index}, ${4:Form value})]]></content>
 </snippet>

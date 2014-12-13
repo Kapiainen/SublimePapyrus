@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>IntListAdjust</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>StorageUtil.IntListAdjust</description>
+	<description>StorageUtil.IntListAdjust (PapyrusUtil)</description>
 	<content><![CDATA[IntListAdjust(${1:Form obj}, ${2:string key}, ${3:int index}, ${4:int amount})]]></content>
 </snippet>

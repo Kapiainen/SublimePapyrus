@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>FloatListAdjust</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>StorageUtil.FloatListAdjust</description>
+	<description>StorageUtil.FloatListAdjust (PapyrusUtil)</description>
 	<content><![CDATA[FloatListAdjust(${1:Form obj}, ${2:string key}, ${3:int index}, ${4:float amount})]]></content>
 </snippet>

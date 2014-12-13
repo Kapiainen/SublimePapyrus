@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>debug_GetStringListKey</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>StorageUtil.debug_GetStringListKey</description>
+	<description>StorageUtil.debug_GetStringListKey (PapyrusUtil)</description>
 	<content><![CDATA[debug_GetStringListKey(${1:Form obj}, ${2:int index})]]></content>
 </snippet>

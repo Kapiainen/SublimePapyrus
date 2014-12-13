@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>FileStringListClear</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>StorageUtil.FileStringListClear</description>
+	<description>StorageUtil.FileStringListClear (PapyrusUtil)</description>
 	<content><![CDATA[FileStringListClear(${1:string key})]]></content>
 </snippet>

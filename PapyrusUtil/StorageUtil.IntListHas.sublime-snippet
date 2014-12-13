@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>IntListHas</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>StorageUtil.IntListHas</description>
+	<description>StorageUtil.IntListHas (PapyrusUtil)</description>
 	<content><![CDATA[IntListHas(${1:Form obj}, ${2:string key}, ${3:int value})]]></content>
 </snippet>
