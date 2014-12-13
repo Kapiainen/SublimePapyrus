@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>GetArea</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>MagicEffect.GetArea</description>
+	<description>MagicEffect.GetArea (SKSE)</description>
 	<content><![CDATA[GetArea()]]></content>
 </snippet>

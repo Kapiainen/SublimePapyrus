@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>RegisterForCameraState</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>Alias.RegisterForCameraState</description>
+	<description>Alias.RegisterForCameraState (SKSE)</description>
 	<content><![CDATA[RegisterForCameraState()]]></content>
 </snippet>

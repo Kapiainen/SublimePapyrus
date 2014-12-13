@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>SetStaffMult</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>CombatStyle.SetStaffMult</description>
+	<description>CombatStyle.SetStaffMult (SKSE)</description>
 	<content><![CDATA[SetStaffMult(${1:float mult})]]></content>
 </snippet>

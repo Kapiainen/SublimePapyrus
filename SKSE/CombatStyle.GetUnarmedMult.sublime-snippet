@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>GetUnarmedMult</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>CombatStyle.GetUnarmedMult</description>
+	<description>CombatStyle.GetUnarmedMult (SKSE)</description>
 	<content><![CDATA[GetUnarmedMult()]]></content>
 </snippet>

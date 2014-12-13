@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>GetModDependencyCount</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>Game.GetModDependencyCount</description>
+	<description>Game.GetModDependencyCount (SKSE)</description>
 	<content><![CDATA[GetModDependencyCount(${1:int modIndex})]]></content>
 </snippet>

@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>PushIntA</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>UICallback.PushIntA</description>
+	<description>UICallback.PushIntA (SKSE)</description>
 	<content><![CDATA[PushIntA(${1:int handle}, ${2:int[] args})]]></content>
 </snippet>

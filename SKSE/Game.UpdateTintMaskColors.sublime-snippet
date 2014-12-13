@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>UpdateTintMaskColors</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>Game.UpdateTintMaskColors</description>
+	<description>Game.UpdateTintMaskColors (SKSE)</description>
 	<content><![CDATA[UpdateTintMaskColors()]]></content>
 </snippet>

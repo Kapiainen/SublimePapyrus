@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>GetIndexOfOverlayHeadPartByType</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>ActorBase.GetIndexOfOverlayHeadPartByType</description>
+	<description>ActorBase.GetIndexOfOverlayHeadPartByType (SKSE)</description>
 	<content><![CDATA[GetIndexOfOverlayHeadPartByType(${1:int type})]]></content>
 </snippet>

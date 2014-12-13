@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>GetSkill</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>Book.GetSkill</description>
+	<description>Book.GetSkill (SKSE)</description>
 	<content><![CDATA[GetSkill()]]></content>
 </snippet>

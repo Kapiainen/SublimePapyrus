@@ -1,7 +1,7 @@
 <snippet>
 	<tabTrigger>OnCrosshairRefChange</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>Alias.OnCrosshairRefChange</description>
+	<description>Alias.OnCrosshairRefChange (SKSE)</description>
 	<content><![CDATA[Event OnCrosshairRefChange(${1:ObjectReference ref})
 ${0}
 EndEvent]]></content>

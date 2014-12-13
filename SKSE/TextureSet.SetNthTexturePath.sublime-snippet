@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>SetNthTexturePath</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>TextureSet.SetNthTexturePath</description>
+	<description>TextureSet.SetNthTexturePath (SKSE)</description>
 	<content><![CDATA[SetNthTexturePath(${1:int n}, ${2:string texturePath})]]></content>
 </snippet>

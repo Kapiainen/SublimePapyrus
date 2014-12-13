@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>HasExtraPart</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>HeadPart.HasExtraPart</description>
+	<description>HeadPart.HasExtraPart (SKSE)</description>
 	<content><![CDATA[HasExtraPart(${1:HeadPart p})]]></content>
 </snippet>

@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>GetItemCharge</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>ObjectReference.GetItemCharge</description>
+	<description>ObjectReference.GetItemCharge (SKSE)</description>
 	<content><![CDATA[GetItemCharge()]]></content>
 </snippet>

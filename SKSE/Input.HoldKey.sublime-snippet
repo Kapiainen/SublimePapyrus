@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>HoldKey</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>Input.HoldKey</description>
+	<description>Input.HoldKey (SKSE)</description>
 	<content><![CDATA[HoldKey(${1:Int dxKeycode})]]></content>
 </snippet>

@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>GetNthEffectArea</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>Potion.GetNthEffectArea</description>
+	<description>Potion.GetNthEffectArea (SKSE)</description>
 	<content><![CDATA[GetNthEffectArea(${1:int index})]]></content>
 </snippet>

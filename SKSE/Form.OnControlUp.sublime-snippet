@@ -1,7 +1,7 @@
 <snippet>
 	<tabTrigger>OnControlUp</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>Form.OnControlUp</description>
+	<description>Form.OnControlUp (SKSE)</description>
 	<content><![CDATA[Event OnControlUp(${1:string control}, ${2:float holdTime})
 ${0}
 EndEvent]]></content>

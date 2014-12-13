@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>GetSunDamage</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>Weather.GetSunDamage</description>
+	<description>Weather.GetSunDamage (SKSE)</description>
 	<content><![CDATA[GetSunDamage()]]></content>
 </snippet>

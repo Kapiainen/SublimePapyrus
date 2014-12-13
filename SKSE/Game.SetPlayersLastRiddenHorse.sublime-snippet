@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>SetPlayersLastRiddenHorse</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>Game.SetPlayersLastRiddenHorse</description>
+	<description>Game.SetPlayersLastRiddenHorse (SKSE)</description>
 	<content><![CDATA[SetPlayersLastRiddenHorse(${1:Actor horse})]]></content>
 </snippet>

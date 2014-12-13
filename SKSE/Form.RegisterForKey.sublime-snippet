@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>RegisterForKey</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>Form.RegisterForKey</description>
+	<description>Form.RegisterForKey (SKSE)</description>
 	<content><![CDATA[RegisterForKey(${1:int keyCode})]]></content>
 </snippet>

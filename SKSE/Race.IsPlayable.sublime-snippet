@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>IsPlayable</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>Race.IsPlayable</description>
+	<description>Race.IsPlayable (SKSE)</description>
 	<content><![CDATA[IsPlayable()]]></content>
 </snippet>

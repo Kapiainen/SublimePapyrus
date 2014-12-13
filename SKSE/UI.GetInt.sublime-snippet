@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>GetInt</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>UI.GetInt</description>
+	<description>UI.GetInt (SKSE)</description>
 	<content><![CDATA[GetInt(${1:string menuName}, ${2:string target})]]></content>
 </snippet>

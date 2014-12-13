@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>GetWeaponType</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>Weapon.GetWeaponType</description>
+	<description>Weapon.GetWeaponType (SKSE)</description>
 	<content><![CDATA[GetWeaponType()]]></content>
 </snippet>

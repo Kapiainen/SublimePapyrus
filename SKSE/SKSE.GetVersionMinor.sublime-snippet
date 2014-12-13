@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>GetVersionMinor</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>SKSE.GetVersionMinor</description>
+	<description>SKSE.GetVersionMinor (SKSE)</description>
 	<content><![CDATA[GetVersionMinor()]]></content>
 </snippet>

@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>MakeNonWalking</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>Race.MakeNonWalking</description>
+	<description>Race.MakeNonWalking (SKSE)</description>
 	<content><![CDATA[MakeNonWalking()]]></content>
 </snippet>

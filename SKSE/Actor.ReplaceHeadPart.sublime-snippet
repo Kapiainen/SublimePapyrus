@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>ReplaceHeadPart</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>Actor.ReplaceHeadPart</description>
+	<description>Actor.ReplaceHeadPart (SKSE)</description>
 	<content><![CDATA[ReplaceHeadPart(${1:HeadPart oPart}, ${2:HeadPart newPart})]]></content>
 </snippet>

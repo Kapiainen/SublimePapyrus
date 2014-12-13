@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>GetEnchantArt</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>MagicEffect.GetEnchantArt</description>
+	<description>MagicEffect.GetEnchantArt (SKSE)</description>
 	<content><![CDATA[GetEnchantArt()]]></content>
 </snippet>

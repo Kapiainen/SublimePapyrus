@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>SetResistance</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>MagicEffect.SetResistance</description>
+	<description>MagicEffect.SetResistance (SKSE)</description>
 	<content><![CDATA[SetResistance(${1:string skill})]]></content>
 </snippet>

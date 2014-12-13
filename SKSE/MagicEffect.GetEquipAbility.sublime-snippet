@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>GetEquipAbility</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>MagicEffect.GetEquipAbility</description>
+	<description>MagicEffect.GetEquipAbility (SKSE)</description>
 	<content><![CDATA[GetEquipAbility()]]></content>
 </snippet>

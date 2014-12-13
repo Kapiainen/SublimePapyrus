@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>MakeNotPushable</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>Race.MakeNotPushable</description>
+	<description>Race.MakeNotPushable (SKSE)</description>
 	<content><![CDATA[MakeNotPushable()]]></content>
 </snippet>

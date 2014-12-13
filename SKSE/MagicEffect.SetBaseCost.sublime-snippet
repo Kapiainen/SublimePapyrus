@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>SetBaseCost</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>MagicEffect.SetBaseCost</description>
+	<description>MagicEffect.SetBaseCost (SKSE)</description>
 	<content><![CDATA[SetBaseCost(${1:float cost})]]></content>
 </snippet>

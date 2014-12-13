@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>GetWeight</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>Form.GetWeight</description>
+	<description>Form.GetWeight (SKSE)</description>
 	<content><![CDATA[GetWeight()]]></content>
 </snippet>

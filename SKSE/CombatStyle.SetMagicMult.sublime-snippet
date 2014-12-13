@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>SetMagicMult</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>CombatStyle.SetMagicMult</description>
+	<description>CombatStyle.SetMagicMult (SKSE)</description>
 	<content><![CDATA[SetMagicMult(${1:float mult})]]></content>
 </snippet>

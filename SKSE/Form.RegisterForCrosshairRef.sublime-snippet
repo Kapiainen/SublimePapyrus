@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>RegisterForCrosshairRef</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>Form.RegisterForCrosshairRef</description>
+	<description>Form.RegisterForCrosshairRef (SKSE)</description>
 	<content><![CDATA[RegisterForCrosshairRef()]]></content>
 </snippet>

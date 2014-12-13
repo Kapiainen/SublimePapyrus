@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>ModArmorRating</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>Armor.ModArmorRating</description>
+	<description>Armor.ModArmorRating (SKSE)</description>
 	<content><![CDATA[ModArmorRating(${1:int modBy})]]></content>
 </snippet>

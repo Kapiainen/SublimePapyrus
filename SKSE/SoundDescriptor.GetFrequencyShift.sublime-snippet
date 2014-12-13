@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>GetFrequencyShift</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>SoundDescriptor.GetFrequencyShift</description>
+	<description>SoundDescriptor.GetFrequencyShift (SKSE)</description>
 	<content><![CDATA[GetFrequencyShift()]]></content>
 </snippet>

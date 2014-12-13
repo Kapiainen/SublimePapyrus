@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>GetBool</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>UI.GetBool</description>
+	<description>UI.GetBool (SKSE)</description>
 	<content><![CDATA[GetBool(${1:string menuName}, ${2:string target})]]></content>
 </snippet>

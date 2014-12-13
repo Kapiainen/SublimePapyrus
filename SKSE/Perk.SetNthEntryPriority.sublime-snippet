@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>SetNthEntryPriority</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>Perk.SetNthEntryPriority</description>
+	<description>Perk.SetNthEntryPriority (SKSE)</description>
 	<content><![CDATA[SetNthEntryPriority(${1:int n}, ${2:int priority})]]></content>
 </snippet>

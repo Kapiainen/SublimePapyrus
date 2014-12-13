@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>SetFacePreset</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>ActorBase.SetFacePreset</description>
+	<description>ActorBase.SetFacePreset (SKSE)</description>
 	<content><![CDATA[SetFacePreset(${1:int value}, ${2:int index})]]></content>
 </snippet>

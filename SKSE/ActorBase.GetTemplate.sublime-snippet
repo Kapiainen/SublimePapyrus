@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>GetTemplate</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>ActorBase.GetTemplate</description>
+	<description>ActorBase.GetTemplate (SKSE)</description>
 	<content><![CDATA[GetTemplate()]]></content>
 </snippet>

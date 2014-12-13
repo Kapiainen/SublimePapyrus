@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>GetHitShader</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>MagicEffect.GetHitShader</description>
+	<description>MagicEffect.GetHitShader (SKSE)</description>
 	<content><![CDATA[GetHitShader()]]></content>
 </snippet>

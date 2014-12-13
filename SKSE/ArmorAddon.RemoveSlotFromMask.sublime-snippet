@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>RemoveSlotFromMask</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>ArmorAddon.RemoveSlotFromMask</description>
+	<description>ArmorAddon.RemoveSlotFromMask (SKSE)</description>
 	<content><![CDATA[RemoveSlotFromMask(${1:int slotMask})]]></content>
 </snippet>

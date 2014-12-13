@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>CantOpenDoors</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>Race.CantOpenDoors</description>
+	<description>Race.CantOpenDoors (SKSE)</description>
 	<content><![CDATA[CantOpenDoors()]]></content>
 </snippet>

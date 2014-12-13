@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>GetNthEntryQuest</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>Perk.GetNthEntryQuest</description>
+	<description>Perk.GetNthEntryQuest (SKSE)</description>
 	<content><![CDATA[GetNthEntryQuest(${1:int n})]]></content>
 </snippet>

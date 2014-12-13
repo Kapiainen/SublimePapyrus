@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>SetNoShadow</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>Race.SetNoShadow</description>
+	<description>Race.SetNoShadow (SKSE)</description>
 	<content><![CDATA[SetNoShadow()]]></content>
 </snippet>

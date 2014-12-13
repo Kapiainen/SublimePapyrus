@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>ClearAvoidsRoads</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>Race.ClearAvoidsRoads</description>
+	<description>Race.ClearAvoidsRoads (SKSE)</description>
 	<content><![CDATA[ClearAvoidsRoads()]]></content>
 </snippet>

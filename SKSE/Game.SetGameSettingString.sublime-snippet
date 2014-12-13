@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>SetGameSettingString</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>Game.SetGameSettingString</description>
+	<description>Game.SetGameSettingString (SKSE)</description>
 	<content><![CDATA[SetGameSettingString(${1:string setting}, ${2:string value})]]></content>
 </snippet>

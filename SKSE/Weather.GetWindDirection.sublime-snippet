@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>GetWindDirection</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>Weather.GetWindDirection</description>
+	<description>Weather.GetWindDirection (SKSE)</description>
 	<content><![CDATA[GetWindDirection()]]></content>
 </snippet>

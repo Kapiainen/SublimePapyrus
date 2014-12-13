@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>SetHitShader</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>MagicEffect.SetHitShader</description>
+	<description>MagicEffect.SetHitShader (SKSE)</description>
 	<content><![CDATA[SetHitShader(${1:EffectShader obj})]]></content>
 </snippet>

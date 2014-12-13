@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>SetChanceNone</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>LeveledSpell.SetChanceNone</description>
+	<description>LeveledSpell.SetChanceNone (SKSE)</description>
 	<content><![CDATA[SetChanceNone(${1:int chance})]]></content>
 </snippet>

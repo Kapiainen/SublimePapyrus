@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>SetEnchantment</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>Weapon.SetEnchantment</description>
+	<description>Weapon.SetEnchantment (SKSE)</description>
 	<content><![CDATA[SetEnchantment(${1:Enchantment e})]]></content>
 </snippet>

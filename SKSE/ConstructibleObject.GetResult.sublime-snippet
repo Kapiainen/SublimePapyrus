@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>GetResult</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>ConstructibleObject.GetResult</description>
+	<description>ConstructibleObject.GetResult (SKSE)</description>
 	<content><![CDATA[GetResult()]]></content>
 </snippet>

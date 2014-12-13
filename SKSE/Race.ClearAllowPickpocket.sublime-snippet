@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>ClearAllowPickpocket</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>Race.ClearAllowPickpocket</description>
+	<description>Race.ClearAllowPickpocket (SKSE)</description>
 	<content><![CDATA[ClearAllowPickpocket()]]></content>
 </snippet>

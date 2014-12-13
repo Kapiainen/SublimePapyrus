@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>GetEnchantment</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>ObjectReference.GetEnchantment</description>
+	<description>ObjectReference.GetEnchantment (SKSE)</description>
 	<content><![CDATA[GetEnchantment()]]></content>
 </snippet>

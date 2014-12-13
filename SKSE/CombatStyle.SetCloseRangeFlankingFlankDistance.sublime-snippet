@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>SetCloseRangeFlankingFlankDistance</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>CombatStyle.SetCloseRangeFlankingFlankDistance</description>
+	<description>CombatStyle.SetCloseRangeFlankingFlankDistance (SKSE)</description>
 	<content><![CDATA[SetCloseRangeFlankingFlankDistance(${1:float mult})]]></content>
 </snippet>

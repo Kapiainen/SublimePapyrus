@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>SetRangedMult</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>CombatStyle.SetRangedMult</description>
+	<description>CombatStyle.SetRangedMult (SKSE)</description>
 	<content><![CDATA[SetRangedMult(${1:float mult})]]></content>
 </snippet>

@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>GetSlotMask</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>Armor.GetSlotMask</description>
+	<description>Armor.GetSlotMask (SKSE)</description>
 	<content><![CDATA[GetSlotMask()]]></content>
 </snippet>

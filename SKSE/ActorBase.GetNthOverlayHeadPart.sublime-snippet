@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>GetNthOverlayHeadPart</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>ActorBase.GetNthOverlayHeadPart</description>
+	<description>ActorBase.GetNthOverlayHeadPart (SKSE)</description>
 	<content><![CDATA[GetNthOverlayHeadPart(${1:int slotPart})]]></content>
 </snippet>

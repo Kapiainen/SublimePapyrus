@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>InvokeBool</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>UI.InvokeBool</description>
+	<description>UI.InvokeBool (SKSE)</description>
 	<content><![CDATA[InvokeBool(${1:string menuName}, ${2:string target}, ${3:bool arg})]]></content>
 </snippet>

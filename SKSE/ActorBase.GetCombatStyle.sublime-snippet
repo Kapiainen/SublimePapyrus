@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>GetCombatStyle</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>ActorBase.GetCombatStyle</description>
+	<description>ActorBase.GetCombatStyle (SKSE)</description>
 	<content><![CDATA[GetCombatStyle()]]></content>
 </snippet>

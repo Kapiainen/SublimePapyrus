@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>IsPrintable</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>StringUtil.IsPrintable</description>
+	<description>StringUtil.IsPrintable (SKSE)</description>
 	<content><![CDATA[IsPrintable(${1:string c})]]></content>
 </snippet>

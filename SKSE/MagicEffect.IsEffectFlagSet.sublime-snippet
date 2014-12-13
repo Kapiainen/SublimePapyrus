@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>IsEffectFlagSet</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>MagicEffect.IsEffectFlagSet</description>
+	<description>MagicEffect.IsEffectFlagSet (SKSE)</description>
 	<content><![CDATA[IsEffectFlagSet(${1:int flag})]]></content>
 </snippet>

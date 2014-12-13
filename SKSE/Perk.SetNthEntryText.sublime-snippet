@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>SetNthEntryText</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>Perk.SetNthEntryText</description>
+	<description>Perk.SetNthEntryText (SKSE)</description>
 	<content><![CDATA[SetNthEntryText(${1:int n}, ${2:string newText})]]></content>
 </snippet>

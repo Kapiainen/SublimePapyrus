@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>GetSpell</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>Book.GetSpell</description>
+	<description>Book.GetSpell (SKSE)</description>
 	<content><![CDATA[GetSpell()]]></content>
 </snippet>

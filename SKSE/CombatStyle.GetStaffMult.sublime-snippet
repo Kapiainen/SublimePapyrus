@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>GetStaffMult</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>CombatStyle.GetStaffMult</description>
+	<description>CombatStyle.GetStaffMult (SKSE)</description>
 	<content><![CDATA[GetStaffMult()]]></content>
 </snippet>

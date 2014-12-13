@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>AsChar</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>StringUtil.AsChar</description>
+	<description>StringUtil.AsChar (SKSE)</description>
 	<content><![CDATA[AsChar(${1:int c})]]></content>
 </snippet>

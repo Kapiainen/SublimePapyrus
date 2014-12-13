@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>IsTextInputEnabled</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>UI.IsTextInputEnabled</description>
+	<description>UI.IsTextInputEnabled (SKSE)</description>
 	<content><![CDATA[IsTextInputEnabled()]]></content>
 </snippet>

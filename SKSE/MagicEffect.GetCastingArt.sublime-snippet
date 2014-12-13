@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>GetCastingArt</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>MagicEffect.GetCastingArt</description>
+	<description>MagicEffect.GetCastingArt (SKSE)</description>
 	<content><![CDATA[GetCastingArt()]]></content>
 </snippet>

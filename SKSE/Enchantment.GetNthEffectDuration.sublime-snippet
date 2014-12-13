@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>GetNthEffectDuration</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>Enchantment.GetNthEffectDuration</description>
+	<description>Enchantment.GetNthEffectDuration (SKSE)</description>
 	<content><![CDATA[GetNthEffectDuration(${1:int index})]]></content>
 </snippet>

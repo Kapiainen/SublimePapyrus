@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>GetNthEntryStage</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>Perk.GetNthEntryStage</description>
+	<description>Perk.GetNthEntryStage (SKSE)</description>
 	<content><![CDATA[GetNthEntryStage(${1:int n})]]></content>
 </snippet>

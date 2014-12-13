@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>SetHue</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>ColorComponent.SetHue</description>
+	<description>ColorComponent.SetHue (SKSE)</description>
 	<content><![CDATA[SetHue(${1:int argb}, ${2:float h})]]></content>
 </snippet>

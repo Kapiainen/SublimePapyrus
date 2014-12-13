@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>GetAR</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>Armor.GetAR</description>
+	<description>Armor.GetAR (SKSE)</description>
 	<content><![CDATA[GetAR()]]></content>
 </snippet>

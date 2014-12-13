@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>GetCostliestEffectIndex</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>Enchantment.GetCostliestEffectIndex</description>
+	<description>Enchantment.GetCostliestEffectIndex (SKSE)</description>
 	<content><![CDATA[GetCostliestEffectIndex()]]></content>
 </snippet>

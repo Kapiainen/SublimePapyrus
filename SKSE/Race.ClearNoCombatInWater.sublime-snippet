@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>ClearNoCombatInWater</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>Race.ClearNoCombatInWater</description>
+	<description>Race.ClearNoCombatInWater (SKSE)</description>
 	<content><![CDATA[ClearNoCombatInWater()]]></content>
 </snippet>

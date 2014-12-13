@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>SetLight</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>MagicEffect.SetLight</description>
+	<description>MagicEffect.SetLight (SKSE)</description>
 	<content><![CDATA[SetLight(${1:Light obj})]]></content>
 </snippet>

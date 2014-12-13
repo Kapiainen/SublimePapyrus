@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>Create</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>ModEvent.Create</description>
+	<description>ModEvent.Create (SKSE)</description>
 	<content><![CDATA[Create(${1:string eventName})]]></content>
 </snippet>

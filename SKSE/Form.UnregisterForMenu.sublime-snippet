@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>UnregisterForMenu</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>Form.UnregisterForMenu</description>
+	<description>Form.UnregisterForMenu (SKSE)</description>
 	<content><![CDATA[UnregisterForMenu(${1:string menuName})]]></content>
 </snippet>

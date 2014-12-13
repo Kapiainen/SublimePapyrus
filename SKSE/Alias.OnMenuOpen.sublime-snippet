@@ -1,7 +1,7 @@
 <snippet>
 	<tabTrigger>OnMenuOpen</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>Alias.OnMenuOpen</description>
+	<description>Alias.OnMenuOpen (SKSE)</description>
 	<content><![CDATA[Event OnMenuOpen(${1:string menuName})
 ${0}
 EndEvent]]></content>

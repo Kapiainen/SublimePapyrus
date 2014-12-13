@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>SetSkillOffsetMult</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>ActorValueInfo.SetSkillOffsetMult</description>
+	<description>ActorValueInfo.SetSkillOffsetMult (SKSE)</description>
 	<content><![CDATA[SetSkillOffsetMult(${1:float value})]]></content>
 </snippet>

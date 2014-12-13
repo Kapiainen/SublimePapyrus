@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>GetNthPlayableRace</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>Race.GetNthPlayableRace</description>
+	<description>Race.GetNthPlayableRace (SKSE)</description>
 	<content><![CDATA[GetNthPlayableRace(${1:int n})]]></content>
 </snippet>

@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>GetNextPerk</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>Perk.GetNextPerk</description>
+	<description>Perk.GetNextPerk (SKSE)</description>
 	<content><![CDATA[GetNextPerk()]]></content>
 </snippet>

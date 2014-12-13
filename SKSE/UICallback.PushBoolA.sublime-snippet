@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>PushBoolA</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>UICallback.PushBoolA</description>
+	<description>UICallback.PushBoolA (SKSE)</description>
 	<content><![CDATA[PushBoolA(${1:int handle}, ${2:bool[] args})]]></content>
 </snippet>

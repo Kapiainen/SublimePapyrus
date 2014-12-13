@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>IsClothing</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>Armor.IsClothing</description>
+	<description>Armor.IsClothing (SKSE)</description>
 	<content><![CDATA[IsClothing()]]></content>
 </snippet>

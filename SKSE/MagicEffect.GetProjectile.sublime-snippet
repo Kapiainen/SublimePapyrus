@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>GetProjectile</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>MagicEffect.GetProjectile</description>
+	<description>MagicEffect.GetProjectile (SKSE)</description>
 	<content><![CDATA[GetProjectile()]]></content>
 </snippet>

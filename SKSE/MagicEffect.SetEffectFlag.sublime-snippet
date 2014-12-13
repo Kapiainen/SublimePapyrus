@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>SetEffectFlag</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>MagicEffect.SetEffectFlag</description>
+	<description>MagicEffect.SetEffectFlag (SKSE)</description>
 	<content><![CDATA[SetEffectFlag(${1:int flag})]]></content>
 </snippet>

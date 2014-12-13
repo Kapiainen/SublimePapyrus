@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>GetNthAlias</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>Quest.GetNthAlias</description>
+	<description>Quest.GetNthAlias (SKSE)</description>
 	<content><![CDATA[GetNthAlias(${1:int index})]]></content>
 </snippet>

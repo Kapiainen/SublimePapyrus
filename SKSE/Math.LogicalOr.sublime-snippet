@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>LogicalOr</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>Math.LogicalOr</description>
+	<description>Math.LogicalOr (SKSE)</description>
 	<content><![CDATA[LogicalOr(${1:int arg1}, ${2:int arg2})]]></content>
 </snippet>

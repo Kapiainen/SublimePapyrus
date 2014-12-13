@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>GetSaturation</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>ColorComponent.GetSaturation</description>
+	<description>ColorComponent.GetSaturation (SKSE)</description>
 	<content><![CDATA[GetSaturation(${1:int argb})]]></content>
 </snippet>

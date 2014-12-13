@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>PushString</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>ModEvent.PushString</description>
+	<description>ModEvent.PushString (SKSE)</description>
 	<content><![CDATA[PushString(${1:int handle}, ${2:string value})]]></content>
 </snippet>

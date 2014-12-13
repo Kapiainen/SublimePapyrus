@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>GetHeight</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>ActorBase.GetHeight</description>
+	<description>ActorBase.GetHeight (SKSE)</description>
 	<content><![CDATA[GetHeight()]]></content>
 </snippet>

@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>GetNthForm</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>ObjectReference.GetNthForm</description>
+	<description>ObjectReference.GetNthForm (SKSE)</description>
 	<content><![CDATA[GetNthForm(${1:int index})]]></content>
 </snippet>

@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>GetWorldModelNthTextureSet</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>Form.GetWorldModelNthTextureSet</description>
+	<description>Form.GetWorldModelNthTextureSet (SKSE)</description>
 	<content><![CDATA[GetWorldModelNthTextureSet(${1:int n})]]></content>
 </snippet>

@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>SetSkin</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>Race.SetSkin</description>
+	<description>Race.SetSkin (SKSE)</description>
 	<content><![CDATA[SetSkin(${1:Armor skin})]]></content>
 </snippet>

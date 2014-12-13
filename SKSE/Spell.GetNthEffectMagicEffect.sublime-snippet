@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>GetNthEffectMagicEffect</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>Spell.GetNthEffectMagicEffect</description>
+	<description>Spell.GetNthEffectMagicEffect (SKSE)</description>
 	<content><![CDATA[GetNthEffectMagicEffect(${1:int index})]]></content>
 </snippet>

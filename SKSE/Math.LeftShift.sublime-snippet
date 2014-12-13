@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>LeftShift</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>Math.LeftShift</description>
+	<description>Math.LeftShift (SKSE)</description>
 	<content><![CDATA[LeftShift(${1:int value}, ${2:int shiftBy})]]></content>
 </snippet>

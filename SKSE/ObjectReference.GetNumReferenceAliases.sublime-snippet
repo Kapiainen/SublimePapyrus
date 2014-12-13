@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>GetNumReferenceAliases</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>ObjectReference.GetNumReferenceAliases</description>
+	<description>ObjectReference.GetNumReferenceAliases (SKSE)</description>
 	<content><![CDATA[GetNumReferenceAliases()]]></content>
 </snippet>

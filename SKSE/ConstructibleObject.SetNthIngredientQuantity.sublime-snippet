@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>SetNthIngredientQuantity</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>ConstructibleObject.SetNthIngredientQuantity</description>
+	<description>ConstructibleObject.SetNthIngredientQuantity (SKSE)</description>
 	<content><![CDATA[SetNthIngredientQuantity(${1:int value}, ${2:int n})]]></content>
 </snippet>

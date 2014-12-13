@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>GetSkillImproveMult</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>ActorValueInfo.GetSkillImproveMult</description>
+	<description>ActorValueInfo.GetSkillImproveMult (SKSE)</description>
 	<content><![CDATA[GetSkillImproveMult()]]></content>
 </snippet>

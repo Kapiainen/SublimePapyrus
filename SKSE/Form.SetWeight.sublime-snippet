@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>SetWeight</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>Form.SetWeight</description>
+	<description>Form.SetWeight (SKSE)</description>
 	<content><![CDATA[SetWeight(${1:float weight})]]></content>
 </snippet>

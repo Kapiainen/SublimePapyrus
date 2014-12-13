@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>SetModelPath</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>ArmorAddon.SetModelPath</description>
+	<description>ArmorAddon.SetModelPath (SKSE)</description>
 	<content><![CDATA[SetModelPath(${1:string path}, ${2:bool firstPerson}, ${3:bool female})]]></content>
 </snippet>

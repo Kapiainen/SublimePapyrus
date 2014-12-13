@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>GetHairColor</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>ActorBase.GetHairColor</description>
+	<description>ActorBase.GetHairColor (SKSE)</description>
 	<content><![CDATA[GetHairColor()]]></content>
 </snippet>

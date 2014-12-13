@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>SetEnchantShader</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>MagicEffect.SetEnchantShader</description>
+	<description>MagicEffect.SetEnchantShader (SKSE)</description>
 	<content><![CDATA[SetEnchantShader(${1:EffectShader obj})]]></content>
 </snippet>

@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>RegisterForMenu</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>ActiveMagicEffect.RegisterForMenu</description>
+	<description>ActiveMagicEffect.RegisterForMenu (SKSE)</description>
 	<content><![CDATA[RegisterForMenu(${1:string menuName})]]></content>
 </snippet>

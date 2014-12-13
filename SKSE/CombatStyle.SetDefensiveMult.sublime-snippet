@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>SetDefensiveMult</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>CombatStyle.SetDefensiveMult</description>
+	<description>CombatStyle.SetDefensiveMult (SKSE)</description>
 	<content><![CDATA[SetDefensiveMult(${1:float mult})]]></content>
 </snippet>

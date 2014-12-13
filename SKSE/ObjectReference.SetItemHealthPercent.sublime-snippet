@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>SetItemHealthPercent</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>ObjectReference.SetItemHealthPercent</description>
+	<description>ObjectReference.SetItemHealthPercent (SKSE)</description>
 	<content><![CDATA[SetItemHealthPercent(${1:float health})]]></content>
 </snippet>

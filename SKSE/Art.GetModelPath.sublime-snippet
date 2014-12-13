@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>GetModelPath</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>Art.GetModelPath</description>
+	<description>Art.GetModelPath (SKSE)</description>
 	<content><![CDATA[GetModelPath()]]></content>
 </snippet>

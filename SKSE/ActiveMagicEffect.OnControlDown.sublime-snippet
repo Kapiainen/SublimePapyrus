@@ -1,7 +1,7 @@
 <snippet>
 	<tabTrigger>OnControlDown</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>ActiveMagicEffect.OnControlDown</description>
+	<description>ActiveMagicEffect.OnControlDown (SKSE)</description>
 	<content><![CDATA[Event OnControlDown(${1:string control})
 ${0}
 EndEvent]]></content>

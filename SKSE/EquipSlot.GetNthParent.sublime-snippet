@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>GetNthParent</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>EquipSlot.GetNthParent</description>
+	<description>EquipSlot.GetNthParent (SKSE)</description>
 	<content><![CDATA[GetNthParent(${1:int n})]]></content>
 </snippet>

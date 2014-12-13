@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>GetPerk</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>Scroll.GetPerk</description>
+	<description>Scroll.GetPerk (SKSE)</description>
 	<content><![CDATA[GetPerk()]]></content>
 </snippet>

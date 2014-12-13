@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>SetWorkbenchKeyword</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>ConstructibleObject.SetWorkbenchKeyword</description>
+	<description>ConstructibleObject.SetWorkbenchKeyword (SKSE)</description>
 	<content><![CDATA[SetWorkbenchKeyword(${1:Keyword aKeyword})]]></content>
 </snippet>

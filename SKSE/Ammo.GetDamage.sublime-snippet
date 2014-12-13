@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>GetDamage</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>Ammo.GetDamage</description>
+	<description>Ammo.GetDamage (SKSE)</description>
 	<content><![CDATA[GetDamage()]]></content>
 </snippet>

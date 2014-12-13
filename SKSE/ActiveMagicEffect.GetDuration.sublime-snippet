@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>GetDuration</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>ActiveMagicEffect.GetDuration</description>
+	<description>ActiveMagicEffect.GetDuration (SKSE)</description>
 	<content><![CDATA[GetDuration()]]></content>
 </snippet>

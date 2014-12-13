@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>GetFlightHoverChance</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>CombatStyle.GetFlightHoverChance</description>
+	<description>CombatStyle.GetFlightHoverChance (SKSE)</description>
 	<content><![CDATA[GetFlightHoverChance()]]></content>
 </snippet>

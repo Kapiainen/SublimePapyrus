@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>GetID</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>Quest.GetID</description>
+	<description>Quest.GetID (SKSE)</description>
 	<content><![CDATA[GetID()]]></content>
 </snippet>

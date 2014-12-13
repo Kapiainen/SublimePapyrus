@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>GetNthEffectMagicEffect</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>Enchantment.GetNthEffectMagicEffect</description>
+	<description>Enchantment.GetNthEffectMagicEffect (SKSE)</description>
 	<content><![CDATA[GetNthEffectMagicEffect(${1:int index})]]></content>
 </snippet>

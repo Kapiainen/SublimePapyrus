@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>MakePlayable</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>Race.MakePlayable</description>
+	<description>Race.MakePlayable (SKSE)</description>
 	<content><![CDATA[MakePlayable()]]></content>
 </snippet>

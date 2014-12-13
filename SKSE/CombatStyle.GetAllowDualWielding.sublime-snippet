@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>GetAllowDualWielding</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>CombatStyle.GetAllowDualWielding</description>
+	<description>CombatStyle.GetAllowDualWielding (SKSE)</description>
 	<content><![CDATA[GetAllowDualWielding()]]></content>
 </snippet>

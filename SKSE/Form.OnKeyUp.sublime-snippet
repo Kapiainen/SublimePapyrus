@@ -1,7 +1,7 @@
 <snippet>
 	<tabTrigger>OnKeyUp</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>Form.OnKeyUp</description>
+	<description>Form.OnKeyUp (SKSE)</description>
 	<content><![CDATA[Event OnKeyUp(${1:int keyCode}, ${2:float holdTime})
 ${0}
 EndEvent]]></content>

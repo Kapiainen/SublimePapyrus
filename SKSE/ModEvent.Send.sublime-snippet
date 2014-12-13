@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>Send</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>ModEvent.Send</description>
+	<description>ModEvent.Send (SKSE)</description>
 	<content><![CDATA[Send(${1:int handle})]]></content>
 </snippet>

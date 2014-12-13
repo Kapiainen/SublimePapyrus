@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>GetNumKeysPressed</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>Input.GetNumKeysPressed</description>
+	<description>Input.GetNumKeysPressed (SKSE)</description>
 	<content><![CDATA[GetNumKeysPressed()]]></content>
 </snippet>

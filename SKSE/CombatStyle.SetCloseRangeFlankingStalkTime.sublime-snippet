@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>SetCloseRangeFlankingStalkTime</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>CombatStyle.SetCloseRangeFlankingStalkTime</description>
+	<description>CombatStyle.SetCloseRangeFlankingStalkTime (SKSE)</description>
 	<content><![CDATA[SetCloseRangeFlankingStalkTime(${1:float mult})]]></content>
 </snippet>

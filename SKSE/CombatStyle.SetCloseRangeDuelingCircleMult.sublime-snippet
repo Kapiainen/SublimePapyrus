@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>SetCloseRangeDuelingCircleMult</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>CombatStyle.SetCloseRangeDuelingCircleMult</description>
+	<description>CombatStyle.SetCloseRangeDuelingCircleMult (SKSE)</description>
 	<content><![CDATA[SetCloseRangeDuelingCircleMult(${1:float mult})]]></content>
 </snippet>

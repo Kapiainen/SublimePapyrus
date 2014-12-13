@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>GetSpellCount</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>ActorBase.GetSpellCount</description>
+	<description>ActorBase.GetSpellCount (SKSE)</description>
 	<content><![CDATA[GetSpellCount()]]></content>
 </snippet>

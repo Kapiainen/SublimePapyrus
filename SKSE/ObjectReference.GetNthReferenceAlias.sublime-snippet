@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>GetNthReferenceAlias</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>ObjectReference.GetNthReferenceAlias</description>
+	<description>ObjectReference.GetNthReferenceAlias (SKSE)</description>
 	<content><![CDATA[GetNthReferenceAlias(${1:int n})]]></content>
 </snippet>

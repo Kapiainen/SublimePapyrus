@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>SetItemMaxCharge</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>ObjectReference.SetItemMaxCharge</description>
+	<description>ObjectReference.SetItemMaxCharge (SKSE)</description>
 	<content><![CDATA[SetItemMaxCharge(${1:float maxCharge})]]></content>
 </snippet>
