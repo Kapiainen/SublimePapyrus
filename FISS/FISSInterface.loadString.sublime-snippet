@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>loadString</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>FISSInterface.loadString</description>
+	<description>FISSInterface.loadString (FISS)</description>
 	<content><![CDATA[loadString(${1:string name})]]></content>
 </snippet>

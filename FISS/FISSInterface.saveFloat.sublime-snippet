@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>saveFloat</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>FISSInterface.saveFloat</description>
+	<description>FISSInterface.saveFloat (FISS)</description>
 	<content><![CDATA[saveFloat(${1:string name}, ${2:float f})]]></content>
 </snippet>

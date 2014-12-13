@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>setTitle</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>FISSInterface.setTitle</description>
+	<description>FISSInterface.setTitle (FISS)</description>
 	<content><![CDATA[setTitle(${1:string title})]]></content>
 </snippet>

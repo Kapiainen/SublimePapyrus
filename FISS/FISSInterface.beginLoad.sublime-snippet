@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>beginLoad</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>FISSInterface.beginLoad</description>
+	<description>FISSInterface.beginLoad (FISS)</description>
 	<content><![CDATA[beginLoad(${1:string filename})]]></content>
 </snippet>

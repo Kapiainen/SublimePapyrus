@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>setInfoText</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>FISSInterface.setInfoText</description>
+	<description>FISSInterface.setInfoText (FISS)</description>
 	<content><![CDATA[setInfoText(${1:string text})]]></content>
 </snippet>

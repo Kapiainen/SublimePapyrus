@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>saveBool</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>FISSInterface.saveBool</description>
+	<description>FISSInterface.saveBool (FISS)</description>
 	<content><![CDATA[saveBool(${1:string name}, ${2:bool b})]]></content>
 </snippet>

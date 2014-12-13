@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>hideInfoText</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>FISSInterface.hideInfoText</description>
+	<description>FISSInterface.hideInfoText (FISS)</description>
 	<content><![CDATA[hideInfoText(${1:bool hide})]]></content>
 </snippet>

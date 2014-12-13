@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>requestUserInput</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>FISSInterface.requestUserInput</description>
+	<description>FISSInterface.requestUserInput (FISS)</description>
 	<content><![CDATA[requestUserInput(${1:string titleMessage})]]></content>
 </snippet>
