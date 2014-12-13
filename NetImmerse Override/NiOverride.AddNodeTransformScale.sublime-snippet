@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>AddNodeTransformScale</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>NiOverride.AddNodeTransformScale</description>
+	<description>NiOverride.AddNodeTransformScale (NetImmerse Override)</description>
 	<content><![CDATA[AddNodeTransformScale(${1:ObjectReference akRef}, ${2:bool firstPerson}, ${3:bool isFemale}, ${4:string nodeName}, ${5:string key}, ${6:float scale})]]></content>
 </snippet>

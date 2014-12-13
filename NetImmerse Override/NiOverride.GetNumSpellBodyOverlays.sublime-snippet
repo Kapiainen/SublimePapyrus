@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>GetNumSpellBodyOverlays</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>NiOverride.GetNumSpellBodyOverlays</description>
+	<description>NiOverride.GetNumSpellBodyOverlays (NetImmerse Override)</description>
 	<content><![CDATA[GetNumSpellBodyOverlays()]]></content>
 </snippet>

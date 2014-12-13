@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>RemoveAllArmorAddonOverrides</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>NiOverride.RemoveAllArmorAddonOverrides</description>
+	<description>NiOverride.RemoveAllArmorAddonOverrides (NetImmerse Override)</description>
 	<content><![CDATA[RemoveAllArmorAddonOverrides(${1:ObjectReference ref}, ${2:bool isFemale}, ${3:Armor arm}, ${4:ArmorAddon addon})]]></content>
 </snippet>

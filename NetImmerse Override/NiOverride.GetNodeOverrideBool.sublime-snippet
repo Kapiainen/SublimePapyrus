@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>GetNodeOverrideBool</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>NiOverride.GetNodeOverrideBool</description>
+	<description>NiOverride.GetNodeOverrideBool (NetImmerse Override)</description>
 	<content><![CDATA[GetNodeOverrideBool(${1:ObjectReference ref}, ${2:bool isFemale}, ${3:string node}, ${4:int key}, ${5:int index})]]></content>
 </snippet>

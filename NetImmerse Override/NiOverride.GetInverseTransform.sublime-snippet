@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>GetInverseTransform</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>NiOverride.GetInverseTransform</description>
+	<description>NiOverride.GetInverseTransform (NetImmerse Override)</description>
 	<content><![CDATA[GetInverseTransform(${1:float[] in_out_pos}, ${2:float[] in_out_rotation}, ${3:float in_scale = 1})]]></content>
 </snippet>

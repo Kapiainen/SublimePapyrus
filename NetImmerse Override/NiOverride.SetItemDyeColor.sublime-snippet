@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>SetItemDyeColor</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>NiOverride.SetItemDyeColor</description>
+	<description>NiOverride.SetItemDyeColor (NetImmerse Override)</description>
 	<content><![CDATA[SetItemDyeColor(${1:int uniqueId}, ${2:int maskIndex}, ${3:int color})]]></content>
 </snippet>

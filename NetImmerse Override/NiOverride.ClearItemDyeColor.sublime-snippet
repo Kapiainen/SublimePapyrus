@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>ClearItemDyeColor</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>NiOverride.ClearItemDyeColor</description>
+	<description>NiOverride.ClearItemDyeColor (NetImmerse Override)</description>
 	<content><![CDATA[ClearItemDyeColor(${1:int uniqudId}, ${2:int maskIndex})]]></content>
 </snippet>

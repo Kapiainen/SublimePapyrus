@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>AddOverrideFloat</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>NiOverride.AddOverrideFloat</description>
+	<description>NiOverride.AddOverrideFloat (NetImmerse Override)</description>
 	<content><![CDATA[AddOverrideFloat(${1:ObjectReference ref}, ${2:bool isFemale}, ${3:Armor arm}, ${4:ArmorAddon addon}, ${5:string node}, ${6:int key}, ${7:int index}, ${8:float value}, ${9:bool persist})]]></content>
 </snippet>

@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>SetNodeDestination</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>NiOverride.SetNodeDestination</description>
+	<description>NiOverride.SetNodeDestination (NetImmerse Override)</description>
 	<content><![CDATA[SetNodeDestination(${1:ObjectReference akRef}, ${2:bool firstPerson}, ${3:bool isFemale}, ${4:string nodeName}, ${5:string destination})]]></content>
 </snippet>

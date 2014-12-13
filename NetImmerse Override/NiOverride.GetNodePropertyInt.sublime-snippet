@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>GetNodePropertyInt</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>NiOverride.GetNodePropertyInt</description>
+	<description>NiOverride.GetNodePropertyInt (NetImmerse Override)</description>
 	<content><![CDATA[GetNodePropertyInt(${1:ObjectReference ref}, ${2:bool firstPerson}, ${3:string node}, ${4:int key}, ${5:int index})]]></content>
 </snippet>

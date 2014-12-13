@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>RemoveAllTransforms</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>NiOverride.RemoveAllTransforms</description>
+	<description>NiOverride.RemoveAllTransforms (NetImmerse Override)</description>
 	<content><![CDATA[RemoveAllTransforms()]]></content>
 </snippet>

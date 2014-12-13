@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>RemoveAllReferenceTransforms</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>NiOverride.RemoveAllReferenceTransforms</description>
+	<description>NiOverride.RemoveAllReferenceTransforms (NetImmerse Override)</description>
 	<content><![CDATA[RemoveAllReferenceTransforms(${1:ObjectReference akRef})]]></content>
 </snippet>

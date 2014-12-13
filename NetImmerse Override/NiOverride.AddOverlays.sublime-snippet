@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>AddOverlays</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>NiOverride.AddOverlays</description>
+	<description>NiOverride.AddOverlays (NetImmerse Override)</description>
 	<content><![CDATA[AddOverlays(${1:ObjectReference ref})]]></content>
 </snippet>

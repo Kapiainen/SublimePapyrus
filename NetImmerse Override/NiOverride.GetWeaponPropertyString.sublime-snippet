@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>GetWeaponPropertyString</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>NiOverride.GetWeaponPropertyString</description>
+	<description>NiOverride.GetWeaponPropertyString (NetImmerse Override)</description>
 	<content><![CDATA[GetWeaponPropertyString(${1:ObjectReference ref}, ${2:bool firstPerson}, ${3:Weapon weap}, ${4:string node}, ${5:int key}, ${6:int index})]]></content>
 </snippet>

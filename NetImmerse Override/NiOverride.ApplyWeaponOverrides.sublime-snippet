@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>ApplyWeaponOverrides</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>NiOverride.ApplyWeaponOverrides</description>
+	<description>NiOverride.ApplyWeaponOverrides (NetImmerse Override)</description>
 	<content><![CDATA[ApplyWeaponOverrides(${1:ObjectReference ref})]]></content>
 </snippet>

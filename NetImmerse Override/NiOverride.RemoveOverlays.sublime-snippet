@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>RemoveOverlays</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>NiOverride.RemoveOverlays</description>
+	<description>NiOverride.RemoveOverlays (NetImmerse Override)</description>
 	<content><![CDATA[RemoveOverlays(${1:ObjectReference ref})]]></content>
 </snippet>

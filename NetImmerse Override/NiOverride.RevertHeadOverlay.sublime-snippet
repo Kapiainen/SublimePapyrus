@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>RevertHeadOverlay</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>NiOverride.RevertHeadOverlay</description>
+	<description>NiOverride.RevertHeadOverlay (NetImmerse Override)</description>
 	<content><![CDATA[RevertHeadOverlay(${1:ObjectReference ref}, ${2:string nodeName}, ${3:int partType}, ${4:int shaderType})]]></content>
 </snippet>
