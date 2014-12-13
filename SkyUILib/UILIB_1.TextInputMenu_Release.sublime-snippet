@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>TextInputMenu_Release</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>UILIB_1.TextInputMenu_Release</description>
+	<description>UILIB_1.TextInputMenu_Release (SkyUILib)</description>
 	<content><![CDATA[TextInputMenu_Release(${1:Form akClient})]]></content>
 </snippet>

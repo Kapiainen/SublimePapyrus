@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>NotificationMenu_PrepareArea</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>UILIB_1.NotificationMenu_PrepareArea</description>
+	<description>UILIB_1.NotificationMenu_PrepareArea (SkyUILib)</description>
 	<content><![CDATA[NotificationMenu_PrepareArea()]]></content>
 </snippet>

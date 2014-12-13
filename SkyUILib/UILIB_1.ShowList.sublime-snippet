@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>ShowList</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>UILIB_1.ShowList</description>
+	<description>UILIB_1.ShowList (SkyUILib)</description>
 	<content><![CDATA[ShowList(${1:String asTitle}, ${2:String[] asOptions}, ${3:Int aiStartIndex}, ${4:Int aiDefaultIndex})]]></content>
 </snippet>

@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>TextInputMenu_SetData</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>UILIB_1.TextInputMenu_SetData</description>
+	<description>UILIB_1.TextInputMenu_SetData (SkyUILib)</description>
 	<content><![CDATA[TextInputMenu_SetData(${1:String asTitle}, ${2:String asInitialText})]]></content>
 </snippet>

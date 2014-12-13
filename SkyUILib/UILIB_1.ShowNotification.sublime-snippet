@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>ShowNotification</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>UILIB_1.ShowNotification</description>
+	<description>UILIB_1.ShowNotification (SkyUILib)</description>
 	<content><![CDATA[ShowNotification(${1:String asMessage}, ${2:String asColor})]]></content>
 </snippet>

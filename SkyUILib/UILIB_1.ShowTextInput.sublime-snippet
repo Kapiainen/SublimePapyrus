@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>ShowTextInput</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>UILIB_1.ShowTextInput</description>
+	<description>UILIB_1.ShowTextInput (SkyUILib)</description>
 	<content><![CDATA[ShowTextInput(${1:String asTitle}, ${2:String asInitialText})]]></content>
 </snippet>

@@ -1,7 +1,7 @@
 <snippet>
 	<tabTrigger>OnListMenuOpen</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>UILIB_1.OnListMenuOpen</description>
+	<description>UILIB_1.OnListMenuOpen (SkyUILib)</description>
 	<content><![CDATA[Event OnListMenuOpen(${1:String asEventName}, ${2:String asStringArg}, ${3:Float afNumArg}, ${4:Form akSender})
 ${0}
 EndEvent]]></content>
