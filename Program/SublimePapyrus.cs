@@ -17,6 +17,7 @@ namespace SublimePapyrus
         const string FILE_SNIPPETEXTENSION = ".sublime-snippet";
         const string FILE_SOURCEEXTENSION = ".psc";
         const string FILE_LANGUAGEDEFINITION = "Papyrus.tmLanguage";
+        const string FILE_LIBRARYDESCRIPTION = "Description.txt";
 
         static bool OS_UNIX = false;
 
@@ -221,6 +222,29 @@ namespace SublimePapyrus
             for(int i = 0; i < alsSourceFiles.Count; i++)
             {
                 string FileName = Path.GetFileNameWithoutExtension(alsSourceFiles[i]);
+
+                // Get the optional library description.
+                string[] DescriptionPath;
+                if (OS_UNIX) 
+                {
+                    DescriptionPath = Directory.GetFiles(alsSourceFiles[i].Substring(0, alsSourceFiles[i].LastIndexOf("/")), FILE_LIBRARYDESCRIPTION);
+                } else {
+                    DescriptionPath = Directory.GetFiles(alsSourceFiles[i].Substring(0, alsSourceFiles[i].LastIndexOf("\\")), FILE_LIBRARYDESCRIPTION);
+                }
+                string Description = "";
+                if (DescriptionPath.Length > 0) 
+                {
+                    using (StreamReader srDescription = new StreamReader(DescriptionPath[0]))
+                    {
+                        string lineDescription;
+                        while ((lineDescription = srDescription.ReadLine()) != null)
+                        {
+                            Description = lineDescription;
+                            break;
+                        }
+                    }
+                }
+
                 StreamReader sr = new StreamReader(alsSourceFiles[i]);
                 Console.WriteLine("\nWorking on file: " + FileName);
                 string line;
@@ -294,7 +318,12 @@ namespace SublimePapyrus
                                     sw.WriteLine("<snippet>");
                                     sw.WriteLine("\t<tabTrigger>" + FunctionName + "</tabTrigger>");
                                     sw.WriteLine("\t<scope>source.papyrus</scope>");
-                                    sw.WriteLine("\t<description>" + FileName + "." + FunctionName + "</description>");
+                                    if (!Description.Equals("")) 
+                                    {
+                                        sw.WriteLine("\t<description>" + FileName + "." + FunctionName + " (" + Description + ")</description>");
+                                    } else {
+                                        sw.WriteLine("\t<description>" + FileName + "." + FunctionName + "</description>");
+                                    }
                                     if (EventPattern.IsMatch(line))
                                     {
                                         sw.Write("\t<content><![CDATA[Event " + FunctionName + "(");

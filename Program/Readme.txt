@@ -1,1 +1,5 @@
 SublimePapyrus can generate snippets (*.sublime-snippet) from Papyrus source files (*.psc) and update the language/syntax definition (Papyrus.tmLanguage) from snippets. The described functions can be executed in series or individually. The directory to be processed can be defined manually. If a directory is not defined, then SublimePapyrus will process the directory that contains the executable. All subdirectories in the working directory are also processed so source files of multiple libraries can be kept separate. Generated snippets are placed in subdirectories, which are placed in the directories that contain the source files, labeled "Snippets".
+
+Features:
+- Drag-and-drop a folder on the executable in order to process files inside it and its subfolders.
+- If the folder that contains .psc files also has a file called "Description.txt", then the first line of that file will be surrounded by parentheses and added to the description of a function/event. The main purpose is to make it easy to indicate which library the function/event is from. For example the line "SKSE" would result in a description along the lines of "ScriptName.FunctionName (SKSE)".
