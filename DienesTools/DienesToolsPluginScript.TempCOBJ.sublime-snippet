@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>TempCOBJ</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>DienesToolsPluginScript.TempCOBJ</description>
+	<description>DienesToolsPluginScript.TempCOBJ (DienesTools)</description>
 	<content><![CDATA[TempCOBJ(${1:ConstructibleObject akToCopy})]]></content>
 </snippet>
