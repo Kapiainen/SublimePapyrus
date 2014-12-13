@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>goNext</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>JArrayIter.goNext</description>
+	<description>JArrayIter.goNext (JContainers)</description>
 	<content><![CDATA[goNext(${1:int iter})]]></content>
 </snippet>

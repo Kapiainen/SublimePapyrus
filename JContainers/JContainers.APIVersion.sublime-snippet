@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>APIVersion</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>JContainers.APIVersion</description>
+	<description>JContainers.APIVersion (JContainers)</description>
 	<content><![CDATA[APIVersion()]]></content>
 </snippet>

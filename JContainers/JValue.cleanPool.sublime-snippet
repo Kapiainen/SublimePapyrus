@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>cleanPool</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>JValue.cleanPool</description>
+	<description>JValue.cleanPool (JContainers)</description>
 	<content><![CDATA[cleanPool(${1:string poolName})]]></content>
 </snippet>

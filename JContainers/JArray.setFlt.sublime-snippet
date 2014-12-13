@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>setFlt</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>JArray.setFlt</description>
+	<description>JArray.setFlt (JContainers)</description>
 	<content><![CDATA[setFlt(${1:int object}, ${2:int index}, ${3:float value})]]></content>
 </snippet>

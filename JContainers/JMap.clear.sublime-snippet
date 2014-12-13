@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>clear</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>JMap.clear</description>
+	<description>JMap.clear (JContainers)</description>
 	<content><![CDATA[clear(${1:int object})]]></content>
 </snippet>

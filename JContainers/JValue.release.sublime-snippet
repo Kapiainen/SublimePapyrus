@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>release</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>JValue.release</description>
+	<description>JValue.release (JContainers)</description>
 	<content><![CDATA[release(${1:int object})]]></content>
 </snippet>

@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>solveFormSetter</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>JDB.solveFormSetter</description>
+	<description>JDB.solveFormSetter (JContainers)</description>
 	<content><![CDATA[solveFormSetter(${1:string path}, ${2:form value}, ${3:bool createMissingKeys})]]></content>
 </snippet>

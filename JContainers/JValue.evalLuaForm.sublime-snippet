@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>evalLuaForm</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>JValue.evalLuaForm</description>
+	<description>JValue.evalLuaForm (JContainers)</description>
 	<content><![CDATA[evalLuaForm(${1:int object}, ${2:string luaCode}, ${3:form default})]]></content>
 </snippet>

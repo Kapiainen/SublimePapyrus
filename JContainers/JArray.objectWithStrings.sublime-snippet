@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>objectWithStrings</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>JArray.objectWithStrings</description>
+	<description>JArray.objectWithStrings (JContainers)</description>
 	<content><![CDATA[objectWithStrings(${1:string[] values})]]></content>
 </snippet>

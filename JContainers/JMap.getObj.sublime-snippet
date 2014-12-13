@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>getObj</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>JMap.getObj</description>
+	<description>JMap.getObj (JContainers)</description>
 	<content><![CDATA[getObj(${1:int object}, ${2:string key}, ${3:int default})]]></content>
 </snippet>

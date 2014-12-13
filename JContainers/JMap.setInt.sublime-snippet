@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>setInt</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>JMap.setInt</description>
+	<description>JMap.setInt (JContainers)</description>
 	<content><![CDATA[setInt(${1:int object}, ${2:string key}, ${3:int value})]]></content>
 </snippet>

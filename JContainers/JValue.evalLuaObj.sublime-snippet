@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>evalLuaObj</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>JValue.evalLuaObj</description>
+	<description>JValue.evalLuaObj (JContainers)</description>
 	<content><![CDATA[evalLuaObj(${1:int object}, ${2:string luaCode}, ${3:int default})]]></content>
 </snippet>

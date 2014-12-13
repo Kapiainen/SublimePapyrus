@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>getInt</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>JFormDB.getInt</description>
+	<description>JFormDB.getInt (JContainers)</description>
 	<content><![CDATA[getInt(${1:form fKey}, ${2:string key})]]></content>
 </snippet>

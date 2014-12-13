@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>solveFltSetter</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>JValue.solveFltSetter</description>
+	<description>JValue.solveFltSetter (JContainers)</description>
 	<content><![CDATA[solveFltSetter(${1:int object}, ${2:string path}, ${3:float value}, ${4:bool createMissingKeys})]]></content>
 </snippet>

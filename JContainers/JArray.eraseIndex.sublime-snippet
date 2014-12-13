@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>eraseIndex</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>JArray.eraseIndex</description>
+	<description>JArray.eraseIndex (JContainers)</description>
 	<content><![CDATA[eraseIndex(${1:int object}, ${2:int index})]]></content>
 </snippet>

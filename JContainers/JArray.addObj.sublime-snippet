@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>addObj</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>JArray.addObj</description>
+	<description>JArray.addObj (JContainers)</description>
 	<content><![CDATA[addObj(${1:int object}, ${2:int container}, ${3:int addToIndex})]]></content>
 </snippet>

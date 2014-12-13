@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>addFromFormList</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>JArray.addFromFormList</description>
+	<description>JArray.addFromFormList (JContainers)</description>
 	<content><![CDATA[addFromFormList(${1:int object}, ${2:FormList source}, ${3:int insertAtIndex})]]></content>
 </snippet>

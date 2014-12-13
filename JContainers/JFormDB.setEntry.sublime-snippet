@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>setEntry</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>JFormDB.setEntry</description>
+	<description>JFormDB.setEntry (JContainers)</description>
 	<content><![CDATA[setEntry(${1:string storageName}, ${2:form fKey}, ${3:int entry})]]></content>
 </snippet>
