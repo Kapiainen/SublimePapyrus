@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetMenuResultFloat</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>uiextensions.GetMenuResultFloat (UIExtensions)</description>
+	<content><![CDATA[GetMenuResultFloat(${1:string menuName})]]></content>
+</snippet>

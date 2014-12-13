@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>UpdateTints</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>cosmeticmenu.UpdateTints (UIExtensions)</description>
+	<content><![CDATA[UpdateTints()]]></content>
+</snippet>

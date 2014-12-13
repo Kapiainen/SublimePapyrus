@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>OnInit</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>uilistmenu.OnInit (UIExtensions)</description>
+	<content><![CDATA[OnInit()]]></content>
+</snippet>

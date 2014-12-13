@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>SetPropertyBoolA</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>uimenubase.SetPropertyBoolA (UIExtensions)</description>
+	<content><![CDATA[SetPropertyBoolA(${1:string propertyName}, ${2:bool[] value})]]></content>
+</snippet>

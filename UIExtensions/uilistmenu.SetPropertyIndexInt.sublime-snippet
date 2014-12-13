@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>SetPropertyIndexInt</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>uilistmenu.SetPropertyIndexInt (UIExtensions)</description>
+	<content><![CDATA[SetPropertyIndexInt(${1:string propertyName}, ${2:int index}, ${3:int value})]]></content>
+</snippet>

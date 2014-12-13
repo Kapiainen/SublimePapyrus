@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetResultForm</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>uimenubase.GetResultForm (UIExtensions)</description>
+	<content><![CDATA[GetResultForm()]]></content>
+</snippet>

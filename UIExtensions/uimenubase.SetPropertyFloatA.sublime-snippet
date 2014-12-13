@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>SetPropertyFloatA</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>uimenubase.SetPropertyFloatA (UIExtensions)</description>
+	<content><![CDATA[SetPropertyFloatA(${1:string propertyName}, ${2:float[] value})]]></content>
+</snippet>

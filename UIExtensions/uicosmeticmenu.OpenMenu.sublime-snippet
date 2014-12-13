@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>OpenMenu</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>uicosmeticmenu.OpenMenu (UIExtensions)</description>
+	<content><![CDATA[OpenMenu(${1:Form aForm = None}, ${2:Form aReceiver = None})]]></content>
+</snippet>

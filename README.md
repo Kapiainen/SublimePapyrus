@@ -3,7 +3,7 @@ SublimePapyrus
 
 Sublime Text 2 package for the Papyrus scripting language.
 
-Includes function/event snippets and syntax definitions for Skyrim (1.9.32.0.8), [SKSE](http://skse.silverlock.org) (1.7.1), [SkyUI SDK](https://github.com/schlangster/skyui/wiki) (4.1), [FISS](http://www.nexusmods.com/skyrim/mods/48265/) (1.21), [NetImmerse Override](http://www.nexusmods.com/skyrim/mods/37481/) (2.9.6), [DienesTools](http://www.nexusmods.com/skyrim/mods/54325/) (1.0), [JContainers](http://www.nexusmods.com/skyrim/mods/49743/) (3.1.1), [PapyrusUtil](http://www.nexusmods.com/skyrim/mods/58705/) (2.8), and [SkyUILib](https://github.com/schlangster/skyui-lib/wiki) (1).
+Includes function/event snippets and syntax definitions for Skyrim (1.9.32.0.8), [SKSE](http://skse.silverlock.org) (1.7.1), [SkyUI SDK](https://github.com/schlangster/skyui/wiki) (4.1), [FISS](http://www.nexusmods.com/skyrim/mods/48265/) (1.21), [NetImmerse Override](http://www.nexusmods.com/skyrim/mods/37481/) (2.9.6), [DienesTools](http://www.nexusmods.com/skyrim/mods/54325/) (1.0), [JContainers](http://www.nexusmods.com/skyrim/mods/49743/) (3.1.1), [PapyrusUtil](http://www.nexusmods.com/skyrim/mods/58705/) (2.8), [SkyUILib](https://github.com/schlangster/skyui-lib/wiki) (1), and [UIExtensions](http://www.nexusmods.com/skyrim/mods/57046/) (1.0.0).
 
 How do I use the package?
 - Install Sublime Text 2, if you do not have it yet. Launch it once in order to make sure all necessary folders are created.

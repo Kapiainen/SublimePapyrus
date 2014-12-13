@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>RegisterEvents</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>cosmeticmenu.RegisterEvents (UIExtensions)</description>
+	<content><![CDATA[RegisterEvents()]]></content>
+</snippet>

@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>SetPropertyIndexBool</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>uiwheelmenu.SetPropertyIndexBool (UIExtensions)</description>
+	<content><![CDATA[SetPropertyIndexBool(${1:string propertyName}, ${2:int index}, ${3:bool value})]]></content>
+</snippet>

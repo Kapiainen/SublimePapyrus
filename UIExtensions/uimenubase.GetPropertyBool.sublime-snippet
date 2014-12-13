@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetPropertyBool</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>uimenubase.GetPropertyBool (UIExtensions)</description>
+	<content><![CDATA[GetPropertyBool(${1:string propertyName})]]></content>
+</snippet>

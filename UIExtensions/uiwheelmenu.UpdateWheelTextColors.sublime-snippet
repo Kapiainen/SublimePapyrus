@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>UpdateWheelTextColors</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>uiwheelmenu.UpdateWheelTextColors (UIExtensions)</description>
+	<content><![CDATA[UpdateWheelTextColors()]]></content>
+</snippet>

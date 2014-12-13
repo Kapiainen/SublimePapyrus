@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>InitMenu</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>uiextensions.InitMenu (UIExtensions)</description>
+	<content><![CDATA[InitMenu(${1:string menuName})]]></content>
+</snippet>

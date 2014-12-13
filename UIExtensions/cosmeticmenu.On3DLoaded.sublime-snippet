@@ -1,0 +1,8 @@
+<snippet>
+	<tabTrigger>On3DLoaded</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>cosmeticmenu.On3DLoaded (UIExtensions)</description>
+	<content><![CDATA[Event On3DLoaded(${1:ObjectReference akRef})
+${0}
+EndEvent]]></content>
+</snippet>

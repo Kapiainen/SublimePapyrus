@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>UpdateWheelEnabledOptions</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>uiwheelmenu.UpdateWheelEnabledOptions (UIExtensions)</description>
+	<content><![CDATA[UpdateWheelEnabledOptions()]]></content>
+</snippet>

@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>AddEntryItem</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>uilistmenu.AddEntryItem (UIExtensions)</description>
+	<content><![CDATA[AddEntryItem(${1:string entryName}, ${2:int entryParent}, ${3:int entryCallback}, ${4:bool entryHasChildren = false})]]></content>
+</snippet>

@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetResultInt</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>uilistmenu.GetResultInt (UIExtensions)</description>
+	<content><![CDATA[GetResultInt()]]></content>
+</snippet>

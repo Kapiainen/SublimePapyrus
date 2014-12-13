@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>UpdateWheelIcons</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>uiwheelmenu.UpdateWheelIcons (UIExtensions)</description>
+	<content><![CDATA[UpdateWheelIcons()]]></content>
+</snippet>

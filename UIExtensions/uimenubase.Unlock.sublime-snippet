@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>Unlock</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>uimenubase.Unlock (UIExtensions)</description>
+	<content><![CDATA[Unlock()]]></content>
+</snippet>

@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>SetPropertyForm</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>uimagicmenu.SetPropertyForm (UIExtensions)</description>
+	<content><![CDATA[SetPropertyForm(${1:string propertyName}, ${2:Form value})]]></content>
+</snippet>
