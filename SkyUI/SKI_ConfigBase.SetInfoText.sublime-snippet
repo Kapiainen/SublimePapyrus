@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>SetInfoText</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>SKI_ConfigBase.SetInfoText</description>
+	<description>SKI_ConfigBase.SetInfoText (SkyUI)</description>
 	<content><![CDATA[SetInfoText(${1:string a_text})]]></content>
 </snippet>

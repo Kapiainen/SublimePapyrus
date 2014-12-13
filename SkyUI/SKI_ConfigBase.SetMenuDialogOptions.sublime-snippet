@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>SetMenuDialogOptions</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>SKI_ConfigBase.SetMenuDialogOptions</description>
+	<description>SKI_ConfigBase.SetMenuDialogOptions (SkyUI)</description>
 	<content><![CDATA[SetMenuDialogOptions(${1:string[] a_options})]]></content>
 </snippet>

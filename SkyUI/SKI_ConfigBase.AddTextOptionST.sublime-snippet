@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>AddTextOptionST</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>SKI_ConfigBase.AddTextOptionST</description>
+	<description>SKI_ConfigBase.AddTextOptionST (SkyUI)</description>
 	<content><![CDATA[AddTextOptionST(${1:string a_stateName}, ${2:string a_text}, ${3:string a_value}, ${4:int a_flags = 0})]]></content>
 </snippet>

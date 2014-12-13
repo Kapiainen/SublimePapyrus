@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>SetTitleText</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>SKI_ConfigBase.SetTitleText</description>
+	<description>SKI_ConfigBase.SetTitleText (SkyUI)</description>
 	<content><![CDATA[SetTitleText(${1:string a_text})]]></content>
 </snippet>

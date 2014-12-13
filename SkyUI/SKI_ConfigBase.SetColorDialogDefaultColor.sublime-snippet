@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>SetColorDialogDefaultColor</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>SKI_ConfigBase.SetColorDialogDefaultColor</description>
+	<description>SKI_ConfigBase.SetColorDialogDefaultColor (SkyUI)</description>
 	<content><![CDATA[SetColorDialogDefaultColor(${1:int a_color})]]></content>
 </snippet>

@@ -1,7 +1,7 @@
 <snippet>
 	<tabTrigger>OnConfigClose</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>SKI_ConfigBase.OnConfigClose</description>
+	<description>SKI_ConfigBase.OnConfigClose (SkyUI)</description>
 	<content><![CDATA[Event OnConfigClose()
 ${0}
 EndEvent]]></content>

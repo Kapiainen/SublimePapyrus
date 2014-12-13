@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>GetCustomControl</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>SKI_ConfigBase.GetCustomControl</description>
+	<description>SKI_ConfigBase.GetCustomControl (SkyUI)</description>
 	<content><![CDATA[GetCustomControl(${1:int a_keyCode})]]></content>
 </snippet>

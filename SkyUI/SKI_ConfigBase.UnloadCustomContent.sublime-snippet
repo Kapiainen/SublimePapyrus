@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>UnloadCustomContent</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>SKI_ConfigBase.UnloadCustomContent</description>
+	<description>SKI_ConfigBase.UnloadCustomContent (SkyUI)</description>
 	<content><![CDATA[UnloadCustomContent()]]></content>
 </snippet>

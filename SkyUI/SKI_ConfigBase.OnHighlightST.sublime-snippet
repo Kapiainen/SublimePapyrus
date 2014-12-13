@@ -1,7 +1,7 @@
 <snippet>
 	<tabTrigger>OnHighlightST</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>SKI_ConfigBase.OnHighlightST</description>
+	<description>SKI_ConfigBase.OnHighlightST (SkyUI)</description>
 	<content><![CDATA[Event OnHighlightST()
 ${0}
 EndEvent]]></content>

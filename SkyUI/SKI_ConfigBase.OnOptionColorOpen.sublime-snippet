@@ -1,7 +1,7 @@
 <snippet>
 	<tabTrigger>OnOptionColorOpen</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>SKI_ConfigBase.OnOptionColorOpen</description>
+	<description>SKI_ConfigBase.OnOptionColorOpen (SkyUI)</description>
 	<content><![CDATA[Event OnOptionColorOpen(${1:int a_option})
 ${0}
 EndEvent]]></content>

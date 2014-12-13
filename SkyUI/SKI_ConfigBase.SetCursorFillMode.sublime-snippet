@@ -1,6 +1,6 @@
 <snippet>
 	<tabTrigger>SetCursorFillMode</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>SKI_ConfigBase.SetCursorFillMode</description>
+	<description>SKI_ConfigBase.SetCursorFillMode (SkyUI)</description>
 	<content><![CDATA[SetCursorFillMode(${1:int a_fillMode})]]></content>
 </snippet>

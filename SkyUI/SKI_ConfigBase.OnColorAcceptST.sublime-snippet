@@ -1,7 +1,7 @@
 <snippet>
 	<tabTrigger>OnColorAcceptST</tabTrigger>
 	<scope>source.papyrus</scope>
-	<description>SKI_ConfigBase.OnColorAcceptST</description>
+	<description>SKI_ConfigBase.OnColorAcceptST (SkyUI)</description>
 	<content><![CDATA[Event OnColorAcceptST(${1:int a_color})
 ${0}
 EndEvent]]></content>
