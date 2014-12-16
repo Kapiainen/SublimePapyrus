@@ -20,17 +20,17 @@
     <array>
         <dict>
             <key>begin</key>
-            <string>&quot;</string>
+            <string>(?&lt;!\\)&quot;</string>
             <key>end</key>
-            <string>&quot;</string>
+            <string>(?&lt;!\\)&quot;</string>
             <key>name</key>
             <string>string.quoted.double.papyrus</string>
         </dict>
         <dict>
             <key>begin</key>
-            <string>&apos;</string>
+            <string>(?&lt;!\\)&apos;</string>
             <key>end</key>
-            <string>&apos;</string>
+            <string>(?&lt;!\\)&apos;</string>
             <key>name</key>
             <string>string.quoted.single.papyrus</string>
         </dict>
