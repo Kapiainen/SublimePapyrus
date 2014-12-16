@@ -1,6 +1,6 @@
 [
     {
-        "caption": "Papyrus INI: Create default INI file",
+        "caption": "SublimePapyrus INI: Create default INI file",
         "command": "create_default_settings_file"
     }
 ]

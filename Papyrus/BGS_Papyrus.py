@@ -23,7 +23,7 @@ scripts=%s
 # The path to PapyrusCompiler.exe
 compiler=%s
 
-# The folder you wish to output the .pex files to. If commented out, then .pex files are placed in the folder one level above the .psc file.
+# The folder you wish to output the .pex files to. If commented out (# at the start of a line), then .pex files are placed in the folder one level above the .psc file.
 output=%s
 
 # The name of the file containing Papyrus' flags. The file has to be among the folders that are imported, which includes the scripts folder defined above and the folder containing the .psc file(s) to be compiled.
@@ -31,18 +31,21 @@ flags=%s
 
 [Import]
 # Additional folders that contain .psc you wish to import when compiling.
+# Template:
+# pathN=Drive:\\Folder1\\Folder2\\Folder_with_PSC_files
 # The order in which .psc files are processed is:
 # - the path containing the .psc file to compile provided that this path is not the same as the path containing the vanilla Skyrim .psc files
 # - path1
+# - path2
 # .
 # .
 # .
 # - pathN
-# - the path containing the vanilla Skyrim .psc files
+# - the path containing the vanilla Skyrim .psc files ("scripts=" key above)
 #
-# Template
-# pathN=DriveName:\\FolderName\\SubfolderName\\
-path1=C:\\SKSE\\Scripts\\Source
+# For example if you want to separate the vanilla scripts (defined in the "scripts=" key) and SKSE scripts into their own folders (defined as an additional import), then you would define the path to SKSE's .psc files as the value for a "pathN" key.
+# path1=Drive:\\Folder\\Subfolder_containing_SKSE_PSC_files
+#
 """ % (END_USER_SCRIPTS, END_USER_COMPILER, END_USER_OUTPUT, END_USER_FLAGS)
 
 def getPrefs(filePath):
