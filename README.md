@@ -8,9 +8,10 @@ Includes function/event snippets and syntax definitions for Skyrim (1.9.32.0.8),
 How do I use the package?
 - Install Sublime Text 2, if you do not have it yet. Launch it once in order to make sure all necessary folders are created.
 - Get a copy of SublimePapyrus from the repository (recommended) or the CK wiki, if the repository is inaccessible.
-- Copy the folder labeled "Papyrus" to "%AppData%\Sublime Text 2\Packages" or "\Sublime Text 2\Data\Packages", if you are using the portable version of Sublime Text 2.
+- Loose files: Copy the folder labeled "Papyrus" to "%AppData%\Sublime Text 2\Packages" or "\Sublime Text 2\Data\Packages", if you are using the portable version of Sublime Text 2.
+- Packaged: Copy SublimePapyrus.sublime-package (and any other .sublime-package files you want) to "%AppData%\Sublime Text 2\Data\Installed Packages" or "\Sublime Text 2\Data\Installed Packages", if you are using the portable version of Sublime Text 2.
 - Copy the contents of the other folders, if you intend to use those resources, and paste them into the folder labeled "Papyrus".
-- If you have Skyrim installed outside of "C:\Program Files (x86)\Steam\steamapps\common\skyrim\" or "C:\Program Files\Steam\steamapps\common\skyrim\", then you need to open the Command Palette (CTRL+SHIFT+P), type in "Papyrus INI". An option called "Papyrus INI: Create default INI file" should show up. Select it and a file called "SublimePapyrus.ini" will be created in My Documents. This file contains paths to compiled scripts, script sources, the Papyrus compiler, and paths to libraries you wish to import (optional). Edit the paths according to where you have the relevant files (usually where Skyrim has been installed).
+- If you have Skyrim installed outside of "C:\Program Files (x86)\Steam\steamapps\common\skyrim\" or "C:\Program Files\Steam\steamapps\common\skyrim\", then you need to open the Command Palette (CTRL+SHIFT+P), type in "SublimePapyrus INI". An option called "SublimePapyrus INI: Create default INI file" should show up. Select it and a file called "SublimePapyrus.ini" will be created in My Documents. This file contains paths to compiled scripts, script sources, the Papyrus compiler, and paths to libraries you wish to import (optional). Edit the paths according to where you have the relevant files (usually where Skyrim has been installed).
  
 
 How do I use the program SublimePapyrus?
