@@ -1,7 +1,17 @@
 import sublime, sublime_plugin
 import os
-import ConfigParser
-from StringIO import StringIO
+import sys
+PYTHON_VERSION = sys.version_info
+SUBLIME_TEXT_VERSION = 2
+if (PYTHON_VERSION[0] == 3) and (PYTHON_VERSION[1] == 3):
+    # 3.3
+    SUBLIME_TEXT_VERSION = 3
+if SUBLIME_TEXT_VERSION == 2:
+    import ConfigParser
+    from StringIO import StringIO
+elif SUBLIME_TEXT_VERSION == 3:
+    import configparser
+    from io import StringIO
 
 # This may only work on Windows 7 and up -- fine for our purposes
 INI_LOCATION = os.path.expanduser("~/Documents/SublimePapyrus.ini")
@@ -56,7 +66,10 @@ def getPrefs(filePath):
     ret["flags"] = END_USER_FLAGS
     ret["import"] = END_USER_SCRIPTS
     if (os.path.exists(INI_LOCATION)):
-        parser = ConfigParser.ConfigParser()
+        if SUBLIME_TEXT_VERSION == 2:
+            parser = ConfigParser.ConfigParser()
+        elif SUBLIME_TEXT_VERSION == 3:
+            parser = configparser.ConfigParser()
         parser.read([INI_LOCATION])
 
         if (parser.has_section("Skyrim")):
@@ -82,7 +95,10 @@ def getPrefs(filePath):
         
         if (parser.get("Skyrim", "scripts") not in ret["import"]):
             ret["import"].append(parser.get("Skyrim", "scripts"))
-        ret["import"] = ";".join(filter(None, ret["import"]))
+        if SUBLIME_TEXT_VERSION == 2:
+            ret["import"] = ";".join(filter(None, ret["import"]))
+        elif SUBLIME_TEXT_VERSION == 3:
+            ret["import"] = ";".join([_f for _f in ret["import"] if _f])
 
     ret["filename"] = fileName
     return ret
