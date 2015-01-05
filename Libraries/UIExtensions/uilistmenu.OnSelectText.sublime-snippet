@@ -1,0 +1,8 @@
+<snippet>
+	<tabTrigger>OnSelectText</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>uilistmenu.OnSelectText (UIExtensions)</description>
+	<content><![CDATA[Event OnSelectText(${1:string eventName}, ${2:string strArg}, ${3:float numArg}, ${4:Form formArg})
+${0}
+EndEvent]]></content>
+</snippet>

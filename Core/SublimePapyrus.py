@@ -1,17 +1,16 @@
 import sublime, sublime_plugin
+import re
 import os
 import sys
 PYTHON_VERSION = sys.version_info
-SUBLIME_TEXT_VERSION = 2
-if (PYTHON_VERSION[0] == 3) and (PYTHON_VERSION[1] == 3):
-    # 3.3
-    SUBLIME_TEXT_VERSION = 3
-if SUBLIME_TEXT_VERSION == 2:
+if PYTHON_VERSION[0] == 2:
     import ConfigParser
     from StringIO import StringIO
-elif SUBLIME_TEXT_VERSION == 3:
+elif PYTHON_VERSION[0] == 3:
     import configparser
     from io import StringIO
+    import importlib
+    BUILD_SYSTEM = importlib.import_module("Default.exec")
 
 # This may only work on Windows 7 and up -- fine for our purposes
 INI_LOCATION = os.path.expanduser("~/Documents/SublimePapyrus.ini")
@@ -58,6 +57,13 @@ flags=%s
 #
 """ % (END_USER_SCRIPTS, END_USER_COMPILER, END_USER_OUTPUT, END_USER_FLAGS)
 
+ERROR_HIGHLIGHT_KEY = "papyrus_error"
+ERROR_HIGHLIGHT_SCOPE = "invalid"
+
+def plugin_loaded():
+    global USER_SETTINGS
+    USER_SETTINGS = sublime.load_settings('SublimePapyrus.sublime-settings')
+
 def getPrefs(filePath):
     fileDir, fileName = os.path.split(filePath)
     ret = {}
@@ -66,9 +72,9 @@ def getPrefs(filePath):
     ret["flags"] = END_USER_FLAGS
     ret["import"] = END_USER_SCRIPTS
     if (os.path.exists(INI_LOCATION)):
-        if SUBLIME_TEXT_VERSION == 2:
+        if PYTHON_VERSION[0] == 2:
             parser = ConfigParser.ConfigParser()
-        elif SUBLIME_TEXT_VERSION == 3:
+        elif PYTHON_VERSION[0] == 3:
             parser = configparser.ConfigParser()
         parser.read([INI_LOCATION])
 
@@ -95,9 +101,9 @@ def getPrefs(filePath):
         
         if (parser.get("Skyrim", "scripts") not in ret["import"]):
             ret["import"].append(parser.get("Skyrim", "scripts"))
-        if SUBLIME_TEXT_VERSION == 2:
+        if PYTHON_VERSION[0] == 2:
             ret["import"] = ";".join(filter(None, ret["import"]))
-        elif SUBLIME_TEXT_VERSION == 3:
+        elif PYTHON_VERSION[0] == 3:
             ret["import"] = ";".join([_f for _f in ret["import"] if _f])
 
     ret["filename"] = fileName
@@ -119,7 +125,8 @@ class CompilePapyrusCommand(sublime_plugin.WindowCommand):
 class CreateDefaultSettingsFileCommand(sublime_plugin.WindowCommand):
     def run(self, **args):
         if os.path.exists(INI_LOCATION):
-            sublime.status_message("ERROR: INI file already exists at %s" % (INI_LOCATION))
+            if sublime.ok_cancel_dialog("INI file already exists at %s.\n Do you want to open the file?" % INI_LOCATION):
+                self.window.open_file(INI_LOCATION)
         else:
             outHandle = open(INI_LOCATION, "w")
             outHandle.write(DEFAULT_INI_TEXT)
@@ -160,3 +167,66 @@ class AssemblePapyrusCommand(sublime_plugin.WindowCommand):
         args["working_dir"] = scriptDir
 
         self.window.run_command("exec", args)
+
+if PYTHON_VERSION[0] == 3:
+    class ExecCommand(BUILD_SYSTEM.ExecCommand):
+        def finish(self, proc):
+            super(ExecCommand, self).finish(proc)
+            source = sublime.active_window().active_view()
+            if source != None:
+                if HasExtension(source.file_name(), "psc"):
+                    source.erase_regions(ERROR_HIGHLIGHT_KEY)
+                    if USER_SETTINGS.get('highlight_compiler_errors', False):
+                        output = GetOutput(self.output_view)
+                        if output != None:
+                            pattern = GetPattern(self.output_view)
+                            if pattern != None:
+                                errors = GetErrors(output, pattern)
+                                if errors != None:
+                                    regions = GetRegions(source, errors)
+                                    if regions != None:
+                                        source.add_regions(ERROR_HIGHLIGHT_KEY, regions, ERROR_HIGHLIGHT_SCOPE)
+                                elif USER_SETTINGS.get('hide_successful_build_results', False):
+                                    self.window.run_command("hide_panel", {"panel": "output.exec"})
+
+    def GetOutput(view):
+        if view != None:
+            return view.substr(sublime.Region(0, view.size()))
+        else:
+            return None
+
+    def GetPattern(view):
+        if view != None:
+            return view.settings().get("result_file_regex")
+        else:
+            return None
+
+    def GetErrors(output, pattern):
+        lines = output.rstrip().split('\n')
+        matches = []
+        for line in lines:
+            match = re.findall(pattern, line)
+            if len(match) > 0:
+                matches.append(match)
+        if len(matches) > 0:
+            return matches
+        else:
+            return None
+
+    def HasExtension(filename, extension):
+        match = re.match("^.*\." + extension + "$", filename, re.IGNORECASE)
+        if match != None:
+            return True
+        else:
+            return False
+
+    def GetRegions(view, errors):
+        regions  = []
+        for error in errors:
+            region = view.line(sublime.Region(view.text_point(int(error[0][1]) - 1, 0)))
+            regions.append(region)
+            del region
+        if len(regions) > 0:
+            return regions
+        else:
+            return None

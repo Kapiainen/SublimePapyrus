@@ -8,10 +8,10 @@ This package can handle compiling source files (.psc), disassembling bytecode
 
 If you're using an unorthodox installation (i.e. your Skyrim files are moved
 out of the Steam directory), you'll want to set up an INI file so Sublime can
-know where your compiler is, where the compiled files should go, etc. 
+know where your compiler is, where the compiled files should go, etc.
 
-To create the default version of this file, select "Papyrus INI: Create 
-default INI file" from the command palette (brought up with Ctrl-Shift-P). 
+To create the default version of this file, select "SublimePapyrus INI: Create 
+default INI file" from the command palette (brought up with Ctrl-Shift-P).
 
 (Note that to disassemble .pex files or convert .pas files, they must be in 
 the same directory as the PapyrusAssembler.exe.)

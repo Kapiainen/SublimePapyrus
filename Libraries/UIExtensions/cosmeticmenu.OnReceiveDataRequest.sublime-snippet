@@ -1,0 +1,8 @@
+<snippet>
+	<tabTrigger>OnReceiveDataRequest</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>cosmeticmenu.OnReceiveDataRequest (UIExtensions)</description>
+	<content><![CDATA[Event OnReceiveDataRequest(${1:string eventName}, ${2:string strArg}, ${3:float numArg}, ${4:Form formArg})
+${0}
+EndEvent]]></content>
+</snippet>
