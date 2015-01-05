@@ -1,8 +1,0 @@
-<snippet>
-    <tabTrigger>State</tabTrigger>
-    <scope>source.papyrus</scope>
-    <description>State</description>
-	<content><![CDATA[State ${1:$SELECTION}
-	${0}
-EndState]]></content>
-</snippet>

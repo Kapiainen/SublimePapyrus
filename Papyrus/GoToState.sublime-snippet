@@ -1,6 +1,0 @@
-<snippet>
-    <tabTrigger>GoToState</tabTrigger>
-    <scope>source.papyrus</scope>
-    <description>GoToState()</description>
-    <content><![CDATA[GoToState(${1:String asState})]]></content>
-</snippet>
