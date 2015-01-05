@@ -1,0 +1,8 @@
+<snippet>
+	<tabTrigger>OnBeginState</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>OnBeginState</description>
+	<content><![CDATA[Event OnBeginState()
+${0}
+EndEvent]]></content>
+</snippet>

@@ -1,0 +1,6 @@
+<snippet>
+    <tabTrigger>GetState</tabTrigger>
+    <scope>source.papyrus</scope>
+    <description>GetState()</description>
+    <content><![CDATA[GetState()]]></content>
+</snippet>

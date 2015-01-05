@@ -1,0 +1,10 @@
+<snippet>
+    <tabTrigger>For</tabTrigger>
+    <scope>source.papyrus</scope>
+    <description>Pseudo For Loop</description>
+    <content><![CDATA[Int ${1:iCount} = 0
+While(${1:iCount} < ${2:maxSize})
+	${0}
+	${1:iCount} += 1
+EndWhile]]></content>
+</snippet>

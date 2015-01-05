@@ -1,0 +1,8 @@
+<snippet>
+    <tabTrigger>While</tabTrigger>
+    <scope>source.papyrus</scope>
+    <description>While Loop</description>
+	<content><![CDATA[While(${1:$SELECTION})
+	${0}
+EndWhile]]></content>
+</snippet>

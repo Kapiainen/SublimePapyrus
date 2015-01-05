@@ -1,0 +1,6 @@
+<snippet>
+    <tabTrigger>Property</tabTrigger>
+    <scope>source.papyrus</scope>
+    <description>Property</description>
+    <content><![CDATA[${1:Type} Property ${2:PropertyName} ${3:Auto}]]></content>
+</snippet>
