@@ -1,0 +1,36 @@
+[
+	{
+	    "id": "preferences",
+	    "children":
+	    [
+	        {
+	            "caption": "Package Settings",
+	            "mnemonic": "P",
+	            "id": "package-settings",
+	            "children":
+	            [
+	                {
+	                    "caption": "SublimePapyrus",
+	                    "children":
+	                    [
+	                        {
+	                            "caption": "Settings – Default",
+	                            "command": "open_file", "args":
+	                            {
+	                                "file": "${packages}/SublimePapyrus/SublimePapyrus.sublime-settings"
+	                            }
+	                        },
+	                        {
+	                            "caption": "Settings – User",
+	                            "command": "open_file", "args":
+	                            {
+	                                "file": "${packages}/User/SublimePapyrus.sublime-settings"
+	                            }
+	                        }
+	                    ]
+	                }
+	            ]
+	        }
+	    ]
+	}
+]
