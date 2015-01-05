@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>UnregisterEvents</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>cosmeticmenu.UnregisterEvents (UIExtensions)</description>
+	<content><![CDATA[UnregisterEvents()]]></content>
+</snippet>
