@@ -2,6 +2,7 @@ import sublime, sublime_plugin
 import re
 import os
 import sys
+# ST2 uses Python 2.6 and ST3 uses Python 3.3.
 PYTHON_VERSION = sys.version_info
 if PYTHON_VERSION[0] == 2:
     import ConfigParser
@@ -12,10 +13,8 @@ elif PYTHON_VERSION[0] == 3:
     import importlib
     BUILD_SYSTEM = importlib.import_module("Default.exec")
 
-# This may only work on Windows 7 and up -- fine for our purposes
+# INI related variables.
 INI_LOCATION = os.path.expanduser("~/Documents/SublimePapyrus.ini")
-
-# Default values for a standardized Steam installation (for end-users and modders)
 if (os.path.exists("C:\\Program Files (x86)")):
     END_USER_ROOT = "C:\\Program Files (x86)\\Steam\\steamapps\\common\\skyrim"
 else:
@@ -24,7 +23,6 @@ END_USER_OUTPUT   = os.path.join(END_USER_ROOT, "Data\\Scripts")
 END_USER_SCRIPTS  = os.path.join(END_USER_OUTPUT, "Source")
 END_USER_COMPILER = os.path.join(END_USER_ROOT, "Papyrus Compiler\\PapyrusCompiler.exe")
 END_USER_FLAGS    = "TESV_Papyrus_Flags.flg"
-
 DEFAULT_INI_TEXT = """[Skyrim]
 # The path to the folder containing the vanilla Skyrim .psc files.
 scripts=%s
@@ -57,6 +55,7 @@ flags=%s
 #
 """ % (END_USER_SCRIPTS, END_USER_COMPILER, END_USER_OUTPUT, END_USER_FLAGS)
 
+# Variables specific to compiler error highlighting.
 ERROR_HIGHLIGHT_KEY = "papyrus_error"
 ERROR_HIGHLIGHT_SCOPE = "invalid"
 
@@ -77,7 +76,6 @@ def getPrefs(filePath):
         elif PYTHON_VERSION[0] == 3:
             parser = configparser.ConfigParser()
         parser.read([INI_LOCATION])
-
         if (parser.has_section("Skyrim")):
             if(parser.has_option("Skyrim", "compiler")):
                 ret["compiler"] = parser.get("Skyrim", "compiler")
@@ -89,7 +87,6 @@ def getPrefs(filePath):
 
             if(parser.has_option("Skyrim", "flags")):
                 ret["flags"] = parser.get("Skyrim", "flags")
-
         ret["import"] = []
         if (fileDir != parser.get("Skyrim", "scripts")):
             ret["import"].append(fileDir)
@@ -98,16 +95,25 @@ def getPrefs(filePath):
                 if (configKey.startswith("path")):
                     if (os.path.exists(configValue)):
                             ret["import"].append(configValue)
-        
         if (parser.get("Skyrim", "scripts") not in ret["import"]):
             ret["import"].append(parser.get("Skyrim", "scripts"))
         if PYTHON_VERSION[0] == 2:
             ret["import"] = ";".join(filter(None, ret["import"]))
         elif PYTHON_VERSION[0] == 3:
             ret["import"] = ";".join([_f for _f in ret["import"] if _f])
-
     ret["filename"] = fileName
     return ret
+
+class CreateDefaultSettingsFileCommand(sublime_plugin.WindowCommand):
+    def run(self, **args):
+        if os.path.exists(INI_LOCATION):
+            if sublime.ok_cancel_dialog("INI file already exists at %s.\n Do you want to open the file?" % INI_LOCATION):
+                self.window.open_file(INI_LOCATION)
+        else:
+            outHandle = open(INI_LOCATION, "w")
+            outHandle.write(DEFAULT_INI_TEXT)
+            outHandle.close()
+            self.window.open_file(INI_LOCATION)
 
 class CompilePapyrusCommand(sublime_plugin.WindowCommand):
     def run(self, **args):
@@ -122,32 +128,17 @@ class CompilePapyrusCommand(sublime_plugin.WindowCommand):
         else:
             sublime.status_message("No configuration for %s" % os.path.dirname(args["cmd"]))
 
-class CreateDefaultSettingsFileCommand(sublime_plugin.WindowCommand):
-    def run(self, **args):
-        if os.path.exists(INI_LOCATION):
-            if sublime.ok_cancel_dialog("INI file already exists at %s.\n Do you want to open the file?" % INI_LOCATION):
-                self.window.open_file(INI_LOCATION)
-        else:
-            outHandle = open(INI_LOCATION, "w")
-            outHandle.write(DEFAULT_INI_TEXT)
-            outHandle.close()
-            self.window.open_file(INI_LOCATION)
-
 class DisassemblePapyrusCommand(sublime_plugin.WindowCommand):
     def run(self, **args):
         scriptPath = args["cmd"]
-
         scriptDir = os.path.dirname(scriptPath)
         assembler = os.path.join(scriptDir, "PapyrusAssembler.exe")            
         scriptPath = os.path.splitext(os.path.basename(scriptPath))[0]
         args["cmd"] = [assembler, scriptPath]
         args["cmd"].append("-V")
         args["cmd"].append("-D")
-
         args["working_dir"] = scriptDir
-
         self.window.run_command("exec", args)
-
         disassembly = os.path.join(scriptDir, scriptPath + ".disassemble.pas")
         disassemblyFinal = os.path.join(scriptDir, scriptPath + ".pas")
         os.rename(disassembly, disassemblyFinal)
@@ -157,15 +148,12 @@ class DisassemblePapyrusCommand(sublime_plugin.WindowCommand):
 class AssemblePapyrusCommand(sublime_plugin.WindowCommand):
     def run(self, **args):
         scriptPath = args["cmd"]
-
         scriptDir = os.path.dirname(scriptPath)
         assembler = os.path.join(scriptDir, "PapyrusAssembler.exe")            
         scriptPath = os.path.splitext(os.path.basename(scriptPath))[0]
         args["cmd"] = [assembler, scriptPath]
         args["cmd"].append("-V")
-
         args["working_dir"] = scriptDir
-
         self.window.run_command("exec", args)
 
 if PYTHON_VERSION[0] == 3:
