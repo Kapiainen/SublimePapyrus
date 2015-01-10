@@ -1,4 +1,5 @@
 {
 	"highlight_compiler_errors": false,
-	"hide_successful_build_results": false
+	"hide_successful_build_results": false,
+	"word_wrap": false
 }
