@@ -58,6 +58,7 @@ flags=%s
 # Variables specific to compiler error highlighting.
 ERROR_HIGHLIGHT_KEY = "papyrus_error"
 ERROR_HIGHLIGHT_SCOPE = "invalid"
+PAPYRUS_SCRIPT_EXTENSION = ".psc"
 
 def plugin_loaded():
     global USER_SETTINGS
@@ -79,12 +80,10 @@ def getPrefs(filePath):
         if (parser.has_section("Skyrim")):
             if(parser.has_option("Skyrim", "compiler")):
                 ret["compiler"] = parser.get("Skyrim", "compiler")
-
             if(parser.has_option("Skyrim", "output")):
                 ret["output"] = parser.get("Skyrim", "output")
             else:
                 ret["output"] = os.path.dirname(fileDir)
-
             if(parser.has_option("Skyrim", "flags")):
                 ret["flags"] = parser.get("Skyrim", "flags")
         ret["import"] = []
@@ -94,7 +93,7 @@ def getPrefs(filePath):
             for configKey, configValue in parser.items("Import"):
                 if (configKey.startswith("path")):
                     if (os.path.exists(configValue)):
-                            ret["import"].append(configValue)
+                        ret["import"].append(configValue)
         if (parser.get("Skyrim", "scripts") not in ret["import"]):
             ret["import"].append(parser.get("Skyrim", "scripts"))
         if PYTHON_VERSION[0] == 2:
@@ -162,7 +161,7 @@ if PYTHON_VERSION[0] == 3:
             super(ExecCommand, self).finish(proc)
             source = sublime.active_window().active_view()
             if source != None:
-                if HasExtension(source.file_name(), "psc"):
+                if source.file_name().endswith(PAPYRUS_SCRIPT_EXTENSION):
                     source.erase_regions(ERROR_HIGHLIGHT_KEY)
                     if USER_SETTINGS.get('highlight_compiler_errors', False):
                         output = GetOutput(self.output_view)
@@ -192,21 +191,15 @@ if PYTHON_VERSION[0] == 3:
     def GetErrors(output, pattern):
         lines = output.rstrip().split('\n')
         matches = []
+        regex = re.compile(pattern)
         for line in lines:
-            match = re.findall(pattern, line)
+            match = regex.findall(line)
             if len(match) > 0:
                 matches.append(match)
         if len(matches) > 0:
             return matches
         else:
             return None
-
-    def HasExtension(filename, extension):
-        match = re.match("^.*\." + extension + "$", filename, re.IGNORECASE)
-        if match != None:
-            return True
-        else:
-            return False
 
     def GetRegions(view, errors):
         regions  = []
@@ -218,3 +211,70 @@ if PYTHON_VERSION[0] == 3:
             return regions
         else:
             return None
+
+class OpenPapyrusScriptCommand(sublime_plugin.WindowCommand):
+    def run(self):
+        self.window.show_input_panel("Open script:", "", self.on_done, None, None)
+
+    def on_done(self, text):
+        if text != "":
+            folderpaths = []
+            if PYTHON_VERSION[0] == 2:
+                parser = ConfigParser.ConfigParser()
+            elif PYTHON_VERSION[0] == 3:
+                parser = configparser.ConfigParser()
+            parser.read([INI_LOCATION])
+            if parser.has_section("Import"):
+                for configKey, configValue in parser.items("Import"):
+                    if configKey.startswith("path"):
+                        if os.path.exists(configValue):
+                            folderpaths.append(configValue)          
+            folderpaths.reverse()
+            filepath = self.window.active_view().file_name()
+            if filepath != None and filepath != "":
+                folderpath = filepath[:-(len(filepath) - (filepath.rfind("\\") + 1))]
+                if os.path.exists(folderpath):
+                    folderpaths.insert(0, folderpath)
+            if parser.has_section("Skyrim"):
+                if parser.has_option("Skyrim", "scripts"):
+                    folderpath = parser.get("Skyrim", "scripts")
+                    if folderpath not in folderpaths:
+                        if os.path.exists(folderpath):
+                            folderpaths.insert(1, folderpath)
+            matches = []
+            searchterm = text.lower()
+            if searchterm.startswith("^"):
+                searchterm = searchterm[1:]
+            if searchterm.endswith("$"):
+                searchterm = searchterm[:-1]
+            if searchterm.endswith(PAPYRUS_SCRIPT_EXTENSION):
+                searchterm = searchterm[:-4]
+            pattern = "^(" + searchterm + PAPYRUS_SCRIPT_EXTENSION + ")$"
+            regex = re.compile(pattern, re.IGNORECASE)
+            for folderpath in folderpaths:
+                if not folderpath.endswith("\\"):
+                    folderpath += "\\"
+                for filename in os.listdir(folderpath):
+                    match = regex.findall(filename)
+                    if len(match) > 0:
+                        filepath = folderpath + filename
+                        if filepath not in matches:
+                            matches.append(filepath)                
+            nummatches = len(matches)
+            if nummatches == 0:
+                sublime.status_message("Could not find script matching the regular expression \"%s\"" % pattern)
+            elif nummatches == 1:
+                self.window.open_file(matches[0])
+            elif nummatches > 1:
+                self.window.run_command("open_papyrus_script_selection", {"items": matches})
+
+class OpenPapyrusScriptSelectionCommand(sublime_plugin.WindowCommand):
+    def run(self, **args):
+        items = args["items"]
+        if items != None and len(items) > 0:
+            self.items = items
+            self.window.show_quick_panel(items, self.on_select, 0, -1, None)
+
+    def on_select(self, index):
+        if index >= 0:
+            self.window.open_file(self.items[index])
