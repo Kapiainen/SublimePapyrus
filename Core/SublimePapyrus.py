@@ -273,7 +273,10 @@ class OpenPapyrusScriptSelectionCommand(sublime_plugin.WindowCommand):
         items = args["items"]
         if items != None and len(items) > 0:
             self.items = items
-            self.window.show_quick_panel(items, self.on_select, 0, -1, None)
+            if PYTHON_VERSION[0] == 2:
+                self.window.show_quick_panel(items, self.on_select, 0)
+            elif PYTHON_VERSION[0] == 3:
+                self.window.show_quick_panel(items, self.on_select, 0, -1, None)
 
     def on_select(self, index):
         if index >= 0:
