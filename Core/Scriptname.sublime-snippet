@@ -1,6 +1,6 @@
 <snippet>
-    <tabTrigger>Scriptname</tabTrigger>
+    <tabTrigger>ScriptName</tabTrigger>
     <scope>source.papyrus</scope>
     <description>Script definition</description>
-    <content><![CDATA[Scriptname ${1:Name} ${2:Extends} ${3:Parent}]]></content>
+    <content><![CDATA[ScriptName ${1:Name} ${2:Extends} ${3:Parent}]]></content>
 </snippet>
