@@ -249,7 +249,7 @@ class OpenPapyrusScriptCommand(sublime_plugin.WindowCommand):
                 searchterm = searchterm[:-1]
             if searchterm.endswith(PAPYRUS_SCRIPT_EXTENSION):
                 searchterm = searchterm[:-4]
-            pattern = "^(" + searchterm + PAPYRUS_SCRIPT_EXTENSION + ")$"
+            pattern = "^(" + searchterm + "\\" + PAPYRUS_SCRIPT_EXTENSION + ")$"
             regex = re.compile(pattern, re.IGNORECASE)
             for folderpath in folderpaths:
                 if not folderpath.endswith("\\"):
