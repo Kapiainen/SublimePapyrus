@@ -27,7 +27,9 @@ Includes function/event snippets and syntax definitions for:
 
 - If you have Skyrim installed outside of *"C:\Program Files (x86)\Steam\steamapps\common\skyrim\" or "C:\Program Files\Steam\steamapps\common\skyrim\"*, then you need to open the Command Palette (CTRL+SHIFT+P), type in *"SublimePapyrus INI"*. An option called *"SublimePapyrus: Create default INI file"* should show up. Select it and a file called *SublimePapyrus.ini* will be created in *My Documents*. This file contains paths to compiled scripts, script sources, the Papyrus compiler, and paths to libraries you wish to import (optional). Edit the paths according to where you have the relevant files (usually where Skyrim has been installed).
 
+
 ##Features
+
 ####Autocomplete
 Functions and events that exist in supported libraries (see above) can be autocompleted via snippets. Type in only the name of the function or event. Function snippets will insert a function call. If you start typing the word *AddItem*, then the following will be inserted when you choose to autocomplete:
 ```papyrus
@@ -50,8 +52,10 @@ actor (skse)
 
 There are also snippets for autocompleting statements like property declarations, while-loops, and scriptname.
 
+
 ####Syntax highlighting
 Syntax highlighting for all keywords defined in Papyrus as well as names of all scripts, functions, and events in supported libraries (see above). Syntax highlighting is also available for Papyrus assembly files.
+
 
 ####Build systems
 You can now compile Papyrus scripts from Sublime Text as long as you have defined the path to the Papyrus compiler and flags in *SublimePapyrus.ini*. The various INI settings are documented in detail in the INI file generated via the *SublimePapyrus: Create default INI file* command. 
@@ -59,6 +63,7 @@ You can now compile Papyrus scripts from Sublime Text as long as you have define
 The *Import* section of the INI file is of particular interest as it allows you to keep various scripts, and their source files, separate, which can be useful if you for example use [Mod Organizer](http://www.nexusmods.com/skyrim/mods/1334/).
 
 There are also build systems for disassembling bytecode (.pex), and converting assembly (.pas) in to bytecode.
+
 
 ####Open script matching a regular expression
 If you type in the command *SublimePapyrus: Open script*, then an input panel is shown at the bottom of the window. You can then type in a regular expression, which conforms to Python's regular expression standard, in order to open a matching script or get a list of multiple matches. The folders that are included in the search are: the folder of the currently active file open in Sublime Text, the folder defined in the INI file's *scripts* option in the *Skyrim* section, any folders defined in the INI file's *path\** options in the *Import* section. If you leave the input panel empty, but you have selected something in the currently active file, then the command will look for scripts matching the contents of the selection. You do not need to include the extension of the script nor special characters for the start (^) or end ($) of a string as those are added automatically. So if you input the following:
@@ -86,10 +91,12 @@ ScriptName X Extends Y
 *X* is the name of the script and *Y* is the name of the parent script. If *Y* cannot be found, then the command will not open anything. If *Y* can be found, then *Y* will be searched for just like in the command *SublimePapyrus: Open script*
 	Open the current script's parent script
 
+
 ####Highlight compiler errors (Sublime Text 3 only)
 Lines, which cause the Papyrus compiler to report errors, can be automatically highlighted when compiling scripts in Sublime Text.
 
 This feature is disabled by default and can be enabled in *Preferences -> Package Settings -> SublimePapyrus -> Settings - User*.
+
 
 ####Hide successful build results (Sublime Text 3 only)
 Automatically hide the build results when the Papyrus compiler finishes without any errors when compiling scripts in Sublime Text. In case you want this feature to only apply to Papyrus scripts rather than using Sublime Text's *show_panel_on_build*, which applies to all build results.
