@@ -212,61 +212,88 @@ if PYTHON_VERSION[0] == 3:
         else:
             return None
 
+def GetMatchingFiles(self, filename):
+    if filename != "":
+        folderpaths = []
+        filepath = self.window.active_view().file_name()
+        if filepath != None and filepath != "":
+            folderpath = os.path.split(filepath)[0]
+            if os.path.exists(folderpath):
+                folderpaths.append(folderpath)
+        if PYTHON_VERSION[0] == 2:
+            parser = ConfigParser.ConfigParser()
+        elif PYTHON_VERSION[0] == 3:
+            parser = configparser.ConfigParser()
+        parser.read([INI_LOCATION])
+        if parser.has_section("Import"):
+            for configKey, configValue in parser.items("Import"):
+                if configKey.startswith("path"):
+                    if os.path.exists(configValue):
+                        folderpaths.append(configValue)
+        if parser.has_section("Skyrim"):
+            if parser.has_option("Skyrim", "scripts"):
+                folderpath = parser.get("Skyrim", "scripts")
+                if folderpath not in folderpaths:
+                    if os.path.exists(folderpath):
+                        folderpaths.append(folderpath)
+        matches = []
+        searchterm = filename.lower()
+        if searchterm.startswith("^"):
+            searchterm = searchterm[1:]
+        if searchterm.endswith("$"):
+            searchterm = searchterm[:-1]
+        if searchterm.endswith(PAPYRUS_SCRIPT_EXTENSION):
+            searchterm = searchterm[:-4]
+        pattern = "^(" + searchterm + "\\" + PAPYRUS_SCRIPT_EXTENSION + ")$"
+        regex = re.compile(pattern, re.IGNORECASE)
+        for folderpath in folderpaths:
+            if not folderpath.endswith("\\"):
+                folderpath += "\\"
+            for filename in os.listdir(folderpath):
+                match = regex.findall(filename)
+                if len(match) > 0:
+                    filepath = folderpath + filename
+                    if filepath not in matches:
+                        matches.append(filepath)
+        nummatches = len(matches)
+        if nummatches == 0:
+            sublime.status_message("Could not find script matching the regular expression \"%s\"" % pattern)
+        elif nummatches == 1:
+            self.window.open_file(matches[0])
+        elif nummatches > 1:
+            self.window.run_command("open_papyrus_script_selection", {"items": matches})
+
+class OpenPapyrusParentScriptCommand(sublime_plugin.WindowCommand):
+    def run(self):
+        source = self.window.active_view().file_name()
+        if source != None and os.path.exists(source):
+            with open(source) as f:
+                pattern = "^\s*scriptname\s+\S+\s+extends\s+(\S+).*$"
+                regex = re.compile(pattern, re.IGNORECASE)
+                for line in f:
+                    match = regex.findall(line)
+                    if len(match) > 0:
+                        GetMatchingFiles(self, match[0])
+                        return
+            sublime.status_message("Parent script not declared in \"%s\"" % source)
+
 class OpenPapyrusScriptCommand(sublime_plugin.WindowCommand):
     def run(self):
         self.window.show_input_panel("Open script:", "", self.on_done, None, None)
 
     def on_done(self, text):
+        if text == "":
+            view = self.window.active_view()
+            if view != None:
+                for region in view.sel():
+                    text = view.substr(region)
+                    break
+            else:
+                return
         if text != "":
-            folderpaths = []
-            if PYTHON_VERSION[0] == 2:
-                parser = ConfigParser.ConfigParser()
-            elif PYTHON_VERSION[0] == 3:
-                parser = configparser.ConfigParser()
-            parser.read([INI_LOCATION])
-            if parser.has_section("Import"):
-                for configKey, configValue in parser.items("Import"):
-                    if configKey.startswith("path"):
-                        if os.path.exists(configValue):
-                            folderpaths.append(configValue)          
-            folderpaths.reverse()
-            filepath = self.window.active_view().file_name()
-            if filepath != None and filepath != "":
-                folderpath = filepath[:-(len(filepath) - (filepath.rfind("\\") + 1))]
-                if os.path.exists(folderpath):
-                    folderpaths.insert(0, folderpath)
-            if parser.has_section("Skyrim"):
-                if parser.has_option("Skyrim", "scripts"):
-                    folderpath = parser.get("Skyrim", "scripts")
-                    if folderpath not in folderpaths:
-                        if os.path.exists(folderpath):
-                            folderpaths.insert(1, folderpath)
-            matches = []
-            searchterm = text.lower()
-            if searchterm.startswith("^"):
-                searchterm = searchterm[1:]
-            if searchterm.endswith("$"):
-                searchterm = searchterm[:-1]
-            if searchterm.endswith(PAPYRUS_SCRIPT_EXTENSION):
-                searchterm = searchterm[:-4]
-            pattern = "^(" + searchterm + "\\" + PAPYRUS_SCRIPT_EXTENSION + ")$"
-            regex = re.compile(pattern, re.IGNORECASE)
-            for folderpath in folderpaths:
-                if not folderpath.endswith("\\"):
-                    folderpath += "\\"
-                for filename in os.listdir(folderpath):
-                    match = regex.findall(filename)
-                    if len(match) > 0:
-                        filepath = folderpath + filename
-                        if filepath not in matches:
-                            matches.append(filepath)                
-            nummatches = len(matches)
-            if nummatches == 0:
-                sublime.status_message("Could not find script matching the regular expression \"%s\"" % pattern)
-            elif nummatches == 1:
-                self.window.open_file(matches[0])
-            elif nummatches > 1:
-                self.window.run_command("open_papyrus_script_selection", {"items": matches})
+            GetMatchingFiles(self, text)
+        else:
+            sublime.status_message("No input")
 
 class OpenPapyrusScriptSelectionCommand(sublime_plugin.WindowCommand):
     def run(self, **args):

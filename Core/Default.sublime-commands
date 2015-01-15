@@ -6,5 +6,9 @@
     {
     	"caption": "SublimePapyrus: Open script",
     	"command": "open_papyrus_script"
+    },
+    {
+    	"caption": "SublimePapyrus: Open parent script",
+    	"command": "open_papyrus_parent_script"
     }
 ]
