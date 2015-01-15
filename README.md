@@ -36,7 +36,7 @@ Includes function/event snippets and syntax definitions for:
  - [Create default INI file](#create-default-ini-file)
  - [Open script](#open-script)
  - [Open parent script](#open-parent-script)
-- [Highlight compiler errors](##highlight-compiler-errors-sublime-text-3-only)
+- [Highlight compiler errors](#highlight-compiler-errors-sublime-text-3-only)
 - [Hide successful build results](#hide-successful-build-results-sublime-text-3-only)
 
 ####Autocomplete
