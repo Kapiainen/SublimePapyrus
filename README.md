@@ -36,8 +36,8 @@ Includes function/event snippets and syntax definitions for:
  - [Create default INI file](#create-default-ini-file)
  - [Open script](#open-script)
  - [Open parent script](#open-parent-script)
-- [Highlight compiler errors](#highlight-compiler-errors)
-- [Hide successful build results](#hide-successful-build-results)
+- [Highlight compiler errors](##highlight-compiler-errors-sublime-text-3-only)
+- [Hide successful build results](#hide-successful-build-results-sublime-text-3-only)
 
 ####Autocomplete
 Functions and events that exist in supported libraries (see above) can be autocompleted via snippets. Type in only the name of the function or event. Function snippets will insert a function call. If you start typing the word *AddItem*, then the following will be inserted when you choose to autocomplete:
