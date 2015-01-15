@@ -3,6 +3,6 @@
 	<scope>source.papyrus</scope>
 	<description>Quest.OnStoryEscapeJail</description>
 	<content><![CDATA[Event OnStoryEscapeJail(${1:Location akLocation}, ${2:Form akCrimeGroup})
-${0}
+	${0}
 EndEvent]]></content>
 </snippet>

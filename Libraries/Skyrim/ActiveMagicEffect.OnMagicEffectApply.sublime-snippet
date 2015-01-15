@@ -3,6 +3,6 @@
 	<scope>source.papyrus</scope>
 	<description>ActiveMagicEffect.OnMagicEffectApply</description>
 	<content><![CDATA[Event OnMagicEffectApply(${1:ObjectReference akCaster}, ${2:MagicEffect akEffect})
-${0}
+	${0}
 EndEvent]]></content>
 </snippet>

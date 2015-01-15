@@ -3,6 +3,6 @@
 	<scope>source.papyrus</scope>
 	<description>ActiveMagicEffect.OnUpdateGameTime</description>
 	<content><![CDATA[Event OnUpdateGameTime()
-${0}
+	${0}
 EndEvent]]></content>
 </snippet>

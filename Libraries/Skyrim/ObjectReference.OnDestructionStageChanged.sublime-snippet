@@ -3,6 +3,6 @@
 	<scope>source.papyrus</scope>
 	<description>ObjectReference.OnDestructionStageChanged</description>
 	<content><![CDATA[Event OnDestructionStageChanged(${1:int aiOldStage}, ${2:int aiCurrentStage})
-${0}
+	${0}
 EndEvent]]></content>
 </snippet>

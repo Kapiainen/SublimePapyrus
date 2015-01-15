@@ -3,6 +3,6 @@
 	<scope>source.papyrus</scope>
 	<description>Quest.OnStoryDialogue</description>
 	<content><![CDATA[Event OnStoryDialogue(${1:Location akLocation}, ${2:ObjectReference akActor1}, ${3:ObjectReference akActor2})
-${0}
+	${0}
 EndEvent]]></content>
 </snippet>

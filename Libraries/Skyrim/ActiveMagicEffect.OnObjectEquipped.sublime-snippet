@@ -3,6 +3,6 @@
 	<scope>source.papyrus</scope>
 	<description>ActiveMagicEffect.OnObjectEquipped</description>
 	<content><![CDATA[Event OnObjectEquipped(${1:Form akBaseObject}, ${2:ObjectReference akReference})
-${0}
+	${0}
 EndEvent]]></content>
 </snippet>

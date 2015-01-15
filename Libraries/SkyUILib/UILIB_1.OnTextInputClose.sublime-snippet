@@ -3,6 +3,6 @@
 	<scope>source.papyrus</scope>
 	<description>UILIB_1.OnTextInputClose (SkyUILib)</description>
 	<content><![CDATA[Event OnTextInputClose(${1:String asEventName}, ${2:String asInput}, ${3:Float afCancelled}, ${4:Form akSender})
-${0}
+	${0}
 EndEvent]]></content>
 </snippet>

@@ -3,6 +3,6 @@
 	<scope>source.papyrus</scope>
 	<description>ObjectReference.OnLockStateChanged</description>
 	<content><![CDATA[Event OnLockStateChanged()
-${0}
+	${0}
 EndEvent]]></content>
 </snippet>

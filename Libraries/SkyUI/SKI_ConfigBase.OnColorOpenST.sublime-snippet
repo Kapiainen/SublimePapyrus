@@ -3,6 +3,6 @@
 	<scope>source.papyrus</scope>
 	<description>SKI_ConfigBase.OnColorOpenST (SkyUI)</description>
 	<content><![CDATA[Event OnColorOpenST()
-${0}
+	${0}
 EndEvent]]></content>
 </snippet>

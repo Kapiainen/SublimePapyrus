@@ -3,6 +3,6 @@
 	<scope>source.papyrus</scope>
 	<description>Form.OnUpdate</description>
 	<content><![CDATA[Event OnUpdate()
-${0}
+	${0}
 EndEvent]]></content>
 </snippet>

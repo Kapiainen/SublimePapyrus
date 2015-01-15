@@ -3,6 +3,6 @@
 	<scope>source.papyrus</scope>
 	<description>ActiveMagicEffect.OnEquipped</description>
 	<content><![CDATA[Event OnEquipped(${1:Actor akActor})
-${0}
+	${0}
 EndEvent]]></content>
 </snippet>

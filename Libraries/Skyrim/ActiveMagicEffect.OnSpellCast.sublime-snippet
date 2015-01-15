@@ -3,6 +3,6 @@
 	<scope>source.papyrus</scope>
 	<description>ActiveMagicEffect.OnSpellCast</description>
 	<content><![CDATA[Event OnSpellCast(${1:Form akSpell})
-${0}
+	${0}
 EndEvent]]></content>
 </snippet>

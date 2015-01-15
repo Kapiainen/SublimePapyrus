@@ -3,6 +3,6 @@
 	<scope>source.papyrus</scope>
 	<description>ReferenceAlias.OnAttachedToCell</description>
 	<content><![CDATA[Event OnAttachedToCell()
-${0}
+	${0}
 EndEvent]]></content>
 </snippet>

@@ -3,6 +3,6 @@
 	<scope>source.papyrus</scope>
 	<description>ReferenceAlias.OnSell</description>
 	<content><![CDATA[Event OnSell(${1:Actor akSeller})
-${0}
+	${0}
 EndEvent]]></content>
 </snippet>

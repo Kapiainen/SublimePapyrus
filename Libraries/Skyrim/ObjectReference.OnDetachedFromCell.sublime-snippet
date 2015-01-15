@@ -3,6 +3,6 @@
 	<scope>source.papyrus</scope>
 	<description>ObjectReference.OnDetachedFromCell</description>
 	<content><![CDATA[Event OnDetachedFromCell()
-${0}
+	${0}
 EndEvent]]></content>
 </snippet>

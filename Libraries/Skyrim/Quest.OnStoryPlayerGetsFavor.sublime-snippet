@@ -3,6 +3,6 @@
 	<scope>source.papyrus</scope>
 	<description>Quest.OnStoryPlayerGetsFavor</description>
 	<content><![CDATA[Event OnStoryPlayerGetsFavor(${1:ObjectReference akActor})
-${0}
+	${0}
 EndEvent]]></content>
 </snippet>

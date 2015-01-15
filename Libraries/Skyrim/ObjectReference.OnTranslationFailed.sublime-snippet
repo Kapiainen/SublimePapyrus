@@ -3,6 +3,6 @@
 	<scope>source.papyrus</scope>
 	<description>ObjectReference.OnTranslationFailed</description>
 	<content><![CDATA[Event OnTranslationFailed()
-${0}
+	${0}
 EndEvent]]></content>
 </snippet>

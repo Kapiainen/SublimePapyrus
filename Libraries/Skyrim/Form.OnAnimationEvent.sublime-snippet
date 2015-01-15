@@ -3,6 +3,6 @@
 	<scope>source.papyrus</scope>
 	<description>Form.OnAnimationEvent</description>
 	<content><![CDATA[Event OnAnimationEvent(${1:ObjectReference akSource}, ${2:string asEventName})
-${0}
+	${0}
 EndEvent]]></content>
 </snippet>

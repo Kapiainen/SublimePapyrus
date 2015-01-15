@@ -3,6 +3,6 @@
 	<scope>source.papyrus</scope>
 	<description>Quest.OnStoryPickLock</description>
 	<content><![CDATA[Event OnStoryPickLock(${1:ObjectReference akActor}, ${2:ObjectReference akLock})
-${0}
+	${0}
 EndEvent]]></content>
 </snippet>

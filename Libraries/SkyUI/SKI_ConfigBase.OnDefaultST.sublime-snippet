@@ -3,6 +3,6 @@
 	<scope>source.papyrus</scope>
 	<description>SKI_ConfigBase.OnDefaultST (SkyUI)</description>
 	<content><![CDATA[Event OnDefaultST()
-${0}
+	${0}
 EndEvent]]></content>
 </snippet>

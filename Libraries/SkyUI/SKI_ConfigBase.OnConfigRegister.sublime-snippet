@@ -3,6 +3,6 @@
 	<scope>source.papyrus</scope>
 	<description>SKI_ConfigBase.OnConfigRegister (SkyUI)</description>
 	<content><![CDATA[Event OnConfigRegister()
-${0}
+	${0}
 EndEvent]]></content>
 </snippet>

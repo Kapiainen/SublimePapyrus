@@ -3,6 +3,6 @@
 	<scope>source.papyrus</scope>
 	<description>Quest.OnStoryIncreaseSkill</description>
 	<content><![CDATA[Event OnStoryIncreaseSkill(${1:string asSkill})
-${0}
+	${0}
 EndEvent]]></content>
 </snippet>

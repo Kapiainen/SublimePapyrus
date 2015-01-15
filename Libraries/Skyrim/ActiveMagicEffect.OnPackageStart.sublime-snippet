@@ -3,6 +3,6 @@
 	<scope>source.papyrus</scope>
 	<description>ActiveMagicEffect.OnPackageStart</description>
 	<content><![CDATA[Event OnPackageStart(${1:Package akNewPackage})
-${0}
+	${0}
 EndEvent]]></content>
 </snippet>

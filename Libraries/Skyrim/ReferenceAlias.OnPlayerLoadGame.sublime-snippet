@@ -3,6 +3,6 @@
 	<scope>source.papyrus</scope>
 	<description>ReferenceAlias.OnPlayerLoadGame</description>
 	<content><![CDATA[Event OnPlayerLoadGame()
-${0}
+	${0}
 EndEvent]]></content>
 </snippet>

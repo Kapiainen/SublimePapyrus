@@ -3,6 +3,6 @@
 	<scope>source.papyrus</scope>
 	<description>ActiveMagicEffect.OnTranslationFailed</description>
 	<content><![CDATA[Event OnTranslationFailed()
-${0}
+	${0}
 EndEvent]]></content>
 </snippet>

@@ -3,6 +3,6 @@
 	<scope>source.papyrus</scope>
 	<description>UILIB_1.OnListMenuClose (SkyUILib)</description>
 	<content><![CDATA[Event OnListMenuClose(${1:String asEventName}, ${2:String asStringArg}, ${3:Float afInput}, ${4:Form akSender})
-${0}
+	${0}
 EndEvent]]></content>
 </snippet>

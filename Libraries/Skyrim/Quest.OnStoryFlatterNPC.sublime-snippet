@@ -3,6 +3,6 @@
 	<scope>source.papyrus</scope>
 	<description>Quest.OnStoryFlatterNPC</description>
 	<content><![CDATA[Event OnStoryFlatterNPC(${1:ObjectReference akActor})
-${0}
+	${0}
 EndEvent]]></content>
 </snippet>

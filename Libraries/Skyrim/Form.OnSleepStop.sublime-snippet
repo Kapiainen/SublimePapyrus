@@ -3,6 +3,6 @@
 	<scope>source.papyrus</scope>
 	<description>Form.OnSleepStop</description>
 	<content><![CDATA[Event OnSleepStop(${1:bool abInterrupted})
-${0}
+	${0}
 EndEvent]]></content>
 </snippet>

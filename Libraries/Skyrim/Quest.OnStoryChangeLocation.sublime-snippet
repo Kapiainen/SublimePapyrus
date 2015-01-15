@@ -3,6 +3,6 @@
 	<scope>source.papyrus</scope>
 	<description>Quest.OnStoryChangeLocation</description>
 	<content><![CDATA[Event OnStoryChangeLocation(${1:ObjectReference akActor}, ${2:Location akOldLocation}, ${3:Location akNewLocation})
-${0}
+	${0}
 EndEvent]]></content>
 </snippet>

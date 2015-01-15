@@ -3,6 +3,6 @@
 	<scope>source.papyrus</scope>
 	<description>Quest.OnStoryRelationshipChange</description>
 	<content><![CDATA[Event OnStoryRelationshipChange(${1:ObjectReference akActor1}, ${2:ObjectReference akActor2}, ${3:int aiOldRelationship}, ${4:int aiNewRelationship})
-${0}
+	${0}
 EndEvent]]></content>
 </snippet>

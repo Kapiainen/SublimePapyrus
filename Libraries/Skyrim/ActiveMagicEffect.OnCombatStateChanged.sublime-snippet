@@ -3,6 +3,6 @@
 	<scope>source.papyrus</scope>
 	<description>ActiveMagicEffect.OnCombatStateChanged</description>
 	<content><![CDATA[Event OnCombatStateChanged(${1:Actor akTarget}, ${2:int aeCombatState})
-${0}
+	${0}
 EndEvent]]></content>
 </snippet>

@@ -3,6 +3,6 @@
 	<scope>source.papyrus</scope>
 	<description>SKI_ConfigBase.OnOptionMenuOpen (SkyUI)</description>
 	<content><![CDATA[Event OnOptionMenuOpen(${1:int a_option})
-${0}
+	${0}
 EndEvent]]></content>
 </snippet>

@@ -3,6 +3,6 @@
 	<scope>source.papyrus</scope>
 	<description>ReferenceAlias.OnRaceSwitchComplete</description>
 	<content><![CDATA[Event OnRaceSwitchComplete()
-${0}
+	${0}
 EndEvent]]></content>
 </snippet>

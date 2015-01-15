@@ -3,6 +3,6 @@
 	<scope>source.papyrus</scope>
 	<description>ActiveMagicEffect.OnClose</description>
 	<content><![CDATA[Event OnClose(${1:ObjectReference akActionRef})
-${0}
+	${0}
 EndEvent]]></content>
 </snippet>

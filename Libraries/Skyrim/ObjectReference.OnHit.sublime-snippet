@@ -3,6 +3,6 @@
 	<scope>source.papyrus</scope>
 	<description>ObjectReference.OnHit</description>
 	<content><![CDATA[Event OnHit(${1:ObjectReference akAggressor}, ${2:Form akSource}, ${3:Projectile akProjectile}, ${4:bool abPowerAttack}, ${5:bool abSneakAttack}, ${6:bool abBashAttack}, ${7:bool abHitBlocked})
-${0}
+	${0}
 EndEvent]]></content>
 </snippet>

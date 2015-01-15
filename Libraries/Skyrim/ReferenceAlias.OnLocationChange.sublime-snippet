@@ -3,6 +3,6 @@
 	<scope>source.papyrus</scope>
 	<description>ReferenceAlias.OnLocationChange</description>
 	<content><![CDATA[Event OnLocationChange(${1:Location akOldLoc}, ${2:Location akNewLoc})
-${0}
+	${0}
 EndEvent]]></content>
 </snippet>

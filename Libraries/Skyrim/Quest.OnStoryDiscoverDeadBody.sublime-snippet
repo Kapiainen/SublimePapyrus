@@ -3,6 +3,6 @@
 	<scope>source.papyrus</scope>
 	<description>Quest.OnStoryDiscoverDeadBody</description>
 	<content><![CDATA[Event OnStoryDiscoverDeadBody(${1:ObjectReference akActor}, ${2:ObjectReference akDeadActor}, ${3:Location akLocation})
-${0}
+	${0}
 EndEvent]]></content>
 </snippet>

@@ -3,6 +3,6 @@
 	<scope>source.papyrus</scope>
 	<description>ReferenceAlias.OnRelease</description>
 	<content><![CDATA[Event OnRelease()
-${0}
+	${0}
 EndEvent]]></content>
 </snippet>
