@@ -1,4 +1,5 @@
 # Developed on Python 3.2.5
+# This program goes through the repository looking for files in specific places, adds the files to lists, and then generates .sublime-package files.
 import os, io, zipfile, time
 
 packagename = "SublimePapyrus"

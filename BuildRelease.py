@@ -1,4 +1,5 @@
 # Developed on Python 3.2.5
+# This program goes looking for .sublime-package files and, if it can find any, will put those files, and other files (like documentation), into a .zip file that is ready for distribution.
 import os, io, zipfile, time
 
 packagename = "SublimePapyrus"
