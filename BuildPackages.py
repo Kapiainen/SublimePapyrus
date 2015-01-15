@@ -3,10 +3,10 @@ import os, io, zipfile, time
 
 packagename = "SublimePapyrus"
 packageextension = ".sublime-package"
+packagedirectory = "Packages"
 corefiles = [] # Contains all the files in SublimePapyrus.sublime-package.
 corelibraries = ["skyrim"] # The libraries to include in the core package.
 libraries = {} # Contains lists of files for each library. Produces SublimePapyrus - Key.sublime-package files.
-
 currentdirectory = os.getcwd()
 for entry in os.listdir(currentdirectory):
 	if entry.lower().startswith("."):
@@ -28,21 +28,21 @@ for entry in os.listdir(currentdirectory):
 					for libraryfile in os.listdir(librarydirectory):
 						libraryfiles.append(os.path.join(librarydirectory, libraryfile))
 					libraries[library] = libraryfiles
-
+outputdirectory = os.path.join(currentdirectory, packagedirectory)
+if not os.path.exists(outputdirectory):
+		os.mkdir(outputdirectory)
 print("Core files:")
 corepackage = packagename + packageextension
-with zipfile.ZipFile(os.path.join(currentdirectory, corepackage), "w") as corezip: 
+with zipfile.ZipFile(os.path.join(outputdirectory, corepackage), "w") as corezip:
 	for corefile in corefiles:
 		print(corefile)
 		corezip.write(corefile, os.path.relpath(corefile, os.path.split(corefile)[0]))
-
 for library in libraries.keys():
 	print("\n" + library + " files:")
 	librarypackage = packagename + " - " + library + packageextension
-	with zipfile.ZipFile(os.path.join(currentdirectory, librarypackage), "w") as libraryzip:
+	with zipfile.ZipFile(os.path.join(outputdirectory, librarypackage), "w") as libraryzip:
 		for libraryfile in libraries[library]:
 			print(libraryfile)
 			libraryzip.write(libraryfile, os.path.relpath(libraryfile, os.path.split(libraryfile)[0]))
-
 print("\nDone!")
 time.sleep(2.0)
