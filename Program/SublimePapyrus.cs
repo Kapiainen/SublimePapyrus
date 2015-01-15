@@ -340,7 +340,7 @@ namespace SublimePapyrus
                                                 j++;
                                             }
                                         }
-                                        sw.Write(")\n${0}\nEndEvent]]></content>\n");
+                                        sw.Write(")\n\t${0}\nEndEvent]]></content>\n");
                                         CountEvent++;
                                     }
                                     else if (FunctionPattern.IsMatch(line))
