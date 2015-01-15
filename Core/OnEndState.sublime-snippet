@@ -3,6 +3,6 @@
 	<scope>source.papyrus</scope>
 	<description>OnEndState</description>
 	<content><![CDATA[Event OnEndState()
-${0}
+	${0}
 EndEvent]]></content>
 </snippet>
