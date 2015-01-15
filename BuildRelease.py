@@ -23,7 +23,7 @@ if os.path.exists(inputdirectory):
 		if not os.path.exists(outputdirectory):
 			os.mkdir(outputdirectory)
 		print("Release files:")
-		releasepackage = packagedirectory + packagename + " - " + time.strftime("%Y-%m-%d %H-%M-%S", time.gmtime()) + ".zip"
+		releasepackage = packagename + " - " + time.strftime("%Y-%m-%d %H-%M-%S", time.gmtime()) + ".zip"
 		with zipfile.ZipFile(os.path.join(outputdirectory, releasepackage), "w") as releasezip:
 			for releasefile in releasefiles:
 				print(releasefile)
