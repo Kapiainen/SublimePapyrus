@@ -16,13 +16,14 @@ Includes function/event snippets and syntax definitions for:
  - [UIExtensions](http://www.nexusmods.com/skyrim/mods/57046/) (1.1.0)
 
 
-How do I use the package?
+###How do I use the package?
 - Install Sublime Text 2 or 3, if you do not have it yet. Launch it once in order to make sure all necessary folders have been created.
 - Get a copy of SublimePapyrus from the repository (recommended), the Creation Kit wiki, if the repository is inaccessible.
 - Loose files: Copy the contents of the folder labeled "Core" to "%AppData%\Sublime Text #\Packages\SublimePapyrus", or "\Sublime Text #\Data\Packages\SublimePapyrus" if you are using the portable version of Sublime Text, (replace # with the version of Sublime Text you are using). Copy the contents of the folders corresponding to the libraries you want to use from the subfolders found in the folder labeled "Libraries" to the same folder that was used mentioned in the previous step. You will most likely want to at least copy the contents of the Skyrim library.
 - Packaged: Copy SublimePapyrus.sublime-package (and any other .sublime-package files you want) to "%AppData%\Sublime Text #\Data\Installed Packages", or "\Sublime Text #\Data\Installed Packages" if you are using the portable version of Sublime Text, (replace # with the version of Sublime Text you are using).
 - If you have Skyrim installed outside of "C:\Program Files (x86)\Steam\steamapps\common\skyrim\" or "C:\Program Files\Steam\steamapps\common\skyrim\", then you need to open the Command Palette (CTRL+SHIFT+P), type in "SublimePapyrus INI". An option called "SublimePapyrus INI: Create default INI file" should show up. Select it and a file called "SublimePapyrus.ini" will be created in My Documents. This file contains paths to compiled scripts, script sources, the Papyrus compiler, and paths to libraries you wish to import (optional). Edit the paths according to where you have the relevant files (usually where Skyrim has been installed).
  
+###Credits
 Based on the work done by Bethesda Game Studios and Mark Hanna. Used according to the license included in the original package and said license is included in this package.
 
 Team: Quad2Core, MrJack
