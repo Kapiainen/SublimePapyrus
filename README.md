@@ -103,7 +103,7 @@ If you type in the command *SublimePapyrus: Open parent script* in the Command P
 ```papyrus
 ScriptName X Extends Y
 ```
-*X* is the name of the script and *Y* is the name of the parent script. If *extends Y* cannot be found in the file or a script named *Y* cannot be found, then the command will not open anything. If *extends Y* can be found in the file, then *Y* will be searched for just like in the command *SublimePapyrus: Open script*
+*X* is the name of the script and *Y* is the name of the parent script. If *extends Y* cannot be found in the file or a script named *Y* cannot be found, then the command will not open anything. If *extends Y* can be found in the file, then *Y* will be searched for just like in the command *SublimePapyrus: Open script*.
 
 
 ####Highlight compiler errors (Sublime Text 3 only)
