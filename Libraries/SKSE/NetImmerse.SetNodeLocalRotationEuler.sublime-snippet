@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>SetNodeLocalRotationEuler</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>NetImmerse.SetNodeLocalRotationEuler (SKSE)</description>
+	<content><![CDATA[SetNodeLocalRotationEuler(${1:ObjectReference ref}, ${2:string node}, ${3:float[] in}, ${4:bool firstPerson})]]></content>
+</snippet>

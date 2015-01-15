@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetNodeLocalRotationMatrix</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>NetImmerse.GetNodeLocalRotationMatrix (SKSE)</description>
+	<content><![CDATA[GetNodeLocalRotationMatrix(${1:ObjectReference ref}, ${2:string node}, ${3:float[] in}, ${4:bool firstPerson})]]></content>
+</snippet>

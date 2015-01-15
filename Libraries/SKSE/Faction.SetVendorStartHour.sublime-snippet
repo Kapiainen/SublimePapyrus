@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>SetVendorStartHour</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Faction.SetVendorStartHour (SKSE)</description>
+	<content><![CDATA[SetVendorStartHour(${1:int hour})]]></content>
+</snippet>

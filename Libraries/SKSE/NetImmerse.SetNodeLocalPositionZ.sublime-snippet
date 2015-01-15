@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>SetNodeLocalPositionZ</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>NetImmerse.SetNodeLocalPositionZ (SKSE)</description>
+	<content><![CDATA[SetNodeLocalPositionZ(${1:ObjectReference ref}, ${2:string node}, ${3:float z}, ${4:bool firstPerson})]]></content>
+</snippet>

@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetVendorEndHour</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Faction.GetVendorEndHour (SKSE)</description>
+	<content><![CDATA[GetVendorEndHour()]]></content>
+</snippet>

@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>SetOnlyBuysStolenItems</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Faction.SetOnlyBuysStolenItems (SKSE)</description>
+	<content><![CDATA[SetOnlyBuysStolenItems(${1:bool onlyStolen})]]></content>
+</snippet>

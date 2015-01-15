@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>IsNotSellBuy</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Faction.IsNotSellBuy (SKSE)</description>
+	<content><![CDATA[IsNotSellBuy()]]></content>
+</snippet>

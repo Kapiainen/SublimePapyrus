@@ -3,6 +3,6 @@
 	<scope>source.papyrus</scope>
 	<description>Alias.OnMenuClose (SKSE)</description>
 	<content><![CDATA[Event OnMenuClose(${1:string menuName})
-${0}
+	${0}
 EndEvent]]></content>
 </snippet>

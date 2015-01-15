@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetCurrentValue</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>ActorValueInfo.GetCurrentValue (SKSE)</description>
+	<content><![CDATA[GetCurrentValue(${1:Actor akActor})]]></content>
+</snippet>

@@ -3,6 +3,6 @@
 	<scope>source.papyrus</scope>
 	<description>ActiveMagicEffect.OnActorAction (SKSE)</description>
 	<content><![CDATA[Event OnActorAction(${1:int actionType}, ${2:Actor akActor}, ${3:Form source}, ${4:int slot})
-${0}
+	${0}
 EndEvent]]></content>
 </snippet>

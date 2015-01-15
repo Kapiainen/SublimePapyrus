@@ -3,6 +3,6 @@
 	<scope>source.papyrus</scope>
 	<description>Alias.OnKeyDown (SKSE)</description>
 	<content><![CDATA[Event OnKeyDown(${1:int keyCode})
-${0}
+	${0}
 EndEvent]]></content>
 </snippet>

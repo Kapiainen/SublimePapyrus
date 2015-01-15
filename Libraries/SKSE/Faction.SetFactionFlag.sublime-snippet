@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>SetFactionFlag</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Faction.SetFactionFlag (SKSE)</description>
+	<content><![CDATA[SetFactionFlag(${1:int flag})]]></content>
+</snippet>

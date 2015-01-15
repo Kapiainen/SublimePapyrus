@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetKeywordRestrictions</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Enchantment.GetKeywordRestrictions (SKSE)</description>
+	<content><![CDATA[GetKeywordRestrictions()]]></content>
+</snippet>

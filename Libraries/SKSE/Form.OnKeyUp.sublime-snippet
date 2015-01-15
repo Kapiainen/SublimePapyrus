@@ -3,6 +3,6 @@
 	<scope>source.papyrus</scope>
 	<description>Form.OnKeyUp (SKSE)</description>
 	<content><![CDATA[Event OnKeyUp(${1:int keyCode}, ${2:float holdTime})
-${0}
+	${0}
 EndEvent]]></content>
 </snippet>

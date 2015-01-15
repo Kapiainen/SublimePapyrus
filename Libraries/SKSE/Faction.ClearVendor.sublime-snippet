@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>ClearVendor</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Faction.ClearVendor (SKSE)</description>
+	<content><![CDATA[ClearVendor()]]></content>
+</snippet>

@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetMerchantContainer</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Faction.GetMerchantContainer (SKSE)</description>
+	<content><![CDATA[GetMerchantContainer()]]></content>
+</snippet>

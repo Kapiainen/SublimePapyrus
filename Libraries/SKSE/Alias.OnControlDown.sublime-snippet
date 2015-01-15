@@ -3,6 +3,6 @@
 	<scope>source.papyrus</scope>
 	<description>Alias.OnControlDown (SKSE)</description>
 	<content><![CDATA[Event OnControlDown(${1:string control})
-${0}
+	${0}
 EndEvent]]></content>
 </snippet>

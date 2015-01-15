@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>SetVendorRadius</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Faction.SetVendorRadius (SKSE)</description>
+	<content><![CDATA[SetVendorRadius(${1:int radius})]]></content>
+</snippet>

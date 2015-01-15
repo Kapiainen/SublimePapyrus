@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>SetKeywordRestrictions</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Enchantment.SetKeywordRestrictions (SKSE)</description>
+	<content><![CDATA[SetKeywordRestrictions(${1:FormList newKeywordList})]]></content>
+</snippet>
