@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>CreateFloatArray</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Utility.CreateFloatArray (SKSE)</description>
+	<content><![CDATA[CreateFloatArray(${1:int size}, ${2:float fill = 0})]]></content>
+</snippet>
