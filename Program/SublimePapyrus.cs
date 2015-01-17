@@ -214,7 +214,7 @@ namespace SublimePapyrus
         {
             Regex rx = new Regex(@"(?<=[(|,]\s*)\w+(\[\])?\s+\w+(\s+[=]+\s+\w+)?");
             Regex EventPattern = new Regex(@"(?i)^\s*\b(event)");
-            Regex FunctionPattern = new Regex(@"(?i)^(\s*\w+\s+)?\b(function)");
+            Regex FunctionPattern = new Regex(@"(?i)^(\s*\w+\[*\]*\s+)?\b(function)");
             int CountEvent = 0;
             int CountFunctions = 0;
             List<string> generatedSnippets = new List<string>(); //Bookkeeping that is used to prevent generating duplicate snippets when processing for example vanilla and SKSE .psc files.
