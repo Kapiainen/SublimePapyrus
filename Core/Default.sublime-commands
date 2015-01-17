@@ -10,5 +10,9 @@
     {
     	"caption": "SublimePapyrus: Open parent script",
     	"command": "open_papyrus_parent_script"
+    },
+    {
+        "caption": "SublimePapyrus: Clear compiler error highlights",
+        "command": "clear_papyrus_compiler_error_highlights"
     }
 ]

@@ -36,6 +36,7 @@ Includes function/event snippets and syntax definitions for:
  - [Create default INI file](#create-default-ini-file)
  - [Open script](#open-script)
  - [Open parent script](#open-parent-script)
+ - [Clear compiler error highlights](#clear-compiler-error-highlights-sublime-text-3-only)
 - [Highlight compiler errors](#highlight-compiler-errors-sublime-text-3-only)
 - [Hide successful build results](#hide-successful-build-results-sublime-text-3-only)
 
@@ -104,6 +105,9 @@ If you type in the command *SublimePapyrus: Open parent script* in the Command P
 ScriptName X Extends Y
 ```
 *X* is the name of the script and *Y* is the name of the parent script. If *extends Y* cannot be found in the file or a script named *Y* cannot be found, then the command will not open anything. If *extends Y* can be found in the file, then *Y* will be searched for just like in the command *SublimePapyrus: Open script*.
+
+######Clear compiler error highlights (Sublime Text 3 only)
+If you type in the command *SublimePapyrus: Clear compiler error highlights*, then any lines highlighted with the *Highlight compiler errors* feature will cease to be highlighted. In case it takes a long period of time before you attempt to compile your script again and you find the highlighting to be distracting.
 
 
 ####Highlight compiler errors (Sublime Text 3 only)

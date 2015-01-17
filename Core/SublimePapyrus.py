@@ -155,6 +155,15 @@ class AssemblePapyrusCommand(sublime_plugin.WindowCommand):
         args["working_dir"] = scriptDir
         self.window.run_command("exec", args)
 
+class ClearPapyrusCompilerErrorHighlightsCommand(sublime_plugin.WindowCommand):
+    def run(self, **args):
+        if PYTHON_VERSION[0] == 2:
+            sublime.status_message("This feature is only available in Sublime Text 3")
+        elif PYTHON_VERSION[0] == 3:
+            source = sublime.active_window().active_view()
+            if source != None:
+                source.erase_regions(ERROR_HIGHLIGHT_KEY)
+
 if PYTHON_VERSION[0] == 3:
     class ExecCommand(BUILD_SYSTEM.ExecCommand):
         def finish(self, proc):
