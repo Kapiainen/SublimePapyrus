@@ -53,6 +53,18 @@ flags=%s
 # For example if you want to separate the vanilla scripts (defined in the "scripts=" key) and SKSE scripts into their own folders (defined as an additional import), then you would define the path to SKSE's .psc files as the value for a "pathN" key.
 # path1=Drive:\\Folder\\Subfolder_containing_SKSE_PSC_files
 #
+
+[Debug]
+# For advanced users only! You can add arguments like \"keepasm\", \"quiet\", etc. to options here. Below is an example:
+#
+# arg0=debug
+# arg1=keepasm
+# .
+# .
+# .
+# argN=optimize
+#
+# You should only use these arguments if you know what you are doing! Run the Papyrus compiler with the argument \"/?\" to get a full list of valid arguments.
 """ % (END_USER_SCRIPTS, END_USER_COMPILER, END_USER_OUTPUT, END_USER_FLAGS)
 
 # Variables specific to compiler error highlighting.
@@ -96,6 +108,11 @@ def getPrefs(filePath):
                         ret["import"].append(configValue)
         if (parser.get("Skyrim", "scripts") not in ret["import"]):
             ret["import"].append(parser.get("Skyrim", "scripts"))
+        ret["debug"] = []
+        if (parser.has_section("Debug")):
+            for configKey, configValue in parser.items("Debug"):
+                if (configKey.startswith("arg")):
+                    ret["debug"].append(configValue)
         if PYTHON_VERSION[0] == 2:
             ret["import"] = ";".join(filter(None, ret["import"]))
         elif PYTHON_VERSION[0] == 3:
@@ -122,6 +139,11 @@ class CompilePapyrusCommand(sublime_plugin.WindowCommand):
             args["cmd"].append("-f=%s" % config["flags"])
             args["cmd"].append("-i=%s" % config["import"])
             args["cmd"].append("-o=%s" % config["output"])
+            for debugarg in config["debug"]:
+                if debugarg.startswith("-"):
+                    args["cmd"].append("%s" % debugarg)
+                else:
+                    args["cmd"].append("-%s" % debugarg)
             args["working_dir"] = os.path.dirname(config["compiler"])
             self.window.run_command("exec", args)
         else:

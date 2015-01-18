@@ -27,6 +27,7 @@ Includes function/event snippets and syntax definitions for:
 
 - If you have Skyrim installed outside of *"C:\Program Files (x86)\Steam\steamapps\common\skyrim\" or "C:\Program Files\Steam\steamapps\common\skyrim\"*, then you need to open the Command Palette (CTRL+SHIFT+P), type in *"SublimePapyrus INI"*. An option called *"SublimePapyrus: Create default INI file"* should show up. Select it and a file called *SublimePapyrus.ini* will be created in *My Documents*. This file contains paths to compiled scripts, script sources, the Papyrus compiler, and paths to libraries you wish to import (optional). Edit the paths according to where you have the relevant files (usually where Skyrim has been installed).
 
+If you are using [Advanced Papyrus](https://github.com/Kapiainen/Advanced-Papyrus), then you should set the *compiler* option in *SublimePapyrus.ini* to point to the actual compiler, which would be called *PapyrusCompiler - Original.exe*, rather than the wrapper program.
 
 ##Features
 - [Autocomplete](#autocomplete)
