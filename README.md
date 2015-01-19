@@ -7,7 +7,7 @@ Includes function/event snippets and syntax definitions for:
 - Skyrim (1.9.32.0.8)
  - [DienesTools](http://www.nexusmods.com/skyrim/mods/54325/) (1.0)
  - [FISS](http://www.nexusmods.com/skyrim/mods/48265/) (1.21)
- - [JContainers](http://www.nexusmods.com/skyrim/mods/49743/) (3.1.1)
+ - [JContainers](http://www.nexusmods.com/skyrim/mods/49743/) (3.2)
  - [NetImmerse Override](http://www.nexusmods.com/skyrim/mods/37481/) (2.9.6)
  - [PapyrusUtil](http://www.nexusmods.com/skyrim/mods/58705/) (2.8)
  - [SKSE](http://skse.silverlock.org) (1.7.2)
