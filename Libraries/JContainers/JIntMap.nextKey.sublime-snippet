@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>nextKey</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>JIntMap.nextKey (JContainers)</description>
+	<content><![CDATA[nextKey(${1:int object}, ${2:int previousKey}, ${3:int endKey})]]></content>
+</snippet>
