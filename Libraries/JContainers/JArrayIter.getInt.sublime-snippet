@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>getInt</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>JArrayIter.getInt (JContainers)</description>
-	<content><![CDATA[getInt(${1:int iter})]]></content>
-</snippet>

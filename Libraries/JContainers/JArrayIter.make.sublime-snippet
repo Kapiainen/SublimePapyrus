@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>make</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>JArrayIter.make (JContainers)</description>
-	<content><![CDATA[make(${1:int array})]]></content>
-</snippet>
