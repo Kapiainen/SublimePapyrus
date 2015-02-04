@@ -10,5 +10,9 @@
     {
         "caption": "SublimePapyrus: Insert control (SKSE)",
         "command": "papyrus_skse_control_suggestions"
+    },
+    {
+        "caption": "SublimePapyrus: Insert default object (SKSE)",
+        "command": "papyrus_skse_default_object_suggestions"
     }
 ]
