@@ -339,3 +339,35 @@ class OpenPapyrusScriptSelectionCommand(sublime_plugin.WindowCommand):
     def on_select(self, index):
         if index >= 0:
             self.window.open_file(self.items[index])
+
+class PapyrusShowSuggestionsCommand(sublime_plugin.TextCommand):
+    def run(self, edit, **args):
+        selections = self.view.sel()
+        if selections != None and len(selections) == 1:
+            region = selections[0]
+            self.argument = region
+        items = self.get_items()
+        if items != None:
+            self.items = list(items.values())
+            self.values = list(items.keys())
+            if PYTHON_VERSION[0] == 2:
+                self.view.window().show_quick_panel(self.items, self.on_select, 0)
+            elif PYTHON_VERSION[0] == 3:
+                self.view.window().show_quick_panel(self.items, self.on_select, 0, -1, None)
+
+    def get_items(self, **args):
+        return None
+
+    def on_select(self, index):
+        if index >= 0:
+            args = {"region_start": self.argument.a, "region_end": self.argument.b, "replacement": str(self.values[index])}
+            self.view.run_command("papyrus_insert_suggestion", args)
+
+class PapyrusInsertSuggestionCommand(sublime_plugin.TextCommand):
+    def run(self, edit, **args):
+        region = sublime.Region(args["region_start"], args["region_end"])
+        self.view.erase(edit, region)
+        if args["replacement"].isdigit():
+            self.view.insert(edit, args["region_start"], args["replacement"])
+        else:
+            self.view.insert(edit, args["region_start"], "\"" + args["replacement"] + "\"")
