@@ -743,7 +743,7 @@ if PYTHON_VERSION[0] == 3:
             "MagickaRateMod": "Magicka rate modifier",
             "GrabActorOffset": "Grab actor offset",
             "Grabbed": "Grabbed",
-            ";Cannot find the name of this AVI": "Cannot find the name of this AVI",
+            #";/Cannot find the name of this AVI/;": "Cannot find the name of this AVI",
             "ReflectDamage": "Reflect damage"
             }
             return items
@@ -913,7 +913,7 @@ if PYTHON_VERSION[0] == 3:
             159: "Magicka rate modifier",
             160: "Grab actor offset",
             161: "Grabbed",
-            162: "Cannot find the name of this AVI",
+            #162: "Cannot find the name of this AVI",
             163: "Reflect damage"
             }
             return items
