@@ -34,10 +34,11 @@ If you are using [Advanced Papyrus](https://github.com/Kapiainen/Advanced-Papyru
 - [Syntax highlighting](#syntax-highlighting)
 - [Build systems](#build-systems)
 - [Commands](#commands)
- - [Create default INI file](#create-default-ini-file)
- - [Open script](#open-script)
- - [Open parent script](#open-parent-script)
- - [Clear compiler error highlights](#clear-compiler-error-highlights-sublime-text-3-only)
+	- [Create default INI file](#create-default-ini-file)
+	- [Open script](#open-script)
+	- [Open parent script](#open-parent-script)
+	- [Clear compiler error highlights](#clear-compiler-error-highlights-sublime-text-3-only)
+	- [Insert *\*enter noun here\**](#insert-42enter-noun-here42-sublime-text-3-only)
 - [Highlight compiler errors](#highlight-compiler-errors-sublime-text-3-only)
 - [Hide successful build results](#hide-successful-build-results-sublime-text-3-only)
 
@@ -109,6 +110,20 @@ ScriptName X Extends Y
 
 ######Clear compiler error highlights (Sublime Text 3 only)
 If you type in the command *SublimePapyrus: Clear compiler error highlights*, then any lines highlighted with the *Highlight compiler errors* feature will cease to be highlighted. In case it takes a long period of time before you attempt to compile your script again and you find the highlighting to be distracting.
+
+
+######Insert *\*enter noun here\** (Sublime Text 3 only)
+This command can be used to insert valid arguments for functions like SKSE's *RegisterForMenu*. The commands follow the template *SublimePapyrus: Insert X (Library's name)*, where *X* is replaced with for example *menu name*. The purpose of these commands is to alleviate or even remove the need to either memorize valid options or look up the relevant documentation.
+
+This feature has to be implemented on a per-library basis. This feature is currently supported by the following libraries:
+
+- SKSE
+	- Menu names
+	- Input keycodes
+	- Controls
+	- DefaultObject keys
+
+*SublimePapyrus: Insert menu name (SKSE)* starts the process of inserting a valid menu name used by SKSE's user interface functions. A menu will pop up showing you a list of valid arguments/menus that you can search through. The elements in the list are descriptive, but the actual menu name used by the functions will be inserted at the caret or replace the current selection. For example choosing the *Barter* option in the list will insert, or replace a selection, with *"BarterMenu"*.
 
 
 ####Highlight compiler errors (Sublime Text 3 only)
