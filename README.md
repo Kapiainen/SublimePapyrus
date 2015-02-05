@@ -38,7 +38,7 @@ If you are using [Advanced Papyrus](https://github.com/Kapiainen/Advanced-Papyru
 	- [Open script](#open-script)
 	- [Open parent script](#open-parent-script)
 	- [Clear compiler error highlights](#clear-compiler-error-highlights-sublime-text-3-only)
-	- [Insert *\*enter noun here\**](#insert-42enter-noun-here42-sublime-text-3-only)
+	- [Insert *enter noun here*](#insert-42enter-noun-here42-sublime-text-3-only)
 - [Highlight compiler errors](#highlight-compiler-errors-sublime-text-3-only)
 - [Hide successful build results](#hide-successful-build-results-sublime-text-3-only)
 
