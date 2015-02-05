@@ -112,7 +112,7 @@ ScriptName X Extends Y
 If you type in the command *SublimePapyrus: Clear compiler error highlights*, then any lines highlighted with the *Highlight compiler errors* feature will cease to be highlighted. In case it takes a long period of time before you attempt to compile your script again and you find the highlighting to be distracting.
 
 
-######Insert *\*enter noun here\** (Sublime Text 3 only)
+######Insert *enter noun here* (Sublime Text 3 only)
 This command can be used to insert valid arguments for functions like SKSE's *RegisterForMenu*. The commands follow the template *SublimePapyrus: Insert X (Library's name)*, where *X* is replaced with for example *menu name*. The purpose of these commands is to alleviate or even remove the need to either memorize valid options or look up the relevant documentation.
 
 This feature has to be implemented on a per-library basis. This feature is currently supported by the following libraries:
