@@ -1,0 +1,6 @@
+[
+    {
+        "caption": "SublimePapyrus: Insert actor value name (Skyrim)",
+        "command": "papyrus_skyrim_actor_value_suggestions"
+    }
+]
