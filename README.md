@@ -117,11 +117,16 @@ This command can be used to insert valid arguments for functions like SKSE's *Re
 
 This feature has to be implemented on a per-library basis. This feature is currently supported by the following libraries:
 
+- Skyrim
+	- Actor value names
+
 - SKSE
 	- Menu names
 	- Input keycodes
 	- Controls
 	- DefaultObject keys
+	- ActorValueInfo names and IDs
+
 
 *SublimePapyrus: Insert menu name (SKSE)* starts the process of inserting a valid menu name used by SKSE's user interface functions. A menu will pop up showing you a list of valid arguments/menus that you can search through. The elements in the list are descriptive, but the actual menu name used by the functions will be inserted at the caret or replace the current selection. For example choosing the *Barter* option in the list will insert, or replace a selection, with *"BarterMenu"*.
 
