@@ -2,5 +2,9 @@
     {
         "caption": "SublimePapyrus: Insert actor value name (Skyrim)",
         "command": "papyrus_skyrim_actor_value_suggestions"
+    },
+    {
+        "caption": "SublimePapyrus: Insert Form type ID (Skyrim)",
+        "command": "papyrus_skyrim_form_type_suggestions"
     }
 ]

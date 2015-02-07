@@ -119,6 +119,7 @@ This feature has to be implemented on a per-library basis. This feature is curre
 
 - Skyrim
 	- Actor value names
+	- Form type IDs
 
 - SKSE
 	- Menu names
