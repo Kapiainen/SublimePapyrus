@@ -14,7 +14,7 @@ elif PYTHON_VERSION[0] == 3:
     BUILD_SYSTEM = importlib.import_module("Default.exec")
 
 # INI related variables.
-INI_LOCATION = os.path.expanduser("~/Documents/SublimePapyrus.ini")
+INI_LOCATION = ""
 if (os.path.exists("C:\\Program Files (x86)")):
     END_USER_ROOT = "C:\\Program Files (x86)\\Steam\\steamapps\\common\\skyrim"
 else:
@@ -75,6 +75,20 @@ PAPYRUS_SCRIPT_EXTENSION = ".psc"
 def plugin_loaded():
     global USER_SETTINGS
     USER_SETTINGS = sublime.load_settings('SublimePapyrus.sublime-settings')
+    iniPath = USER_SETTINGS.get('ini_path', "")
+    if iniPath != "":
+        if iniPath.endswith(".ini"):
+            folderPath = os.path.dirname(iniPath)
+            if os.path.exists(folderPath) == False:
+                os.mkdir(folderPath)
+        else:
+            if os.path.exists(iniPath) == False:
+                os.mkdir(iniPath)
+            iniPath += "\\SublimePapyrus.ini"
+    else:
+        iniPath = os.path.expanduser("~\\Documents\\SublimePapyrus.ini")
+    global INI_LOCATION
+    INI_LOCATION = iniPath
 
 def getPrefs(filePath):
     fileDir, fileName = os.path.split(filePath)
@@ -117,12 +131,15 @@ def getPrefs(filePath):
             ret["import"] = ";".join(filter(None, ret["import"]))
         elif PYTHON_VERSION[0] == 3:
             ret["import"] = ";".join([_f for _f in ret["import"] if _f])
+    else:
+        sublime.status_message("Could not find the configuration file. Falling back to default values.")
+        ret["debug"] = []
     ret["filename"] = fileName
     return ret
 
 class CreateDefaultSettingsFileCommand(sublime_plugin.WindowCommand):
     def run(self, **args):
-        if os.path.exists(INI_LOCATION):
+        if os.path.isfile(INI_LOCATION):
             if sublime.ok_cancel_dialog("INI file already exists at %s.\n Do you want to open the file?" % INI_LOCATION):
                 self.window.open_file(INI_LOCATION)
         else:

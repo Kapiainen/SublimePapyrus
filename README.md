@@ -25,7 +25,7 @@ Includes function/event snippets and syntax definitions for:
 
 - Packaged: Download a [release](https://github.com/Kapiainen/SublimePapyrus/releases). Copy SublimePapyrus.sublime-package (and any other .sublime-package files you want) to *"%AppData%\Sublime Text #\Data\Installed Packages"*, or *"\Sublime Text #\Data\Installed Packages"* if you are using the portable version of Sublime Text, (replace # with the version of Sublime Text you are using).
 
-- If you have Skyrim installed outside of *"C:\Program Files (x86)\Steam\steamapps\common\skyrim\" or "C:\Program Files\Steam\steamapps\common\skyrim\"*, then you need to open the Command Palette (CTRL+SHIFT+P), type in *"SublimePapyrus INI"*. An option called *"SublimePapyrus: Create default INI file"* should show up. Select it and a file called *SublimePapyrus.ini* will be created in *My Documents*. This file contains paths to compiled scripts, script sources, the Papyrus compiler, and paths to libraries you wish to import (optional). Edit the paths according to where you have the relevant files (usually where Skyrim has been installed).
+- If you have Skyrim installed outside of *"C:\Program Files (x86)\Steam\steamapps\common\skyrim\" or "C:\Program Files\Steam\steamapps\common\skyrim\"*, then you need to open the Command Palette (CTRL+SHIFT+P), type in *"SublimePapyrus INI"*. An option called *"SublimePapyrus: Create default INI file"* should show up. Select it and a file called *SublimePapyrus.ini* will be created in *My Documents*. This file contains paths to compiled scripts, script sources, the Papyrus compiler, and paths to libraries you wish to import (optional). Edit the paths according to where you have the relevant files (usually where Skyrim has been installed). If you want to have the INI file in another folder, then you can set it via the user settings (*Preferences -> Package Settings -> SublimePapyrus -> Settings - User*) with the setting *"ini_path"*. The value of that setting should be an absolute path to a folder that will contain the INI file or a file with the *.ini* extension.
 
 If you are using [Advanced Papyrus](https://github.com/Kapiainen/Advanced-Papyrus), then you should set the *compiler* option in *SublimePapyrus.ini* to point to the actual compiler, which would be called *PapyrusCompiler - Original.exe*, rather than the wrapper program.
 
@@ -70,7 +70,7 @@ Syntax highlighting for all keywords defined in Papyrus as well as names of all 
 
 
 ####Build systems
-You can now compile Papyrus scripts from Sublime Text as long as you have defined the path to the Papyrus compiler and flags in *SublimePapyrus.ini*. The various INI settings are documented in detail in the INI file generated via the *SublimePapyrus: Create default INI file* command. 
+You can now compile Papyrus scripts from Sublime Text as long as you have defined the path to the Papyrus compiler and flags in *SublimePapyrus.ini*. The various INI settings are documented in detail in the INI file generated via the *SublimePapyrus: Create default INI file* command.
 
 The *Import* section of the INI file is of particular interest as it allows you to keep various scripts, and their source files, separate, which can be useful if you for example use [Mod Organizer](http://www.nexusmods.com/skyrim/mods/1334/).
 
@@ -143,7 +143,7 @@ Automatically hide the build results when the Papyrus compiler finishes without 
 
 This feature is disabled by default and can be enabled in *Preferences -> Package Settings -> SublimePapyrus -> Settings - User*.
 
- 
+
 ##Credits
 Based on the work done by Bethesda Game Studios and Mark Hanna. Used according to the license included in the original package and said license is included in this package.
 

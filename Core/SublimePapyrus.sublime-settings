@@ -1,5 +1,6 @@
 {
 	"highlight_compiler_errors": false,
 	"hide_successful_build_results": false,
-	"word_wrap": false
+	"word_wrap": false,
+	"ini_path": ""
 }
