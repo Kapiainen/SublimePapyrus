@@ -14,7 +14,7 @@ elif PYTHON_VERSION[0] == 3:
     BUILD_SYSTEM = importlib.import_module("Default.exec")
 
 # INI related variables.
-INI_LOCATION = ""
+INI_LOCATION = os.path.expanduser("~\\Documents\\SublimePapyrus.ini")
 if (os.path.exists("C:\\Program Files (x86)")):
     END_USER_ROOT = "C:\\Program Files (x86)\\Steam\\steamapps\\common\\skyrim"
 else:
@@ -75,20 +75,24 @@ PAPYRUS_SCRIPT_EXTENSION = ".psc"
 def plugin_loaded():
     global USER_SETTINGS
     USER_SETTINGS = sublime.load_settings('SublimePapyrus.sublime-settings')
-    iniPath = USER_SETTINGS.get('ini_path', "")
-    if iniPath != "":
-        if iniPath.endswith(".ini"):
-            folderPath = os.path.dirname(iniPath)
-            if os.path.exists(folderPath) == False:
-                os.mkdir(folderPath)
-        else:
-            if os.path.exists(iniPath) == False:
-                os.mkdir(iniPath)
-            iniPath += "\\SublimePapyrus.ini"
-    else:
-        iniPath = os.path.expanduser("~\\Documents\\SublimePapyrus.ini")
+    updateINIPath()
+
+def updateINIPath():
     global INI_LOCATION
-    INI_LOCATION = iniPath
+    iniPath = USER_SETTINGS.get('ini_path', "")
+    if iniPath != INI_LOCATION:
+        if iniPath != "":
+            if iniPath.endswith(".ini"):
+                folderPath = os.path.dirname(iniPath)
+                if os.path.exists(folderPath) == False:
+                    os.mkdir(folderPath)
+            else:
+                if os.path.exists(iniPath) == False:
+                    os.mkdir(iniPath)
+                iniPath += "\\SublimePapyrus.ini"
+        else:
+            iniPath = os.path.expanduser("~\\Documents\\SublimePapyrus.ini")
+        INI_LOCATION = iniPath
 
 def getPrefs(filePath):
     fileDir, fileName = os.path.split(filePath)
@@ -97,6 +101,7 @@ def getPrefs(filePath):
     ret["output"] = END_USER_OUTPUT
     ret["flags"] = END_USER_FLAGS
     ret["import"] = END_USER_SCRIPTS
+    updateINIPath()
     if (os.path.exists(INI_LOCATION)):
         if PYTHON_VERSION[0] == 2:
             parser = ConfigParser.ConfigParser()
@@ -132,13 +137,18 @@ def getPrefs(filePath):
         elif PYTHON_VERSION[0] == 3:
             ret["import"] = ";".join([_f for _f in ret["import"] if _f])
     else:
-        sublime.status_message("Could not find the configuration file. Falling back to default values.")
+        if os.path.exists(END_USER_COMPILER) == False:
+            sublime.status_message("Compiler does not exist at default path (\"%s\")." %(END_USER_COMPILER))
+            return None
+        else:
+            sublime.status_message("Could not find the configuration file. Falling back to default values.")
         ret["debug"] = []
     ret["filename"] = fileName
     return ret
 
 class CreateDefaultSettingsFileCommand(sublime_plugin.WindowCommand):
     def run(self, **args):
+        updateINIPath()
         if os.path.isfile(INI_LOCATION):
             if sublime.ok_cancel_dialog("INI file already exists at %s.\n Do you want to open the file?" % INI_LOCATION):
                 self.window.open_file(INI_LOCATION)
@@ -151,20 +161,21 @@ class CreateDefaultSettingsFileCommand(sublime_plugin.WindowCommand):
 class CompilePapyrusCommand(sublime_plugin.WindowCommand):
     def run(self, **args):
         config = getPrefs(args["cmd"])
-        if (len(config) > 0):
-            args["cmd"] = [config["compiler"], config["filename"]]
-            args["cmd"].append("-f=%s" % config["flags"])
-            args["cmd"].append("-i=%s" % config["import"])
-            args["cmd"].append("-o=%s" % config["output"])
-            for debugarg in config["debug"]:
-                if debugarg.startswith("-"):
-                    args["cmd"].append("%s" % debugarg)
-                else:
-                    args["cmd"].append("-%s" % debugarg)
-            args["working_dir"] = os.path.dirname(config["compiler"])
-            self.window.run_command("exec", args)
-        else:
-            sublime.status_message("No configuration for %s" % os.path.dirname(args["cmd"]))
+        if config != None:
+            if (len(config) > 0):
+                args["cmd"] = [config["compiler"], config["filename"]]
+                args["cmd"].append("-f=%s" % config["flags"])
+                args["cmd"].append("-i=%s" % config["import"])
+                args["cmd"].append("-o=%s" % config["output"])
+                for debugarg in config["debug"]:
+                    if debugarg.startswith("-"):
+                        args["cmd"].append("%s" % debugarg)
+                    else:
+                        args["cmd"].append("-%s" % debugarg)
+                args["working_dir"] = os.path.dirname(config["compiler"])
+                self.window.run_command("exec", args)
+            else:
+                sublime.status_message("No configuration for %s" % os.path.dirname(args["cmd"]))
 
 class DisassemblePapyrusCommand(sublime_plugin.WindowCommand):
     def run(self, **args):
@@ -270,6 +281,7 @@ def GetMatchingFiles(self, filename):
             parser = ConfigParser.ConfigParser()
         elif PYTHON_VERSION[0] == 3:
             parser = configparser.ConfigParser()
+        updateINIPath()
         parser.read([INI_LOCATION])
         if parser.has_section("Import"):
             for configKey, configValue in parser.items("Import"):
