@@ -129,7 +129,7 @@ This feature has to be implemented on a per-library basis. This feature is curre
 	- ActorValueInfo names and IDs
 
 
-*SublimePapyrus: Insert menu name (SKSE)* starts the process of inserting a valid menu name used by SKSE's user interface functions. A menu will pop up showing you a list of valid arguments/menus that you can search through. The elements in the list are descriptive, but the actual menu name used by the functions will be inserted at the caret or replace the current selection. For example choosing the *Barter* option in the list will insert, or replace a selection, with *"BarterMenu"*.
+*SublimePapyrus: Insert menu name (SKSE)* starts the process of inserting a valid menu name used by SKSE's user interface functions. A menu will pop up showing you a list of valid arguments/menus that you can search through. The elements in the list are descriptive, but the actual menu name used by the functions will be inserted at the caret or replace the current selection. For example choosing the *Barter* option in the list will insert, or replace a selection with, *"BarterMenu"*.
 
 
 ####Highlight compiler errors (Sublime Text 3 only)
