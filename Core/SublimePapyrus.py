@@ -14,7 +14,8 @@ elif PYTHON_VERSION[0] == 3:
     BUILD_SYSTEM = importlib.import_module("Default.exec")
 
 # INI related variables.
-INI_LOCATION = os.path.expanduser("~\\Documents\\SublimePapyrus.ini")
+DEFAULT_INI_LOCATION = os.path.expanduser("~\\Documents\\SublimePapyrus.ini")
+INI_LOCATION = ""
 if (os.path.exists("C:\\Program Files (x86)")):
     END_USER_ROOT = "C:\\Program Files (x86)\\Steam\\steamapps\\common\\skyrim"
 else:
@@ -80,18 +81,20 @@ def plugin_loaded():
 def updateINIPath():
     global INI_LOCATION
     iniPath = USER_SETTINGS.get('ini_path', "")
-    if iniPath != INI_LOCATION:
-        if iniPath != "":
-            if iniPath.endswith(".ini"):
-                folderPath = os.path.dirname(iniPath)
-                if os.path.exists(folderPath) == False:
-                    os.mkdir(folderPath)
-            else:
-                if os.path.exists(iniPath) == False:
-                    os.mkdir(iniPath)
-                iniPath += "\\SublimePapyrus.ini"
+    if iniPath == "":
+        if INI_LOCATION == DEFAULT_INI_LOCATION:
+            return
         else:
-            iniPath = os.path.expanduser("~\\Documents\\SublimePapyrus.ini")
+            INI_LOCATION = DEFAULT_INI_LOCATION
+    elif iniPath != INI_LOCATION:
+        if iniPath.endswith(".ini"):
+            folderPath = os.path.dirname(iniPath)
+            if os.path.exists(folderPath) == False:
+                os.mkdir(folderPath)
+        else:
+            if os.path.exists(iniPath) == False:
+                os.mkdir(iniPath)
+            iniPath += "\\SublimePapyrus.ini"
         INI_LOCATION = iniPath
 
 def getPrefs(filePath):
@@ -137,13 +140,12 @@ def getPrefs(filePath):
         elif PYTHON_VERSION[0] == 3:
             ret["import"] = ";".join([_f for _f in ret["import"] if _f])
     else:
-        if os.path.exists(END_USER_COMPILER) == False:
-            sublime.status_message("Compiler does not exist at default path (\"%s\")." %(END_USER_COMPILER))
-            return None
-        else:
-            sublime.status_message("Could not find the configuration file. Falling back to default values.")
+        sublime.status_message("Could not find a configuration file. Falling back to default values.")
         ret["debug"] = []
     ret["filename"] = fileName
+    if os.path.exists(ret["compiler"]) == False:
+        sublime.status_message("Compiler does not exist at the given path (\"%s\")." %(ret["compiler"]))
+        return None
     return ret
 
 class CreateDefaultSettingsFileCommand(sublime_plugin.WindowCommand):
