@@ -1,12 +1,15 @@
-import sublime, sublime_plugin
-import re
-import os
-import sys
+import sublime, sublime_plugin, re, os, sys
 # ST2 uses Python 2.6 and ST3 uses Python 3.3.
 PYTHON_VERSION = sys.version_info
 if PYTHON_VERSION[0] == 2:
     import ConfigParser
     from StringIO import StringIO
+    import imp
+    buildPackage = os.path.join(os.path.split(os.getcwd())[0], "Default", "exec.py")
+    imp.load_source("BUILD_SYSTEM", buildPackage)
+    del buildPackage
+    import BUILD_SYSTEM
+    USER_SETTINGS = sublime.load_settings('SublimePapyrus.sublime-settings')
 elif PYTHON_VERSION[0] == 3:
     import configparser
     from io import StringIO
@@ -15,7 +18,7 @@ elif PYTHON_VERSION[0] == 3:
 
 # INI related variables.
 DEFAULT_INI_LOCATION = os.path.expanduser("~\\Documents\\SublimePapyrus.ini")
-INI_LOCATION = ""
+INI_LOCATION = DEFAULT_INI_LOCATION
 if (os.path.exists("C:\\Program Files (x86)")):
     END_USER_ROOT = "C:\\Program Files (x86)\\Steam\\steamapps\\common\\skyrim"
 else:
@@ -73,18 +76,18 @@ ERROR_HIGHLIGHT_KEY = "papyrus_error"
 ERROR_HIGHLIGHT_SCOPE = "invalid"
 PAPYRUS_SCRIPT_EXTENSION = ".psc"
 
+# ST's API is ready to be used.
 def plugin_loaded():
     global USER_SETTINGS
     USER_SETTINGS = sublime.load_settings('SublimePapyrus.sublime-settings')
     updateINIPath()
 
+# Reads the path, which may have been defined by the user, to the INI file containing settings specific to the Papyrus build system.
 def updateINIPath():
     global INI_LOCATION
     iniPath = USER_SETTINGS.get('ini_path', "")
     if iniPath == "":
-        if INI_LOCATION == DEFAULT_INI_LOCATION:
-            return
-        else:
+        if INI_LOCATION != DEFAULT_INI_LOCATION:
             INI_LOCATION = DEFAULT_INI_LOCATION
     elif iniPath != INI_LOCATION:
         if iniPath.endswith(".ini"):
@@ -97,6 +100,7 @@ def updateINIPath():
             iniPath += "\\SublimePapyrus.ini"
         INI_LOCATION = iniPath
 
+# Returns Papyrus compiler arguments based on the user's settings in the INI file.
 def getPrefs(filePath):
     fileDir, fileName = os.path.split(filePath)
     ret = {}
@@ -148,6 +152,7 @@ def getPrefs(filePath):
         return None
     return ret
 
+# Generates an INI file based on the template defined in the variable DEFAULT_INI_TEXT.
 class CreateDefaultSettingsFileCommand(sublime_plugin.WindowCommand):
     def run(self, **args):
         updateINIPath()
@@ -160,6 +165,7 @@ class CreateDefaultSettingsFileCommand(sublime_plugin.WindowCommand):
             outHandle.close()
             self.window.open_file(INI_LOCATION)
 
+# Runs the Papyrus compiler with properly formatted arguments based on settings in the INI file.
 class CompilePapyrusCommand(sublime_plugin.WindowCommand):
     def run(self, **args):
         config = getPrefs(args["cmd"])
@@ -179,6 +185,7 @@ class CompilePapyrusCommand(sublime_plugin.WindowCommand):
             else:
                 sublime.status_message("No configuration for %s" % os.path.dirname(args["cmd"]))
 
+# Disassembles bytecode (.pex) to assembly (.pas)
 class DisassemblePapyrusCommand(sublime_plugin.WindowCommand):
     def run(self, **args):
         scriptPath = args["cmd"]
@@ -196,6 +203,7 @@ class DisassemblePapyrusCommand(sublime_plugin.WindowCommand):
         if (os.path.exists(disassemblyFinal)):
             self.window.open_file(disassemblyFinal)
 
+# Generates bytecode (.pex) from assembly (.pas).
 class AssemblePapyrusCommand(sublime_plugin.WindowCommand):
     def run(self, **args):
         scriptPath = args["cmd"]
@@ -207,70 +215,7 @@ class AssemblePapyrusCommand(sublime_plugin.WindowCommand):
         args["working_dir"] = scriptDir
         self.window.run_command("exec", args)
 
-if PYTHON_VERSION[0] == 3:
-    class ClearPapyrusCompilerErrorHighlightsCommand(sublime_plugin.WindowCommand):
-        def run(self, **args):
-            source = sublime.active_window().active_view()
-            if source != None:
-                source.erase_regions(ERROR_HIGHLIGHT_KEY)
-
-if PYTHON_VERSION[0] == 3:
-    class ExecCommand(BUILD_SYSTEM.ExecCommand):
-        def finish(self, proc):
-            super(ExecCommand, self).finish(proc)
-            source = sublime.active_window().active_view()
-            if source != None:
-                if source.file_name().endswith(PAPYRUS_SCRIPT_EXTENSION):
-                    source.erase_regions(ERROR_HIGHLIGHT_KEY)
-                    if USER_SETTINGS.get('highlight_compiler_errors', False):
-                        output = GetOutput(self.output_view)
-                        if output != None:
-                            pattern = GetPattern(self.output_view)
-                            if pattern != None:
-                                errors = GetErrors(output, pattern)
-                                if errors != None:
-                                    regions = GetRegions(source, errors)
-                                    if regions != None:
-                                        source.add_regions(ERROR_HIGHLIGHT_KEY, regions, ERROR_HIGHLIGHT_SCOPE)
-                                elif USER_SETTINGS.get('hide_successful_build_results', False):
-                                    self.window.run_command("hide_panel", {"panel": "output.exec"})
-
-    def GetOutput(view):
-        if view != None:
-            return view.substr(sublime.Region(0, view.size()))
-        else:
-            return None
-
-    def GetPattern(view):
-        if view != None:
-            return view.settings().get("result_file_regex")
-        else:
-            return None
-
-    def GetErrors(output, pattern):
-        lines = output.rstrip().split('\n')
-        matches = []
-        regex = re.compile(pattern)
-        for line in lines:
-            match = regex.findall(line)
-            if len(match) > 0:
-                matches.append(match)
-        if len(matches) > 0:
-            return matches
-        else:
-            return None
-
-    def GetRegions(view, errors):
-        regions  = []
-        for error in errors:
-            region = view.line(sublime.Region(view.text_point(int(error[0][1]) - 1, 0)))
-            regions.append(region)
-            del region
-        if len(regions) > 0:
-            return regions
-        else:
-            return None
-
+# Looks for matching files in all input paths defined in the INI file based on the given regular expression.
 def GetMatchingFiles(self, filename):
     if filename != "":
         folderpaths = []
@@ -323,6 +268,7 @@ def GetMatchingFiles(self, filename):
         elif nummatches > 1:
             self.window.run_command("open_papyrus_script_selection", {"items": matches})
 
+# Scans the current buffer for a script header that declares a parent script and then tries to open the parent script.
 class OpenPapyrusParentScriptCommand(sublime_plugin.WindowCommand):
     def run(self):
         source = self.window.active_view().file_name()
@@ -337,6 +283,7 @@ class OpenPapyrusParentScriptCommand(sublime_plugin.WindowCommand):
                         return
             sublime.status_message("Parent script not declared in \"%s\"" % source)
 
+# Tries to open the file(s) matching a given regular expression. 
 class OpenPapyrusScriptCommand(sublime_plugin.WindowCommand):
     def run(self):
         self.window.show_input_panel("Open script:", "", self.on_done, None, None)
@@ -355,6 +302,7 @@ class OpenPapyrusScriptCommand(sublime_plugin.WindowCommand):
         else:
             sublime.status_message("No input")
 
+# Shows a menu with a list of scripts that match the regular expression passed on to GetMatchingFiles.
 class OpenPapyrusScriptSelectionCommand(sublime_plugin.WindowCommand):
     def run(self, **args):
         items = args["items"]
@@ -369,6 +317,10 @@ class OpenPapyrusScriptSelectionCommand(sublime_plugin.WindowCommand):
         if index >= 0:
             self.window.open_file(self.items[index])
 
+# Base class that is used in the framework for showing a list of valid arguments and then inserting them.
+# Libraries that need this functionality should import at least "sublime", "sublime_plugin", "sys", and this module.
+# Classes implementing this functionality need to inherit the "PapyrusShowSuggestionsCommand" class and override the "get_items" method.
+# "get_items" should return a dictionary where the keys are the descriptions shown to the user and the values are what is inserted into the buffer.
 class PapyrusShowSuggestionsCommand(sublime_plugin.TextCommand):
     def run(self, edit, **args):
         selections = self.view.sel()
@@ -377,8 +329,8 @@ class PapyrusShowSuggestionsCommand(sublime_plugin.TextCommand):
             self.argument = region
         items = self.get_items()
         if items != None:
-            self.items = list(items.values())
-            self.values = list(items.keys())
+            self.items = list(items.keys())
+            self.values = list(items.values())
             if PYTHON_VERSION[0] == 2:
                 self.view.window().show_quick_panel(self.items, self.on_select, 0)
             elif PYTHON_VERSION[0] == 3:
@@ -392,6 +344,7 @@ class PapyrusShowSuggestionsCommand(sublime_plugin.TextCommand):
             args = {"region_start": self.argument.a, "region_end": self.argument.b, "replacement": str(self.values[index])}
             self.view.run_command("papyrus_insert_suggestion", args)
 
+# Inserts the value chosen in the class that inherits "PapyrusShowSuggestionsCommand".
 class PapyrusInsertSuggestionCommand(sublime_plugin.TextCommand):
     def run(self, edit, **args):
         region = sublime.Region(args["region_start"], args["region_end"])
@@ -400,3 +353,55 @@ class PapyrusInsertSuggestionCommand(sublime_plugin.TextCommand):
             self.view.insert(edit, args["region_start"], args["replacement"])
         else:
             self.view.insert(edit, args["region_start"], "\"" + args["replacement"] + "\"")
+
+# Manually clear any sections that were highlighted as a result of a failed compilation.
+class ClearPapyrusCompilerErrorHighlightsCommand(sublime_plugin.WindowCommand):
+    def run(self, **args):
+        source = sublime.active_window().active_view()
+        if source != None:
+            source.erase_regions(ERROR_HIGHLIGHT_KEY)
+
+# Checks the build result for errors and, depending on the settings, highlights lines that caused errors and/or hides the build results when there are no errors.
+class ExecCommand(BUILD_SYSTEM.ExecCommand):
+    def finish(self, proc):
+        super(ExecCommand, self).finish(proc)
+        source = sublime.active_window().active_view()
+        if source != None:
+            if source.file_name().endswith(PAPYRUS_SCRIPT_EXTENSION):
+                source.erase_regions(ERROR_HIGHLIGHT_KEY)
+                if USER_SETTINGS.get('highlight_compiler_errors', False):
+                    output = self.output_view.substr(sublime.Region(0, self.output_view.size()))
+                    if output != None:
+                        pattern = self.output_view.settings().get("result_file_regex")
+                        if pattern != None:
+                            errors = self.GetErrors(output, pattern)
+                            if errors != None:
+                                regions = self.GetRegions(source, errors)
+                                if regions != None:
+                                    source.add_regions(ERROR_HIGHLIGHT_KEY, regions, ERROR_HIGHLIGHT_SCOPE)
+                            elif USER_SETTINGS.get('hide_successful_build_results', False):
+                                self.window.run_command("hide_panel", {"panel": "output.exec"})
+
+    def GetErrors(self, output, pattern):
+        lines = output.rstrip().split('\n')
+        matches = []
+        regex = re.compile(pattern)
+        for line in lines:
+            match = regex.findall(line)
+            if len(match) > 0:
+                matches.append(match)
+        if len(matches) > 0:
+            return matches
+        else:
+            return None
+
+    def GetRegions(self, view, errors):
+        regions  = []
+        for error in errors:
+            region = view.line(sublime.Region(view.text_point(int(error[0][1]) - 1, 0)))
+            regions.append(region)
+            del region
+        if len(regions) > 0:
+            return regions
+        else:
+            return None
