@@ -108,11 +108,11 @@ ScriptName X Extends Y
 ```
 *X* is the name of the script and *Y* is the name of the parent script. If *extends Y* cannot be found in the file or a script named *Y* cannot be found, then the command will not open anything. If *extends Y* can be found in the file, then *Y* will be searched for just like in the command *SublimePapyrus: Open script*.
 
-######Clear compiler error highlights (Sublime Text 3 only)
+######Clear compiler error highlights
 If you type in the command *SublimePapyrus: Clear compiler error highlights*, then any lines highlighted with the *Highlight compiler errors* feature will cease to be highlighted. In case it takes a long period of time before you attempt to compile your script again and you find the highlighting to be distracting.
 
 
-######Insert *enter noun here* (Sublime Text 3 only)
+######Insert *enter noun here*
 This command can be used to insert valid arguments for functions like SKSE's *RegisterForMenu*. The commands follow the template *SublimePapyrus: Insert X (Library's name)*, where *X* is replaced with for example *menu name*. The purpose of these commands is to alleviate or even remove the need to either memorize valid options or look up the relevant documentation.
 
 This feature has to be implemented on a per-library basis. This feature is currently supported by the following libraries:
@@ -132,13 +132,13 @@ This feature has to be implemented on a per-library basis. This feature is curre
 *SublimePapyrus: Insert menu name (SKSE)* starts the process of inserting a valid menu name used by SKSE's user interface functions. A menu will pop up showing you a list of valid arguments/menus that you can search through. The elements in the list are descriptive, but the actual menu name used by the functions will be inserted at the caret or replace the current selection. For example choosing the *Barter* option in the list will insert, or replace a selection with, *"BarterMenu"*.
 
 
-####Highlight compiler errors (Sublime Text 3 only)
+####Highlight compiler errors
 Lines, which cause the Papyrus compiler to report errors, can be automatically highlighted when compiling scripts in Sublime Text.
 
 This feature is disabled by default and can be enabled in *Preferences -> Package Settings -> SublimePapyrus -> Settings - User*.
 
 
-####Hide successful build results (Sublime Text 3 only)
+####Hide successful build results
 Automatically hide the build results when the Papyrus compiler finishes without any errors when compiling scripts in Sublime Text. In case you want this feature to only apply to Papyrus scripts rather than using Sublime Text's *show_panel_on_build*, which applies to all build results.
 
 This feature is disabled by default and can be enabled in *Preferences -> Package Settings -> SublimePapyrus -> Settings - User*.
