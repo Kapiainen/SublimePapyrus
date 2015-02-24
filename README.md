@@ -37,10 +37,10 @@ If you are using [Advanced Papyrus](https://github.com/Kapiainen/Advanced-Papyru
 	- [Create default INI file](#create-default-ini-file)
 	- [Open script](#open-script)
 	- [Open parent script](#open-parent-script)
-	- [Clear compiler error highlights](#clear-compiler-error-highlights-sublime-text-3-only)
-	- [Insert *enter noun here*](#insert-enter-noun-here-sublime-text-3-only)
-- [Highlight compiler errors](#highlight-compiler-errors-sublime-text-3-only)
-- [Hide successful build results](#hide-successful-build-results-sublime-text-3-only)
+	- [Clear compiler error highlights](#clear-compiler-error-highlights)
+	- [Insert *enter noun here*](#insert-enter-noun-here)
+- [Highlight compiler errors](#highlight-compiler-errors)
+- [Hide successful build results](#hide-successful-build-results)
 
 ####Autocomplete
 Functions and events that exist in supported libraries (see above) can be autocompleted via snippets. Type in only the name of the function or event. Function snippets will insert a function call. If you start typing the word *AddItem*, then the following will be inserted when you choose to autocomplete:
