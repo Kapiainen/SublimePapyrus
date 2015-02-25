@@ -342,7 +342,11 @@ class PapyrusShowSuggestionsCommand(sublime_plugin.TextCommand):
 
     def on_select(self, index):
         if index >= 0:
-            args = {"region_start": self.argument.a, "region_end": self.argument.b, "replacement": str(self.values[index])}
+            value = str(self.values[index])
+            if value.isdigit() or value != "":
+                args = {"region_start": self.argument.a, "region_end": self.argument.b, "replacement": value}
+            else:
+                args = {"region_start": self.argument.a, "region_end": self.argument.b, "replacement": str(self.items[index])}
             self.view.run_command("papyrus_insert_suggestion", args)
 
 # Inserts the value chosen in the class that inherits "PapyrusShowSuggestionsCommand".
