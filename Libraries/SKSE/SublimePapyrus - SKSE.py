@@ -922,3 +922,39 @@ class PapyrusSkseActorValueInfoIdSuggestionsCommand(SublimePapyrus.PapyrusShowSu
         #162: "Cannot find the name of this AVI",
         }
         return items
+
+class PapyrusSkseActorActionIdSuggestionsCommand(SublimePapyrus.PapyrusShowSuggestionsCommand):
+    def get_items(self, **args):
+        items = {
+        "Weapon swing (melee weapons that are swung including hand-to-hand)": 0,
+        "Spell cast (spells and staves)": 1,
+        "Spell fire (spells and staves)": 2,
+        "Voice cast": 3,
+        "Voice fire": 4,
+        "Bow draw": 5,
+        "Bow release": 6,
+        "Draw begin": 7,
+        "Draw end": 8,
+        "Sheathe begin": 9,
+        "Sheathe end": 10
+        }
+        return items
+
+class PapyrusSksePlayerCameraStateSuggestionsCommand(SublimePapyrus.PapyrusShowSuggestionsCommand):
+    def get_items(self, **args):
+        items = {
+        "First person": 0,
+        "Auto vanity": 1,
+        "VATS": 2,
+        "Free": 3,
+        "Iron sights": 4,
+        "Furniture": 5,
+        "Transition": 6,
+        "Tween menu": 7,
+        "Third person 1": 8,
+        "Third person 2": 9,
+        "Horse": 10,
+        "Bleedout": 11,
+        "Dragon": 12
+        }
+        return items

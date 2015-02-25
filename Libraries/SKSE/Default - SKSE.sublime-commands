@@ -22,5 +22,13 @@
     {
         "caption": "SublimePapyrus: Insert ActorValueInfo ID (SKSE)",
         "command": "papyrus_skse_actor_value_info_id_suggestions"
+    },
+    {
+        "caption": "SublimePapyrus: Insert actor action ID (SKSE)",
+        "command": "papyrus_skse_actor_action_id_suggestions"
+    },
+    {
+        "caption": "SublimePapyrus: Insert player camera state ID (SKSE)",
+        "command": "papyrus_skse_player_camera_state_suggestions"
     }
 ]
