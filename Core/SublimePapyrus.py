@@ -330,8 +330,11 @@ class PapyrusShowSuggestionsCommand(sublime_plugin.TextCommand):
             self.argument = region
         items = self.get_items()
         if items != None:
-            self.items = list(items.keys())
-            self.values = list(items.values())
+            sortedKeysAndValues = sorted(zip(list(items.keys()), list(items.values())))
+            sortedKeys = [key for (key, value) in sortedKeysAndValues]
+            sortedValues = [value for (key, value) in sortedKeysAndValues]
+            self.items = sortedKeys
+            self.values = sortedValues
             if PYTHON_VERSION[0] == 2:
                 self.view.window().show_quick_panel(self.items, self.on_select, 0)
             elif PYTHON_VERSION[0] == 3:
