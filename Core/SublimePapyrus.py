@@ -76,7 +76,7 @@ ERROR_HIGHLIGHT_KEY = "papyrus_error"
 ERROR_HIGHLIGHT_SCOPE = "invalid"
 PAPYRUS_SCRIPT_EXTENSION = ".psc"
 
-# ST's API is ready to be used.
+# ST3's API is ready to be used.
 def plugin_loaded():
     global USER_SETTINGS
     USER_SETTINGS = sublime.load_settings('SublimePapyrus.sublime-settings')
@@ -319,6 +319,7 @@ class OpenPapyrusScriptSelectionCommand(sublime_plugin.WindowCommand):
 
 # Base class that is used in the framework for showing a list of valid arguments and then inserting them.
 # Libraries that need this functionality should import at least "sublime", "sublime_plugin", "sys", and this module.
+# ST2 requires using the "imp" module to load this module first via the "load_source" function. ST3 can simply use "from SublimePapyrus import SublimePapyrus".
 # Classes implementing this functionality need to inherit the "PapyrusShowSuggestionsCommand" class and override the "get_items" method.
 # "get_items" should return a dictionary where the keys are the descriptions shown to the user and the values are what is inserted into the buffer.
 class PapyrusShowSuggestionsCommand(sublime_plugin.TextCommand):
