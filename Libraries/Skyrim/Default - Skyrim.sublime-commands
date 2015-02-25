@@ -6,5 +6,37 @@
     {
         "caption": "SublimePapyrus: Insert Form type ID (Skyrim)",
         "command": "papyrus_skyrim_form_type_suggestions"
+    },
+    {
+        "caption": "SublimePapyrus: Insert animation event name (Skyrim)",
+        "command": "papyrus_skyrim_animation_event_name_suggestions"
+    },
+    {
+        "caption": "SublimePapyrus: Insert tracked stat name (Skyrim)",
+        "command": "papyrus_skyrim_tracked_stat_name_suggestions"
+    },
+    {
+        "caption": "SublimePapyrus: Insert boolean animation variable name (Skyrim)",
+        "command": "papyrus_skyrim_boolean_animation_variable_name_suggestions"
+    },
+    {
+        "caption": "SublimePapyrus: Insert float animation variable name (Skyrim)",
+        "command": "papyrus_skyrim_float_animation_variable_name_suggestions"
+    },
+    {
+        "caption": "SublimePapyrus: Insert integer animation variable name (Skyrim)",
+        "command": "papyrus_skyrim_integer_animation_variable_name_suggestions"
+    },
+    {
+        "caption": "SublimePapyrus: Insert float game setting name (Skyrim)",
+        "command": "papyrus_skyrim_float_game_setting_name_suggestions"
+    },
+    {
+        "caption": "SublimePapyrus: Insert integer game setting name (Skyrim)",
+        "command": "papyrus_skyrim_integer_game_setting_name_suggestions"
+    },
+    {
+        "caption": "SublimePapyrus: Insert string game setting name (Skyrim)",
+        "command": "papyrus_skyrim_string_game_setting_name_suggestions"
     }
 ]
