@@ -120,6 +120,9 @@ This feature has to be implemented on a per-library basis. This feature is curre
 - Skyrim
 	- Actor value names
 	- Form type IDs
+	- Tracked stat names
+	- Animation variable names (boolean, float, and integer)
+	- Game setting names (float, integer, and string)
 
 - SKSE
 	- Menu names
