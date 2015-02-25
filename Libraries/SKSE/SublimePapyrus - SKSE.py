@@ -162,6 +162,7 @@ class PapyrusSkseKeycodeSuggestionsCommand(SublimePapyrus.PapyrusShowSuggestions
         "Right Shift": 54,
         "Right shoulder (Gamepad)": 275,
         "Right thumbstick (Gamepad)": 273,
+        "Right trigger (Gamepad)": 281
         "S": 31,
         "Scroll Lock": 70,
         "Semicolon": 39,
@@ -179,7 +180,6 @@ class PapyrusSkseKeycodeSuggestionsCommand(SublimePapyrus.PapyrusShowSuggestions
         "Y (Gamepad)": 279,
         "Y": 21,
         "Z": 44,
-        "Right trigger (Gamepad)": 281
         }
         return items
 
@@ -700,6 +700,7 @@ class PapyrusSkseActorValueInfoNameSuggestionsCommand(SublimePapyrus.PapyrusShow
         "Pickpocket skill advance": "PickPocketSkillAdvance",
         "Pickpocket": "Pickpocket",
         "Poison resistance": "PoisonResist",
+        "Reflect damage": "ReflectDamage"
         "Restoration modifier": "RestorationMod",
         "Restoration power modifier": "RestorationPowerMod",
         "Restoration skill advance": "RestorationSkillAdvance",
@@ -749,7 +750,6 @@ class PapyrusSkseActorValueInfoNameSuggestionsCommand(SublimePapyrus.PapyrusShow
         "Water breathing": "WaterBreathing",
         "Water walking": "WaterWalking",
         "Weapon speed multiplier": "WeaponSpeedMult",
-        "Reflect damage": "ReflectDamage"
         }
         return items
 
