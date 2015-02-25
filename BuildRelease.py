@@ -34,4 +34,4 @@ if os.path.exists(inputdirectory):
 		print("No .sublime-package files in \"%s\"!" % inputdirectory)
 else:
 	print("\"%s\" does not exist!" % inputdirectory)
-time.sleep(2.0)
+#time.sleep(2.0)

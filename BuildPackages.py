@@ -46,4 +46,4 @@ for library in libraries.keys():
 			print(libraryfile)
 			libraryzip.write(libraryfile, os.path.relpath(libraryfile, os.path.split(libraryfile)[0]))
 print("\nDone!")
-time.sleep(2.0)
+#time.sleep(2.0)
