@@ -21,7 +21,7 @@ Includes function/event snippets and syntax definitions for:
 
 - Get a copy of SublimePapyrus from the repository (recommended), the Creation Kit wiki, if the repository is inaccessible.
 
-- Loose files: Copy the repository. Copy the contents of the folder labeled "Core" to *"%AppData%\Sublime Text #\Packages\SublimePapyrus"*, or *"\Sublime Text #\Data\Packages\SublimePapyrus"* if you are using the portable version of Sublime Text, (replace # with the version of Sublime Text you are using). Copy the contents of the folders corresponding to the libraries you want to use from the subfolders found in the folder labeled "Libraries" to the same folder that was used mentioned in the previous step. You will most likely want to at least copy the contents of the Skyrim library.
+- Loose files: Copy the repository. Copy the contents of the folder labeled "Core" to *"%AppData%\Sublime Text #\Packages\SublimePapyrus"*, or *"\Sublime Text #\Data\Packages\SublimePapyrus"* if you are using the portable version of Sublime Text, (replace # with the version of Sublime Text you are using). Copy the contents of the folders corresponding to the libraries you want to use from the subfolders found in the folder labeled "Libraries" to the same folder that was mentioned earlier in this step. You will most likely want to at least copy the contents of the Skyrim library.
 
 - Packaged (recommended): Download a [release](https://github.com/Kapiainen/SublimePapyrus/releases). Copy SublimePapyrus.sublime-package (and any other .sublime-package files you want) to *"%AppData%\Sublime Text #\Data\Installed Packages"*, or *"\Sublime Text #\Data\Installed Packages"* if you are using the portable version of Sublime Text, (replace # with the version of Sublime Text you are using).
 
