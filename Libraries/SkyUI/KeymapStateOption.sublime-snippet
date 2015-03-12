@@ -1,7 +1,7 @@
 <snippet>
-    <tabTrigger>KeymapStateOption</tabTrigger>
+    <tabTrigger>KeyMapStateOption</tabTrigger>
     <scope>source.papyrus</scope>
-    <description>Keymap State Option Template (SkyUI)</description>
+    <description>Key Mapping State Option Template (SkyUI)</description>
     <content><![CDATA[State ${1:StateName}
 	Event OnKeyMapChangeST(Int aiNewKeyCode, String asConflictControl, String asConflictName)
         Bool bContinue = True
