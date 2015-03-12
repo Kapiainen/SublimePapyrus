@@ -4,8 +4,20 @@
     <description>Keymap State Option Template (SkyUI)</description>
     <content><![CDATA[State ${1:StateName}
 	Event OnKeyMapChangeST(Int aiNewKeyCode, String asConflictControl, String asConflictName)
-        ${2:Variable} = aiNewKeyCode
-        SetKeyMapOptionValueST(${2:Variable})
+        Bool bContinue = True
+        If(asConflictControl != "")
+            String sMessage
+            If(asConflictName != "")
+                sMessage = "This key is already mapped to:\n\"" + asConflictControl + "\"\n(" + asConflictName + ")\n\nAre you sure you want to continue?"
+            Else
+                sMessage = "This key is already mapped to:\n\"" + asConflictControl + "\"\n\nAre you sure you want to continue?"
+            EndIf
+            bContinue = ShowMessage(sMessage, True, "\$Yes", "\$No")
+        EndIf
+        If(bContinue)
+            ${2:Variable} = aiNewKeyCode
+            SetKeyMapOptionValueST(${2:Variable})
+        EndIf
     EndEvent
 
     Event OnDefaultST()
