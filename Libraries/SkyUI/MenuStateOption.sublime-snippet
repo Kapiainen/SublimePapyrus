@@ -1,0 +1,26 @@
+<snippet>
+    <tabTrigger>MenuStateOption</tabTrigger>
+    <scope>source.papyrus</scope>
+    <description>Menu State Option Template (SkyUI)</description>
+    <content><![CDATA[State ${1:StateName}
+	Event OnMenuOpenST()
+        SetMenuDialogStartIndex(${2:Index})
+        SetMenuDialogDefaultIndex(${3:DefaultIndex})
+        SetMenuDialogOptions(${4:Array})
+    EndEvent
+
+    Event OnMenuAcceptST(Int aiIndex)
+        ${2:Index} = aiIndex
+        SetMenuOptionValueST(${4:Array}[${2:Index}])
+    EndEvent
+
+    Event OnDefaultST()
+        ${2:Index} = ${3:DefaultIndex}
+        SetMenuOptionValueST(${4:Array}[${2:Index}])
+    EndEvent
+
+	Event OnHighlightST()
+		SetInfoText(${5:Info})
+	EndEvent
+EndState]]></content>
+</snippet>

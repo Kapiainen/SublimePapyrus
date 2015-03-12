@@ -1,0 +1,27 @@
+<snippet>
+    <tabTrigger>SliderStateOption</tabTrigger>
+    <scope>source.papyrus</scope>
+    <description>Slider State Option Template (SkyUI)</description>
+    <content><![CDATA[State ${1:StateName}
+	Event OnSliderOpenST()
+        SetSliderDialogStartValue(${2:Variable})
+        SetSliderDialogDefaultValue(${3:Default})
+        SetSliderDialogRange(${4:Minimum}, ${5:Maximum})
+        SetSliderDialogInterval(${6:Interval})
+    EndEvent
+
+    Event OnSliderAcceptST(Float afValue)
+        ${2:Variable} = afValue as Int
+        SetSliderOptionValueST(${2:Variable})
+    EndEvent
+
+    Event OnDefaultST()
+        ${2:Variable} = ${3:Default}
+        SetSliderOptionValueST(${2:Variable})
+    EndEvent
+
+    Event OnHighlightST()
+        SetInfoText(${7:Info})
+    EndEvent
+EndState]]></content>
+</snippet>

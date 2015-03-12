@@ -1,0 +1,20 @@
+<snippet>
+    <tabTrigger>ToggleStateOption</tabTrigger>
+    <scope>source.papyrus</scope>
+    <description>Toggle State Option Template (SkyUI)</description>
+    <content><![CDATA[State ${1:StateName}
+	Event OnSelectST()
+        ${2:Variable} = !${2:Variable}
+        SetToggleOptionValueST(${2:Variable})
+    EndEvent
+
+    Event OnDefaultST()
+        ${2:Variable} = ${3:Default}
+        SetToggleOptionValueST(${2:Variable})
+    EndEvent
+
+	Event OnHighlightST()
+		SetInfoText(${4:Info})
+	EndEvent
+EndState]]></content>
+</snippet>

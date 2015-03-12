@@ -1,0 +1,20 @@
+<snippet>
+    <tabTrigger>KeymapStateOption</tabTrigger>
+    <scope>source.papyrus</scope>
+    <description>Keymap State Option Template (SkyUI)</description>
+    <content><![CDATA[State ${1:StateName}
+	Event OnKeyMapChangeST(Int aiNewKeyCode, String asConflictControl, String asConflictName)
+        ${2:Variable} = aiNewKeyCode
+        SetKeyMapOptionValueST(${2:Variable})
+    EndEvent
+
+    Event OnDefaultST()
+        ${2:Variable} = ${3:Default}
+        SetKeyMapOptionValueST(${2:Variable})
+    EndEvent
+
+	Event OnHighlightST()
+		SetInfoText(${4:Info})
+	EndEvent
+EndState]]></content>
+</snippet>
