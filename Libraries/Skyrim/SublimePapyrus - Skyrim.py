@@ -353,7 +353,6 @@ class PapyrusSkyrimAnimationEventNameSuggestionsCommand(SublimePapyrus.PapyrusSh
 """
 
 class PapyrusSkyrimTrackedStatNameSuggestionsCommand(SublimePapyrus.PapyrusShowSuggestionsCommand):
-	# http://www.creationkit.com/ListOfTrackedStats
     def get_items(self, **args):
         items = {
         "Locations Discovered": "",
@@ -462,7 +461,6 @@ class PapyrusSkyrimTrackedStatNameSuggestionsCommand(SublimePapyrus.PapyrusShowS
         return items
 
 class PapyrusSkyrimBooleanAnimationVariableNameSuggestionsCommand(SublimePapyrus.PapyrusShowSuggestionsCommand):
-	# http://www.creationkit.com/List_of_Animation_Variables
     def get_items(self, **args):
         items = {
 		"bMotionDriven": "",
@@ -524,7 +522,6 @@ class PapyrusSkyrimBooleanAnimationVariableNameSuggestionsCommand(SublimePapyrus
         return items
 
 class PapyrusSkyrimFloatAnimationVariableNameSuggestionsCommand(SublimePapyrus.PapyrusShowSuggestionsCommand):
-	# http://www.creationkit.com/List_of_Animation_Variables
     def get_items(self, **args):
         items = {
 		"Speed": "",
@@ -575,7 +572,6 @@ class PapyrusSkyrimFloatAnimationVariableNameSuggestionsCommand(SublimePapyrus.P
         return items
 
 class PapyrusSkyrimIntegerAnimationVariableNameSuggestionsCommand(SublimePapyrus.PapyrusShowSuggestionsCommand):
-	# http://www.creationkit.com/List_of_Animation_Variables
     def get_items(self, **args):
         items = {
 		"iSyncIdleLocomotion": "",
@@ -629,7 +625,6 @@ class PapyrusSkyrimIntegerAnimationVariableNameSuggestionsCommand(SublimePapyrus
         return items
 
 class PapyrusSkyrimFloatGameSettingNameSuggestionsCommand(SublimePapyrus.PapyrusShowSuggestionsCommand):
-	# http://www.creationkit.com/Category:Settings
     def get_items(self, **args):
         items = {
         "fActiveEffectConditionUpdateInterval": "",
@@ -2686,7 +2681,6 @@ class PapyrusSkyrimFloatGameSettingNameSuggestionsCommand(SublimePapyrus.Papyrus
         return items
 
 class PapyrusSkyrimIntegerGameSettingNameSuggestionsCommand(SublimePapyrus.PapyrusShowSuggestionsCommand):
-	# http://www.creationkit.com/Category:Settings
     def get_items(self, **args):
         items = {
 		"iActivatePickLength": "",
@@ -2956,7 +2950,6 @@ class PapyrusSkyrimIntegerGameSettingNameSuggestionsCommand(SublimePapyrus.Papyr
         return items
 
 class PapyrusSkyrimStringGameSettingNameSuggestionsCommand(SublimePapyrus.PapyrusShowSuggestionsCommand):
-	# http://www.creationkit.com/Category:Settings
     def get_items(self, **args):
         items = {
 		"sAccept": "",
