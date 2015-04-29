@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetMorphKeys</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>NiOverride.GetMorphKeys (NetImmerse Override)</description>
+	<content><![CDATA[GetMorphKeys(${1:ObjectReference ref})]]></content>
+</snippet>

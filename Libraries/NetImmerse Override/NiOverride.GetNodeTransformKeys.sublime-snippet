@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetNodeTransformKeys</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>NiOverride.GetNodeTransformKeys (NetImmerse Override)</description>
+	<content><![CDATA[GetNodeTransformKeys(${1:ObjectReference akRef}, ${2:bool firstPerson}, ${3:bool isFemale}, ${4:string nodeName})]]></content>
+</snippet>
