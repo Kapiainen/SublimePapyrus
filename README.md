@@ -14,6 +14,7 @@ Includes function/event snippets and syntax definitions for:
  - [SkyUILib](https://github.com/schlangster/skyui-lib/wiki) (1)
  - [SkyUI SDK](https://github.com/schlangster/skyui/wiki) (4.1)
  - [UIExtensions](http://www.nexusmods.com/skyrim/mods/57046/) (1.1.0)
+ - [Campfire Dev Kit](http://skyrimsurvival.com/home/campfire/mod-developers/) (1.0.2)
 
 
 ##How do I install the package?
