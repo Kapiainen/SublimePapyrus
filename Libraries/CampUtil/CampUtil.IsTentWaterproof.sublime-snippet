@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>IsTentWaterproof</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>CampUtil.IsTentWaterproof (CampUtil)</description>
+	<content><![CDATA[IsTentWaterproof(${1:ObjectReference akTent})]]></content>
+</snippet>

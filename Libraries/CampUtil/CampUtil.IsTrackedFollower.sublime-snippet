@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>IsTrackedFollower</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>CampUtil.IsTrackedFollower (CampUtil)</description>
+	<content><![CDATA[IsTrackedFollower(${1:Actor akActor})]]></content>
+</snippet>

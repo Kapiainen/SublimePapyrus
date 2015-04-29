@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetPlayerEquippedAmmo</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>CampUtil.GetPlayerEquippedAmmo (CampUtil)</description>
+	<content><![CDATA[GetPlayerEquippedAmmo()]]></content>
+</snippet>

@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>IsTrackedAnimal</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>CampUtil.IsTrackedAnimal (CampUtil)</description>
+	<content><![CDATA[IsTrackedAnimal(${1:Actor akActor})]]></content>
+</snippet>

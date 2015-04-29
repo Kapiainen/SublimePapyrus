@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetTentSystem</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>CampUtil.GetTentSystem (CampUtil)</description>
+	<content><![CDATA[GetTentSystem()]]></content>
+</snippet>

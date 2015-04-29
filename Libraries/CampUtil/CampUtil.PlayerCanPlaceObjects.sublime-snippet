@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>PlayerCanPlaceObjects</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>CampUtil.PlayerCanPlaceObjects (CampUtil)</description>
+	<content><![CDATA[PlayerCanPlaceObjects(${1:bool abShowMessage = true}, ${2:bool abPlayerBusyCheck = true})]]></content>
+</snippet>

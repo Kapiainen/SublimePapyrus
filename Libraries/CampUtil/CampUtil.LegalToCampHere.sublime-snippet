@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>LegalToCampHere</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>CampUtil.LegalToCampHere (CampUtil)</description>
+	<content><![CDATA[LegalToCampHere(${1:bool abIgnoreSetting = false})]]></content>
+</snippet>

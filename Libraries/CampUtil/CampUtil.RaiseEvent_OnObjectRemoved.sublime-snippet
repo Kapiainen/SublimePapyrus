@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>RaiseEvent_OnObjectRemoved</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>CampUtil.RaiseEvent_OnObjectRemoved (CampUtil)</description>
+	<content><![CDATA[RaiseEvent_OnObjectRemoved(${1:Form akBaseObject}, ${2:float afPositionX}, ${3:float afPositionY}, ${4:float afPositionZ}, ${5:float afAngleX}, ${6:float afAngleY}, ${7:float afAngleZ})]]></content>
+</snippet>

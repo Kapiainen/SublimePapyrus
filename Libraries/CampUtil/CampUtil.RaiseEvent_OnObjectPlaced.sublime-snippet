@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>RaiseEvent_OnObjectPlaced</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>CampUtil.RaiseEvent_OnObjectPlaced (CampUtil)</description>
+	<content><![CDATA[RaiseEvent_OnObjectPlaced(${1:ObjectReference akObjectReference})]]></content>
+</snippet>

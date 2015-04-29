@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>IsTent</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>CampUtil.IsTent (CampUtil)</description>
+	<content><![CDATA[IsTent(${1:Form akBaseObject})]]></content>
+</snippet>

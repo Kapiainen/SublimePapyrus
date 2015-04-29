@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetPlayerEquippedBody</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>CampUtil.GetPlayerEquippedBody (CampUtil)</description>
+	<content><![CDATA[GetPlayerEquippedBody()]]></content>
+</snippet>

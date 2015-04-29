@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetTrackedFollowerCount</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>CampUtil.GetTrackedFollowerCount (CampUtil)</description>
+	<content><![CDATA[GetTrackedFollowerCount()]]></content>
+</snippet>

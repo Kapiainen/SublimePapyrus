@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetAngleData</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>CampUtil.GetAngleData (CampUtil)</description>
+	<content><![CDATA[GetAngleData(${1:ObjectReference akObjectReference})]]></content>
+</snippet>

@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetPlacementSystem</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>CampUtil.GetPlacementSystem (CampUtil)</description>
+	<content><![CDATA[GetPlacementSystem()]]></content>
+</snippet>

@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetSettingEquipmentFlammable</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>CampUtil.GetSettingEquipmentFlammable (CampUtil)</description>
+	<content><![CDATA[GetSettingEquipmentFlammable()]]></content>
+</snippet>
