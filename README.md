@@ -5,16 +5,16 @@ Sublime Text 2 and 3 package for the Papyrus scripting language.
 
 Includes function/event snippets and syntax definitions for:
 - Skyrim (1.9.32.0.8)
+ - [Campfire Dev Kit](http://skyrimsurvival.com/home/campfire/mod-developers/) (1.0.2)
  - [DienesTools](http://www.nexusmods.com/skyrim/mods/54325/) (1.0)
  - [FISS](http://www.nexusmods.com/skyrim/mods/48265/) (1.21)
  - [JContainers](http://www.nexusmods.com/skyrim/mods/49743/) (3.2)
- - [NetImmerse Override](http://www.nexusmods.com/skyrim/mods/37481/) (2.9.6)
+ - [NetImmerse Override](http://www.nexusmods.com/skyrim/mods/37481/) (3.2.0)
  - [PapyrusUtil](http://www.nexusmods.com/skyrim/mods/58705/) (2.8)
  - [SKSE](http://skse.silverlock.org) (1.7.2)
  - [SkyUILib](https://github.com/schlangster/skyui-lib/wiki) (1)
  - [SkyUI SDK](https://github.com/schlangster/skyui/wiki) (4.1)
- - [UIExtensions](http://www.nexusmods.com/skyrim/mods/57046/) (1.1.0)
- - [Campfire Dev Kit](http://skyrimsurvival.com/home/campfire/mod-developers/) (1.0.2)
+ - [UIExtensions](http://www.nexusmods.com/skyrim/mods/57046/) (1.2.0)
 
 
 ##How do I install the package?
