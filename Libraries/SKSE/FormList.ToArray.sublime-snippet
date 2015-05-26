@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>ToArray</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>FormList.ToArray (SKSE)</description>
+	<content><![CDATA[ToArray()]]></content>
+</snippet>

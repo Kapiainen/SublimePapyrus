@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetAllPotions</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>GameData.GetAllPotions (SKSE)</description>
+	<content><![CDATA[GetAllPotions(${1:string modName}, ${2:Keyword[] keywords = None}, ${3:bool potions = true}, ${4:bool food = false}, ${5:bool poison = false})]]></content>
+</snippet>

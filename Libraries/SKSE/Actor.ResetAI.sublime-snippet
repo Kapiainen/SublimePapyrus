@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>ResetAI</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Actor.ResetAI (SKSE)</description>
+	<content><![CDATA[ResetAI()]]></content>
+</snippet>

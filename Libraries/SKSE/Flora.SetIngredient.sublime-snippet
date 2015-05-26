@@ -2,5 +2,5 @@
 	<tabTrigger>SetIngredient</tabTrigger>
 	<scope>source.papyrus</scope>
 	<description>Flora.SetIngredient (SKSE)</description>
-	<content><![CDATA[SetIngredient(${1:Ingredient akIngredient})]]></content>
+	<content><![CDATA[SetIngredient(${1:Form akIngredient})]]></content>
 </snippet>

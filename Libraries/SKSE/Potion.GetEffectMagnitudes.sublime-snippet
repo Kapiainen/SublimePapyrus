@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetEffectMagnitudes</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Potion.GetEffectMagnitudes (SKSE)</description>
+	<content><![CDATA[GetEffectMagnitudes()]]></content>
+</snippet>

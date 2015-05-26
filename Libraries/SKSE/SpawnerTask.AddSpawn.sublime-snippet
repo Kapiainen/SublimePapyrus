@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>AddSpawn</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>SpawnerTask.AddSpawn (SKSE)</description>
+	<content><![CDATA[AddSpawn(${1:int handle}, ${2:Form formToPlace}, ${3:ObjectReference target}, ${4:float[] positionOffset}, ${5:float[] rotation}, ${6:int count = 1}, ${7:bool bForcePersist = false}, ${8:bool bInitiallyDisabled = false})]]></content>
+</snippet>

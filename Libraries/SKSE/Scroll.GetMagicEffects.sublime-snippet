@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetMagicEffects</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Scroll.GetMagicEffects (SKSE)</description>
+	<content><![CDATA[GetMagicEffects()]]></content>
+</snippet>

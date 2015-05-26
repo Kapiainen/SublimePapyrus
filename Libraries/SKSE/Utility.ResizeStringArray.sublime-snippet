@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>ResizeStringArray</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>Utility.ResizeStringArray (SKSE)</description>
+	<content><![CDATA[ResizeStringArray(${1:string[] source}, ${2:int size}, ${3:string fill})]]></content>
+</snippet>

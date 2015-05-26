@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>Split</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>StringUtil.Split (SKSE)</description>
+	<content><![CDATA[Split(${1:string s}, ${2:string delim})]]></content>
+</snippet>
