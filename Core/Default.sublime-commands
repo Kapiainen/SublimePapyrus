@@ -14,5 +14,9 @@
     {
         "caption": "SublimePapyrus: Clear compiler error highlights",
         "command": "clear_papyrus_compiler_error_highlights"
+    },
+    {
+        "caption": "SublimePapyrus: Batch compile",
+        "command": "batch_compile_papyrus"
     }
 ]

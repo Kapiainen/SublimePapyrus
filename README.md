@@ -40,6 +40,7 @@ If you are using [Advanced Papyrus](https://github.com/Kapiainen/Advanced-Papyru
 	- [Open parent script](#open-parent-script)
 	- [Clear compiler error highlights](#clear-compiler-error-highlights)
 	- [Insert *enter noun here*](#insert-enter-noun-here)
+	- [Batch compile](#batch-compile)
 - [Highlight compiler errors](#highlight-compiler-errors)
 - [Hide successful build results](#hide-successful-build-results)
 
@@ -71,11 +72,11 @@ Syntax highlighting for all keywords defined in Papyrus as well as names of all 
 
 
 ####Build systems
-You can now compile Papyrus scripts from Sublime Text as long as you have defined the path to the Papyrus compiler and flags in *SublimePapyrus.ini*. The various INI settings are documented in detail in the INI file generated via the *SublimePapyrus: Create default INI file* command.
+You can now compile Papyrus script sources (.psc) from Sublime Text as long as you have defined the path to the Papyrus compiler and flags in *SublimePapyrus.ini*. The various INI settings are documented in detail in the INI file generated via the *SublimePapyrus: Create default INI file* command.
 
 The *Import* section of the INI file is of particular interest as it allows you to keep various scripts, and their source files, separate, which can be useful if you for example use [Mod Organizer](http://www.nexusmods.com/skyrim/mods/1334/).
 
-There are also build systems for disassembling bytecode (.pex), and converting assembly (.pas) in to bytecode.
+There are also build systems for batch compiling source files in a folder, disassembling bytecode (.pex), and converting assembly (.pas) in to bytecode.
 
 ####Commands
 ######Create default INI file
@@ -137,6 +138,9 @@ This feature has to be implemented on a per-library basis. This feature is curre
 
 *SublimePapyrus: Insert menu name (SKSE)* starts the process of inserting a valid menu name used by SKSE's user interface functions. A menu will pop up showing you a list of valid arguments/menus that you can search through. The elements in the list are descriptive, but the actual menu name used by the functions will be inserted at the caret or replace the current selection. For example choosing the *Barter* option in the list will insert, or replace a selection with, *"BarterMenu"*.
 
+
+######Batch compile
+This command compiles all Papyrus source files in the folder that contains the file that is currently being edited. This command is also available via the *Papyrus - batch* build system. If you wish to create a custom keyboard shortcut, then the command to use is *batch_compile_papyrus*.
 
 ####Highlight compiler errors
 Lines, which cause the Papyrus compiler to report errors, can be automatically highlighted when compiling scripts in Sublime Text.

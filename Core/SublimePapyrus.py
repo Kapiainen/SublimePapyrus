@@ -146,6 +146,7 @@ def getPrefs(filePath):
     else:
         sublime.status_message("Could not find a configuration file. Falling back to default values.")
         ret["debug"] = []
+    ret["filedir"] = fileDir
     ret["filename"] = fileName
     if os.path.exists(ret["compiler"]) == False:
         sublime.status_message("Compiler does not exist at the given path (\"%s\")." %(ret["compiler"]))
@@ -165,13 +166,26 @@ class CreateDefaultSettingsFileCommand(sublime_plugin.WindowCommand):
             outHandle.close()
             self.window.open_file(INI_LOCATION)
 
+class BatchCompilePapyrusCommand(sublime_plugin.WindowCommand):
+    def run(self, **args):
+        args["batch"] = True
+        if args.get("cmd", None) == None:
+            filepath = self.window.active_view().file_name()
+            if filepath != None and filepath != "" and os.path.exists(filepath):
+                args["cmd"] = filepath
+        if args.get("cmd", None) != None:
+            self.window.run_command("compile_papyrus", args)
+
 # Runs the Papyrus compiler with properly formatted arguments based on settings in the INI file.
 class CompilePapyrusCommand(sublime_plugin.WindowCommand):
     def run(self, **args):
         config = getPrefs(args["cmd"])
         if config != None:
             if (len(config) > 0):
-                args["cmd"] = [config["compiler"], config["filename"]]
+                if args.get("batch", False) == True or (config.get("debug", None) != None and "all" in config["debug"] or "a" in config["debug"]):
+                    args["cmd"] = [config["compiler"], config["filedir"]]
+                else:
+                    args["cmd"] = [config["compiler"], config["filename"]]
                 args["cmd"].append("-f=%s" % config["flags"])
                 args["cmd"].append("-i=%s" % config["import"])
                 args["cmd"].append("-o=%s" % config["output"])
@@ -180,6 +194,10 @@ class CompilePapyrusCommand(sublime_plugin.WindowCommand):
                         args["cmd"].append("%s" % debugarg)
                     else:
                         args["cmd"].append("-%s" % debugarg)
+                if args.get("batch", False) == True:
+                    if config.get("debug", None) != None or ("all" not in config["debug"] and "a" not in config["debug"]):
+                        args["cmd"].append("-all")
+                    del args["batch"]
                 args["working_dir"] = os.path.dirname(config["compiler"])
                 self.window.run_command("exec", args)
             else:
