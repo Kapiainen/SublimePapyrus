@@ -1,0 +1,8 @@
+<snippet>
+	<tabTrigger>OnInputOpenST</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>SKI_ConfigBase.OnInputOpenST (SkyUI)</description>
+	<content><![CDATA[Event OnInputOpenST()
+	${0}
+EndEvent]]></content>
+</snippet>

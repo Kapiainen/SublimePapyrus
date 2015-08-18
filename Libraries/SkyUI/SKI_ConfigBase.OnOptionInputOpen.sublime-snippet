@@ -1,0 +1,8 @@
+<snippet>
+	<tabTrigger>OnOptionInputOpen</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>SKI_ConfigBase.OnOptionInputOpen (SkyUI)</description>
+	<content><![CDATA[Event OnOptionInputOpen(${1:int a_option})
+	${0}
+EndEvent]]></content>
+</snippet>

@@ -13,7 +13,7 @@ Includes function/event snippets and syntax definitions for:
  - [PapyrusUtil](http://www.nexusmods.com/skyrim/mods/58705/) (2.8)
  - [SKSE](http://skse.silverlock.org) (1.7.3)
  - [SkyUILib](https://github.com/schlangster/skyui-lib/wiki) (1)
- - [SkyUI SDK](https://github.com/schlangster/skyui/wiki) (5.0)
+ - [SkyUI SDK](https://github.com/schlangster/skyui/wiki) (5.1)
  - [UIExtensions](http://www.nexusmods.com/skyrim/mods/57046/) (1.2.0)
 
 
