@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>FloatListCountValue</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>StorageUtil.FloatListCountValue (PapyrusUtil)</description>
+	<content><![CDATA[FloatListCountValue(${1:Form ObjKey}, ${2:string KeyName}, ${3:float value}, ${4:bool exclude = false})]]></content>
+</snippet>

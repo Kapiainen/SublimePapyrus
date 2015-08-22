@@ -2,5 +2,5 @@
 	<tabTrigger>FileStringListSlice</tabTrigger>
 	<scope>source.papyrus</scope>
 	<description>StorageUtil.FileStringListSlice (PapyrusUtil)</description>
-	<content><![CDATA[FileStringListSlice(${1:string key}, ${2:string[] slice}, ${3:int startIndex = 0})]]></content>
+	<content><![CDATA[FileStringListSlice(${1:string KeyName}, ${2:string[] slice}, ${3:int startIndex = 0})]]></content>
 </snippet>

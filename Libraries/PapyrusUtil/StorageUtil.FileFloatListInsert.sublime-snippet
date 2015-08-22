@@ -2,5 +2,5 @@
 	<tabTrigger>FileFloatListInsert</tabTrigger>
 	<scope>source.papyrus</scope>
 	<description>StorageUtil.FileFloatListInsert (PapyrusUtil)</description>
-	<content><![CDATA[FileFloatListInsert(${1:string key}, ${2:int index}, ${3:float value})]]></content>
+	<content><![CDATA[FileFloatListInsert(${1:string KeyName}, ${2:int index}, ${3:float value})]]></content>
 </snippet>

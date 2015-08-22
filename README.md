@@ -10,7 +10,7 @@ Includes function/event snippets and syntax definitions for:
  - [FISS](http://www.nexusmods.com/skyrim/mods/48265/) (1.21)
  - [JContainers](http://www.nexusmods.com/skyrim/mods/49743/) (3.2)
  - [NetImmerse Override](http://www.nexusmods.com/skyrim/mods/37481/) (3.2.0)
- - [PapyrusUtil](http://www.nexusmods.com/skyrim/mods/58705/) (2.8)
+ - [PapyrusUtil](http://www.nexusmods.com/skyrim/mods/58705/) (3.0)
  - [SKSE](http://skse.silverlock.org) (1.7.3)
  - [SkyUILib](https://github.com/schlangster/skyui-lib/wiki) (1)
  - [SkyUI SDK](https://github.com/schlangster/skyui/wiki) (5.1)

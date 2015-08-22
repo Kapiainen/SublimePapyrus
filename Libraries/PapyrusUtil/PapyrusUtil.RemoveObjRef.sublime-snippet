@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>RemoveObjRef</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>PapyrusUtil.RemoveObjRef (PapyrusUtil)</description>
+	<content><![CDATA[RemoveObjRef(${1:ObjectReference[] ArrayValues}, ${2:ObjectReference ToRemove})]]></content>
+</snippet>

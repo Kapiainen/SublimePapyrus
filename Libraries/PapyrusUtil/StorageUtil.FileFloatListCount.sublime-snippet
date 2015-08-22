@@ -2,5 +2,5 @@
 	<tabTrigger>FileFloatListCount</tabTrigger>
 	<scope>source.papyrus</scope>
 	<description>StorageUtil.FileFloatListCount (PapyrusUtil)</description>
-	<content><![CDATA[FileFloatListCount(${1:string key})]]></content>
+	<content><![CDATA[FileFloatListCount(${1:string KeyName})]]></content>
 </snippet>

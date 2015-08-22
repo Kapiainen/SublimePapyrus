@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>PushString</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>PapyrusUtil.PushString (PapyrusUtil)</description>
+	<content><![CDATA[PushString(${1:string[] ArrayValues}, ${2:string push})]]></content>
+</snippet>

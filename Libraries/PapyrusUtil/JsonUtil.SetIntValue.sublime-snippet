@@ -2,5 +2,5 @@
 	<tabTrigger>SetIntValue</tabTrigger>
 	<scope>source.papyrus</scope>
 	<description>JsonUtil.SetIntValue (PapyrusUtil)</description>
-	<content><![CDATA[SetIntValue(${1:string FileName}, ${2:string key}, ${3:int value})]]></content>
+	<content><![CDATA[SetIntValue(${1:string FileName}, ${2:string KeyName}, ${3:int value})]]></content>
 </snippet>

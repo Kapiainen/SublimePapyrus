@@ -2,5 +2,5 @@
 	<tabTrigger>UnsetIntValue</tabTrigger>
 	<scope>source.papyrus</scope>
 	<description>StorageUtil.UnsetIntValue (PapyrusUtil)</description>
-	<content><![CDATA[UnsetIntValue(${1:Form obj}, ${2:string key})]]></content>
+	<content><![CDATA[UnsetIntValue(${1:Form ObjKey}, ${2:string KeyName})]]></content>
 </snippet>

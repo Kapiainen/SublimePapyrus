@@ -2,5 +2,5 @@
 	<tabTrigger>FormListFind</tabTrigger>
 	<scope>source.papyrus</scope>
 	<description>StorageUtil.FormListFind (PapyrusUtil)</description>
-	<content><![CDATA[FormListFind(${1:Form obj}, ${2:string key}, ${3:Form value})]]></content>
+	<content><![CDATA[FormListFind(${1:Form ObjKey}, ${2:string KeyName}, ${3:Form value})]]></content>
 </snippet>

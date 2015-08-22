@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>ClampInt</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>PapyrusUtil.ClampInt (PapyrusUtil)</description>
+	<content><![CDATA[ClampInt(${1:int value}, ${2:int min}, ${3:int max})]]></content>
+</snippet>

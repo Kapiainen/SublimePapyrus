@@ -2,5 +2,5 @@
 	<tabTrigger>GetFormValue</tabTrigger>
 	<scope>source.papyrus</scope>
 	<description>StorageUtil.GetFormValue (PapyrusUtil)</description>
-	<content><![CDATA[GetFormValue(${1:Form obj}, ${2:string key}, ${3:Form missing = none})]]></content>
+	<content><![CDATA[GetFormValue(${1:Form ObjKey}, ${2:string KeyName}, ${3:Form missing = none})]]></content>
 </snippet>

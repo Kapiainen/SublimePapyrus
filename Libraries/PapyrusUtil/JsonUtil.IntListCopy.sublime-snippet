@@ -2,5 +2,5 @@
 	<tabTrigger>IntListCopy</tabTrigger>
 	<scope>source.papyrus</scope>
 	<description>JsonUtil.IntListCopy (PapyrusUtil)</description>
-	<content><![CDATA[IntListCopy(${1:string FileName}, ${2:string key}, ${3:int[] copy})]]></content>
+	<content><![CDATA[IntListCopy(${1:string FileName}, ${2:string KeyName}, ${3:int[] copy})]]></content>
 </snippet>

@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>SliceBoolArray</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>PapyrusUtil.SliceBoolArray (PapyrusUtil)</description>
+	<content><![CDATA[SliceBoolArray(${1:bool[] ArrayValues}, ${2:int StartIndex}, ${3:int EndIndex})]]></content>
+</snippet>

@@ -2,5 +2,5 @@
 	<tabTrigger>FileIntListHas</tabTrigger>
 	<scope>source.papyrus</scope>
 	<description>StorageUtil.FileIntListHas (PapyrusUtil)</description>
-	<content><![CDATA[FileIntListHas(${1:string key}, ${2:int value})]]></content>
+	<content><![CDATA[FileIntListHas(${1:string KeyName}, ${2:int value})]]></content>
 </snippet>

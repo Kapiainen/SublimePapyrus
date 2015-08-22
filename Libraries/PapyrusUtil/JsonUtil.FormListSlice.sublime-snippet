@@ -2,5 +2,5 @@
 	<tabTrigger>FormListSlice</tabTrigger>
 	<scope>source.papyrus</scope>
 	<description>JsonUtil.FormListSlice (PapyrusUtil)</description>
-	<content><![CDATA[FormListSlice(${1:string FileName}, ${2:string key}, ${3:Form[] slice}, ${4:int startIndex = 0})]]></content>
+	<content><![CDATA[FormListSlice(${1:string FileName}, ${2:string KeyName}, ${3:Form[] slice}, ${4:int startIndex = 0})]]></content>
 </snippet>

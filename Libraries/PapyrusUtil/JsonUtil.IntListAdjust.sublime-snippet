@@ -2,5 +2,5 @@
 	<tabTrigger>IntListAdjust</tabTrigger>
 	<scope>source.papyrus</scope>
 	<description>JsonUtil.IntListAdjust (PapyrusUtil)</description>
-	<content><![CDATA[IntListAdjust(${1:string FileName}, ${2:string key}, ${3:int index}, ${4:Int amount})]]></content>
+	<content><![CDATA[IntListAdjust(${1:string FileName}, ${2:string KeyName}, ${3:int index}, ${4:Int amount})]]></content>
 </snippet>

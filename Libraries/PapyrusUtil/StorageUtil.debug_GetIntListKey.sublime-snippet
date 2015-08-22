@@ -2,5 +2,5 @@
 	<tabTrigger>debug_GetIntListKey</tabTrigger>
 	<scope>source.papyrus</scope>
 	<description>StorageUtil.debug_GetIntListKey (PapyrusUtil)</description>
-	<content><![CDATA[debug_GetIntListKey(${1:Form obj}, ${2:int index})]]></content>
+	<content><![CDATA[debug_GetIntListKey(${1:Form ObjKey}, ${2:int index})]]></content>
 </snippet>

@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>AddIntValues</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>PapyrusUtil.AddIntValues (PapyrusUtil)</description>
+	<content><![CDATA[AddIntValues(${1:int[] Values})]]></content>
+</snippet>

@@ -2,5 +2,5 @@
 	<tabTrigger>FileGetIntValue</tabTrigger>
 	<scope>source.papyrus</scope>
 	<description>StorageUtil.FileGetIntValue (PapyrusUtil)</description>
-	<content><![CDATA[FileGetIntValue(${1:string key}, ${2:int missing = 0})]]></content>
+	<content><![CDATA[FileGetIntValue(${1:string KeyName}, ${2:int missing = 0})]]></content>
 </snippet>

@@ -2,5 +2,5 @@
 	<tabTrigger>debug_GetFormKey</tabTrigger>
 	<scope>source.papyrus</scope>
 	<description>StorageUtil.debug_GetFormKey (PapyrusUtil)</description>
-	<content><![CDATA[debug_GetFormKey(${1:Form obj}, ${2:int index})]]></content>
+	<content><![CDATA[debug_GetFormKey(${1:Form ObjKey}, ${2:int index})]]></content>
 </snippet>

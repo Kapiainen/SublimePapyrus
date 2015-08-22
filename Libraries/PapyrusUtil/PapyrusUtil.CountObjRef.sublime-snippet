@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>CountObjRef</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>PapyrusUtil.CountObjRef (PapyrusUtil)</description>
+	<content><![CDATA[CountObjRef(${1:ObjectReference[] ArrayValues}, ${2:ObjectReference EqualTo})]]></content>
+</snippet>

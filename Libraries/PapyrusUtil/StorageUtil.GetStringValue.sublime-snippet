@@ -2,5 +2,5 @@
 	<tabTrigger>GetStringValue</tabTrigger>
 	<scope>source.papyrus</scope>
 	<description>StorageUtil.GetStringValue (PapyrusUtil)</description>
-	<content><![CDATA[GetStringValue(${1:Form obj}, ${2:string key}, ${3:string missing})]]></content>
+	<content><![CDATA[GetStringValue(${1:Form ObjKey}, ${2:string KeyName}, ${3:string missing})]]></content>
 </snippet>

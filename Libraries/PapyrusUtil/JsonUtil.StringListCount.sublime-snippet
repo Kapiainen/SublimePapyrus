@@ -2,5 +2,5 @@
 	<tabTrigger>StringListCount</tabTrigger>
 	<scope>source.papyrus</scope>
 	<description>JsonUtil.StringListCount (PapyrusUtil)</description>
-	<content><![CDATA[StringListCount(${1:string FileName}, ${2:string key})]]></content>
+	<content><![CDATA[StringListCount(${1:string FileName}, ${2:string KeyName})]]></content>
 </snippet>

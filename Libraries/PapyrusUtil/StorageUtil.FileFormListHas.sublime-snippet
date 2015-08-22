@@ -2,5 +2,5 @@
 	<tabTrigger>FileFormListHas</tabTrigger>
 	<scope>source.papyrus</scope>
 	<description>StorageUtil.FileFormListHas (PapyrusUtil)</description>
-	<content><![CDATA[FileFormListHas(${1:string key}, ${2:Form value})]]></content>
+	<content><![CDATA[FileFormListHas(${1:string KeyName}, ${2:Form value})]]></content>
 </snippet>

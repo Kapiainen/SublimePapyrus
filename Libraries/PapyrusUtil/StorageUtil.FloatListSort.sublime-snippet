@@ -2,5 +2,5 @@
 	<tabTrigger>FloatListSort</tabTrigger>
 	<scope>source.papyrus</scope>
 	<description>StorageUtil.FloatListSort (PapyrusUtil)</description>
-	<content><![CDATA[FloatListSort(${1:Form obj}, ${2:string key})]]></content>
+	<content><![CDATA[FloatListSort(${1:Form ObjKey}, ${2:string KeyName})]]></content>
 </snippet>

@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>CountString</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>PapyrusUtil.CountString (PapyrusUtil)</description>
+	<content><![CDATA[CountString(${1:string[] ArrayValues}, ${2:string EqualTo})]]></content>
+</snippet>

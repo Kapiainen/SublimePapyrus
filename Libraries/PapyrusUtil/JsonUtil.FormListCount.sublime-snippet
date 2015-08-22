@@ -2,5 +2,5 @@
 	<tabTrigger>FormListCount</tabTrigger>
 	<scope>source.papyrus</scope>
 	<description>JsonUtil.FormListCount (PapyrusUtil)</description>
-	<content><![CDATA[FormListCount(${1:string FileName}, ${2:string key})]]></content>
+	<content><![CDATA[FormListCount(${1:string FileName}, ${2:string KeyName})]]></content>
 </snippet>

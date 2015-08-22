@@ -2,5 +2,5 @@
 	<tabTrigger>FloatListAdd</tabTrigger>
 	<scope>source.papyrus</scope>
 	<description>StorageUtil.FloatListAdd (PapyrusUtil)</description>
-	<content><![CDATA[FloatListAdd(${1:Form obj}, ${2:string key}, ${3:float value}, ${4:bool allowDuplicate = true})]]></content>
+	<content><![CDATA[FloatListAdd(${1:Form ObjKey}, ${2:string KeyName}, ${3:float value}, ${4:bool allowDuplicate = true})]]></content>
 </snippet>

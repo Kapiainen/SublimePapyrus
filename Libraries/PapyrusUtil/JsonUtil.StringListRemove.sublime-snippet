@@ -2,5 +2,5 @@
 	<tabTrigger>StringListRemove</tabTrigger>
 	<scope>source.papyrus</scope>
 	<description>JsonUtil.StringListRemove (PapyrusUtil)</description>
-	<content><![CDATA[StringListRemove(${1:string FileName}, ${2:string key}, ${3:String value}, ${4:bool allInstances = true})]]></content>
+	<content><![CDATA[StringListRemove(${1:string FileName}, ${2:string KeyName}, ${3:String value}, ${4:bool allInstances = true})]]></content>
 </snippet>

@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>MergeStringArray</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>PapyrusUtil.MergeStringArray (PapyrusUtil)</description>
+	<content><![CDATA[MergeStringArray(${1:string[] ArrayValues1}, ${2:string[] ArrayValues2}, ${3:bool RemoveDupes = false})]]></content>
+</snippet>

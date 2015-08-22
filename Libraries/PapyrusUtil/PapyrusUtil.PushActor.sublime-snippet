@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>PushActor</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>PapyrusUtil.PushActor (PapyrusUtil)</description>
+	<content><![CDATA[PushActor(${1:Actor[] ArrayValues}, ${2:Actor push})]]></content>
+</snippet>

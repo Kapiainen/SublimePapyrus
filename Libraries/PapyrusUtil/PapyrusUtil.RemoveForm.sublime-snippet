@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>RemoveForm</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>PapyrusUtil.RemoveForm (PapyrusUtil)</description>
+	<content><![CDATA[RemoveForm(${1:Form[] ArrayValues}, ${2:Form ToRemove})]]></content>
+</snippet>

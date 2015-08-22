@@ -2,5 +2,5 @@
 	<tabTrigger>IntListAdd</tabTrigger>
 	<scope>source.papyrus</scope>
 	<description>JsonUtil.IntListAdd (PapyrusUtil)</description>
-	<content><![CDATA[IntListAdd(${1:string FileName}, ${2:string key}, ${3:Int value}, ${4:bool allowDuplicate = true})]]></content>
+	<content><![CDATA[IntListAdd(${1:string FileName}, ${2:string KeyName}, ${3:int value}, ${4:bool allowDuplicate = true})]]></content>
 </snippet>

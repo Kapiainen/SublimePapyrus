@@ -2,5 +2,5 @@
 	<tabTrigger>IntListClear</tabTrigger>
 	<scope>source.papyrus</scope>
 	<description>JsonUtil.IntListClear (PapyrusUtil)</description>
-	<content><![CDATA[IntListClear(${1:string FileName}, ${2:string key})]]></content>
+	<content><![CDATA[IntListClear(${1:string FileName}, ${2:string KeyName})]]></content>
 </snippet>

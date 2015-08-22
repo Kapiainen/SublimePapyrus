@@ -2,5 +2,5 @@
 	<tabTrigger>HasStringValue</tabTrigger>
 	<scope>source.papyrus</scope>
 	<description>JsonUtil.HasStringValue (PapyrusUtil)</description>
-	<content><![CDATA[HasStringValue(${1:string FileName}, ${2:string key})]]></content>
+	<content><![CDATA[HasStringValue(${1:string FileName}, ${2:string KeyName})]]></content>
 </snippet>

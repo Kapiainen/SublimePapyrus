@@ -2,5 +2,5 @@
 	<tabTrigger>FloatListRemoveAt</tabTrigger>
 	<scope>source.papyrus</scope>
 	<description>StorageUtil.FloatListRemoveAt (PapyrusUtil)</description>
-	<content><![CDATA[FloatListRemoveAt(${1:Form obj}, ${2:string key}, ${3:int index})]]></content>
+	<content><![CDATA[FloatListRemoveAt(${1:Form ObjKey}, ${2:string KeyName}, ${3:int index})]]></content>
 </snippet>

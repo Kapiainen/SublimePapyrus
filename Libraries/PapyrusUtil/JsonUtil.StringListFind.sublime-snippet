@@ -2,5 +2,5 @@
 	<tabTrigger>StringListFind</tabTrigger>
 	<scope>source.papyrus</scope>
 	<description>JsonUtil.StringListFind (PapyrusUtil)</description>
-	<content><![CDATA[StringListFind(${1:string FileName}, ${2:string key}, ${3:String value})]]></content>
+	<content><![CDATA[StringListFind(${1:string FileName}, ${2:string KeyName}, ${3:String value})]]></content>
 </snippet>

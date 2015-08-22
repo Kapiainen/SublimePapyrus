@@ -2,5 +2,5 @@
 	<tabTrigger>FileFormListRemoveAt</tabTrigger>
 	<scope>source.papyrus</scope>
 	<description>StorageUtil.FileFormListRemoveAt (PapyrusUtil)</description>
-	<content><![CDATA[FileFormListRemoveAt(${1:string key}, ${2:int index})]]></content>
+	<content><![CDATA[FileFormListRemoveAt(${1:string KeyName}, ${2:int index})]]></content>
 </snippet>

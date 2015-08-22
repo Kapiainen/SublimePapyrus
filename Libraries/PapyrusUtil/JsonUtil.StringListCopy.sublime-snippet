@@ -2,5 +2,5 @@
 	<tabTrigger>StringListCopy</tabTrigger>
 	<scope>source.papyrus</scope>
 	<description>JsonUtil.StringListCopy (PapyrusUtil)</description>
-	<content><![CDATA[StringListCopy(${1:string FileName}, ${2:string key}, ${3:string[] copy})]]></content>
+	<content><![CDATA[StringListCopy(${1:string FileName}, ${2:string KeyName}, ${3:string[] copy})]]></content>
 </snippet>

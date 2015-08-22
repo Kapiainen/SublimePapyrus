@@ -2,5 +2,5 @@
 	<tabTrigger>IntListFind</tabTrigger>
 	<scope>source.papyrus</scope>
 	<description>JsonUtil.IntListFind (PapyrusUtil)</description>
-	<content><![CDATA[IntListFind(${1:string FileName}, ${2:string key}, ${3:Int value})]]></content>
+	<content><![CDATA[IntListFind(${1:string FileName}, ${2:string KeyName}, ${3:int value})]]></content>
 </snippet>

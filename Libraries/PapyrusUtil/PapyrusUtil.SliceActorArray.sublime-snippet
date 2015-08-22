@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>SliceActorArray</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>PapyrusUtil.SliceActorArray (PapyrusUtil)</description>
+	<content><![CDATA[SliceActorArray(${1:Actor[] ArrayValues}, ${2:int StartIndex}, ${3:int EndIndex})]]></content>
+</snippet>

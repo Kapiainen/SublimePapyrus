@@ -2,5 +2,5 @@
 	<tabTrigger>HasFormValue</tabTrigger>
 	<scope>source.papyrus</scope>
 	<description>StorageUtil.HasFormValue (PapyrusUtil)</description>
-	<content><![CDATA[HasFormValue(${1:Form obj}, ${2:string key})]]></content>
+	<content><![CDATA[HasFormValue(${1:Form ObjKey}, ${2:string KeyName})]]></content>
 </snippet>

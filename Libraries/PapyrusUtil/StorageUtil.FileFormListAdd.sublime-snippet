@@ -2,5 +2,5 @@
 	<tabTrigger>FileFormListAdd</tabTrigger>
 	<scope>source.papyrus</scope>
 	<description>StorageUtil.FileFormListAdd (PapyrusUtil)</description>
-	<content><![CDATA[FileFormListAdd(${1:string key}, ${2:Form value}, ${3:bool allowDuplicate = true})]]></content>
+	<content><![CDATA[FileFormListAdd(${1:string KeyName}, ${2:Form value}, ${3:bool allowDuplicate = true})]]></content>
 </snippet>

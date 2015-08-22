@@ -2,5 +2,5 @@
 	<tabTrigger>StringListSet</tabTrigger>
 	<scope>source.papyrus</scope>
 	<description>StorageUtil.StringListSet (PapyrusUtil)</description>
-	<content><![CDATA[StringListSet(${1:Form obj}, ${2:string key}, ${3:int index}, ${4:string value})]]></content>
+	<content><![CDATA[StringListSet(${1:Form ObjKey}, ${2:string KeyName}, ${3:int index}, ${4:string value})]]></content>
 </snippet>

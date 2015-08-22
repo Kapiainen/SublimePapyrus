@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>PushObjRef</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>PapyrusUtil.PushObjRef (PapyrusUtil)</description>
+	<content><![CDATA[PushObjRef(${1:ObjectReference[] ArrayValues}, ${2:ObjectReference push})]]></content>
+</snippet>

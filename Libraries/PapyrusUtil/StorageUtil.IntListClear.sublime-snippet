@@ -2,5 +2,5 @@
 	<tabTrigger>IntListClear</tabTrigger>
 	<scope>source.papyrus</scope>
 	<description>StorageUtil.IntListClear (PapyrusUtil)</description>
-	<content><![CDATA[IntListClear(${1:Form obj}, ${2:string key})]]></content>
+	<content><![CDATA[IntListClear(${1:Form ObjKey}, ${2:string KeyName})]]></content>
 </snippet>

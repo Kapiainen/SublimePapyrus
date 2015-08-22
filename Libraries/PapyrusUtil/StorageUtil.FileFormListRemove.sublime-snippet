@@ -2,5 +2,5 @@
 	<tabTrigger>FileFormListRemove</tabTrigger>
 	<scope>source.papyrus</scope>
 	<description>StorageUtil.FileFormListRemove (PapyrusUtil)</description>
-	<content><![CDATA[FileFormListRemove(${1:string key}, ${2:Form value}, ${3:bool allInstances = false})]]></content>
+	<content><![CDATA[FileFormListRemove(${1:string KeyName}, ${2:Form value}, ${3:bool allInstances = false})]]></content>
 </snippet>

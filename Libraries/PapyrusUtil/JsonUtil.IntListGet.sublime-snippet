@@ -2,5 +2,5 @@
 	<tabTrigger>IntListGet</tabTrigger>
 	<scope>source.papyrus</scope>
 	<description>JsonUtil.IntListGet (PapyrusUtil)</description>
-	<content><![CDATA[IntListGet(${1:string FileName}, ${2:string key}, ${3:int index})]]></content>
+	<content><![CDATA[IntListGet(${1:string FileName}, ${2:string KeyName}, ${3:int index})]]></content>
 </snippet>

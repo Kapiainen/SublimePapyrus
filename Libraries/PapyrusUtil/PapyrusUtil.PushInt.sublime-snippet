@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>PushInt</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>PapyrusUtil.PushInt (PapyrusUtil)</description>
+	<content><![CDATA[PushInt(${1:int[] ArrayValues}, ${2:int push})]]></content>
+</snippet>

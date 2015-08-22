@@ -2,5 +2,5 @@
 	<tabTrigger>StringListAdd</tabTrigger>
 	<scope>source.papyrus</scope>
 	<description>JsonUtil.StringListAdd (PapyrusUtil)</description>
-	<content><![CDATA[StringListAdd(${1:string FileName}, ${2:string key}, ${3:String value}, ${4:bool allowDuplicate = true})]]></content>
+	<content><![CDATA[StringListAdd(${1:string FileName}, ${2:string KeyName}, ${3:String value}, ${4:bool allowDuplicate = true})]]></content>
 </snippet>

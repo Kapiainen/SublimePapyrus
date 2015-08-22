@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>ClearNone</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>PapyrusUtil.ClearNone (PapyrusUtil)</description>
+	<content><![CDATA[ClearNone(${1:Form[] ArrayValues})]]></content>
+</snippet>

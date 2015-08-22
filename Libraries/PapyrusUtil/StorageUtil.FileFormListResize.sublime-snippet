@@ -2,5 +2,5 @@
 	<tabTrigger>FileFormListResize</tabTrigger>
 	<scope>source.papyrus</scope>
 	<description>StorageUtil.FileFormListResize (PapyrusUtil)</description>
-	<content><![CDATA[FileFormListResize(${1:string key}, ${2:int toLength}, ${3:Form filler = none})]]></content>
+	<content><![CDATA[FileFormListResize(${1:string KeyName}, ${2:int toLength}, ${3:Form filler = none})]]></content>
 </snippet>

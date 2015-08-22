@@ -2,5 +2,5 @@
 	<tabTrigger>UnsetIntValue</tabTrigger>
 	<scope>source.papyrus</scope>
 	<description>JsonUtil.UnsetIntValue (PapyrusUtil)</description>
-	<content><![CDATA[UnsetIntValue(${1:string FileName}, ${2:string key})]]></content>
+	<content><![CDATA[UnsetIntValue(${1:string FileName}, ${2:string KeyName})]]></content>
 </snippet>

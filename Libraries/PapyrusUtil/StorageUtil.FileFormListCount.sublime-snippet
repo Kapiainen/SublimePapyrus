@@ -2,5 +2,5 @@
 	<tabTrigger>FileFormListCount</tabTrigger>
 	<scope>source.papyrus</scope>
 	<description>StorageUtil.FileFormListCount (PapyrusUtil)</description>
-	<content><![CDATA[FileFormListCount(${1:string key})]]></content>
+	<content><![CDATA[FileFormListCount(${1:string KeyName})]]></content>
 </snippet>

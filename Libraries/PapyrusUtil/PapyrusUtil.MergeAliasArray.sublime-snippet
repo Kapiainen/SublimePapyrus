@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>MergeAliasArray</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>PapyrusUtil.MergeAliasArray (PapyrusUtil)</description>
+	<content><![CDATA[MergeAliasArray(${1:Alias[] ArrayValues1}, ${2:Alias[] ArrayValues2}, ${3:bool RemoveDupes = false})]]></content>
+</snippet>

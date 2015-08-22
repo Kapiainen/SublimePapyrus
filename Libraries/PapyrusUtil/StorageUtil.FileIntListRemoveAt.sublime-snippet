@@ -2,5 +2,5 @@
 	<tabTrigger>FileIntListRemoveAt</tabTrigger>
 	<scope>source.papyrus</scope>
 	<description>StorageUtil.FileIntListRemoveAt (PapyrusUtil)</description>
-	<content><![CDATA[FileIntListRemoveAt(${1:string key}, ${2:int index})]]></content>
+	<content><![CDATA[FileIntListRemoveAt(${1:string KeyName}, ${2:int index})]]></content>
 </snippet>

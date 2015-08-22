@@ -2,5 +2,5 @@
 	<tabTrigger>StringListClear</tabTrigger>
 	<scope>source.papyrus</scope>
 	<description>StorageUtil.StringListClear (PapyrusUtil)</description>
-	<content><![CDATA[StringListClear(${1:Form obj}, ${2:string key})]]></content>
+	<content><![CDATA[StringListClear(${1:Form ObjKey}, ${2:string KeyName})]]></content>
 </snippet>

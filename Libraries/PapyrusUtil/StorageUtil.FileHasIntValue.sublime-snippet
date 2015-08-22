@@ -2,5 +2,5 @@
 	<tabTrigger>FileHasIntValue</tabTrigger>
 	<scope>source.papyrus</scope>
 	<description>StorageUtil.FileHasIntValue (PapyrusUtil)</description>
-	<content><![CDATA[FileHasIntValue(${1:string key})]]></content>
+	<content><![CDATA[FileHasIntValue(${1:string KeyName})]]></content>
 </snippet>

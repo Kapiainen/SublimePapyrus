@@ -2,5 +2,5 @@
 	<tabTrigger>StringListRemoveAt</tabTrigger>
 	<scope>source.papyrus</scope>
 	<description>StorageUtil.StringListRemoveAt (PapyrusUtil)</description>
-	<content><![CDATA[StringListRemoveAt(${1:Form obj}, ${2:string key}, ${3:int index})]]></content>
+	<content><![CDATA[StringListRemoveAt(${1:Form ObjKey}, ${2:string KeyName}, ${3:int index})]]></content>
 </snippet>

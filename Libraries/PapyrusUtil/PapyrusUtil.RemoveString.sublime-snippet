@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>RemoveString</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>PapyrusUtil.RemoveString (PapyrusUtil)</description>
+	<content><![CDATA[RemoveString(${1:string[] ArrayValues}, ${2:string ToRemove})]]></content>
+</snippet>

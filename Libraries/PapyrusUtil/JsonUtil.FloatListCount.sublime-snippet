@@ -2,5 +2,5 @@
 	<tabTrigger>FloatListCount</tabTrigger>
 	<scope>source.papyrus</scope>
 	<description>JsonUtil.FloatListCount (PapyrusUtil)</description>
-	<content><![CDATA[FloatListCount(${1:string FileName}, ${2:string key})]]></content>
+	<content><![CDATA[FloatListCount(${1:string FileName}, ${2:string KeyName})]]></content>
 </snippet>

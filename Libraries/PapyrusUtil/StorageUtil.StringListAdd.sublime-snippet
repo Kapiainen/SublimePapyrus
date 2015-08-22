@@ -2,5 +2,5 @@
 	<tabTrigger>StringListAdd</tabTrigger>
 	<scope>source.papyrus</scope>
 	<description>StorageUtil.StringListAdd (PapyrusUtil)</description>
-	<content><![CDATA[StringListAdd(${1:Form obj}, ${2:string key}, ${3:string value}, ${4:bool allowDuplicate = true})]]></content>
+	<content><![CDATA[StringListAdd(${1:Form ObjKey}, ${2:string KeyName}, ${3:string value}, ${4:bool allowDuplicate = true})]]></content>
 </snippet>

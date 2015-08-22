@@ -2,5 +2,5 @@
 	<tabTrigger>FormListHas</tabTrigger>
 	<scope>source.papyrus</scope>
 	<description>JsonUtil.FormListHas (PapyrusUtil)</description>
-	<content><![CDATA[FormListHas(${1:string FileName}, ${2:string key}, ${3:Form value})]]></content>
+	<content><![CDATA[FormListHas(${1:string FileName}, ${2:string KeyName}, ${3:Form value})]]></content>
 </snippet>

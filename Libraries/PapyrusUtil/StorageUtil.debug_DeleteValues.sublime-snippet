@@ -2,5 +2,5 @@
 	<tabTrigger>debug_DeleteValues</tabTrigger>
 	<scope>source.papyrus</scope>
 	<description>StorageUtil.debug_DeleteValues (PapyrusUtil)</description>
-	<content><![CDATA[debug_DeleteValues(${1:Form obj})]]></content>
+	<content><![CDATA[debug_DeleteValues(${1:Form ObjKey})]]></content>
 </snippet>

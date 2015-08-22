@@ -2,5 +2,5 @@
 	<tabTrigger>FormListRemove</tabTrigger>
 	<scope>source.papyrus</scope>
 	<description>JsonUtil.FormListRemove (PapyrusUtil)</description>
-	<content><![CDATA[FormListRemove(${1:string FileName}, ${2:string key}, ${3:Form value}, ${4:bool allInstances = true})]]></content>
+	<content><![CDATA[FormListRemove(${1:string FileName}, ${2:string KeyName}, ${3:Form value}, ${4:bool allInstances = true})]]></content>
 </snippet>

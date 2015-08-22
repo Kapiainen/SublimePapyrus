@@ -2,5 +2,5 @@
 	<tabTrigger>FileFloatListGet</tabTrigger>
 	<scope>source.papyrus</scope>
 	<description>StorageUtil.FileFloatListGet (PapyrusUtil)</description>
-	<content><![CDATA[FileFloatListGet(${1:string key}, ${2:int index})]]></content>
+	<content><![CDATA[FileFloatListGet(${1:string KeyName}, ${2:int index})]]></content>
 </snippet>

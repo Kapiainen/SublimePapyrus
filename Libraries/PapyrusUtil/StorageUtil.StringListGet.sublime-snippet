@@ -2,5 +2,5 @@
 	<tabTrigger>StringListGet</tabTrigger>
 	<scope>source.papyrus</scope>
 	<description>StorageUtil.StringListGet (PapyrusUtil)</description>
-	<content><![CDATA[StringListGet(${1:Form obj}, ${2:string key}, ${3:int index})]]></content>
+	<content><![CDATA[StringListGet(${1:Form ObjKey}, ${2:string KeyName}, ${3:int index})]]></content>
 </snippet>

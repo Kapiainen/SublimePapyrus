@@ -2,5 +2,5 @@
 	<tabTrigger>IntListInsertAt</tabTrigger>
 	<scope>source.papyrus</scope>
 	<description>JsonUtil.IntListInsertAt (PapyrusUtil)</description>
-	<content><![CDATA[IntListInsertAt(${1:string FileName}, ${2:string key}, ${3:int index}, ${4:Int value})]]></content>
+	<content><![CDATA[IntListInsertAt(${1:string FileName}, ${2:string KeyName}, ${3:int index}, ${4:int value})]]></content>
 </snippet>

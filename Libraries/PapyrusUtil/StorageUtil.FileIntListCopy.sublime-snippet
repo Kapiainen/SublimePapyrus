@@ -2,5 +2,5 @@
 	<tabTrigger>FileIntListCopy</tabTrigger>
 	<scope>source.papyrus</scope>
 	<description>StorageUtil.FileIntListCopy (PapyrusUtil)</description>
-	<content><![CDATA[FileIntListCopy(${1:string key}, ${2:int[] copy})]]></content>
+	<content><![CDATA[FileIntListCopy(${1:string KeyName}, ${2:int[] copy})]]></content>
 </snippet>

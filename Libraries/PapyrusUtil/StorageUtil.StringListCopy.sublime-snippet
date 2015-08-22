@@ -2,5 +2,5 @@
 	<tabTrigger>StringListCopy</tabTrigger>
 	<scope>source.papyrus</scope>
 	<description>StorageUtil.StringListCopy (PapyrusUtil)</description>
-	<content><![CDATA[StringListCopy(${1:Form obj}, ${2:string key}, ${3:string[] copy})]]></content>
+	<content><![CDATA[StringListCopy(${1:Form ObjKey}, ${2:string KeyName}, ${3:string[] copy})]]></content>
 </snippet>

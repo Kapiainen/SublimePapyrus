@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>ClampFloat</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>PapyrusUtil.ClampFloat (PapyrusUtil)</description>
+	<content><![CDATA[ClampFloat(${1:float value}, ${2:float min}, ${3:float max})]]></content>
+</snippet>

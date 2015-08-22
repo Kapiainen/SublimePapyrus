@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>RemoveFloat</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>PapyrusUtil.RemoveFloat (PapyrusUtil)</description>
+	<content><![CDATA[RemoveFloat(${1:float[] ArrayValues}, ${2:float ToRemove})]]></content>
+</snippet>

@@ -2,5 +2,5 @@
 	<tabTrigger>FormListCopy</tabTrigger>
 	<scope>source.papyrus</scope>
 	<description>StorageUtil.FormListCopy (PapyrusUtil)</description>
-	<content><![CDATA[FormListCopy(${1:Form obj}, ${2:string key}, ${3:Form[] copy})]]></content>
+	<content><![CDATA[FormListCopy(${1:Form ObjKey}, ${2:string KeyName}, ${3:Form[] copy})]]></content>
 </snippet>

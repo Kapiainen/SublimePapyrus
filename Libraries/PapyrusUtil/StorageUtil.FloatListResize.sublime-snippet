@@ -2,5 +2,5 @@
 	<tabTrigger>FloatListResize</tabTrigger>
 	<scope>source.papyrus</scope>
 	<description>StorageUtil.FloatListResize (PapyrusUtil)</description>
-	<content><![CDATA[FloatListResize(${1:Form obj}, ${2:string key}, ${3:int toLength}, ${4:float filler = 0})]]></content>
+	<content><![CDATA[FloatListResize(${1:Form ObjKey}, ${2:string KeyName}, ${3:int toLength}, ${4:float filler = 0})]]></content>
 </snippet>

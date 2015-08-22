@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>SliceFloatArray</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>PapyrusUtil.SliceFloatArray (PapyrusUtil)</description>
+	<content><![CDATA[SliceFloatArray(${1:float[] ArrayValues}, ${2:int StartIndex}, ${3:int EndIndex})]]></content>
+</snippet>

@@ -2,5 +2,5 @@
 	<tabTrigger>FileFormListGet</tabTrigger>
 	<scope>source.papyrus</scope>
 	<description>StorageUtil.FileFormListGet (PapyrusUtil)</description>
-	<content><![CDATA[FileFormListGet(${1:string key}, ${2:int index})]]></content>
+	<content><![CDATA[FileFormListGet(${1:string KeyName}, ${2:int index})]]></content>
 </snippet>

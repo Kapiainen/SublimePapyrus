@@ -2,5 +2,5 @@
 	<tabTrigger>FloatListInsert</tabTrigger>
 	<scope>source.papyrus</scope>
 	<description>StorageUtil.FloatListInsert (PapyrusUtil)</description>
-	<content><![CDATA[FloatListInsert(${1:Form obj}, ${2:string key}, ${3:int index}, ${4:float value})]]></content>
+	<content><![CDATA[FloatListInsert(${1:Form ObjKey}, ${2:string KeyName}, ${3:int index}, ${4:float value})]]></content>
 </snippet>

@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>IntListToArray</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>JsonUtil.IntListToArray (PapyrusUtil)</description>
+	<content><![CDATA[IntListToArray(${1:string FileName}, ${2:string KeyName})]]></content>
+</snippet>

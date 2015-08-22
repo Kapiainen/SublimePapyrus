@@ -2,5 +2,5 @@
 	<tabTrigger>FileFloatListClear</tabTrigger>
 	<scope>source.papyrus</scope>
 	<description>StorageUtil.FileFloatListClear (PapyrusUtil)</description>
-	<content><![CDATA[FileFloatListClear(${1:string key})]]></content>
+	<content><![CDATA[FileFloatListClear(${1:string KeyName})]]></content>
 </snippet>

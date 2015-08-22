@@ -2,5 +2,5 @@
 	<tabTrigger>FileStringListAdd</tabTrigger>
 	<scope>source.papyrus</scope>
 	<description>StorageUtil.FileStringListAdd (PapyrusUtil)</description>
-	<content><![CDATA[FileStringListAdd(${1:string key}, ${2:string value}, ${3:bool allowDuplicate = true})]]></content>
+	<content><![CDATA[FileStringListAdd(${1:string KeyName}, ${2:string value}, ${3:bool allowDuplicate = true})]]></content>
 </snippet>
