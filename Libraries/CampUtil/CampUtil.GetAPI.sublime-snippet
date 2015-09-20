@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetAPI</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>CampUtil.GetAPI (CampUtil)</description>
-	<content><![CDATA[GetAPI()]]></content>
-</snippet>

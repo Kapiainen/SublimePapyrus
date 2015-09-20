@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>IsPlaceableObjectTemporary</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>CampUtil.IsPlaceableObjectTemporary (CampUtil)</description>
+	<content><![CDATA[IsPlaceableObjectTemporary(${1:Form akBaseObject})]]></content>
+</snippet>

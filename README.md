@@ -5,7 +5,7 @@ Sublime Text 2 and 3 package for the Papyrus scripting language.
 
 Includes function/event snippets and syntax definitions for:
 - Skyrim (1.9.32.0.8)
- - [Campfire Dev Kit](http://skyrimsurvival.com/home/campfire/mod-developers/) (1.0.2)
+ - [Campfire Dev Kit](http://skyrimsurvival.com/home/campfire/mod-developers/) (1.1)
  - [DienesTools](http://www.nexusmods.com/skyrim/mods/54325/) (1.0)
  - [FISS](http://www.nexusmods.com/skyrim/mods/48265/) (1.21)
  - [JContainers](http://www.nexusmods.com/skyrim/mods/49743/) (3.2)

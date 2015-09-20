@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>RaiseCampAPIError</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>CampUtil.RaiseCampAPIError (CampUtil)</description>
-	<content><![CDATA[RaiseCampAPIError()]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetCompatibilitySystem</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>CampUtil.GetCompatibilitySystem (CampUtil)</description>
-	<content><![CDATA[GetCompatibilitySystem()]]></content>
-</snippet>

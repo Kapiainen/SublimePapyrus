@@ -1,0 +1,8 @@
+<snippet>
+	<tabTrigger>OnObjectRemoved</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>CampUtil.OnObjectRemoved (CampUtil)</description>
+	<content><![CDATA[Event Campfire_OnObjectRemoved(${1:Form akPlacedObject}, ${2:float afPositionX}, ${3:float afPositionY}, ${4:float afPositionZ}, ${5:float afAngleX}, ${6:float afAngleY}, ${7:float afAngleZ}, ${8:bool abIsTent})
+	${0}
+EndEvent]]></content>
+</snippet>

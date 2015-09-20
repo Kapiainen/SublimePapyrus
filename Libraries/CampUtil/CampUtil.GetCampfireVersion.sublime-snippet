@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetCampfireVersion</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>CampUtil.GetCampfireVersion (CampUtil)</description>
+	<content><![CDATA[GetCampfireVersion()]]></content>
+</snippet>

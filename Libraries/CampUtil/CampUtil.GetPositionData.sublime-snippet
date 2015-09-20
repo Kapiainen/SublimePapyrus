@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetPositionData</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>CampUtil.GetPositionData (CampUtil)</description>
-	<content><![CDATA[GetPositionData(${1:ObjectReference akObjectReference})]]></content>
-</snippet>
