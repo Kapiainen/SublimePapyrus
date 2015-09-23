@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>ClearAllPrefix</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>StorageUtil.ClearAllPrefix (PapyrusUtil)</description>
+	<content><![CDATA[ClearAllPrefix(${1:string PrefixKey})]]></content>
+</snippet>

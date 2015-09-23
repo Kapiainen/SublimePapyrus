@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>FormListShift</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>StorageUtil.FormListShift (PapyrusUtil)</description>
+	<content><![CDATA[FormListShift(${1:Form ObjKey}, ${2:string KeyName})]]></content>
+</snippet>

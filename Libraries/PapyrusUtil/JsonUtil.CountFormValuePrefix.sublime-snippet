@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>CountFormValuePrefix</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>JsonUtil.CountFormValuePrefix (PapyrusUtil)</description>
+	<content><![CDATA[CountFormValuePrefix(${1:string FileName}, ${2:string PrefixKey})]]></content>
+</snippet>

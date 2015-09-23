@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>PluckFormValue</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>StorageUtil.PluckFormValue (PapyrusUtil)</description>
+	<content><![CDATA[PluckFormValue(${1:Form ObjKey}, ${2:string KeyName}, ${3:Form missing = none})]]></content>
+</snippet>

@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>CountAllPrefix</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>StorageUtil.CountAllPrefix (PapyrusUtil)</description>
+	<content><![CDATA[CountAllPrefix(${1:string PrefixKey})]]></content>
+</snippet>

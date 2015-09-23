@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>FloatListPop</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>StorageUtil.FloatListPop (PapyrusUtil)</description>
+	<content><![CDATA[FloatListPop(${1:Form ObjKey}, ${2:string KeyName})]]></content>
+</snippet>

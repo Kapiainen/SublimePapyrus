@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>StringListPop</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>StorageUtil.StringListPop (PapyrusUtil)</description>
+	<content><![CDATA[StringListPop(${1:Form ObjKey}, ${2:string KeyName})]]></content>
+</snippet>

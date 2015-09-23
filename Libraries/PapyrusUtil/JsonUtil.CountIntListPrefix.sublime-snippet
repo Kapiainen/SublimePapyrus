@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>CountIntListPrefix</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>JsonUtil.CountIntListPrefix (PapyrusUtil)</description>
+	<content><![CDATA[CountIntListPrefix(${1:string FileName}, ${2:string PrefixKey})]]></content>
+</snippet>

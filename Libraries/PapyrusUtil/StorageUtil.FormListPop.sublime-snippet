@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>FormListPop</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>StorageUtil.FormListPop (PapyrusUtil)</description>
+	<content><![CDATA[FormListPop(${1:Form ObjKey}, ${2:string KeyName})]]></content>
+</snippet>

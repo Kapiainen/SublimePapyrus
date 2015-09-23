@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>FloatListPluck</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>StorageUtil.FloatListPluck (PapyrusUtil)</description>
+	<content><![CDATA[FloatListPluck(${1:Form ObjKey}, ${2:string KeyName}, ${3:int index}, ${4:float missing})]]></content>
+</snippet>
