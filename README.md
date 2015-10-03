@@ -142,6 +142,9 @@ This feature has to be implemented on a per-library basis. This feature is curre
 ######Batch compile
 This command compiles all Papyrus source files in the folder that contains the file that is currently being edited. This command is also available via the *Papyrus - batch* build system. If you wish to create a custom keyboard shortcut, then the command to use is *batch_compile_papyrus*.
 
+Attempting to batch compile the folder defined in the *scripts* option in *SublimePapyrus.ini* will ask you to confirm the action as it may have unintended effects. For example if the folder, which is defined by the previously mentioned setting, contains sources to scripts that are a part of the base game, then any accidental (or intentional) modifications to those sources may cause issues in the game. This confirmation prompt can be disabled via this package's user settings.
+
+
 ####Highlight compiler errors
 Lines, which cause the Papyrus compiler to report errors, can be automatically highlighted when compiling scripts in Sublime Text.
 

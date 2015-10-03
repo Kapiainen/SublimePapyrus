@@ -124,6 +124,7 @@ def getPrefs(filePath):
                 ret["output"] = os.path.dirname(fileDir)
             if(parser.has_option("Skyrim", "flags")):
                 ret["flags"] = parser.get("Skyrim", "flags")
+            ret["scripts"] = parser.get("Skyrim", "scripts")
         ret["import"] = []
         if (fileDir != parser.get("Skyrim", "scripts")):
             ret["import"].append(fileDir)
@@ -158,7 +159,7 @@ class CreateDefaultSettingsFileCommand(sublime_plugin.WindowCommand):
     def run(self, **args):
         updateINIPath()
         if os.path.isfile(INI_LOCATION):
-            if sublime.ok_cancel_dialog("INI file already exists at %s.\n Do you want to open the file?" % INI_LOCATION):
+            if sublime.ok_cancel_dialog("INI file already exists at \"%s\".\n\nDo you want to open the file?" % INI_LOCATION):
                 self.window.open_file(INI_LOCATION)
         else:
             outHandle = open(INI_LOCATION, "w")
@@ -184,6 +185,11 @@ class CompilePapyrusCommand(sublime_plugin.WindowCommand):
             if (len(config) > 0):
                 if args.get("batch", False) == True or (config.get("debug", None) != None and "all" in config["debug"] or "a" in config["debug"]):
                     args["cmd"] = [config["compiler"], config["filedir"]]
+                    if config.get("scripts", None) != None:
+                        if config["filedir"] == config["scripts"]:
+                            if USER_SETTINGS.get("confirm_dangerous_batch_compilations", True) == True:
+                                if not sublime.ok_cancel_dialog("Are you sure you want to batch compile all script sources in \"%s\"?\n\nThis folder may contain script sources that are supplied with Creation Kit and are a part of the base game. Compiling said script sources could lead to unintended behavior if they have been modified." % config["filedir"]):
+                                    return
                 else:
                     args["cmd"] = [config["compiler"], config["filename"]]
                 args["cmd"].append("-f=%s" % config["flags"])
