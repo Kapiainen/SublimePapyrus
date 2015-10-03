@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetBodyMorph</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>NiOverride.GetBodyMorph (NetImmerse Override)</description>
+	<content><![CDATA[GetBodyMorph(${1:ObjectReference ref}, ${2:string morphName}, ${3:string keyName})]]></content>
+</snippet>

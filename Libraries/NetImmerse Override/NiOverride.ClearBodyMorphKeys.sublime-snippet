@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>ClearBodyMorphKeys</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>NiOverride.ClearBodyMorphKeys (NetImmerse Override)</description>
+	<content><![CDATA[ClearBodyMorphKeys(${1:ObjectReference ref}, ${2:string keyName})]]></content>
+</snippet>

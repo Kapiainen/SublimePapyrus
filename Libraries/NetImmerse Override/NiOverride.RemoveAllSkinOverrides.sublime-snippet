@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>RemoveAllSkinOverrides</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>NiOverride.RemoveAllSkinOverrides (NetImmerse Override)</description>
+	<content><![CDATA[RemoveAllSkinOverrides(${1:ObjectReference ref}, ${2:bool isFemale}, ${3:bool firstPerson}, ${4:int slotMask})]]></content>
+</snippet>

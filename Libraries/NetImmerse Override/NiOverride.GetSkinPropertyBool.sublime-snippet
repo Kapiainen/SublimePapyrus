@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetSkinPropertyBool</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>NiOverride.GetSkinPropertyBool (NetImmerse Override)</description>
+	<content><![CDATA[GetSkinPropertyBool(${1:ObjectReference ref}, ${2:bool firstPerson}, ${3:int slotMask}, ${4:int key}, ${5:int index})]]></content>
+</snippet>

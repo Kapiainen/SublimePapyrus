@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>RemoveAllSkinBasedOverrides</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>NiOverride.RemoveAllSkinBasedOverrides (NetImmerse Override)</description>
+	<content><![CDATA[RemoveAllSkinBasedOverrides()]]></content>
+</snippet>
