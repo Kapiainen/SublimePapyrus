@@ -8,6 +8,7 @@ Includes function/event snippets and syntax definitions for:
  - [Campfire Dev Kit](http://skyrimsurvival.com/home/campfire/mod-developers/) (1.1)
  - [DienesTools](http://www.nexusmods.com/skyrim/mods/54325/) (1.0)
  - [FISS](http://www.nexusmods.com/skyrim/mods/48265/) (1.21)
+ - [IFPV](http://www.nexusmods.com/skyrim/mods/49036/) (2.8)
  - [JContainers](http://www.nexusmods.com/skyrim/mods/49743/) (3.2)
  - [NetImmerse Override](http://www.nexusmods.com/skyrim/mods/37481/) (3.4.0)
  - [PapyrusUtil](http://www.nexusmods.com/skyrim/mods/58705/) (3.1)

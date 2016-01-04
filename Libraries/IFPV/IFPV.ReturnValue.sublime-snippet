@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>ReturnValue</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>IFPV.ReturnValue (IFPV)</description>
+    <content><![CDATA[ReturnValue(${1:string name})]]></content>
+</snippet>
