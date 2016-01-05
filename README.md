@@ -161,4 +161,6 @@ This feature is disabled by default and can be enabled in *Preferences -> Packag
 ##Credits
 Based on the work done by Bethesda Game Studios and Mark Hanna. Used according to the license included in the original package and said license is included in this package.
 
-Team: Quad2Core, MrJack
+Team: [Quad2Core](https://github.com/Quad2Core), [MrJack (Kapiainen)](https://github.com/Kapiainen)
+
+Contributors: [Scrivener07](https://github.com/Scrivener07)
