@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>IsInIFPV</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>IFPV.IsInIFPV (IFPV)</description>
+	<content><![CDATA[IsInIFPV()]]></content>
+</snippet>

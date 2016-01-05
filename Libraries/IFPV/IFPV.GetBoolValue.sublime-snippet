@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetBoolValue</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>IFPV.GetBoolValue (IFPV)</description>
+	<content><![CDATA[GetBoolValue(${1:string name}, ${2:bool error = false})]]></content>
+</snippet>

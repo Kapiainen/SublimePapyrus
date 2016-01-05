@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetStringValue</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>IFPV.GetStringValue (IFPV)</description>
+	<content><![CDATA[GetStringValue(${1:string name}, ${2:string error = ""})]]></content>
+</snippet>
