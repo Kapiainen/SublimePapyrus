@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>FilesInFolder</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>MiscUtil.FilesInFolder (PapyrusUtil)</description>
+	<content><![CDATA[FilesInFolder(${1:string directory}, ${2:string extension})]]></content>
+</snippet>

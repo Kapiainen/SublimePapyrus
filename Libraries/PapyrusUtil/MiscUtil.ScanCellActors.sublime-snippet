@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>ScanCellActors</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>MiscUtil.ScanCellActors (PapyrusUtil)</description>
+	<content><![CDATA[ScanCellActors(${1:ObjectReference CenterOn}, ${2:float radius = 5000}, ${3:Keyword HasKeyword = none})]]></content>
+</snippet>

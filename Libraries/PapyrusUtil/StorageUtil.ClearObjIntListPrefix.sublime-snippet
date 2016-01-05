@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>ClearObjIntListPrefix</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>StorageUtil.ClearObjIntListPrefix (PapyrusUtil)</description>
+	<content><![CDATA[ClearObjIntListPrefix(${1:Form ObjKey}, ${2:string PrefixKey})]]></content>
+</snippet>

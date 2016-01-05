@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>SetPathIntValue</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>JsonUtil.SetPathIntValue (PapyrusUtil)</description>
+	<content><![CDATA[SetPathIntValue(${1:string FileName}, ${2:string Path}, ${3:int value})]]></content>
+</snippet>

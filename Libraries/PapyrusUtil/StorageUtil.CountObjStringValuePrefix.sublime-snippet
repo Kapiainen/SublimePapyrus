@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>CountObjStringValuePrefix</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>StorageUtil.CountObjStringValuePrefix (PapyrusUtil)</description>
+	<content><![CDATA[CountObjStringValuePrefix(${1:Form ObjKey}, ${2:string PrefixKey})]]></content>
+</snippet>

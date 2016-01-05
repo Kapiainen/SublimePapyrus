@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>PathStringElements</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>JsonUtil.PathStringElements (PapyrusUtil)</description>
+	<content><![CDATA[PathStringElements(${1:string FileName}, ${2:string Path}, ${3:string invalidType})]]></content>
+</snippet>

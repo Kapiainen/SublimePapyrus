@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>IsPathObject</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>JsonUtil.IsPathObject (PapyrusUtil)</description>
+	<content><![CDATA[IsPathObject(${1:string FileName}, ${2:string Path})]]></content>
+</snippet>

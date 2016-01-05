@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>ScanCellObjects</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>MiscUtil.ScanCellObjects (PapyrusUtil)</description>
+	<content><![CDATA[ScanCellObjects(${1:int formType}, ${2:ObjectReference CenterOn}, ${3:float radius = 5000}, ${4:Keyword HasKeyword = none})]]></content>
+</snippet>

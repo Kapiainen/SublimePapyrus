@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>SetPathStringValue</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>JsonUtil.SetPathStringValue (PapyrusUtil)</description>
+	<content><![CDATA[SetPathStringValue(${1:string FileName}, ${2:string Path}, ${3:string value})]]></content>
+</snippet>

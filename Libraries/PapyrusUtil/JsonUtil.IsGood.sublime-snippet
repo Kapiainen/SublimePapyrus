@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>IsGood</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>JsonUtil.IsGood (PapyrusUtil)</description>
+	<content><![CDATA[IsGood(${1:string FileName})]]></content>
+</snippet>

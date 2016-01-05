@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>SortStringArray</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>PapyrusUtil.SortStringArray (PapyrusUtil)</description>
+	<content><![CDATA[SortStringArray(${1:string[] ArrayValues}, ${2:bool descending = false})]]></content>
+</snippet>

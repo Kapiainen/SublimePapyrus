@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>JsonInFolder</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>JsonUtil.JsonInFolder (PapyrusUtil)</description>
+	<content><![CDATA[JsonInFolder(${1:string folderPath})]]></content>
+</snippet>

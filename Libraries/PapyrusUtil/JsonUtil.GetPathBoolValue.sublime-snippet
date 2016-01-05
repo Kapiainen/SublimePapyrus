@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>GetPathBoolValue</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>JsonUtil.GetPathBoolValue (PapyrusUtil)</description>
+	<content><![CDATA[GetPathBoolValue(${1:string FileName}, ${2:string Path}, ${3:bool missing = false})]]></content>
+</snippet>

@@ -1,0 +1,6 @@
+<snippet>
+	<tabTrigger>SortFloatArray</tabTrigger>
+	<scope>source.papyrus</scope>
+	<description>PapyrusUtil.SortFloatArray (PapyrusUtil)</description>
+	<content><![CDATA[SortFloatArray(${1:float[] ArrayValues}, ${2:bool descending = false})]]></content>
+</snippet>
