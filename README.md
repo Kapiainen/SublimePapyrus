@@ -3,12 +3,12 @@
 A Sublime Text 2 and 3 package for the Papyrus scripting language.
 
 # **Contents**
-- [Description](#-description-)
-- [How to install](#-how-to-install-)
-- [Core features](#-core-features-)
-- [Modules](#-modules-)
-- [Changelog](#-changelog-)
-- [License](#-license-)
+- [Description](#description)
+- [How to install](#how-to-install)
+- [Core features](#core-features)
+- [Modules](#modules)
+- [Changelog](#changelog)
+- [License](#license)
 
 ## **Description**
 SublimePapyrus is a package that aims to provide a development environment for a scripting language called [Papyrus](http://www.creationkit.com/Category:Papyrus) within [Sublime Text](https://www.sublimetext.com/). The package is split into a core package and additional packages for specific games and/or resources. The core package is always required, but the other packages usually depend upon the core package or one of the other packages.
@@ -80,9 +80,9 @@ Settings are located in *Preferences* > *Package Settings* > *SublimePapyrus*.
   - ***arguments***: A list of strings that are added at the end when invoking the compiler. Can be used to include additional options when invoking the compiler.
 
 ## **Modules**
-- [The Elder Scrolls V: Skyrim](#-the-elder-scrolls-v-skyrim-)
- - [Skyrim Script Extender](#skyrim-script-extender-skse-)
- - [Immersive First Person View](#immersive-first-person-view-ifpv-)
+- [The Elder Scrolls V: Skyrim](#the-elder-scrolls-v-skyrim)
+ - [Skyrim Script Extender](#skyrim-script-extender-skse)
+ - [Immersive First Person View](#immersive-first-person-view-ifpv)
 
 ### **The Elder Scrolls V: Skyrim**
 - Syntax highlighting
