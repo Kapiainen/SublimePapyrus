@@ -92,11 +92,11 @@ Settings are located in *Preferences* > *Package Settings* > *SublimePapyrus*.
 - Commands
  - Generate completions
  - Valid key insertion
-   - Actor value
-   - Form type
-   - Tracked statistic
-   - Animation variables
-   - Game settings
+    - Actor value
+    - Form type
+    - Tracked statistic
+    - Animation variables
+    - Game settings
 
 #### Syntax highlighting
 Syntax highlighting for the version of Papyrus that is used in ***The Elder Scrolls V: Skyrim***.
