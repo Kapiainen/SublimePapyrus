@@ -1564,6 +1564,11 @@ class Semantic(SharedResources):
 					else:
 						self.Abort("Unterminated function definition.", func[0].line)
 						return False
+				else:
+					docString = None
+					if len(statements) > 0:
+						if statements[0].type == self.STAT_DOCUMENTATION:
+							docString = statements.pop(0)
 			elif stat.type == self.STAT_EVENTDEF:
 				if not self.AddFunction(stat):
 					return False
@@ -1577,6 +1582,11 @@ class Semantic(SharedResources):
 					else:
 						self.Abort("Unterminated event definition.", event[0].line)
 						return False
+				else:
+					docString = None
+					if len(statements) > 0:
+						if statements[0].type == self.STAT_DOCUMENTATION:
+							docString = statements.pop(0)
 			elif stat.type == self.STAT_IMPORT:
 				if not stat.data.name in self.imports:
 					self.imports.append(stat.data.name)
@@ -2016,21 +2026,35 @@ class Semantic(SharedResources):
 				else:
 					self.Abort("This script does not have a function/event called %s." % node.data.name.value)
 			elif expected:
-				script = self.GetCachedScript(expected)
-				if script:
-					func = script.functions.get(node.data.name.value.upper(), None)
-					if func:
-						if func.data.type:
-							if func.data.array:
-								result = "%s[]" % func.data.type
-							else:
-								result = func.data.type
+				if "[]" in expected:
+					typ = expected[:-2]
+					script = self.GetCachedScript(typ)
+					if script:
+						funcName = node.data.name.value.upper()
+						if funcName == "FIND":
+							func = Statement(self.STAT_FUNCTIONDEF, 0, FunctionDef("INT", "Int", False, "FIND", "Find", [ParameterDef(typ, typ.capitalize(), False, "AKELEMENT", "akElement", None), ParameterDef("INT", "Int", False, "AISTARTINDEX", "aiStartIndex", Node(self.NODE_EXPRESSION, ExpressionNode(Node(self.NODE_CONSTANT, ConstantNode(Token(self.INT, "0", 0, 0))))))], [self.KW_NATIVE]))							
+							result = self.KW_INT
+						elif funcName == "RFIND":
+							func = Statement(self.STAT_FUNCTIONDEF, 0, FunctionDef("INT", "Int", False, "RFIND", "RFind", [ParameterDef(typ, typ.capitalize(), False, "AKELEMENT", "akElement", None), ParameterDef("INT", "Int", False, "AISTARTINDEX", "aiStartIndex", Node(self.NODE_EXPRESSION, ExpressionNode(Node(self.NODE_UNARYOPERATOR, UnaryOperatorNode(self.OP_SUBTRACTION, Node(self.NODE_CONSTANT, ConstantNode(Token(self.INT, "1", 0, 0))))))))], [self.KW_NATIVE]))
+							result = self.KW_INT
 						else:
-							result = self.KW_NONE
-					else:
-						self.Abort("%s does not have a function/event called %s." % (expected, node.data.name.value))
+							self.Abort("Arrays objects only have FIND and RFIND functions.")
 				else:
-					pass
+					script = self.GetCachedScript(expected)
+					if script:
+						func = script.functions.get(node.data.name.value.upper(), None)
+						if func:
+							if func.data.type:
+								if func.data.array:
+									result = "%s[]" % func.data.type
+								else:
+									result = func.data.type
+							else:
+								result = self.KW_NONE
+						else:
+							self.Abort("%s does not have a function/event called %s." % (expected, node.data.name.value))
+					else:
+						pass
 			else:
 				func = self.GetFunction(node.data.name.value)
 				if func:
