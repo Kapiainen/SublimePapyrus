@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetSkin</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ActorBase.SetSkin (SKSE)</description>
-	<content><![CDATA[SetSkin(${1:Armor skin})]]></content>
-</snippet>

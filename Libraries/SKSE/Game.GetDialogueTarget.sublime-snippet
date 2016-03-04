@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetDialogueTarget</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Game.GetDialogueTarget (SKSE)</description>
-	<content><![CDATA[GetDialogueTarget()]]></content>
-</snippet>

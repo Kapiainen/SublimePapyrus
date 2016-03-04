@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>FloatListAdd</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>JsonUtil.FloatListAdd (PapyrusUtil)</description>
-	<content><![CDATA[FloatListAdd(${1:string FileName}, ${2:string KeyName}, ${3:float value}, ${4:bool allowDuplicate = true})]]></content>
-</snippet>

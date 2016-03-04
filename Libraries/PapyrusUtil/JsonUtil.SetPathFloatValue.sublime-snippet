@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetPathFloatValue</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>JsonUtil.SetPathFloatValue (PapyrusUtil)</description>
-	<content><![CDATA[SetPathFloatValue(${1:string FileName}, ${2:string Path}, ${3:float value})]]></content>
-</snippet>

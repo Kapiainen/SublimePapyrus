@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetNthCount</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>LeveledItem.GetNthCount (SKSE)</description>
-	<content><![CDATA[GetNthCount(${1:int n})]]></content>
-</snippet>

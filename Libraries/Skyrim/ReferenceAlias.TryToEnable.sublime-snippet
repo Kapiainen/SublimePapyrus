@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>TryToEnable</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ReferenceAlias.TryToEnable</description>
-	<content><![CDATA[TryToEnable()]]></content>
-</snippet>

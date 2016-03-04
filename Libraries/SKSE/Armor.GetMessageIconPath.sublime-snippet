@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetMessageIconPath</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Armor.GetMessageIconPath (SKSE)</description>
-	<content><![CDATA[GetMessageIconPath(${1:bool bFemalePath})]]></content>
-</snippet>

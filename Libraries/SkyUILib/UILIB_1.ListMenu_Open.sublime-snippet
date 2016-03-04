@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>ListMenu_Open</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>UILIB_1.ListMenu_Open (SkyUILib)</description>
-	<content><![CDATA[ListMenu_Open(${1:Form akClient})]]></content>
-</snippet>

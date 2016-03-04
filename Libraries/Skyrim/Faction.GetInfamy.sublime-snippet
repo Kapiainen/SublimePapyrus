@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetInfamy</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Faction.GetInfamy</description>
-	<content><![CDATA[GetInfamy()]]></content>
-</snippet>

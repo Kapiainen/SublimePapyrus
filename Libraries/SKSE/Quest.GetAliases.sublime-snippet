@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetAliases</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Quest.GetAliases (SKSE)</description>
-	<content><![CDATA[GetAliases()]]></content>
-</snippet>

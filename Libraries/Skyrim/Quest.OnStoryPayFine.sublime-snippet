@@ -1,8 +1,0 @@
-<snippet>
-	<tabTrigger>OnStoryPayFine</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Quest.OnStoryPayFine</description>
-	<content><![CDATA[Event OnStoryPayFine(${1:ObjectReference akCriminal}, ${2:ObjectReference akGuard}, ${3:Form akCrimeGroup}, ${4:int aiCrimeGold})
-	${0}
-EndEvent]]></content>
-</snippet>

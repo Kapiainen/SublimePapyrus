@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetObjectiveDisplayed</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Quest.SetObjectiveDisplayed</description>
-	<content><![CDATA[SetObjectiveDisplayed(${1:int aiObjective}, ${2:bool abDisplayed = true}, ${3:bool abForce = false})]]></content>
-</snippet>

@@ -1,8 +1,0 @@
-<snippet>
-	<tabTrigger>OnRead</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ReferenceAlias.OnRead</description>
-	<content><![CDATA[Event OnRead()
-	${0}
-EndEvent]]></content>
-</snippet>

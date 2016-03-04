@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>solveStr</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>JValue.solveStr (JContainers)</description>
-	<content><![CDATA[solveStr(${1:int object}, ${2:string path}, ${3:string default})]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>RestoreAV</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Actor.RestoreAV</description>
-	<content><![CDATA[RestoreAV(${1:string asValueName}, ${2:float afAmount})]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>CalculateEncounterLevel</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ObjectReference.CalculateEncounterLevel</description>
-	<content><![CDATA[CalculateEncounterLevel(${1:int aiDifficulty = 4})]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>CountActor</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>PapyrusUtil.CountActor (PapyrusUtil)</description>
-	<content><![CDATA[CountActor(${1:Actor[] ArrayValues}, ${2:Actor EqualTo})]]></content>
-</snippet>

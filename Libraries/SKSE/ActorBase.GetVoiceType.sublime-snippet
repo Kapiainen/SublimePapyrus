@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetVoiceType</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ActorBase.GetVoiceType (SKSE)</description>
-	<content><![CDATA[GetVoiceType()]]></content>
-</snippet>

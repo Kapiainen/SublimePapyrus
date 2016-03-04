@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>UnsetFormValue</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>JsonUtil.UnsetFormValue (PapyrusUtil)</description>
-	<content><![CDATA[UnsetFormValue(${1:string FileName}, ${2:string KeyName})]]></content>
-</snippet>

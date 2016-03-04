@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>FileFloatListAdjust</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>StorageUtil.FileFloatListAdjust (PapyrusUtil)</description>
-	<content><![CDATA[FileFloatListAdjust(${1:string KeyName}, ${2:int index}, ${3:float amount})]]></content>
-</snippet>

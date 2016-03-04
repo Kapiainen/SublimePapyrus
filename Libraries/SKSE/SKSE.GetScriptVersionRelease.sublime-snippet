@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetScriptVersionRelease</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>SKSE.GetScriptVersionRelease (SKSE)</description>
-	<content><![CDATA[GetScriptVersionRelease()]]></content>
-</snippet>

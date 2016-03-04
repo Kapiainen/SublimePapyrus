@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>FloatListRemove</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>StorageUtil.FloatListRemove (PapyrusUtil)</description>
-	<content><![CDATA[FloatListRemove(${1:Form ObjKey}, ${2:string KeyName}, ${3:float value}, ${4:bool allInstances = false})]]></content>
-</snippet>

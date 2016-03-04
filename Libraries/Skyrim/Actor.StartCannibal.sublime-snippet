@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>StartCannibal</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Actor.StartCannibal</description>
-	<content><![CDATA[StartCannibal(${1:Actor akTarget})]]></content>
-</snippet>

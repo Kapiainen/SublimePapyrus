@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetVersion</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>IFPV.GetVersion (IFPV)</description>
-	<content><![CDATA[GetVersion()]]></content>
-</snippet>

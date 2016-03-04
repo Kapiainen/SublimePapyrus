@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>IsRefInInterior</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>CampUtil.IsRefInInterior (CampUtil)</description>
-	<content><![CDATA[IsRefInInterior(${1:ObjectReference akReference})]]></content>
-</snippet>

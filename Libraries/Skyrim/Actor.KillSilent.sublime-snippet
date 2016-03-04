@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>KillSilent</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Actor.KillSilent</description>
-	<content><![CDATA[KillSilent(${1:Actor akKiller = None})]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetAreaCampingFaction</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>CampUtil.GetAreaCampingFaction (CampUtil)</description>
-	<content><![CDATA[GetAreaCampingFaction(${1:ObjectReference akCenter})]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>IntListCountValue</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>JsonUtil.IntListCountValue (PapyrusUtil)</description>
-	<content><![CDATA[IntListCountValue(${1:string FileName}, ${2:string KeyName}, ${3:int value}, ${4:bool exclude = false})]]></content>
-</snippet>

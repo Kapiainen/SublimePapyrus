@@ -1,8 +1,0 @@
-<snippet>
-	<tabTrigger>OnOptionDefault</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>SKI_ConfigBase.OnOptionDefault (SkyUI)</description>
-	<content><![CDATA[Event OnOptionDefault(${1:int a_option})
-	${0}
-EndEvent]]></content>
-</snippet>

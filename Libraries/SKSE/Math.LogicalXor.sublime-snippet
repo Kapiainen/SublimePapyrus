@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>LogicalXor</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Math.LogicalXor (SKSE)</description>
-	<content><![CDATA[LogicalXor(${1:int arg1}, ${2:int arg2})]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetPathFormValue</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>JsonUtil.GetPathFormValue (PapyrusUtil)</description>
-	<content><![CDATA[GetPathFormValue(${1:string FileName}, ${2:string Path}, ${3:form missing = none})]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>Say</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ObjectReference.Say</description>
-	<content><![CDATA[Say(${1:Topic akTopicToSay}, ${2:Actor akActorToSpeakAs = None}, ${3:bool abSpeakInPlayersHead = false})]]></content>
-</snippet>

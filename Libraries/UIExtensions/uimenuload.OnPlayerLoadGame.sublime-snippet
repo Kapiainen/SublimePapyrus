@@ -1,8 +1,0 @@
-<snippet>
-	<tabTrigger>OnPlayerLoadGame</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>uimenuload.OnPlayerLoadGame (UIExtensions)</description>
-	<content><![CDATA[Event OnPlayerLoadGame()
-	${0}
-EndEvent]]></content>
-</snippet>

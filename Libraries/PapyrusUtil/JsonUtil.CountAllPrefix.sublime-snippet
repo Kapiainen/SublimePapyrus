@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>CountAllPrefix</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>JsonUtil.CountAllPrefix (PapyrusUtil)</description>
-	<content><![CDATA[CountAllPrefix(${1:string FileName}, ${2:string PrefixKey})]]></content>
-</snippet>

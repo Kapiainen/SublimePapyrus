@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>IsFlying</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Actor.IsFlying</description>
-	<content><![CDATA[IsFlying()]]></content>
-</snippet>

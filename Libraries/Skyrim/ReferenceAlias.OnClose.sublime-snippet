@@ -1,8 +1,0 @@
-<snippet>
-	<tabTrigger>OnClose</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ReferenceAlias.OnClose</description>
-	<content><![CDATA[Event OnClose(${1:ObjectReference akActionRef})
-	${0}
-EndEvent]]></content>
-</snippet>

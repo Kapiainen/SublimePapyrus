@@ -1,8 +1,0 @@
-<snippet>
-	<tabTrigger>OnConfigOpen</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>SKI_ConfigBase.OnConfigOpen (SkyUI)</description>
-	<content><![CDATA[Event OnConfigOpen()
-	${0}
-EndEvent]]></content>
-</snippet>

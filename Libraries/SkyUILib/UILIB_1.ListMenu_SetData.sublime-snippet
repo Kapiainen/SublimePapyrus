@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>ListMenu_SetData</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>UILIB_1.ListMenu_SetData (SkyUILib)</description>
-	<content><![CDATA[ListMenu_SetData(${1:String asTitle}, ${2:String[] asOptions}, ${3:Int aiStartIndex}, ${4:Int aiDefaultIndex})]]></content>
-</snippet>

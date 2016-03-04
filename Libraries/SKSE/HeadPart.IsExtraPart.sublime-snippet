@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>IsExtraPart</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>HeadPart.IsExtraPart (SKSE)</description>
-	<content><![CDATA[IsExtraPart()]]></content>
-</snippet>

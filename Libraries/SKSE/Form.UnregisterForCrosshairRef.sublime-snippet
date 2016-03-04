@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>UnregisterForCrosshairRef</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Form.UnregisterForCrosshairRef (SKSE)</description>
-	<content><![CDATA[UnregisterForCrosshairRef()]]></content>
-</snippet>

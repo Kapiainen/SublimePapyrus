@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>IsJewelry</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Armor.IsJewelry (SKSE)</description>
-	<content><![CDATA[IsJewelry()]]></content>
-</snippet>

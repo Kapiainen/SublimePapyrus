@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetTextOptionValue</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>SKI_ConfigBase.SetTextOptionValue (SkyUI)</description>
-	<content><![CDATA[SetTextOptionValue(${1:int a_option}, ${2:string a_value}, ${3:bool a_noUpdate = false})]]></content>
-</snippet>

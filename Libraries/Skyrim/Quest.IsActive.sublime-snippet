@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>IsActive</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Quest.IsActive</description>
-	<content><![CDATA[IsActive()]]></content>
-</snippet>

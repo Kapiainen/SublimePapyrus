@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetGameSettingBool</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Game.SetGameSettingBool (SKSE)</description>
-	<content><![CDATA[SetGameSettingBool(${1:string setting}, ${2:bool value})]]></content>
-</snippet>

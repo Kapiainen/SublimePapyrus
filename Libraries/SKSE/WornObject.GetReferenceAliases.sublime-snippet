@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetReferenceAliases</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>WornObject.GetReferenceAliases (SKSE)</description>
-	<content><![CDATA[GetReferenceAliases(${1:Actor akActor}, ${2:int handSlot}, ${3:int slotMask})]]></content>
-</snippet>

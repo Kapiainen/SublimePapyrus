@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>IsMace</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Weapon.IsMace (SKSE)</description>
-	<content><![CDATA[IsMace()]]></content>
-</snippet>

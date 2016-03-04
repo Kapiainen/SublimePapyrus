@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetNodeOverrideTextureSet</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>NiOverride.GetNodeOverrideTextureSet (NetImmerse Override)</description>
-	<content><![CDATA[GetNodeOverrideTextureSet(${1:ObjectReference ref}, ${2:bool isFemale}, ${3:string node}, ${4:int key}, ${5:int index})]]></content>
-</snippet>

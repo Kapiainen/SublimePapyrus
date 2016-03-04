@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>setObj</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>JFormDB.setObj (JContainers)</description>
-	<content><![CDATA[setObj(${1:form fKey}, ${2:string key}, ${3:int container})]]></content>
-</snippet>

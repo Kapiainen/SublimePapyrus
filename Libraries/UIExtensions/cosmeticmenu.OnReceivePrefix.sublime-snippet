@@ -1,8 +1,0 @@
-<snippet>
-	<tabTrigger>OnReceivePrefix</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>cosmeticmenu.OnReceivePrefix (UIExtensions)</description>
-	<content><![CDATA[Event OnReceivePrefix(${1:string eventName}, ${2:string strArg}, ${3:float numArg}, ${4:Form formArg})
-	${0}
-EndEvent]]></content>
-</snippet>

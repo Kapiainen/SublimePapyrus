@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>IsPendingSave</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>JsonUtil.IsPendingSave (PapyrusUtil)</description>
-	<content><![CDATA[IsPendingSave(${1:string FileName})]]></content>
-</snippet>

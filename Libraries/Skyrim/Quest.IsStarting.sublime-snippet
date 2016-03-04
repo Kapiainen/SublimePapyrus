@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>IsStarting</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Quest.IsStarting</description>
-	<content><![CDATA[IsStarting()]]></content>
-</snippet>

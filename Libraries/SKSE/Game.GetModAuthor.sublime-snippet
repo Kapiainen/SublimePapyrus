@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetModAuthor</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Game.GetModAuthor (SKSE)</description>
-	<content><![CDATA[GetModAuthor(${1:int modIndex})]]></content>
-</snippet>

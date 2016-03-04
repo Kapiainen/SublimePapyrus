@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetNumPlayableRaces</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Race.GetNumPlayableRaces (SKSE)</description>
-	<content><![CDATA[GetNumPlayableRaces()]]></content>
-</snippet>

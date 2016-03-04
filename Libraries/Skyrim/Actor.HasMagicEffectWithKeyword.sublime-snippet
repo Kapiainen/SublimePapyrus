@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>HasMagicEffectWithKeyword</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Actor.HasMagicEffectWithKeyword</description>
-	<content><![CDATA[HasMagicEffectWithKeyword(${1:Keyword akKeyword})]]></content>
-</snippet>

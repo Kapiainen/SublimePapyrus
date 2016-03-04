@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SendPlayerToJail</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Faction.SendPlayerToJail</description>
-	<content><![CDATA[SendPlayerToJail(${1:bool abRemoveInventory = true}, ${2:bool abRealJail = true})]]></content>
-</snippet>

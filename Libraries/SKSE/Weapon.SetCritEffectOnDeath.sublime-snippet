@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetCritEffectOnDeath</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Weapon.SetCritEffectOnDeath (SKSE)</description>
-	<content><![CDATA[SetCritEffectOnDeath(${1:bool ceod})]]></content>
-</snippet>

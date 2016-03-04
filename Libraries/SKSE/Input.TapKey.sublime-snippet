@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>TapKey</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Input.TapKey (SKSE)</description>
-	<content><![CDATA[TapKey(${1:Int dxKeycode})]]></content>
-</snippet>

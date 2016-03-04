@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetINIFloat</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Utility.GetINIFloat (SKSE)</description>
-	<content><![CDATA[GetINIFloat(${1:string ini})]]></content>
-</snippet>

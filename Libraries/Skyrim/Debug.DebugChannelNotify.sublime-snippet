@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>DebugChannelNotify</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Debug.DebugChannelNotify</description>
-	<content><![CDATA[DebugChannelNotify(${1:string channel}, ${2:string message})]]></content>
-</snippet>

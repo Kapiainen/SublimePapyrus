@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetDisplayName</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ObjectReference.GetDisplayName (SKSE)</description>
-	<content><![CDATA[GetDisplayName()]]></content>
-</snippet>

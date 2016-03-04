@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetSlotMask</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Armor.SetSlotMask (SKSE)</description>
-	<content><![CDATA[SetSlotMask(${1:int slotMask})]]></content>
-</snippet>

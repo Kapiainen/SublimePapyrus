@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>ResizeAliasArray</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>PapyrusUtil.ResizeAliasArray (PapyrusUtil)</description>
-	<content><![CDATA[ResizeAliasArray(${1:Alias[] ArrayValues}, ${2:int toSize}, ${3:Alias filler = none})]]></content>
-</snippet>

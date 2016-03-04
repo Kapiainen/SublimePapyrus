@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetValueInt</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>GlobalVariable.SetValueInt</description>
-	<content><![CDATA[SetValueInt(${1:int aiNewValue})]]></content>
-</snippet>

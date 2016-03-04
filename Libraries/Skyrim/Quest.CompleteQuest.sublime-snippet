@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>CompleteQuest</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Quest.CompleteQuest</description>
-	<content><![CDATA[CompleteQuest()]]></content>
-</snippet>

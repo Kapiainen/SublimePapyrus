@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetCombatTarget</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Actor.GetCombatTarget</description>
-	<content><![CDATA[GetCombatTarget()]]></content>
-</snippet>

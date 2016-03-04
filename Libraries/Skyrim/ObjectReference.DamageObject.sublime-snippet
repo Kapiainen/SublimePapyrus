@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>DamageObject</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ObjectReference.DamageObject</description>
-	<content><![CDATA[DamageObject(${1:float afDamage})]]></content>
-</snippet>

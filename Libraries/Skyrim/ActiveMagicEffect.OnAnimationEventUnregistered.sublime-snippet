@@ -1,8 +1,0 @@
-<snippet>
-	<tabTrigger>OnAnimationEventUnregistered</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ActiveMagicEffect.OnAnimationEventUnregistered</description>
-	<content><![CDATA[Event OnAnimationEventUnregistered(${1:ObjectReference akSource}, ${2:string asEventName})
-	${0}
-EndEvent]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetSize</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>FormList.GetSize</description>
-	<content><![CDATA[GetSize()]]></content>
-</snippet>

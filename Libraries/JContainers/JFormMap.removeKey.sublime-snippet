@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>removeKey</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>JFormMap.removeKey (JContainers)</description>
-	<content><![CDATA[removeKey(${1:int object}, ${2:form key})]]></content>
-</snippet>

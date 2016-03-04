@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>FormListClear</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>JsonUtil.FormListClear (PapyrusUtil)</description>
-	<content><![CDATA[FormListClear(${1:string FileName}, ${2:string KeyName})]]></content>
-</snippet>

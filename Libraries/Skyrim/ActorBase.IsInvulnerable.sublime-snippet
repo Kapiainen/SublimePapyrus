@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>IsInvulnerable</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ActorBase.IsInvulnerable</description>
-	<content><![CDATA[IsInvulnerable()]]></content>
-</snippet>

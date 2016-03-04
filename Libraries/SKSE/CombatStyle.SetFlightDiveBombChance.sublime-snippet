@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetFlightDiveBombChance</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>CombatStyle.SetFlightDiveBombChance (SKSE)</description>
-	<content><![CDATA[SetFlightDiveBombChance(${1:float chance})]]></content>
-</snippet>

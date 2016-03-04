@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>ResizeActorArray</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>PapyrusUtil.ResizeActorArray (PapyrusUtil)</description>
-	<content><![CDATA[ResizeActorArray(${1:Actor[] ArrayValues}, ${2:int toSize}, ${3:Actor filler = none})]]></content>
-</snippet>

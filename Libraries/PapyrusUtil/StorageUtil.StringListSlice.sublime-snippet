@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>StringListSlice</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>StorageUtil.StringListSlice (PapyrusUtil)</description>
-	<content><![CDATA[StringListSlice(${1:Form ObjKey}, ${2:string KeyName}, ${3:string[] slice}, ${4:int startIndex = 0})]]></content>
-</snippet>

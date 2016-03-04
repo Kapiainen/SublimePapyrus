@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>AddSpell</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Actor.AddSpell</description>
-	<content><![CDATA[AddSpell(${1:Spell akSpell}, ${2:bool abVerbose})]]></content>
-</snippet>

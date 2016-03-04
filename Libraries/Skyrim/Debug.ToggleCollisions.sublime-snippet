@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>ToggleCollisions</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Debug.ToggleCollisions</description>
-	<content><![CDATA[ToggleCollisions()]]></content>
-</snippet>

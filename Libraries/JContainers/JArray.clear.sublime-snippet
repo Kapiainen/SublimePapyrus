@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>clear</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>JArray.clear (JContainers)</description>
-	<content><![CDATA[clear(${1:int object})]]></content>
-</snippet>

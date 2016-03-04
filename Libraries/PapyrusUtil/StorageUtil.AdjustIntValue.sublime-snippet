@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>AdjustIntValue</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>StorageUtil.AdjustIntValue (PapyrusUtil)</description>
-	<content><![CDATA[AdjustIntValue(${1:Form ObjKey}, ${2:string KeyName}, ${3:int amount})]]></content>
-</snippet>

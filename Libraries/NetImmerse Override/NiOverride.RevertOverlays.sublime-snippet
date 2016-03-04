@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>RevertOverlays</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>NiOverride.RevertOverlays (NetImmerse Override)</description>
-	<content><![CDATA[RevertOverlays(${1:ObjectReference ref})]]></content>
-</snippet>

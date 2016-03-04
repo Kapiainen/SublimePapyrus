@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>getNthKey</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>JMap.getNthKey (JContainers)</description>
-	<content><![CDATA[getNthKey(${1:int object}, ${2:int keyIndex})]]></content>
-</snippet>

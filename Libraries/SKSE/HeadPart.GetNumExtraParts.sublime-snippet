@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetNumExtraParts</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>HeadPart.GetNumExtraParts (SKSE)</description>
-	<content><![CDATA[GetNumExtraParts()]]></content>
-</snippet>

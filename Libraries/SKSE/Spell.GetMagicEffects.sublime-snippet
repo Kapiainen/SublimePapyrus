@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetMagicEffects</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Spell.GetMagicEffects (SKSE)</description>
-	<content><![CDATA[GetMagicEffects()]]></content>
-</snippet>

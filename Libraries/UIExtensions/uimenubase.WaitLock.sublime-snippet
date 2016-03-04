@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>WaitLock</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>uimenubase.WaitLock (UIExtensions)</description>
-	<content><![CDATA[WaitLock()]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>AllowPCDialogue</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Race.AllowPCDialogue (SKSE)</description>
-	<content><![CDATA[AllowPCDialogue()]]></content>
-</snippet>

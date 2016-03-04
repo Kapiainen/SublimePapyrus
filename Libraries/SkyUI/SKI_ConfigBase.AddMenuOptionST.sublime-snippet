@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>AddMenuOptionST</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>SKI_ConfigBase.AddMenuOptionST (SkyUI)</description>
-	<content><![CDATA[AddMenuOptionST(${1:string a_stateName}, ${2:string a_text}, ${3:string a_value}, ${4:int a_flags = 0})]]></content>
-</snippet>

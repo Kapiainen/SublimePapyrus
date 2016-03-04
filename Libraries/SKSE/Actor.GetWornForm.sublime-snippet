@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetWornForm</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Actor.GetWornForm (SKSE)</description>
-	<content><![CDATA[GetWornForm(${1:int slotMask})]]></content>
-</snippet>

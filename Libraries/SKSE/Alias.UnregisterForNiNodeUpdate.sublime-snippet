@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>UnregisterForNiNodeUpdate</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Alias.UnregisterForNiNodeUpdate (SKSE)</description>
-	<content><![CDATA[UnregisterForNiNodeUpdate()]]></content>
-</snippet>

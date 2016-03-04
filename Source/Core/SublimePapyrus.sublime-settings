@@ -1,0 +1,23 @@
+{
+	"word_wrap": false,
+	"linter_on_save": true,
+	"linter_on_modified": true,
+	"linter_delay": 500,
+	"linter_panel_error_messages": false,
+	"intelligent_code_completion": true,
+	"center_highlighted_line": true,
+	"highlight_build_errors": true,
+	"hide_successful_build_results": false,
+	"batch_compilation_warning": true,
+	"modules":
+	{
+		"skyrim":
+		{
+				"compiler":"",
+				"flags":"TESV_Papyrus_Flags.flg",
+				"output": "",
+				"import": [],
+				"arguments": []
+		}
+	}
+}

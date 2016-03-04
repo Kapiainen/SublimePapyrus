@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetFloatValue</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>JsonUtil.SetFloatValue (PapyrusUtil)</description>
-	<content><![CDATA[SetFloatValue(${1:string FileName}, ${2:string KeyName}, ${3:float value})]]></content>
-</snippet>

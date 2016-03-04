@@ -1,8 +1,0 @@
-<snippet>
-	<tabTrigger>OnMenuAcceptST</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>SKI_ConfigBase.OnMenuAcceptST (SkyUI)</description>
-	<content><![CDATA[Event OnMenuAcceptST(${1:int a_index})
-	${0}
-EndEvent]]></content>
-</snippet>

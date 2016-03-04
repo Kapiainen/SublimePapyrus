@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>FileFormListFind</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>StorageUtil.FileFormListFind (PapyrusUtil)</description>
-	<content><![CDATA[FileFormListFind(${1:string KeyName}, ${2:Form value})]]></content>
-</snippet>

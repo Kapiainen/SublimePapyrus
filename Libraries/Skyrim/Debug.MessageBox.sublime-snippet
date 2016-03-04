@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>MessageBox</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Debug.MessageBox</description>
-	<content><![CDATA[MessageBox(${1:string asMessageBoxText})]]></content>
-</snippet>

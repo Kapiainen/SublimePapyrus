@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>ShowRefPosition</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Debug.ShowRefPosition</description>
-	<content><![CDATA[ShowRefPosition(${1:ObjectReference arRef})]]></content>
-</snippet>

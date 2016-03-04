@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>HasOverlays</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>NiOverride.HasOverlays (NetImmerse Override)</description>
-	<content><![CDATA[HasOverlays(${1:ObjectReference ref})]]></content>
-</snippet>

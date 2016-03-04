@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>FileStringListResize</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>StorageUtil.FileStringListResize (PapyrusUtil)</description>
-	<content><![CDATA[FileStringListResize(${1:string KeyName}, ${2:int toLength}, ${3:string filler})]]></content>
-</snippet>

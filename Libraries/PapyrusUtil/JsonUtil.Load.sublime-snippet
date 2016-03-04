@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>Load</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>JsonUtil.Load (PapyrusUtil)</description>
-	<content><![CDATA[Load(${1:string FileName})]]></content>
-</snippet>

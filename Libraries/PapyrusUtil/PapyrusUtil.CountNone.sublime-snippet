@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>CountNone</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>PapyrusUtil.CountNone (PapyrusUtil)</description>
-	<content><![CDATA[CountNone(${1:Form[] ArrayValues})]]></content>
-</snippet>

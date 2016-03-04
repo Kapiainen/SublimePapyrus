@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>Floor</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Math.Floor</description>
-	<content><![CDATA[Floor(${1:float afValue})]]></content>
-</snippet>

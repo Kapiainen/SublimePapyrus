@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>StringListGet</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>JsonUtil.StringListGet (PapyrusUtil)</description>
-	<content><![CDATA[StringListGet(${1:string FileName}, ${2:string KeyName}, ${3:int index})]]></content>
-</snippet>

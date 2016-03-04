@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetGoldValue</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Form.GetGoldValue</description>
-	<content><![CDATA[GetGoldValue()]]></content>
-</snippet>

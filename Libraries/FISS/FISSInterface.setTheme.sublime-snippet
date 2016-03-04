@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>setTheme</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>FISSInterface.setTheme (FISS)</description>
-	<content><![CDATA[setTheme(${1:string fissInputTheme}, ${2:float fissInputScale}, ${3:float fissInputAplha})]]></content>
-</snippet>

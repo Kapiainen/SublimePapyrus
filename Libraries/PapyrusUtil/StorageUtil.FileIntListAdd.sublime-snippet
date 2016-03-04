@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>FileIntListAdd</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>StorageUtil.FileIntListAdd (PapyrusUtil)</description>
-	<content><![CDATA[FileIntListAdd(${1:string KeyName}, ${2:int value}, ${3:bool allowDuplicate = true})]]></content>
-</snippet>

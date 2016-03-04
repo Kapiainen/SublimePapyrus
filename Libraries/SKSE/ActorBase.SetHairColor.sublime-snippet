@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetHairColor</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ActorBase.SetHairColor (SKSE)</description>
-	<content><![CDATA[SetHairColor(${1:ColorForm color})]]></content>
-</snippet>

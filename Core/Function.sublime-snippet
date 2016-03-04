@@ -1,8 +1,0 @@
-<snippet>
-    <tabTrigger>Function</tabTrigger>
-    <scope>source.papyrus</scope>
-    <description>Function</description>
-    <content><![CDATA[${1:Type} Function ${2:FunctionName}(${3:Parameters})
-	${0}
-EndFunction]]></content>
-</snippet>

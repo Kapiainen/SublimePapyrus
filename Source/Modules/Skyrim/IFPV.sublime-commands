@@ -1,0 +1,22 @@
+[
+    {
+        "caption": "SublimePapyrus: Insert boolean config value name (Skyrim - IFPV)",
+        "command": "sublime_papyrus_skyrim_ifpv_boolean_config_value_suggestions"
+    },
+    {
+        "caption": "SublimePapyrus: Insert float config value name (Skyrim - IFPV)",
+        "command": "sublime_papyrus_skyrim_ifpv_float_config_value_suggestions"
+    },
+    {
+        "caption": "SublimePapyrus: Insert integer config value name (Skyrim - IFPV)",
+        "command": "sublime_papyrus_skyrim_ifpv_integer_config_value_suggestions"
+    },
+    {
+        "caption": "SublimePapyrus: Insert string config value name (Skyrim - IFPV)",
+        "command": "sublime_papyrus_skyrim_ifpv_string_config_value_suggestions"
+    },
+    {
+        "caption": "SublimePapyrus: Insert SKSE mod event name (Skyrim - IFPV)",
+        "command": "sublime_papyrus_skyrim_ifpv_mod_event_name_suggestions"
+    }
+]

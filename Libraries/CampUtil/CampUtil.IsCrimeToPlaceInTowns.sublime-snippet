@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>IsCrimeToPlaceInTowns</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>CampUtil.IsCrimeToPlaceInTowns (CampUtil)</description>
-	<content><![CDATA[IsCrimeToPlaceInTowns(${1:Form akBaseObject})]]></content>
-</snippet>

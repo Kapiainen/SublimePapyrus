@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetNthWordOfPower</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Shout.SetNthWordOfPower (SKSE)</description>
-	<content><![CDATA[SetNthWordOfPower(${1:int n}, ${2:WordOfPower aWoop})]]></content>
-</snippet>

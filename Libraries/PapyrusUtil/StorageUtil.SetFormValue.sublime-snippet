@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetFormValue</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>StorageUtil.SetFormValue (PapyrusUtil)</description>
-	<content><![CDATA[SetFormValue(${1:Form ObjKey}, ${2:string KeyName}, ${3:Form value})]]></content>
-</snippet>

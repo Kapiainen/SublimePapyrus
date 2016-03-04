@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>IsPathNumber</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>JsonUtil.IsPathNumber (PapyrusUtil)</description>
-	<content><![CDATA[IsPathNumber(${1:string FileName}, ${2:string Path})]]></content>
-</snippet>

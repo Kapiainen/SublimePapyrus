@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>ToggleMenus</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Debug.ToggleMenus</description>
-	<content><![CDATA[ToggleMenus()]]></content>
-</snippet>

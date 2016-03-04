@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SaveGame</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Game.SaveGame (SKSE)</description>
-	<content><![CDATA[SaveGame(${1:string name})]]></content>
-</snippet>

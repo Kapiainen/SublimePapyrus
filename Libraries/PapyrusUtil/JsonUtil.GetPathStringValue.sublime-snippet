@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetPathStringValue</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>JsonUtil.GetPathStringValue (PapyrusUtil)</description>
-	<content><![CDATA[GetPathStringValue(${1:string FileName}, ${2:string Path}, ${3:string missing})]]></content>
-</snippet>

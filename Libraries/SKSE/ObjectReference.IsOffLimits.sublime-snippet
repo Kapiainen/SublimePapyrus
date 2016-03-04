@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>IsOffLimits</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ObjectReference.IsOffLimits (SKSE)</description>
-	<content><![CDATA[IsOffLimits()]]></content>
-</snippet>

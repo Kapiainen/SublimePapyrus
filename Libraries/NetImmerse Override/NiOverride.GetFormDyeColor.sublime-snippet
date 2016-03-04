@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetFormDyeColor</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>NiOverride.GetFormDyeColor (NetImmerse Override)</description>
-	<content><![CDATA[GetFormDyeColor(${1:Form akForm})]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetFaceTextureSet</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ActorBase.SetFaceTextureSet (SKSE)</description>
-	<content><![CDATA[SetFaceTextureSet(${1:TextureSet textures})]]></content>
-</snippet>

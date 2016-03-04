@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>FileUnsetIntValue</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>StorageUtil.FileUnsetIntValue (PapyrusUtil)</description>
-	<content><![CDATA[FileUnsetIntValue(${1:string KeyName})]]></content>
-</snippet>

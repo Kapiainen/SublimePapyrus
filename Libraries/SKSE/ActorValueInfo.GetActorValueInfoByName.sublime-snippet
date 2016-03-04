@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetActorValueInfoByName</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ActorValueInfo.GetActorValueInfoByName (SKSE)</description>
-	<content><![CDATA[GetActorValueInfoByName(${1:string avName})]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>setFlt</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>JMap.setFlt (JContainers)</description>
-	<content><![CDATA[setFlt(${1:int object}, ${2:string key}, ${3:float value})]]></content>
-</snippet>

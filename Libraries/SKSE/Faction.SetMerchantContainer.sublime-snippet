@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetMerchantContainer</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Faction.SetMerchantContainer (SKSE)</description>
-	<content><![CDATA[SetMerchantContainer(${1:ObjectReference akContainer})]]></content>
-</snippet>

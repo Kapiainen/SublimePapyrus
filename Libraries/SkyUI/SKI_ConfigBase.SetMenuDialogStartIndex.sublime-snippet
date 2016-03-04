@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetMenuDialogStartIndex</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>SKI_ConfigBase.SetMenuDialogStartIndex (SkyUI)</description>
-	<content><![CDATA[SetMenuDialogStartIndex(${1:int a_value})]]></content>
-</snippet>

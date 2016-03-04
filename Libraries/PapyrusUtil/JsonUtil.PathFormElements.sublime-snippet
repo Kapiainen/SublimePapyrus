@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>PathFormElements</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>JsonUtil.PathFormElements (PapyrusUtil)</description>
-	<content><![CDATA[PathFormElements(${1:string FileName}, ${2:string Path}, ${3:form invalidType = none})]]></content>
-</snippet>

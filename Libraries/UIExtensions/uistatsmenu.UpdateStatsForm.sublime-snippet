@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>UpdateStatsForm</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>uistatsmenu.UpdateStatsForm (UIExtensions)</description>
-	<content><![CDATA[UpdateStatsForm()]]></content>
-</snippet>

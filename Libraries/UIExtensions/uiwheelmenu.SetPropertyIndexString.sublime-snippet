@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetPropertyIndexString</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>uiwheelmenu.SetPropertyIndexString (UIExtensions)</description>
-	<content><![CDATA[SetPropertyIndexString(${1:string propertyName}, ${2:int index}, ${3:string value})]]></content>
-</snippet>

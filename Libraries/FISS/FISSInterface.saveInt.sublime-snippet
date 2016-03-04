@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>saveInt</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>FISSInterface.saveInt (FISS)</description>
-	<content><![CDATA[saveInt(${1:string name}, ${2:int i})]]></content>
-</snippet>

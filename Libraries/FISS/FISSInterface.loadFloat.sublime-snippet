@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>loadFloat</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>FISSInterface.loadFloat (FISS)</description>
-	<content><![CDATA[loadFloat(${1:string name})]]></content>
-</snippet>

@@ -1,8 +1,0 @@
-<snippet>
-	<tabTrigger>OnOptionSliderOpen</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>SKI_ConfigBase.OnOptionSliderOpen (SkyUI)</description>
-	<content><![CDATA[Event OnOptionSliderOpen(${1:int a_option})
-	${0}
-EndEvent]]></content>
-</snippet>

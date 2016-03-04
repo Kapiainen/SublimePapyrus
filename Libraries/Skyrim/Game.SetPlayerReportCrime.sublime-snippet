@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetPlayerReportCrime</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Game.SetPlayerReportCrime</description>
-	<content><![CDATA[SetPlayerReportCrime(${1:bool abReportCrime = true})]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetAllArmor</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>GameData.GetAllArmor (SKSE)</description>
-	<content><![CDATA[GetAllArmor(${1:string modName}, ${2:Keyword[] keywords = None}, ${3:bool playable = true}, ${4:bool ignoreTemplates = true}, ${5:bool ignoreEnchantments = true}, ${6:bool onlyEnchanted = false}, ${7:bool ignoreSkin = true})]]></content>
-</snippet>

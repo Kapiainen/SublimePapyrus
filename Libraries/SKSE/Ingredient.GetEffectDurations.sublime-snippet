@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetEffectDurations</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Ingredient.GetEffectDurations (SKSE)</description>
-	<content><![CDATA[GetEffectDurations()]]></content>
-</snippet>

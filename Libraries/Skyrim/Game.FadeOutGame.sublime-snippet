@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>FadeOutGame</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Game.FadeOutGame</description>
-	<content><![CDATA[FadeOutGame(${1:bool abFadingOut}, ${2:bool abBlackFade}, ${3:float afSecsBeforeFade}, ${4:float afFadeDuration})]]></content>
-</snippet>

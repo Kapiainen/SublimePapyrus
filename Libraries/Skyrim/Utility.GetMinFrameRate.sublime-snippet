@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetMinFrameRate</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Utility.GetMinFrameRate</description>
-	<content><![CDATA[GetMinFrameRate()]]></content>
-</snippet>

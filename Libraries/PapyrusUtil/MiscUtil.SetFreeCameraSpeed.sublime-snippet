@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetFreeCameraSpeed</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>MiscUtil.SetFreeCameraSpeed (PapyrusUtil)</description>
-	<content><![CDATA[SetFreeCameraSpeed(${1:float speed})]]></content>
-</snippet>

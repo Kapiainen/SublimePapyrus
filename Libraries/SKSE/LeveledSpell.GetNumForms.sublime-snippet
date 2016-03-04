@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetNumForms</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>LeveledSpell.GetNumForms (SKSE)</description>
-	<content><![CDATA[GetNumForms()]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>ForceMovementSpeed</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Actor.ForceMovementSpeed</description>
-	<content><![CDATA[ForceMovementSpeed(${1:float afSpeedMult})]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>debug_AllObjFloatKeys</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>StorageUtil.debug_AllObjFloatKeys (PapyrusUtil)</description>
-	<content><![CDATA[debug_AllObjFloatKeys(${1:Form ObjKey})]]></content>
-</snippet>

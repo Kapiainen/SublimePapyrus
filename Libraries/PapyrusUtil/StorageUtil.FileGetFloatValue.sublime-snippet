@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>FileGetFloatValue</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>StorageUtil.FileGetFloatValue (PapyrusUtil)</description>
-	<content><![CDATA[FileGetFloatValue(${1:string KeyName}, ${2:float missing = 0})]]></content>
-</snippet>

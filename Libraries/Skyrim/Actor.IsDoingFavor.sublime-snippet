@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>IsDoingFavor</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Actor.IsDoingFavor</description>
-	<content><![CDATA[IsDoingFavor()]]></content>
-</snippet>

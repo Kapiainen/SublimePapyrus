@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>IsCuirass</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Armor.IsCuirass (SKSE)</description>
-	<content><![CDATA[IsCuirass()]]></content>
-</snippet>

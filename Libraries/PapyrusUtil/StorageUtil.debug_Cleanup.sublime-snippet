@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>debug_Cleanup</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>StorageUtil.debug_Cleanup (PapyrusUtil)</description>
-	<content><![CDATA[debug_Cleanup()]]></content>
-</snippet>

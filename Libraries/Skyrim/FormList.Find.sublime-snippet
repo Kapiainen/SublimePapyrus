@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>Find</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>FormList.Find</description>
-	<content><![CDATA[Find(${1:Form apForm})]]></content>
-</snippet>

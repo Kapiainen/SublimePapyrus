@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetMenuPropertyIndexBool</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>uiextensions.SetMenuPropertyIndexBool (UIExtensions)</description>
-	<content><![CDATA[SetMenuPropertyIndexBool(${1:string menuName}, ${2:string propertyName}, ${3:int index}, ${4:bool value})]]></content>
-</snippet>

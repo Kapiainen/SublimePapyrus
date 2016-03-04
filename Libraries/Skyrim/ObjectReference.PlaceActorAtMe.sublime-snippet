@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>PlaceActorAtMe</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ObjectReference.PlaceActorAtMe</description>
-	<content><![CDATA[PlaceActorAtMe(${1:ActorBase akActorToPlace}, ${2:int aiLevelMod = 4}, ${3:EncounterZone akZone = None})]]></content>
-</snippet>

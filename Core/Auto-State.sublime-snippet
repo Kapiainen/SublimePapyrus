@@ -1,8 +1,0 @@
-<snippet>
-    <tabTrigger>AutoState</tabTrigger>
-    <scope>source.papyrus</scope>
-    <description>Auto State</description>
-	<content><![CDATA[Auto State ${1:state}
-	${0}
-EndState]]></content>
-</snippet>

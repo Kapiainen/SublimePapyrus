@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetID</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Alias.GetID (SKSE)</description>
-	<content><![CDATA[GetID()]]></content>
-</snippet>

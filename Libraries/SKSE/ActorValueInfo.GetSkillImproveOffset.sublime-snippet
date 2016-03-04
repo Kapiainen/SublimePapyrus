@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetSkillImproveOffset</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ActorValueInfo.GetSkillImproveOffset (SKSE)</description>
-	<content><![CDATA[GetSkillImproveOffset()]]></content>
-</snippet>

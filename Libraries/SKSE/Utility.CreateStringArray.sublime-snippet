@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>CreateStringArray</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Utility.CreateStringArray (SKSE)</description>
-	<content><![CDATA[CreateStringArray(${1:int size}, ${2:string fill})]]></content>
-</snippet>

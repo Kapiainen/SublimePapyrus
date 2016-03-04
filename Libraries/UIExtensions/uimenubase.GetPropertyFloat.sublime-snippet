@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetPropertyFloat</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>uimenubase.GetPropertyFloat (UIExtensions)</description>
-	<content><![CDATA[GetPropertyFloat(${1:string propertyName})]]></content>
-</snippet>

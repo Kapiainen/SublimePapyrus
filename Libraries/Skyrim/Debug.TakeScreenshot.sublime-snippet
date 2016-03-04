@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>TakeScreenshot</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Debug.TakeScreenshot</description>
-	<content><![CDATA[TakeScreenshot(${1:string asFilename})]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>AddForms</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>FormList.AddForms (SKSE)</description>
-	<content><![CDATA[AddForms(${1:Form[] forms})]]></content>
-</snippet>

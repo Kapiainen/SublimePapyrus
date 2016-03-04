@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetWeightClass</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Armor.SetWeightClass (SKSE)</description>
-	<content><![CDATA[SetWeightClass(${1:int weightClass})]]></content>
-</snippet>

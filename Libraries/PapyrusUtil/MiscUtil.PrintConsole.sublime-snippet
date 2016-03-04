@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>PrintConsole</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>MiscUtil.PrintConsole (PapyrusUtil)</description>
-	<content><![CDATA[PrintConsole(${1:string text})]]></content>
-</snippet>

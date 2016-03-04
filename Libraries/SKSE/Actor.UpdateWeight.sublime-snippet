@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>UpdateWeight</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Actor.UpdateWeight (SKSE)</description>
-	<content><![CDATA[UpdateWeight(${1:float neckDelta})]]></content>
-</snippet>

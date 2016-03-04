@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>RemoveAllInventoryEventFilters</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ReferenceAlias.RemoveAllInventoryEventFilters</description>
-	<content><![CDATA[RemoveAllInventoryEventFilters()]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetMeleeBashAttackMult</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>CombatStyle.SetMeleeBashAttackMult (SKSE)</description>
-	<content><![CDATA[SetMeleeBashAttackMult(${1:float mult})]]></content>
-</snippet>

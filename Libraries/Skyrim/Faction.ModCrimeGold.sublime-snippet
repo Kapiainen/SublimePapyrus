@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>ModCrimeGold</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Faction.ModCrimeGold</description>
-	<content><![CDATA[ModCrimeGold(${1:int aiAmount}, ${2:bool abViolent = false})]]></content>
-</snippet>

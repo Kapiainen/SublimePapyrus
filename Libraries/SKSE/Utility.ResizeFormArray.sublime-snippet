@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>ResizeFormArray</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Utility.ResizeFormArray (SKSE)</description>
-	<content><![CDATA[ResizeFormArray(${1:Form[] source}, ${2:int size}, ${3:Form fill = None})]]></content>
-</snippet>

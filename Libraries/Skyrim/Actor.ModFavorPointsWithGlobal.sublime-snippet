@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>ModFavorPointsWithGlobal</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Actor.ModFavorPointsWithGlobal</description>
-	<content><![CDATA[ModFavorPointsWithGlobal(${1:GlobalVariable FavorPointsGlobal})]]></content>
-</snippet>

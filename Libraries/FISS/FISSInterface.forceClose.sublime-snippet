@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>forceClose</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>FISSInterface.forceClose (FISS)</description>
-	<content><![CDATA[forceClose()]]></content>
-</snippet>

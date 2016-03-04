@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>FileIntListGet</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>StorageUtil.FileIntListGet (PapyrusUtil)</description>
-	<content><![CDATA[FileIntListGet(${1:string KeyName}, ${2:int index})]]></content>
-</snippet>

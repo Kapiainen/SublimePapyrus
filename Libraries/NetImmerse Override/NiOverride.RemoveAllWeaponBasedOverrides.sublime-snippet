@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>RemoveAllWeaponBasedOverrides</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>NiOverride.RemoveAllWeaponBasedOverrides (NetImmerse Override)</description>
-	<content><![CDATA[RemoveAllWeaponBasedOverrides()]]></content>
-</snippet>

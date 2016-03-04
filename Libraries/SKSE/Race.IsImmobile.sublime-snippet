@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>IsImmobile</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Race.IsImmobile (SKSE)</description>
-	<content><![CDATA[IsImmobile()]]></content>
-</snippet>

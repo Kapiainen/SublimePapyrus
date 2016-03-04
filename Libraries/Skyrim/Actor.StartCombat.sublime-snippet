@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>StartCombat</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Actor.StartCombat</description>
-	<content><![CDATA[StartCombat(${1:Actor akTarget})]]></content>
-</snippet>

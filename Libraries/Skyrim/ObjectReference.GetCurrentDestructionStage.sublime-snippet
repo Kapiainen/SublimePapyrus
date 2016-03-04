@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetCurrentDestructionStage</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ObjectReference.GetCurrentDestructionStage</description>
-	<content><![CDATA[GetCurrentDestructionStage()]]></content>
-</snippet>

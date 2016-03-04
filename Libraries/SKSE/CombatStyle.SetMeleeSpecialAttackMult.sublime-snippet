@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetMeleeSpecialAttackMult</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>CombatStyle.SetMeleeSpecialAttackMult (SKSE)</description>
-	<content><![CDATA[SetMeleeSpecialAttackMult(${1:float mult})]]></content>
-</snippet>

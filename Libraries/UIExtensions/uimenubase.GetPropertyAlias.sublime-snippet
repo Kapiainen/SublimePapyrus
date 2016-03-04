@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetPropertyAlias</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>uimenubase.GetPropertyAlias (UIExtensions)</description>
-	<content><![CDATA[GetPropertyAlias(${1:string propertyName})]]></content>
-</snippet>

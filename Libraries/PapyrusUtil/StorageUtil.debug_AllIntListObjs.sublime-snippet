@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>debug_AllIntListObjs</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>StorageUtil.debug_AllIntListObjs (PapyrusUtil)</description>
-	<content><![CDATA[debug_AllIntListObjs()]]></content>
-</snippet>

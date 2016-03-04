@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>ListMenu_Release</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>UILIB_1.ListMenu_Release (SkyUILib)</description>
-	<content><![CDATA[ListMenu_Release(${1:Form akClient})]]></content>
-</snippet>

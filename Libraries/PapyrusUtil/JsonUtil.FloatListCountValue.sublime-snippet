@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>FloatListCountValue</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>JsonUtil.FloatListCountValue (PapyrusUtil)</description>
-	<content><![CDATA[FloatListCountValue(${1:string FileName}, ${2:string KeyName}, ${3:float value}, ${4:bool exclude = false})]]></content>
-</snippet>

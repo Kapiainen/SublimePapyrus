@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>FloatListGet</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>StorageUtil.FloatListGet (PapyrusUtil)</description>
-	<content><![CDATA[FloatListGet(${1:Form ObjKey}, ${2:string KeyName}, ${3:int index})]]></content>
-</snippet>

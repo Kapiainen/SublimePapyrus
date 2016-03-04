@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>ResizeObjRefArray</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>PapyrusUtil.ResizeObjRefArray (PapyrusUtil)</description>
-	<content><![CDATA[ResizeObjRefArray(${1:ObjectReference[] ArrayValues}, ${2:int toSize}, ${3:ObjectReference filler = none})]]></content>
-</snippet>

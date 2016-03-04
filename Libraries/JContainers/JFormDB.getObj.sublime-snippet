@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>getObj</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>JFormDB.getObj (JContainers)</description>
-	<content><![CDATA[getObj(${1:form fKey}, ${2:string key})]]></content>
-</snippet>

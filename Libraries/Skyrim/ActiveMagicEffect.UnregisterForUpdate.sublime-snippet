@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>UnregisterForUpdate</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ActiveMagicEffect.UnregisterForUpdate</description>
-	<content><![CDATA[UnregisterForUpdate()]]></content>
-</snippet>

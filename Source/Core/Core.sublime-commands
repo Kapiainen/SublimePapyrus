@@ -1,0 +1,10 @@
+[
+	{
+		"caption": "SublimePapyrus: Open script",
+		"command": "sublime_papyrus_open_script"
+	},
+	{
+		"caption": "SublimePapyrus: Clear error highlights",
+		"command": "sublime_papyrus_clear_error_highlights"
+	}
+]

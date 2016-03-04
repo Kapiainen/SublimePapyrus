@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetPropertyForm</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>uimenubase.GetPropertyForm (UIExtensions)</description>
-	<content><![CDATA[GetPropertyForm(${1:string propertyName})]]></content>
-</snippet>

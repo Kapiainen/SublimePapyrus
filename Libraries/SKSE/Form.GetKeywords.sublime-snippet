@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetKeywords</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Form.GetKeywords (SKSE)</description>
-	<content><![CDATA[GetKeywords()]]></content>
-</snippet>

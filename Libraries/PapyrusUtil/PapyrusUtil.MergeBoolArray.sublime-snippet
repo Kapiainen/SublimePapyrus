@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>MergeBoolArray</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>PapyrusUtil.MergeBoolArray (PapyrusUtil)</description>
-	<content><![CDATA[MergeBoolArray(${1:bool[] ArrayValues1}, ${2:bool[] ArrayValues2}, ${3:bool RemoveDupes = false})]]></content>
-</snippet>

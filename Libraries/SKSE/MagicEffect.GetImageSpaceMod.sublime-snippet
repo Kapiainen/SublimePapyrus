@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetImageSpaceMod</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>MagicEffect.GetImageSpaceMod (SKSE)</description>
-	<content><![CDATA[GetImageSpaceMod()]]></content>
-</snippet>

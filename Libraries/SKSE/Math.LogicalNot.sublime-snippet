@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>LogicalNot</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Math.LogicalNot (SKSE)</description>
-	<content><![CDATA[LogicalNot(${1:int arg1})]]></content>
-</snippet>

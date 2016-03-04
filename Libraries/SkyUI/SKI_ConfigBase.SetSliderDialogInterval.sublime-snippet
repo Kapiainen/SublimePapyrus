@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetSliderDialogInterval</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>SKI_ConfigBase.SetSliderDialogInterval (SkyUI)</description>
-	<content><![CDATA[SetSliderDialogInterval(${1:float a_value})]]></content>
-</snippet>

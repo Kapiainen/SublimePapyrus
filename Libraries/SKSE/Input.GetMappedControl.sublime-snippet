@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetMappedControl</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Input.GetMappedControl (SKSE)</description>
-	<content><![CDATA[GetMappedControl(${1:int keycode})]]></content>
-</snippet>

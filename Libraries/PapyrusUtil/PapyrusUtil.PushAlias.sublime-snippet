@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>PushAlias</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>PapyrusUtil.PushAlias (PapyrusUtil)</description>
-	<content><![CDATA[PushAlias(${1:Alias[] ArrayValues}, ${2:Alias push})]]></content>
-</snippet>

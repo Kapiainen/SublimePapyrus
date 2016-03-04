@@ -1,8 +1,0 @@
-<snippet>
-	<tabTrigger>OnGameReload</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>cosmeticmenu.OnGameReload (UIExtensions)</description>
-	<content><![CDATA[Event OnGameReload()
-	${0}
-EndEvent]]></content>
-</snippet>

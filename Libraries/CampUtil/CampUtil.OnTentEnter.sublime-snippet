@@ -1,8 +1,0 @@
-<snippet>
-	<tabTrigger>OnTentEnter</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>CampUtil.OnTentEnter (CampUtil)</description>
-	<content><![CDATA[Event Campfire_OnTentEnter(${1:Form akTent}, ${2:bool abHasShelter})
-	${0}
-EndEvent]]></content>
-</snippet>

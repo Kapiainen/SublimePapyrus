@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>AddPerk</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Actor.AddPerk</description>
-	<content><![CDATA[AddPerk(${1:Perk akPerk})]]></content>
-</snippet>

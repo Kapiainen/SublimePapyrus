@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetFactionOwner</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ObjectReference.SetFactionOwner</description>
-	<content><![CDATA[SetFactionOwner(${1:Faction akFaction})]]></content>
-</snippet>

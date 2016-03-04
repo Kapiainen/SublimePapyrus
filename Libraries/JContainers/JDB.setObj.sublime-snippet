@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>setObj</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>JDB.setObj (JContainers)</description>
-	<content><![CDATA[setObj(${1:string key}, ${2:int object})]]></content>
-</snippet>

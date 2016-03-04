@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetScale</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ObjectReference.GetScale</description>
-	<content><![CDATA[GetScale()]]></content>
-</snippet>

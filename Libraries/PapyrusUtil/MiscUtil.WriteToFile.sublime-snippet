@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>WriteToFile</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>MiscUtil.WriteToFile (PapyrusUtil)</description>
-	<content><![CDATA[WriteToFile(${1:string fileName}, ${2:string text}, ${3:bool append = true}, ${4:bool timestamp = false})]]></content>
-</snippet>

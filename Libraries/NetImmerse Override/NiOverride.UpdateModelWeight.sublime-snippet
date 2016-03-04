@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>UpdateModelWeight</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>NiOverride.UpdateModelWeight (NetImmerse Override)</description>
-	<content><![CDATA[UpdateModelWeight(${1:ObjectReference ref})]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetSunPositionY</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Game.GetSunPositionY</description>
-	<content><![CDATA[GetSunPositionY()]]></content>
-</snippet>

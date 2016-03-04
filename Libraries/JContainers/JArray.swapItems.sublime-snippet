@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>swapItems</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>JArray.swapItems (JContainers)</description>
-	<content><![CDATA[swapItems(${1:int object}, ${2:int index1}, ${3:int index2})]]></content>
-</snippet>

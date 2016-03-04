@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetSelfAsActor</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ObjectReference.GetSelfAsActor</description>
-	<content><![CDATA[GetSelfAsActor()]]></content>
-</snippet>

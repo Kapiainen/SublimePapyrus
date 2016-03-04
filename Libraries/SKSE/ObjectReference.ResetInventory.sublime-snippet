@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>ResetInventory</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ObjectReference.ResetInventory (SKSE)</description>
-	<content><![CDATA[ResetInventory()]]></content>
-</snippet>

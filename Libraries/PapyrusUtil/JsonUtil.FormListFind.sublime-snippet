@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>FormListFind</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>JsonUtil.FormListFind (PapyrusUtil)</description>
-	<content><![CDATA[FormListFind(${1:string FileName}, ${2:string KeyName}, ${3:Form value})]]></content>
-</snippet>

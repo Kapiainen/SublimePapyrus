@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetCloseRangeDuelingFallbackMult</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>CombatStyle.GetCloseRangeDuelingFallbackMult (SKSE)</description>
-	<content><![CDATA[GetCloseRangeDuelingFallbackMult()]]></content>
-</snippet>

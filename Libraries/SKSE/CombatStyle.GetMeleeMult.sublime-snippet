@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetMeleeMult</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>CombatStyle.GetMeleeMult (SKSE)</description>
-	<content><![CDATA[GetMeleeMult()]]></content>
-</snippet>

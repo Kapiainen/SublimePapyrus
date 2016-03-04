@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetOwnerOfUniqueID</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>NiOverride.GetOwnerOfUniqueID (NetImmerse Override)</description>
-	<content><![CDATA[GetOwnerOfUniqueID(${1:int uniqueId})]]></content>
-</snippet>

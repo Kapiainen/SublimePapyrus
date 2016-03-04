@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetModelNumTextureSets</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ArmorAddon.GetModelNumTextureSets (SKSE)</description>
-	<content><![CDATA[GetModelNumTextureSets(${1:bool first}, ${2:bool female})]]></content>
-</snippet>

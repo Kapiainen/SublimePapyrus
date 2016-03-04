@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>IntListRemove</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>JsonUtil.IntListRemove (PapyrusUtil)</description>
-	<content><![CDATA[IntListRemove(${1:string FileName}, ${2:string KeyName}, ${3:int value}, ${4:bool allInstances = true})]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>FileIntListSlice</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>StorageUtil.FileIntListSlice (PapyrusUtil)</description>
-	<content><![CDATA[FileIntListSlice(${1:string KeyName}, ${2:int[] slice}, ${3:int startIndex = 0})]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>RemoveShout</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Actor.RemoveShout</description>
-	<content><![CDATA[RemoveShout(${1:Shout akShout})]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>CanPayCrimeGold</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Faction.CanPayCrimeGold</description>
-	<content><![CDATA[CanPayCrimeGold()]]></content>
-</snippet>

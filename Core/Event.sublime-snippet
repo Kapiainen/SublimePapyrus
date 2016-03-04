@@ -1,8 +1,0 @@
-<snippet>
-    <tabTrigger>Event</tabTrigger>
-    <scope>source.papyrus</scope>
-    <description>Event</description>
-	<content><![CDATA[Event ${1:EventName}(${2:Parameters})
-	${0}
-EndEvent]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>zeroLifetime</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>JValue.zeroLifetime (JContainers)</description>
-	<content><![CDATA[zeroLifetime(${1:int object})]]></content>
-</snippet>

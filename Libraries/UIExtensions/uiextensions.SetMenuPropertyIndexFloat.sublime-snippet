@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetMenuPropertyIndexFloat</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>uiextensions.SetMenuPropertyIndexFloat (UIExtensions)</description>
-	<content><![CDATA[SetMenuPropertyIndexFloat(${1:string menuName}, ${2:string propertyName}, ${3:int index}, ${4:float value})]]></content>
-</snippet>

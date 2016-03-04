@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>OnStartup</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>cosmeticmenu.OnStartup (UIExtensions)</description>
-	<content><![CDATA[OnStartup()]]></content>
-</snippet>

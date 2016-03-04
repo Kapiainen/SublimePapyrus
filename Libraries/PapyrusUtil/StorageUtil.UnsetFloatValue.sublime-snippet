@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>UnsetFloatValue</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>StorageUtil.UnsetFloatValue (PapyrusUtil)</description>
-	<content><![CDATA[UnsetFloatValue(${1:Form ObjKey}, ${2:string KeyName})]]></content>
-</snippet>

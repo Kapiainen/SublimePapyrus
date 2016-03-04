@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>EnableFastTravel</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ObjectReference.EnableFastTravel</description>
-	<content><![CDATA[EnableFastTravel(${1:bool abEnable = true})]]></content>
-</snippet>

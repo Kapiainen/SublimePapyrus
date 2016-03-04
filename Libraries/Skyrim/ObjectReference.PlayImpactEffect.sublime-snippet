@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>PlayImpactEffect</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ObjectReference.PlayImpactEffect</description>
-	<content><![CDATA[PlayImpactEffect(${1:ImpactDataSet akImpactEffect}, ${2:string asNodeName}, ${3:float afPickDirX = 0}, ${4:float afPickDirY = 0}, ${5:float afPickDirZ}, ${6:float afPickLength = 512}, ${7:bool abApplyNodeRotation = false}, ${8:bool abUseNodeLocalRotation = false})]]></content>
-</snippet>

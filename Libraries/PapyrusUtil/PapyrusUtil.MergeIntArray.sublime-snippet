@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>MergeIntArray</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>PapyrusUtil.MergeIntArray (PapyrusUtil)</description>
-	<content><![CDATA[MergeIntArray(${1:int[] ArrayValues1}, ${2:int[] ArrayValues2}, ${3:bool RemoveDupes = false})]]></content>
-</snippet>

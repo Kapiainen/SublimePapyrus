@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>DegreesToRadians</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Math.DegreesToRadians</description>
-	<content><![CDATA[DegreesToRadians(${1:float afDegrees})]]></content>
-</snippet>

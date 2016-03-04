@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetExpressionPhoneme</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Actor.SetExpressionPhoneme (SKSE)</description>
-	<content><![CDATA[SetExpressionPhoneme(${1:int index}, ${2:float value})]]></content>
-</snippet>

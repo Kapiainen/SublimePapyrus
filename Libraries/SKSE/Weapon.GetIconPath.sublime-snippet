@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetIconPath</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Weapon.GetIconPath (SKSE)</description>
-	<content><![CDATA[GetIconPath()]]></content>
-</snippet>

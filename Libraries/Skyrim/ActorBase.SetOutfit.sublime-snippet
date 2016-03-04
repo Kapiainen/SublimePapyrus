@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetOutfit</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ActorBase.SetOutfit</description>
-	<content><![CDATA[SetOutfit(${1:Outfit akOutfit}, ${2:bool abSleepOutfit = false})]]></content>
-</snippet>

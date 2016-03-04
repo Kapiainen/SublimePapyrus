@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>IsJournalControlsEnabled</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Game.IsJournalControlsEnabled</description>
-	<content><![CDATA[IsJournalControlsEnabled()]]></content>
-</snippet>

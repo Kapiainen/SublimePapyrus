@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>allKeys</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>JFormMap.allKeys (JContainers)</description>
-	<content><![CDATA[allKeys(${1:int object})]]></content>
-</snippet>

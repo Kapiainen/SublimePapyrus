@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>FileFloatListFind</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>StorageUtil.FileFloatListFind (PapyrusUtil)</description>
-	<content><![CDATA[FileFloatListFind(${1:string KeyName}, ${2:float value})]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>Remove</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>MusicType.Remove</description>
-	<content><![CDATA[Remove()]]></content>
-</snippet>

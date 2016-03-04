@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetChanceGlobal</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>LeveledItem.GetChanceGlobal (SKSE)</description>
-	<content><![CDATA[GetChanceGlobal()]]></content>
-</snippet>

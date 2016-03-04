@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>FileFormListSet</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>StorageUtil.FileFormListSet (PapyrusUtil)</description>
-	<content><![CDATA[FileFormListSet(${1:string KeyName}, ${2:int index}, ${3:Form value})]]></content>
-</snippet>

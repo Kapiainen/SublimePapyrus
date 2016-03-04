@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetNodeRotation</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>MiscUtil.GetNodeRotation (PapyrusUtil)</description>
-	<content><![CDATA[GetNodeRotation(${1:ObjectReference obj}, ${2:string nodeName}, ${3:bool firstPerson}, ${4:int rotationIndex})]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>isFormMap</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>JValue.isFormMap (JContainers)</description>
-	<content><![CDATA[isFormMap(${1:int object})]]></content>
-</snippet>

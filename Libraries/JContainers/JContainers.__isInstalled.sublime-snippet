@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>__isInstalled</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>JContainers.__isInstalled (JContainers)</description>
-	<content><![CDATA[__isInstalled()]]></content>
-</snippet>

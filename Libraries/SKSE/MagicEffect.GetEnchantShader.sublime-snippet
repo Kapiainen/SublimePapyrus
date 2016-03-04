@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetEnchantShader</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>MagicEffect.GetEnchantShader (SKSE)</description>
-	<content><![CDATA[GetEnchantShader()]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>RemoveAddedForm</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>FormList.RemoveAddedForm</description>
-	<content><![CDATA[RemoveAddedForm(${1:Form apForm})]]></content>
-</snippet>

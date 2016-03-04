@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetAttackActorOnSight</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Actor.SetAttackActorOnSight</description>
-	<content><![CDATA[SetAttackActorOnSight(${1:bool abAttackOnSight = true})]]></content>
-</snippet>

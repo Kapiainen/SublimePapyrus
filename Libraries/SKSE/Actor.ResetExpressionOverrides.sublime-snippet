@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>ResetExpressionOverrides</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Actor.ResetExpressionOverrides (SKSE)</description>
-	<content><![CDATA[ResetExpressionOverrides()]]></content>
-</snippet>

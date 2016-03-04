@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetNthArmorAddon</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Armor.GetNthArmorAddon (SKSE)</description>
-	<content><![CDATA[GetNthArmorAddon(${1:int n})]]></content>
-</snippet>

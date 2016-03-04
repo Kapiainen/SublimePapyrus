@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>IsObjectiveFailed</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Quest.IsObjectiveFailed</description>
-	<content><![CDATA[IsObjectiveFailed(${1:int aiObjective})]]></content>
-</snippet>

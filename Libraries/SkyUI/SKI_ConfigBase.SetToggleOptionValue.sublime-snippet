@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetToggleOptionValue</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>SKI_ConfigBase.SetToggleOptionValue (SkyUI)</description>
-	<content><![CDATA[SetToggleOptionValue(${1:int a_option}, ${2:bool a_checked}, ${3:bool a_noUpdate = false})]]></content>
-</snippet>

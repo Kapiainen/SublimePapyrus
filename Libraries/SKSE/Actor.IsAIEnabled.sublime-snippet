@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>IsAIEnabled</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Actor.IsAIEnabled (SKSE)</description>
-	<content><![CDATA[IsAIEnabled()]]></content>
-</snippet>

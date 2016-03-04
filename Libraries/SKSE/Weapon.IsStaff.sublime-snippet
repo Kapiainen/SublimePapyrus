@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>IsStaff</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Weapon.IsStaff (SKSE)</description>
-	<content><![CDATA[IsStaff()]]></content>
-</snippet>

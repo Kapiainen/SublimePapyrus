@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>RemoveReplaceAnimation</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ObjectUtil.RemoveReplaceAnimation (PapyrusUtil)</description>
-	<content><![CDATA[RemoveReplaceAnimation(${1:ObjectReference obj}, ${2:string oldAnimEvent})]]></content>
-</snippet>

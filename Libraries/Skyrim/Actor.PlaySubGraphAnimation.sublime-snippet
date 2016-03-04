@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>PlaySubGraphAnimation</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Actor.PlaySubGraphAnimation</description>
-	<content><![CDATA[PlaySubGraphAnimation(${1:string asEventName})]]></content>
-</snippet>

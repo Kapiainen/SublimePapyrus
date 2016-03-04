@@ -1,8 +1,0 @@
-<snippet>
-	<tabTrigger>OnSliderAcceptST</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>SKI_ConfigBase.OnSliderAcceptST (SkyUI)</description>
-	<content><![CDATA[Event OnSliderAcceptST(${1:float a_value})
-	${0}
-EndEvent]]></content>
-</snippet>

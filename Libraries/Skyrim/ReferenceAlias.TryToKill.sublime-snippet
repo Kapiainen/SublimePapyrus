@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>TryToKill</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ReferenceAlias.TryToKill</description>
-	<content><![CDATA[TryToKill()]]></content>
-</snippet>

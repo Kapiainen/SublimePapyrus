@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetSubGraphFloatVariable</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Actor.SetSubGraphFloatVariable</description>
-	<content><![CDATA[SetSubGraphFloatVariable(${1:string asVariableName}, ${2:float afValue})]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetRed</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ColorComponent.GetRed (SKSE)</description>
-	<content><![CDATA[GetRed(${1:int argb})]]></content>
-</snippet>

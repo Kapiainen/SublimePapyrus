@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>StringListRemoveAt</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>JsonUtil.StringListRemoveAt (PapyrusUtil)</description>
-	<content><![CDATA[StringListRemoveAt(${1:string FileName}, ${2:string KeyName}, ${3:int index})]]></content>
-</snippet>

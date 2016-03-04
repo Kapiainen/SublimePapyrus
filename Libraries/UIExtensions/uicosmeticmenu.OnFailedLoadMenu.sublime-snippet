@@ -1,8 +1,0 @@
-<snippet>
-	<tabTrigger>OnFailedLoadMenu</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>uicosmeticmenu.OnFailedLoadMenu (UIExtensions)</description>
-	<content><![CDATA[Event OnFailedLoadMenu(${1:string eventName}, ${2:string strArg}, ${3:float numArg}, ${4:Form formArg})
-	${0}
-EndEvent]]></content>
-</snippet>

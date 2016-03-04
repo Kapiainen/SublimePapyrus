@@ -1,8 +1,0 @@
-<snippet>
-	<tabTrigger>OnBedrollSitLay</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>CampUtil.OnBedrollSitLay (CampUtil)</description>
-	<content><![CDATA[Event Campfire_OnBedrollSitLay(${1:Form akTent}, ${2:bool abGettingUp})
-	${0}
-EndEvent]]></content>
-</snippet>

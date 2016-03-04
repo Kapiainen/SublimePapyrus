@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetName</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Form.SetName (SKSE)</description>
-	<content><![CDATA[SetName(${1:string name})]]></content>
-</snippet>

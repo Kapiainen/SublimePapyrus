@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>IsVendor</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Faction.IsVendor (SKSE)</description>
-	<content><![CDATA[IsVendor()]]></content>
-</snippet>

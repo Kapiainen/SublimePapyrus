@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetNodeLocalPositionY</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>NetImmerse.GetNodeLocalPositionY (SKSE)</description>
-	<content><![CDATA[GetNodeLocalPositionY(${1:ObjectReference ref}, ${2:string node}, ${3:bool firstPerson})]]></content>
-</snippet>

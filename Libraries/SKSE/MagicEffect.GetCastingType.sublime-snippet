@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetCastingType</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>MagicEffect.GetCastingType (SKSE)</description>
-	<content><![CDATA[GetCastingType()]]></content>
-</snippet>

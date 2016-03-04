@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>OpenMenu</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>uitextentrymenu.OpenMenu (UIExtensions)</description>
-	<content><![CDATA[OpenMenu(${1:Form inForm = None}, ${2:Form akReceiver = None})]]></content>
-</snippet>

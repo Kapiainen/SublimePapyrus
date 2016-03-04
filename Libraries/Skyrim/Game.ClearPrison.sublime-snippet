@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>ClearPrison</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Game.ClearPrison</description>
-	<content><![CDATA[ClearPrison()]]></content>
-</snippet>

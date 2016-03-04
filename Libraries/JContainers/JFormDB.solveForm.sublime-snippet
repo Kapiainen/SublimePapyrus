@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>solveForm</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>JFormDB.solveForm (JContainers)</description>
-	<content><![CDATA[solveForm(${1:form fKey}, ${2:string path}, ${3:form default})]]></content>
-</snippet>

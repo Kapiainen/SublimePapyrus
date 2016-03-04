@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>Remove</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ShaderParticleGeometry.Remove</description>
-	<content><![CDATA[Remove(${1:float afFadeTime})]]></content>
-</snippet>

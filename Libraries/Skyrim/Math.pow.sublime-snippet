@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>pow</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Math.pow</description>
-	<content><![CDATA[pow(${1:float x}, ${2:float y})]]></content>
-</snippet>

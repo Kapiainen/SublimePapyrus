@@ -1,8 +1,0 @@
-<snippet>
-	<tabTrigger>OnTentLeave</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>CampUtil.OnTentLeave (CampUtil)</description>
-	<content><![CDATA[Event Campfire_OnTentLeave()
-	${0}
-EndEvent]]></content>
-</snippet>

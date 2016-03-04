@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>ClearFormListPrefix</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>StorageUtil.ClearFormListPrefix (PapyrusUtil)</description>
-	<content><![CDATA[ClearFormListPrefix(${1:string PrefixKey})]]></content>
-</snippet>

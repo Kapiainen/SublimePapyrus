@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>IsPathString</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>JsonUtil.IsPathString (PapyrusUtil)</description>
-	<content><![CDATA[IsPathString(${1:string FileName}, ${2:string Path})]]></content>
-</snippet>

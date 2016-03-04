@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetPlayerEquippedBackpack</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>CampUtil.GetPlayerEquippedBackpack (CampUtil)</description>
-	<content><![CDATA[GetPlayerEquippedBackpack()]]></content>
-</snippet>

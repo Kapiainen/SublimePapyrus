@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetModelNthTextureSet</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ArmorAddon.SetModelNthTextureSet (SKSE)</description>
-	<content><![CDATA[SetModelNthTextureSet(${1:TextureSet texture}, ${2:int n}, ${3:bool first}, ${4:bool female})]]></content>
-</snippet>

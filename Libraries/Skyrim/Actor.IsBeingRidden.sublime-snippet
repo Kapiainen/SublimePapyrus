@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>IsBeingRidden</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Actor.IsBeingRidden</description>
-	<content><![CDATA[IsBeingRidden()]]></content>
-</snippet>

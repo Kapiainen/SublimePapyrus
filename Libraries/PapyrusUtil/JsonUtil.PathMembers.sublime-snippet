@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>PathMembers</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>JsonUtil.PathMembers (PapyrusUtil)</description>
-	<content><![CDATA[PathMembers(${1:string FileName}, ${2:string Path})]]></content>
-</snippet>

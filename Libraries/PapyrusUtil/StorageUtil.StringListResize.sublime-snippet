@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>StringListResize</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>StorageUtil.StringListResize (PapyrusUtil)</description>
-	<content><![CDATA[StringListResize(${1:Form ObjKey}, ${2:string KeyName}, ${3:int toLength}, ${4:string filler})]]></content>
-</snippet>

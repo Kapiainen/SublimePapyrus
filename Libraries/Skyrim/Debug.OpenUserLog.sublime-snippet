@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>OpenUserLog</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Debug.OpenUserLog</description>
-	<content><![CDATA[OpenUserLog(${1:string asLogName})]]></content>
-</snippet>

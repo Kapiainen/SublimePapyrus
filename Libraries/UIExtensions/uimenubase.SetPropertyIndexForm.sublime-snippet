@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetPropertyIndexForm</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>uimenubase.SetPropertyIndexForm (UIExtensions)</description>
-	<content><![CDATA[SetPropertyIndexForm(${1:string propertyName}, ${2:int index}, ${3:Form value})]]></content>
-</snippet>

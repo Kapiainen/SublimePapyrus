@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetMenuOptionValue</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>SKI_ConfigBase.SetMenuOptionValue (SkyUI)</description>
-	<content><![CDATA[SetMenuOptionValue(${1:int a_option}, ${2:string a_value}, ${3:bool a_noUpdate = false})]]></content>
-</snippet>

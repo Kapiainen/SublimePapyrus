@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>PlaySyncedAnimationSS</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ObjectReference.PlaySyncedAnimationSS</description>
-	<content><![CDATA[PlaySyncedAnimationSS(${1:string asAnimation1}, ${2:ObjectReference akObj2}, ${3:string asAnimation2})]]></content>
-</snippet>

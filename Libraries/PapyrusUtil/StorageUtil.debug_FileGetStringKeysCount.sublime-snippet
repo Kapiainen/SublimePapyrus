@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>debug_FileGetStringKeysCount</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>StorageUtil.debug_FileGetStringKeysCount (PapyrusUtil)</description>
-	<content><![CDATA[debug_FileGetStringKeysCount()]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>StringListSet</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>StorageUtil.StringListSet (PapyrusUtil)</description>
-	<content><![CDATA[StringListSet(${1:Form ObjKey}, ${2:string KeyName}, ${3:int index}, ${4:string value})]]></content>
-</snippet>

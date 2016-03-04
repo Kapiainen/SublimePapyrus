@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>FloatListSet</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>JsonUtil.FloatListSet (PapyrusUtil)</description>
-	<content><![CDATA[FloatListSet(${1:string FileName}, ${2:string KeyName}, ${3:int index}, ${4:float value})]]></content>
-</snippet>

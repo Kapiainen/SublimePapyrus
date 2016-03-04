@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>Clear</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>LocationAlias.Clear</description>
-	<content><![CDATA[Clear()]]></content>
-</snippet>

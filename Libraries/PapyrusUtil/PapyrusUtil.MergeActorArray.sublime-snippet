@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>MergeActorArray</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>PapyrusUtil.MergeActorArray (PapyrusUtil)</description>
-	<content><![CDATA[MergeActorArray(${1:Actor[] ArrayValues1}, ${2:Actor[] ArrayValues2}, ${3:bool RemoveDupes = false})]]></content>
-</snippet>

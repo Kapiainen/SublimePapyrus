@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>RegisterFormDyeColor</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>NiOverride.RegisterFormDyeColor (NetImmerse Override)</description>
-	<content><![CDATA[RegisterFormDyeColor(${1:Form akForm}, ${2:int color})]]></content>
-</snippet>

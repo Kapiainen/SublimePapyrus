@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetAllKeys</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>GameData.GetAllKeys (SKSE)</description>
-	<content><![CDATA[GetAllKeys(${1:string modName}, ${2:Keyword[] keywords = None})]]></content>
-</snippet>

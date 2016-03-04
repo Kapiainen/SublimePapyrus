@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>UnregisterForAllModEvents</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Form.UnregisterForAllModEvents (SKSE)</description>
-	<content><![CDATA[UnregisterForAllModEvents()]]></content>
-</snippet>

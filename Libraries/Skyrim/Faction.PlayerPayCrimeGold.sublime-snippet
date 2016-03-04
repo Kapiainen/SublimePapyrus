@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>PlayerPayCrimeGold</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Faction.PlayerPayCrimeGold</description>
-	<content><![CDATA[PlayerPayCrimeGold(${1:bool abRemoveStolenItems = true}, ${2:bool abGoToJail = true})]]></content>
-</snippet>

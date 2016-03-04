@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>IsSkill</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ActorValueInfo.IsSkill (SKSE)</description>
-	<content><![CDATA[IsSkill()]]></content>
-</snippet>

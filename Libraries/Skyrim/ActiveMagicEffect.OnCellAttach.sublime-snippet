@@ -1,8 +1,0 @@
-<snippet>
-	<tabTrigger>OnCellAttach</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ActiveMagicEffect.OnCellAttach</description>
-	<content><![CDATA[Event OnCellAttach()
-	${0}
-EndEvent]]></content>
-</snippet>

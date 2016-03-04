@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>RegisterForActorAction</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Form.RegisterForActorAction (SKSE)</description>
-	<content><![CDATA[RegisterForActorAction(${1:int actionType})]]></content>
-</snippet>

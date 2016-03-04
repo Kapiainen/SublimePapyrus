@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>setObj</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>JIntMap.setObj (JContainers)</description>
-	<content><![CDATA[setObj(${1:int object}, ${2:int key}, ${3:int container})]]></content>
-</snippet>

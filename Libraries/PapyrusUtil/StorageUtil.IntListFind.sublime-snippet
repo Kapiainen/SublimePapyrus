@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>IntListFind</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>StorageUtil.IntListFind (PapyrusUtil)</description>
-	<content><![CDATA[IntListFind(${1:Form ObjKey}, ${2:string KeyName}, ${3:int value})]]></content>
-</snippet>

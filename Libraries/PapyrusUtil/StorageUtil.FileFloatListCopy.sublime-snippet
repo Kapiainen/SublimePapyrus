@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>FileFloatListCopy</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>StorageUtil.FileFloatListCopy (PapyrusUtil)</description>
-	<content><![CDATA[FileFloatListCopy(${1:string KeyName}, ${2:float[] copy})]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>IsChildRace</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Race.IsChildRace (SKSE)</description>
-	<content><![CDATA[IsChildRace()]]></content>
-</snippet>

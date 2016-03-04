@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>FormListRemoveAt</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>JsonUtil.FormListRemoveAt (PapyrusUtil)</description>
-	<content><![CDATA[FormListRemoveAt(${1:string FileName}, ${2:string KeyName}, ${3:int index})]]></content>
-</snippet>

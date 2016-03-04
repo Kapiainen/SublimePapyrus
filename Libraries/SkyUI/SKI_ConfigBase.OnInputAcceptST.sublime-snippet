@@ -1,8 +1,0 @@
-<snippet>
-	<tabTrigger>OnInputAcceptST</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>SKI_ConfigBase.OnInputAcceptST (SkyUI)</description>
-	<content><![CDATA[Event OnInputAcceptST(${1:string a_input})
-	${0}
-EndEvent]]></content>
-</snippet>

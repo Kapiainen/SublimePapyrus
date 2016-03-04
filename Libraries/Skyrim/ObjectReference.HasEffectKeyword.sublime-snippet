@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>HasEffectKeyword</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ObjectReference.HasEffectKeyword</description>
-	<content><![CDATA[HasEffectKeyword(${1:Keyword akKeyword})]]></content>
-</snippet>

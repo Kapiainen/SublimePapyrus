@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetFormFromUniqueID</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>NiOverride.GetFormFromUniqueID (NetImmerse Override)</description>
-	<content><![CDATA[GetFormFromUniqueID(${1:int uniqueId})]]></content>
-</snippet>

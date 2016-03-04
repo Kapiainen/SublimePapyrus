@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetEnchantArt</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>MagicEffect.SetEnchantArt (SKSE)</description>
-	<content><![CDATA[SetEnchantArt(${1:Art obj})]]></content>
-</snippet>

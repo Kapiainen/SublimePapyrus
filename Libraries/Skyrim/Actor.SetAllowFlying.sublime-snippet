@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetAllowFlying</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Actor.SetAllowFlying</description>
-	<content><![CDATA[SetAllowFlying(${1:bool abAllowed = true})]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>evalLuaFlt</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>JValue.evalLuaFlt (JContainers)</description>
-	<content><![CDATA[evalLuaFlt(${1:int object}, ${2:string luaCode}, ${3:float default})]]></content>
-</snippet>

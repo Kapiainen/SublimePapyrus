@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>debug_GetStringListKeysCount</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>StorageUtil.debug_GetStringListKeysCount (PapyrusUtil)</description>
-	<content><![CDATA[debug_GetStringListKeysCount(${1:Form ObjKey})]]></content>
-</snippet>

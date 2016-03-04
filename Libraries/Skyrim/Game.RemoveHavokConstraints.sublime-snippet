@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>RemoveHavokConstraints</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Game.RemoveHavokConstraints</description>
-	<content><![CDATA[RemoveHavokConstraints(${1:ObjectReference arFirstRef}, ${2:string arFirstRefNodeName}, ${3:ObjectReference arSecondRef}, ${4:string arSecondRefNodeName})]]></content>
-</snippet>

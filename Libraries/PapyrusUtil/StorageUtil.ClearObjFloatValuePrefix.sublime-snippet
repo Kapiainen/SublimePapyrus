@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>ClearObjFloatValuePrefix</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>StorageUtil.ClearObjFloatValuePrefix (PapyrusUtil)</description>
-	<content><![CDATA[ClearObjFloatValuePrefix(${1:Form ObjKey}, ${2:string PrefixKey})]]></content>
-</snippet>

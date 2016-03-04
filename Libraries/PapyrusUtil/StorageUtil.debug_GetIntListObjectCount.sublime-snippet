@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>debug_GetIntListObjectCount</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>StorageUtil.debug_GetIntListObjectCount (PapyrusUtil)</description>
-	<content><![CDATA[debug_GetIntListObjectCount()]]></content>
-</snippet>

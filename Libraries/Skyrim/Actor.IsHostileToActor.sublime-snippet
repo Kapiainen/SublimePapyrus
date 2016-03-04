@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>IsHostileToActor</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Actor.IsHostileToActor</description>
-	<content><![CDATA[IsHostileToActor(${1:Actor akActor})]]></content>
-</snippet>

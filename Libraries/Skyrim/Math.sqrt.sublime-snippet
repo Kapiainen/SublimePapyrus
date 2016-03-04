@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>sqrt</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Math.sqrt</description>
-	<content><![CDATA[sqrt(${1:float afValue})]]></content>
-</snippet>

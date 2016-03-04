@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetSkinOverrideFloat</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>NiOverride.GetSkinOverrideFloat (NetImmerse Override)</description>
-	<content><![CDATA[GetSkinOverrideFloat(${1:ObjectReference ref}, ${2:bool isFemale}, ${3:bool firstPerson}, ${4:int slotMask}, ${5:int key}, ${6:int index})]]></content>
-</snippet>

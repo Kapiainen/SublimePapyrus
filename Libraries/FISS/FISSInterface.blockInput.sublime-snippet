@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>blockInput</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>FISSInterface.blockInput (FISS)</description>
-	<content><![CDATA[blockInput(${1:bool block})]]></content>
-</snippet>

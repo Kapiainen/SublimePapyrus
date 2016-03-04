@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>allKeys</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>JFormDB.allKeys (JContainers)</description>
-	<content><![CDATA[allKeys(${1:form fKey}, ${2:string key})]]></content>
-</snippet>

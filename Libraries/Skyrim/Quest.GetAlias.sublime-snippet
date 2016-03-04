@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetAlias</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Quest.GetAlias</description>
-	<content><![CDATA[GetAlias(${1:int aiAliasID})]]></content>
-</snippet>

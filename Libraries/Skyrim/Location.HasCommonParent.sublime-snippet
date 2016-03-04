@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>HasCommonParent</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Location.HasCommonParent</description>
-	<content><![CDATA[HasCommonParent(${1:Location akOther}, ${2:Keyword akFilter = None})]]></content>
-</snippet>

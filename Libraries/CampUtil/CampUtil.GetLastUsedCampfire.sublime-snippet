@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetLastUsedCampfire</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>CampUtil.GetLastUsedCampfire (CampUtil)</description>
-	<content><![CDATA[GetLastUsedCampfire()]]></content>
-</snippet>

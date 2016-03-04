@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>ShowTitleSequenceMenu</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Game.ShowTitleSequenceMenu</description>
-	<content><![CDATA[ShowTitleSequenceMenu()]]></content>
-</snippet>

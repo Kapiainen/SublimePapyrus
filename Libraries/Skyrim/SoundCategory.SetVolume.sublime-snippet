@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetVolume</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>SoundCategory.SetVolume</description>
-	<content><![CDATA[SetVolume(${1:float afVolume})]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetFrequency</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>SoundCategory.SetFrequency</description>
-	<content><![CDATA[SetFrequency(${1:float afFrequencyCoeffecient})]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>AddFloatValues</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>PapyrusUtil.AddFloatValues (PapyrusUtil)</description>
-	<content><![CDATA[AddFloatValues(${1:float[] Values})]]></content>
-</snippet>

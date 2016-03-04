@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetEffectAreas</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Ingredient.GetEffectAreas (SKSE)</description>
-	<content><![CDATA[GetEffectAreas()]]></content>
-</snippet>

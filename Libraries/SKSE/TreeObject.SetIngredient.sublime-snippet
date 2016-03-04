@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetIngredient</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>TreeObject.SetIngredient (SKSE)</description>
-	<content><![CDATA[SetIngredient(${1:Form akIngredient})]]></content>
-</snippet>

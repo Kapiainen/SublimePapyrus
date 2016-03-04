@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>IsBattleaxe</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Weapon.IsBattleaxe (SKSE)</description>
-	<content><![CDATA[IsBattleaxe()]]></content>
-</snippet>

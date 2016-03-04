@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetEquippedItemType</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Actor.GetEquippedItemType</description>
-	<content><![CDATA[GetEquippedItemType(${1:int aiHand})]]></content>
-</snippet>

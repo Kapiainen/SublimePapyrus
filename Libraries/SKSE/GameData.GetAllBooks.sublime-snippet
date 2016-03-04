@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetAllBooks</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>GameData.GetAllBooks (SKSE)</description>
-	<content><![CDATA[GetAllBooks(${1:string modName}, ${2:Keyword[] keywords = None}, ${3:bool regular = true}, ${4:bool spell = false}, ${5:bool skill = false})]]></content>
-</snippet>

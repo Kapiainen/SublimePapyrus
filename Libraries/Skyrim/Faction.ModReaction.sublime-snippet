@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>ModReaction</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Faction.ModReaction</description>
-	<content><![CDATA[ModReaction(${1:Faction akOther}, ${2:int aiAmount})]]></content>
-</snippet>

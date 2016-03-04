@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetRed</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ColorForm.GetRed (SKSE)</description>
-	<content><![CDATA[GetRed()]]></content>
-</snippet>

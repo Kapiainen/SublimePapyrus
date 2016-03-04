@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>CloseUserLog</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Debug.CloseUserLog</description>
-	<content><![CDATA[CloseUserLog(${1:string asLogName})]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetKeyReplaceAnimation</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ObjectUtil.GetKeyReplaceAnimation (PapyrusUtil)</description>
-	<content><![CDATA[GetKeyReplaceAnimation(${1:ObjectReference obj}, ${2:int index})]]></content>
-</snippet>

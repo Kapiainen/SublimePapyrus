@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetNthPart</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Outfit.GetNthPart (SKSE)</description>
-	<content><![CDATA[GetNthPart(${1:int n})]]></content>
-</snippet>

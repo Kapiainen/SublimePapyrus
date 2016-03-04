@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>RegisterForAnimationEvent</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ActiveMagicEffect.RegisterForAnimationEvent</description>
-	<content><![CDATA[RegisterForAnimationEvent(${1:ObjectReference akSender}, ${2:string asEventName})]]></content>
-</snippet>

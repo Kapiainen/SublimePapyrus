@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetMeleeSpecialAttackMult</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>CombatStyle.GetMeleeSpecialAttackMult (SKSE)</description>
-	<content><![CDATA[GetMeleeSpecialAttackMult()]]></content>
-</snippet>

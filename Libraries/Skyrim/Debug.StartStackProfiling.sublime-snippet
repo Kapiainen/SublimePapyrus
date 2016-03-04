@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>StartStackProfiling</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Debug.StartStackProfiling</description>
-	<content><![CDATA[StartStackProfiling()]]></content>
-</snippet>

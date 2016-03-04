@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>debug_FileGetFloatListKeysCount</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>StorageUtil.debug_FileGetFloatListKeysCount (PapyrusUtil)</description>
-	<content><![CDATA[debug_FileGetFloatListKeysCount()]]></content>
-</snippet>

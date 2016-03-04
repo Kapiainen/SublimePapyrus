@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetNthEffectMagnitude</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Potion.SetNthEffectMagnitude (SKSE)</description>
-	<content><![CDATA[SetNthEffectMagnitude(${1:int index}, ${2:float value})]]></content>
-</snippet>

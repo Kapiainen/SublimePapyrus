@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetFogDistance</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Weather.GetFogDistance (SKSE)</description>
-	<content><![CDATA[GetFogDistance(${1:bool day}, ${2:int type})]]></content>
-</snippet>

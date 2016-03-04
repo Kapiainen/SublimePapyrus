@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetOverrideInt</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>NiOverride.GetOverrideInt (NetImmerse Override)</description>
-	<content><![CDATA[GetOverrideInt(${1:ObjectReference ref}, ${2:bool isFemale}, ${3:Armor arm}, ${4:ArmorAddon addon}, ${5:string node}, ${6:int key}, ${7:int index})]]></content>
-</snippet>

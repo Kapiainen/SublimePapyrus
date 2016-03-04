@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>RemoveAllNodeNameOverrides</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>NiOverride.RemoveAllNodeNameOverrides (NetImmerse Override)</description>
-	<content><![CDATA[RemoveAllNodeNameOverrides(${1:ObjectReference ref}, ${2:bool isFemale}, ${3:string node})]]></content>
-</snippet>

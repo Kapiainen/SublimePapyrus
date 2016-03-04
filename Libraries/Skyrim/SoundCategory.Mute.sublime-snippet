@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>Mute</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>SoundCategory.Mute</description>
-	<content><![CDATA[Mute()]]></content>
-</snippet>

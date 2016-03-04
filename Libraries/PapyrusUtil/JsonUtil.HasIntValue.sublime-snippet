@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>HasIntValue</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>JsonUtil.HasIntValue (PapyrusUtil)</description>
-	<content><![CDATA[HasIntValue(${1:string FileName}, ${2:string KeyName})]]></content>
-</snippet>

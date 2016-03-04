@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>UnregisterForSleep</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Alias.UnregisterForSleep</description>
-	<content><![CDATA[UnregisterForSleep()]]></content>
-</snippet>

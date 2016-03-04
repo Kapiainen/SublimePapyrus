@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>RemoveAllWeaponOverrides</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>NiOverride.RemoveAllWeaponOverrides (NetImmerse Override)</description>
-	<content><![CDATA[RemoveAllWeaponOverrides(${1:ObjectReference ref}, ${2:bool isFemale}, ${3:bool firstPerson}, ${4:Weapon weap})]]></content>
-</snippet>

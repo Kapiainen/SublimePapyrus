@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>ShowMessage</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>SKI_ConfigBase.ShowMessage (SkyUI)</description>
-	<content><![CDATA[ShowMessage(${1:string a_message}, ${2:bool a_withCancel = true}, ${3:string a_acceptLabel}, ${4:string a_cancelLabel})]]></content>
-</snippet>

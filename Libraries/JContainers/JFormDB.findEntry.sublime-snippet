@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>findEntry</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>JFormDB.findEntry (JContainers)</description>
-	<content><![CDATA[findEntry(${1:string storageName}, ${2:form fKey})]]></content>
-</snippet>

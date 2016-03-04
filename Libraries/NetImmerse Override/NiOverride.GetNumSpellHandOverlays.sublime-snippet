@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetNumSpellHandOverlays</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>NiOverride.GetNumSpellHandOverlays (NetImmerse Override)</description>
-	<content><![CDATA[GetNumSpellHandOverlays()]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>RemoveFromAllFactions</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Actor.RemoveFromAllFactions</description>
-	<content><![CDATA[RemoveFromAllFactions()]]></content>
-</snippet>

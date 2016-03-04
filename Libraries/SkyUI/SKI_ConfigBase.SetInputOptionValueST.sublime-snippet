@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetInputOptionValueST</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>SKI_ConfigBase.SetInputOptionValueST (SkyUI)</description>
-	<content><![CDATA[SetInputOptionValueST(${1:string a_value}, ${2:bool a_noUpdate = false}, ${3:string a_stateName})]]></content>
-</snippet>

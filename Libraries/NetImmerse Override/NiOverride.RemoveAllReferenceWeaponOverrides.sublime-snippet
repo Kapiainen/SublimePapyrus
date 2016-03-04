@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>RemoveAllReferenceWeaponOverrides</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>NiOverride.RemoveAllReferenceWeaponOverrides (NetImmerse Override)</description>
-	<content><![CDATA[RemoveAllReferenceWeaponOverrides(${1:ObjectReference ref})]]></content>
-</snippet>

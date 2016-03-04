@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>HasFloatValue</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>JsonUtil.HasFloatValue (PapyrusUtil)</description>
-	<content><![CDATA[HasFloatValue(${1:string FileName}, ${2:string KeyName})]]></content>
-</snippet>

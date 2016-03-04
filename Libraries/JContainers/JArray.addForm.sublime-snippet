@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>addForm</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>JArray.addForm (JContainers)</description>
-	<content><![CDATA[addForm(${1:int object}, ${2:form value}, ${3:int addToIndex})]]></content>
-</snippet>

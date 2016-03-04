@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>IsCleared</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Location.IsCleared</description>
-	<content><![CDATA[IsCleared()]]></content>
-</snippet>

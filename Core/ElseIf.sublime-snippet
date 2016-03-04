@@ -1,7 +1,0 @@
-<snippet>
-    <tabTrigger>ElseIf</tabTrigger>
-    <scope>source.papyrus</scope>
-    <description>ElseIf Condition</description>
-    <content><![CDATA[ElseIf(${1:$SELECTION})
-	${0}]]></content>
-</snippet>

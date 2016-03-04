@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetEyeTexture</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Actor.SetEyeTexture</description>
-	<content><![CDATA[SetEyeTexture(${1:TextureSet akNewTexture})]]></content>
-</snippet>

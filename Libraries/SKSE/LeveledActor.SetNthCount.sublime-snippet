@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetNthCount</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>LeveledActor.SetNthCount (SKSE)</description>
-	<content><![CDATA[SetNthCount(${1:int n}, ${2:int count})]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>AdjustIntValue</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>JsonUtil.AdjustIntValue (PapyrusUtil)</description>
-	<content><![CDATA[AdjustIntValue(${1:string FileName}, ${2:string KeyName}, ${3:int amount})]]></content>
-</snippet>
