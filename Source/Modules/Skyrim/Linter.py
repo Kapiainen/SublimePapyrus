@@ -2099,8 +2099,13 @@ class Semantic(SharedResources):
 								self.Abort("Arguments are being passed out of order, but at least one argument does not specify which parameter it is passing a value to.")
 							if args[i].name.value.upper() == params[0].name:
 								argExpr = self.NodeVisitor(args[0].expression)
-								if argExpr != params[0].type and not self.CanAutoCast(argExpr, params[0].type):
-									self.Abort("Parameter %s is of type %s, but the argument evaluates to %s, which cannot be auto-cast to the parameter's type." % (params[0].name, params[0].type, argExpr))
+								paramType = None
+								if params[0].array:
+									paramType = "%s[]" % params[0].type
+								else:
+									paramType = params[0].type
+								if argExpr != paramType and not self.CanAutoCast(argExpr, paramType):
+									self.Abort("Parameter %s is of type %s, but the argument evaluates to %s, which cannot be auto-cast to the parameter's type." % (params[0].name, paramType, argExpr))
 								args.pop(i)
 								break
 							i += 1
@@ -2110,14 +2115,24 @@ class Semantic(SharedResources):
 						if params[0].expression:
 							if len(args) > 0:
 								argExpr = self.NodeVisitor(args[0].expression)
-								if argExpr != params[0].type and not self.CanAutoCast(argExpr, params[0].type):
-									self.Abort("Parameter %s is of type %s, but the argument evaluates to %s, which cannot be auto-cast to the parameter's type." % (params[0].name, params[0].type, argExpr))
+								paramType = None
+								if params[0].array:
+									paramType = "%s[]" % params[0].type
+								else:
+									paramType = params[0].type
+								if argExpr != paramType and not self.CanAutoCast(argExpr, paramType):
+									self.Abort("Parameter %s is of type %s, but the argument evaluates to %s, which cannot be auto-cast to the parameter's type." % (params[0].name, paramType, argExpr))
 								args.pop(0)
 						else:
 							if len(args) > 0:
 								argExpr = self.NodeVisitor(args[0].expression)
-								if argExpr != params[0].type and not self.CanAutoCast(argExpr, params[0].type):
-									self.Abort("Parameter %s is of type %s, but the argument evaluates to %s, which cannot be auto-cast to the parameter's type." % (params[0].name, params[0].type, argExpr))
+								paramType = None
+								if params[0].array:
+									paramType = "%s[]" % params[0].type
+								else:
+									paramType = params[0].type
+								if argExpr != paramType and not self.CanAutoCast(argExpr, paramType):
+									self.Abort("Parameter %s is of type %s, but the argument evaluates to %s, which cannot be auto-cast to the parameter's type." % (params[0].name, paramType, argExpr))
 								args.pop(0)
 							else:
 								self.Abort("Mandatory parameter %s was not given an argument." % params[0].name)

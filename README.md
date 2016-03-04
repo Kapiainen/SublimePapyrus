@@ -168,6 +168,9 @@ Single file build system and a batch build variant.
     - SKSE mod event names
 
 ## **Changelog**
+Version 1.0.2 - 2016/03/05:
+  - Fixed a bug in the linter involving validation of array arguments and array parameters in function calls.
+
 Version 1.0.1 - 2016/03/05:
   - Implemented support in the linter for Find and RFind functions for arrays.
   - Implemented support in the linter for documentation strings for functions and events with the Native keyword.
