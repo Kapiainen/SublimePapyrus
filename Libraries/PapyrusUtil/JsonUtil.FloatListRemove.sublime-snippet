@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>FloatListRemove</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>JsonUtil.FloatListRemove (PapyrusUtil)</description>
-	<content><![CDATA[FloatListRemove(${1:string FileName}, ${2:string KeyName}, ${3:float value}, ${4:bool allInstances = true})]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetCritEffect</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Weapon.SetCritEffect (SKSE)</description>
-	<content><![CDATA[SetCritEffect(${1:Spell ce})]]></content>
-</snippet>

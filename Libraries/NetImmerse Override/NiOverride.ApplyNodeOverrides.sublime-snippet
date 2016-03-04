@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>ApplyNodeOverrides</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>NiOverride.ApplyNodeOverrides (NetImmerse Override)</description>
-	<content><![CDATA[ApplyNodeOverrides(${1:ObjectReference ref})]]></content>
-</snippet>

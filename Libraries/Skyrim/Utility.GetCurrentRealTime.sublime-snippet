@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetCurrentRealTime</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Utility.GetCurrentRealTime</description>
-	<content><![CDATA[GetCurrentRealTime()]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>RegisterForNiNodeUpdate</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ActiveMagicEffect.RegisterForNiNodeUpdate (SKSE)</description>
-	<content><![CDATA[RegisterForNiNodeUpdate()]]></content>
-</snippet>

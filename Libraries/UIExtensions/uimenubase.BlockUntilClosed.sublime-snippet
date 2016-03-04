@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>BlockUntilClosed</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>uimenubase.BlockUntilClosed (UIExtensions)</description>
-	<content><![CDATA[BlockUntilClosed()]]></content>
-</snippet>

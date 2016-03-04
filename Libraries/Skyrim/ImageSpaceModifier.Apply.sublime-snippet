@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>Apply</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ImageSpaceModifier.Apply</description>
-	<content><![CDATA[Apply(${1:float afStrength = 1})]]></content>
-</snippet>

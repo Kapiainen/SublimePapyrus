@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>CheckVersion</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>SKI_QuestBase.CheckVersion (SkyUI)</description>
-	<content><![CDATA[CheckVersion()]]></content>
-</snippet>

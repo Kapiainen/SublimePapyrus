@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>WaitForAnimationEvent</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ObjectReference.WaitForAnimationEvent</description>
-	<content><![CDATA[WaitForAnimationEvent(${1:string asEventName})]]></content>
-</snippet>

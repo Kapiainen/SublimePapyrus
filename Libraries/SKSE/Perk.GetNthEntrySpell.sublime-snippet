@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetNthEntrySpell</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Perk.GetNthEntrySpell (SKSE)</description>
-	<content><![CDATA[GetNthEntrySpell(${1:int n})]]></content>
-</snippet>

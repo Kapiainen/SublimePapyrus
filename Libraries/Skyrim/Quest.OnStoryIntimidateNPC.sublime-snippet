@@ -1,8 +1,0 @@
-<snippet>
-	<tabTrigger>OnStoryIntimidateNPC</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Quest.OnStoryIntimidateNPC</description>
-	<content><![CDATA[Event OnStoryIntimidateNPC(${1:ObjectReference akActor})
-	${0}
-EndEvent]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>CountForm</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>PapyrusUtil.CountForm (PapyrusUtil)</description>
-	<content><![CDATA[CountForm(${1:Form[] ArrayValues}, ${2:Form EqualTo})]]></content>
-</snippet>

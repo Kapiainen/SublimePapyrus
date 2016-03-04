@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetLightLevel</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Actor.GetLightLevel</description>
-	<content><![CDATA[GetLightLevel()]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetGemSize</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>SoulGem.GetGemSize (SKSE)</description>
-	<content><![CDATA[GetGemSize()]]></content>
-</snippet>

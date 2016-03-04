@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>ForceRefTo</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ReferenceAlias.ForceRefTo</description>
-	<content><![CDATA[ForceRefTo(${1:ObjectReference akNewRef})]]></content>
-</snippet>

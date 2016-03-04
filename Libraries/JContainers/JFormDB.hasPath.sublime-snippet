@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>hasPath</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>JFormDB.hasPath (JContainers)</description>
-	<content><![CDATA[hasPath(${1:form fKey}, ${2:string path})]]></content>
-</snippet>

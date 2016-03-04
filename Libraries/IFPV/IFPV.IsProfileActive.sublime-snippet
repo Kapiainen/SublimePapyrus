@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>IsProfileActive</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>IFPV.IsProfileActive (IFPV)</description>
-    <content><![CDATA[IsProfileActive(${1:string name})]]></content>
-</snippet>

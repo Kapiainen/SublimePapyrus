@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>RandomInt</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Utility.RandomInt</description>
-	<content><![CDATA[RandomInt(${1:int aiMin = 0}, ${2:int aiMax = 100})]]></content>
-</snippet>

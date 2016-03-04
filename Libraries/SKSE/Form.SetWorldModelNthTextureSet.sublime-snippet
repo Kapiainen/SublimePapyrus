@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetWorldModelNthTextureSet</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Form.SetWorldModelNthTextureSet (SKSE)</description>
-	<content><![CDATA[SetWorldModelNthTextureSet(${1:TextureSet nSet}, ${2:int n})]]></content>
-</snippet>

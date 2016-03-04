@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetEnchantmentValue</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Weapon.GetEnchantmentValue (SKSE)</description>
-	<content><![CDATA[GetEnchantmentValue()]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SendModEvent</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Form.SendModEvent (SKSE)</description>
-	<content><![CDATA[SendModEvent(${1:string eventName}, ${2:string strArg}, ${3:float numArg = 0})]]></content>
-</snippet>

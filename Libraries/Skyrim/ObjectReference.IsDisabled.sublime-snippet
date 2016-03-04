@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>IsDisabled</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ObjectReference.IsDisabled</description>
-	<content><![CDATA[IsDisabled()]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>Create</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>UICallback.Create (SKSE)</description>
-	<content><![CDATA[Create(${1:string menuName}, ${2:string target})]]></content>
-</snippet>

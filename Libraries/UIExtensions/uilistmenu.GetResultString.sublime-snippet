@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetResultString</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>uilistmenu.GetResultString (UIExtensions)</description>
-	<content><![CDATA[GetResultString()]]></content>
-</snippet>

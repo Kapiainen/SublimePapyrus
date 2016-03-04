@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetNumFeetOverlays</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>NiOverride.GetNumFeetOverlays (NetImmerse Override)</description>
-	<content><![CDATA[GetNumFeetOverlays()]]></content>
-</snippet>

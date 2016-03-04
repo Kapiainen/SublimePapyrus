@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetExperienceForLevel</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ActorValueInfo.GetExperienceForLevel (SKSE)</description>
-	<content><![CDATA[GetExperienceForLevel(${1:int currentLevel})]]></content>
-</snippet>

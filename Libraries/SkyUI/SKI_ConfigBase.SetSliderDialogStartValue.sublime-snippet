@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetSliderDialogStartValue</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>SKI_ConfigBase.SetSliderDialogStartValue (SkyUI)</description>
-	<content><![CDATA[SetSliderDialogStartValue(${1:float a_value})]]></content>
-</snippet>

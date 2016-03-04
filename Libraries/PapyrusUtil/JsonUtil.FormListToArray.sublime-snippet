@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>FormListToArray</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>JsonUtil.FormListToArray (PapyrusUtil)</description>
-	<content><![CDATA[FormListToArray(${1:string FileName}, ${2:string KeyName})]]></content>
-</snippet>

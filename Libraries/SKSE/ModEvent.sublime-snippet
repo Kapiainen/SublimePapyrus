@@ -1,8 +1,0 @@
-<snippet>
-	<tabTrigger>ModEvent</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ModEvent (SKSE)</description>
-	<content><![CDATA[Event ${1:EventName}(${2:string asEventName}, ${3:string asStringArg}, ${4:float afNumArg}, ${5:form akSender})
-${0}
-EndEvent]]></content>
-</snippet>

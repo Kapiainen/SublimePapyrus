@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetRelationshipRank</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Actor.SetRelationshipRank</description>
-	<content><![CDATA[SetRelationshipRank(${1:Actor akOther}, ${2:int aiRank})]]></content>
-</snippet>

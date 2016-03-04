@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>retain</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>JValue.retain (JContainers)</description>
-	<content><![CDATA[retain(${1:int object}, ${2:string tag})]]></content>
-</snippet>

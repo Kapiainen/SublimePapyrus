@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>FileSetFloatValue</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>StorageUtil.FileSetFloatValue (PapyrusUtil)</description>
-	<content><![CDATA[FileSetFloatValue(${1:string KeyName}, ${2:float value})]]></content>
-</snippet>

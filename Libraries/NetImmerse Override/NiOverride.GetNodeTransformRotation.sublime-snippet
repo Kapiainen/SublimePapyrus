@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetNodeTransformRotation</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>NiOverride.GetNodeTransformRotation (NetImmerse Override)</description>
-	<content><![CDATA[GetNodeTransformRotation(${1:ObjectReference akRef}, ${2:bool firstPerson}, ${3:bool isFemale}, ${4:string nodeName}, ${5:string key}, ${6:int type = 0})]]></content>
-</snippet>

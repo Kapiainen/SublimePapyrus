@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>FloatListSlice</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>StorageUtil.FloatListSlice (PapyrusUtil)</description>
-	<content><![CDATA[FloatListSlice(${1:Form ObjKey}, ${2:string KeyName}, ${3:float[] slice}, ${4:int startIndex = 0})]]></content>
-</snippet>

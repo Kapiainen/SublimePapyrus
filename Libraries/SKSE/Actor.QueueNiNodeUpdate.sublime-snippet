@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>QueueNiNodeUpdate</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Actor.QueueNiNodeUpdate (SKSE)</description>
-	<content><![CDATA[QueueNiNodeUpdate()]]></content>
-</snippet>

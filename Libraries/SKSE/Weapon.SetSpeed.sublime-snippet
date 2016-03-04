@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetSpeed</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Weapon.SetSpeed (SKSE)</description>
-	<content><![CDATA[SetSpeed(${1:float speed})]]></content>
-</snippet>

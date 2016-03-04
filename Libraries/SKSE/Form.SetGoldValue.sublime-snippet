@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetGoldValue</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Form.SetGoldValue (SKSE)</description>
-	<content><![CDATA[SetGoldValue(${1:int value})]]></content>
-</snippet>

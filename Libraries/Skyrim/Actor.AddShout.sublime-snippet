@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>AddShout</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Actor.AddShout</description>
-	<content><![CDATA[AddShout(${1:Shout akShout})]]></content>
-</snippet>

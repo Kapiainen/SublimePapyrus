@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetColorOptionValue</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>SKI_ConfigBase.SetColorOptionValue (SkyUI)</description>
-	<content><![CDATA[SetColorOptionValue(${1:int a_option}, ${2:int a_color}, ${3:bool a_noUpdate = false})]]></content>
-</snippet>

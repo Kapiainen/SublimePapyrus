@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetFreeCameraState</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>MiscUtil.SetFreeCameraState (PapyrusUtil)</description>
-	<content><![CDATA[SetFreeCameraState(${1:bool enable}, ${2:float speed = 10})]]></content>
-</snippet>

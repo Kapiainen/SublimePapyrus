@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>ResizeStringArray</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>PapyrusUtil.ResizeStringArray (PapyrusUtil)</description>
-	<content><![CDATA[ResizeStringArray(${1:string[] ArrayValues}, ${2:int toSize}, ${3:string filler})]]></content>
-</snippet>

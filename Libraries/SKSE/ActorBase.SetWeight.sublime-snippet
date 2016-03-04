@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetWeight</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ActorBase.SetWeight (SKSE)</description>
-	<content><![CDATA[SetWeight(${1:float weight})]]></content>
-</snippet>

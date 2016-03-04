@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>UpdateWheelForm</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>uiwheelmenu.UpdateWheelForm (UIExtensions)</description>
-	<content><![CDATA[UpdateWheelForm()]]></content>
-</snippet>

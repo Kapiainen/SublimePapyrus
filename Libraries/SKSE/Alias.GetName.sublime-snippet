@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetName</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Alias.GetName (SKSE)</description>
-	<content><![CDATA[GetName()]]></content>
-</snippet>

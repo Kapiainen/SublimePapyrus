@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>ClearFloatValuePrefix</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>StorageUtil.ClearFloatValuePrefix (PapyrusUtil)</description>
-	<content><![CDATA[ClearFloatValuePrefix(${1:string PrefixKey})]]></content>
-</snippet>

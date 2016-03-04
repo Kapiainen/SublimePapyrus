@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>AddSkinOverrideFloat</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>NiOverride.AddSkinOverrideFloat (NetImmerse Override)</description>
-	<content><![CDATA[AddSkinOverrideFloat(${1:ObjectReference ref}, ${2:bool isFemale}, ${3:bool firstPerson}, ${4:int slotMask}, ${5:int key}, ${6:int index}, ${7:float value}, ${8:bool persist})]]></content>
-</snippet>

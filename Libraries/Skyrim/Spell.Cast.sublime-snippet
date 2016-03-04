@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>Cast</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Spell.Cast</description>
-	<content><![CDATA[Cast(${1:ObjectReference akSource}, ${2:ObjectReference akTarget})]]></content>
-</snippet>

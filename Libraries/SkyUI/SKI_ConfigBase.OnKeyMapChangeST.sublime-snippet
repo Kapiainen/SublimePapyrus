@@ -1,8 +1,0 @@
-<snippet>
-	<tabTrigger>OnKeyMapChangeST</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>SKI_ConfigBase.OnKeyMapChangeST (SkyUI)</description>
-	<content><![CDATA[Event OnKeyMapChangeST(${1:int a_keyCode}, ${2:string a_conflictControl}, ${3:string a_conflictName})
-	${0}
-EndEvent]]></content>
-</snippet>

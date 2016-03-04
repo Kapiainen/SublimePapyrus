@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>objectFromPrototype</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>JValue.objectFromPrototype (JContainers)</description>
-	<content><![CDATA[objectFromPrototype(${1:string prototype})]]></content>
-</snippet>

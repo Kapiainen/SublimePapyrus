@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetBuySellList</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Faction.SetBuySellList (SKSE)</description>
-	<content><![CDATA[SetBuySellList(${1:FormList akList})]]></content>
-</snippet>

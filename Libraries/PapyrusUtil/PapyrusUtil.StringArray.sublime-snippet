@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>StringArray</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>PapyrusUtil.StringArray (PapyrusUtil)</description>
-	<content><![CDATA[StringArray(${1:int size}, ${2:string filler})]]></content>
-</snippet>

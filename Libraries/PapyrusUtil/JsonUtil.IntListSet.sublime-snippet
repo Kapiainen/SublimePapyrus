@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>IntListSet</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>JsonUtil.IntListSet (PapyrusUtil)</description>
-	<content><![CDATA[IntListSet(${1:string FileName}, ${2:string KeyName}, ${3:int index}, ${4:int value})]]></content>
-</snippet>

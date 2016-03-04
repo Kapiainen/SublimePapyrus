@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>Stop</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>VisualEffect.Stop</description>
-	<content><![CDATA[Stop(${1:ObjectReference akObject})]]></content>
-</snippet>

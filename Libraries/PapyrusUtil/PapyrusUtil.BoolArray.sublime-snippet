@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>BoolArray</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>PapyrusUtil.BoolArray (PapyrusUtil)</description>
-	<content><![CDATA[BoolArray(${1:int size}, ${2:bool filler = false})]]></content>
-</snippet>

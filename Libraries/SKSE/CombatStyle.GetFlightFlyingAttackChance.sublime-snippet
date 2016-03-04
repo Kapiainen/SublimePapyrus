@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetFlightFlyingAttackChance</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>CombatStyle.GetFlightFlyingAttackChance (SKSE)</description>
-	<content><![CDATA[GetFlightFlyingAttackChance()]]></content>
-</snippet>

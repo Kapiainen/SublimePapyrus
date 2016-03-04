@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetSkillExperience</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ActorValueInfo.GetSkillExperience (SKSE)</description>
-	<content><![CDATA[GetSkillExperience()]]></content>
-</snippet>

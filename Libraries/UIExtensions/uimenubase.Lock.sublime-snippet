@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>Lock</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>uimenubase.Lock (UIExtensions)</description>
-	<content><![CDATA[Lock()]]></content>
-</snippet>

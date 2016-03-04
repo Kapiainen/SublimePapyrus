@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>UnregisterForAllControls</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Form.UnregisterForAllControls (SKSE)</description>
-	<content><![CDATA[UnregisterForAllControls()]]></content>
-</snippet>

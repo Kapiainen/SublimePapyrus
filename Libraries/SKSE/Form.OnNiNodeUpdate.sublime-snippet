@@ -1,8 +1,0 @@
-<snippet>
-	<tabTrigger>OnNiNodeUpdate</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Form.OnNiNodeUpdate (SKSE)</description>
-	<content><![CDATA[Event OnNiNodeUpdate(${1:ObjectReference akActor})
-	${0}
-EndEvent]]></content>
-</snippet>

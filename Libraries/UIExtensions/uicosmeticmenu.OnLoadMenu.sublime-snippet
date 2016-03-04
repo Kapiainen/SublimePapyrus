@@ -1,8 +1,0 @@
-<snippet>
-	<tabTrigger>OnLoadMenu</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>uicosmeticmenu.OnLoadMenu (UIExtensions)</description>
-	<content><![CDATA[Event OnLoadMenu(${1:string eventName}, ${2:string strArg}, ${3:float numArg}, ${4:Form formArg})
-	${0}
-EndEvent]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetOptionFlagsST</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>SKI_ConfigBase.SetOptionFlagsST (SkyUI)</description>
-	<content><![CDATA[SetOptionFlagsST(${1:int a_flags}, ${2:bool a_noUpdate = false}, ${3:string a_stateName})]]></content>
-</snippet>

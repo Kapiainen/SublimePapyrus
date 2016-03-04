@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>StopScriptProfiling</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Debug.StopScriptProfiling</description>
-	<content><![CDATA[StopScriptProfiling(${1:string asScriptName})]]></content>
-</snippet>

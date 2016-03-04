@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetLongRangeStrafeMult</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>CombatStyle.SetLongRangeStrafeMult (SKSE)</description>
-	<content><![CDATA[SetLongRangeStrafeMult(${1:float mult})]]></content>
-</snippet>

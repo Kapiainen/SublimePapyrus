@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>TriggerScreenBlood</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Game.TriggerScreenBlood</description>
-	<content><![CDATA[TriggerScreenBlood(${1:int aiValue})]]></content>
-</snippet>

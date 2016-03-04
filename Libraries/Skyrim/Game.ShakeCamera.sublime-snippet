@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>ShakeCamera</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Game.ShakeCamera</description>
-	<content><![CDATA[ShakeCamera(${1:ObjectReference akSource = None}, ${2:float afStrength = 0}, ${3:float afDuration = 0})]]></content>
-</snippet>

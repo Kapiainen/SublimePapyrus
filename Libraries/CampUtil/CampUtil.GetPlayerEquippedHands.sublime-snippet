@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetPlayerEquippedHands</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>CampUtil.GetPlayerEquippedHands (CampUtil)</description>
-	<content><![CDATA[GetPlayerEquippedHands()]]></content>
-</snippet>

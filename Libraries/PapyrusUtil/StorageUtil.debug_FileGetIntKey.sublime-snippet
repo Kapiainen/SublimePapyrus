@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>debug_FileGetIntKey</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>StorageUtil.debug_FileGetIntKey (PapyrusUtil)</description>
-	<content><![CDATA[debug_FileGetIntKey(${1:int index})]]></content>
-</snippet>

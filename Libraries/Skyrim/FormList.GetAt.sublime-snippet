@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetAt</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>FormList.GetAt</description>
-	<content><![CDATA[GetAt(${1:int aiIndex})]]></content>
-</snippet>

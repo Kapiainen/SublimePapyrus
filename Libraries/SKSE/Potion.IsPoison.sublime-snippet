@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>IsPoison</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Potion.IsPoison (SKSE)</description>
-	<content><![CDATA[IsPoison()]]></content>
-</snippet>

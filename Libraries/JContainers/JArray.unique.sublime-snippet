@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>unique</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>JArray.unique (JContainers)</description>
-	<content><![CDATA[unique(${1:int object})]]></content>
-</snippet>

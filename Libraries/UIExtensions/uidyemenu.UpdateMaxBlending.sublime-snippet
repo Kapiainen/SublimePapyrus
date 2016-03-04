@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>UpdateMaxBlending</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>uidyemenu.UpdateMaxBlending (UIExtensions)</description>
-	<content><![CDATA[UpdateMaxBlending()]]></content>
-</snippet>

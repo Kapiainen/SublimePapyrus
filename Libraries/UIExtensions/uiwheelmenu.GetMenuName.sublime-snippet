@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetMenuName</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>uiwheelmenu.GetMenuName (UIExtensions)</description>
-	<content><![CDATA[GetMenuName()]]></content>
-</snippet>

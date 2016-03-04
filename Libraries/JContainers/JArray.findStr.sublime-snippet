@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>findStr</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>JArray.findStr (JContainers)</description>
-	<content><![CDATA[findStr(${1:int object}, ${2:string value}, ${3:int searchStartIndex})]]></content>
-</snippet>

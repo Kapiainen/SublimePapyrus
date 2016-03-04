@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetValue</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ColorForm.GetValue (SKSE)</description>
-	<content><![CDATA[GetValue()]]></content>
-</snippet>

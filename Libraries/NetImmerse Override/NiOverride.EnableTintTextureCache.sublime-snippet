@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>EnableTintTextureCache</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>NiOverride.EnableTintTextureCache (NetImmerse Override)</description>
-	<content><![CDATA[EnableTintTextureCache()]]></content>
-</snippet>

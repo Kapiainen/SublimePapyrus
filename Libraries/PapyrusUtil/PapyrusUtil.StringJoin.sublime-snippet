@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>StringJoin</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>PapyrusUtil.StringJoin (PapyrusUtil)</description>
-	<content><![CDATA[StringJoin(${1:string[] Values}, ${2:string Delimiter})]]></content>
-</snippet>

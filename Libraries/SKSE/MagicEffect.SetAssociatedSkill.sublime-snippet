@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetAssociatedSkill</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>MagicEffect.SetAssociatedSkill (SKSE)</description>
-	<content><![CDATA[SetAssociatedSkill(${1:string skill})]]></content>
-</snippet>

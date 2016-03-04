@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetCameraTargetFormId</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>IFPV.GetCameraTargetFormId (IFPV)</description>
-	<content><![CDATA[GetCameraTargetFormId()]]></content>
-</snippet>

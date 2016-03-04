@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>IsCurrentTentWarm</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>CampUtil.IsCurrentTentWarm (CampUtil)</description>
-	<content><![CDATA[IsCurrentTentWarm()]]></content>
-</snippet>

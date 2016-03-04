@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetForm</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>DefaultObjectManager.SetForm (SKSE)</description>
-	<content><![CDATA[SetForm(${1:string key}, ${2:Form newForm})]]></content>
-</snippet>

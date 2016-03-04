@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetCursorPosition</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>SKI_ConfigBase.SetCursorPosition (SkyUI)</description>
-	<content><![CDATA[SetCursorPosition(${1:int a_position})]]></content>
-</snippet>

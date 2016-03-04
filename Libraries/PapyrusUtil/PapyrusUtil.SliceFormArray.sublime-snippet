@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SliceFormArray</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>PapyrusUtil.SliceFormArray (PapyrusUtil)</description>
-	<content><![CDATA[SliceFormArray(${1:Form[] ArrayValues}, ${2:int StartIndex}, ${3:int EndIndex})]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetCurrentPackage</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Actor.GetCurrentPackage</description>
-	<content><![CDATA[GetCurrentPackage()]]></content>
-</snippet>

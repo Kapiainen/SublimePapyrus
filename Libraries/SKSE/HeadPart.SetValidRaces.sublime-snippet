@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetValidRaces</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>HeadPart.SetValidRaces (SKSE)</description>
-	<content><![CDATA[SetValidRaces(${1:FormList vRaces})]]></content>
-</snippet>

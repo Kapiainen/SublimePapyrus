@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetType</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Form.GetType (SKSE)</description>
-	<content><![CDATA[GetType()]]></content>
-</snippet>

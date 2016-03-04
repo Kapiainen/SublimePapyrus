@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetPluginVersion</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>SKSE.GetPluginVersion (SKSE)</description>
-	<content><![CDATA[GetPluginVersion(${1:string name})]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetNthEffectMagnitude</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Ingredient.GetNthEffectMagnitude (SKSE)</description>
-	<content><![CDATA[GetNthEffectMagnitude(${1:int index})]]></content>
-</snippet>

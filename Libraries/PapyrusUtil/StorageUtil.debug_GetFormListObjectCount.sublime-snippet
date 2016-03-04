@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>debug_GetFormListObjectCount</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>StorageUtil.debug_GetFormListObjectCount (PapyrusUtil)</description>
-	<content><![CDATA[debug_GetFormListObjectCount()]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>OnlyBuysStolenItems</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Faction.OnlyBuysStolenItems (SKSE)</description>
-	<content><![CDATA[OnlyBuysStolenItems()]]></content>
-</snippet>

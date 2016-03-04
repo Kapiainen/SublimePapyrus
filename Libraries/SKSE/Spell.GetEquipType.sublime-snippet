@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetEquipType</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Spell.GetEquipType (SKSE)</description>
-	<content><![CDATA[GetEquipType()]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetCurrentStageID</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Quest.GetCurrentStageID</description>
-	<content><![CDATA[GetCurrentStageID()]]></content>
-</snippet>

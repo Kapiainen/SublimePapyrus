@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>nextKey</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>JFormMap.nextKey (JContainers)</description>
-	<content><![CDATA[nextKey(${1:int object}, ${2:form previousKey}, ${3:form endKey})]]></content>
-</snippet>

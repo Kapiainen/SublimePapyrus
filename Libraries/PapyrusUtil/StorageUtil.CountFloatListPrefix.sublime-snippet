@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>CountFloatListPrefix</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>StorageUtil.CountFloatListPrefix (PapyrusUtil)</description>
-	<content><![CDATA[CountFloatListPrefix(${1:string PrefixKey})]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>IntListCopy</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>StorageUtil.IntListCopy (PapyrusUtil)</description>
-	<content><![CDATA[IntListCopy(${1:Form ObjKey}, ${2:string KeyName}, ${3:int[] copy})]]></content>
-</snippet>

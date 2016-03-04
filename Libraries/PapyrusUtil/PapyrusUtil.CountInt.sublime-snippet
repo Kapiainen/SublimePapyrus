@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>CountInt</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>PapyrusUtil.CountInt (PapyrusUtil)</description>
-	<content><![CDATA[CountInt(${1:int[] ArrayValues}, ${2:int EqualTo})]]></content>
-</snippet>

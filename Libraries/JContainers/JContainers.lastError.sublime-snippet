@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>lastError</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>JContainers.lastError (JContainers)</description>
-	<content><![CDATA[lastError()]]></content>
-</snippet>

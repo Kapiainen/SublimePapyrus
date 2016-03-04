@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetNotSellBuy</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Faction.SetNotSellBuy (SKSE)</description>
-	<content><![CDATA[SetNotSellBuy(${1:bool notSellBuy})]]></content>
-</snippet>

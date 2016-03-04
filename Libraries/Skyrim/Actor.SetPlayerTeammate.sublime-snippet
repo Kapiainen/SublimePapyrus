@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetPlayerTeammate</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Actor.SetPlayerTeammate</description>
-	<content><![CDATA[SetPlayerTeammate(${1:bool abTeammate = true}, ${2:bool abCanDoFavor})]]></content>
-</snippet>

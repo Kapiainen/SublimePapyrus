@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>ClearEmpty</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>PapyrusUtil.ClearEmpty (PapyrusUtil)</description>
-	<content><![CDATA[ClearEmpty(${1:string[] ArrayValues})]]></content>
-</snippet>

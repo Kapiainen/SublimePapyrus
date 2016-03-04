@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>ClearIntValuePrefix</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>StorageUtil.ClearIntValuePrefix (PapyrusUtil)</description>
-	<content><![CDATA[ClearIntValuePrefix(${1:string PrefixKey})]]></content>
-</snippet>

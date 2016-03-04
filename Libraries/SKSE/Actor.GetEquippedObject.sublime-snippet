@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetEquippedObject</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Actor.GetEquippedObject (SKSE)</description>
-	<content><![CDATA[GetEquippedObject(${1:int location})]]></content>
-</snippet>

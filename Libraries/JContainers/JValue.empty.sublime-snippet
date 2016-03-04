@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>empty</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>JValue.empty (JContainers)</description>
-	<content><![CDATA[empty(${1:int object})]]></content>
-</snippet>

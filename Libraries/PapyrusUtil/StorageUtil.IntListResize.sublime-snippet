@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>IntListResize</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>StorageUtil.IntListResize (PapyrusUtil)</description>
-	<content><![CDATA[IntListResize(${1:Form ObjKey}, ${2:string KeyName}, ${3:int toLength}, ${4:int filler = 0})]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetPropertyString</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>uimagicmenu.SetPropertyString (UIExtensions)</description>
-	<content><![CDATA[SetPropertyString(${1:string propertyName}, ${2:String value})]]></content>
-</snippet>

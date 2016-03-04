@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetAliasById</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Quest.GetAliasById (SKSE)</description>
-	<content><![CDATA[GetAliasById(${1:int aliasId})]]></content>
-</snippet>

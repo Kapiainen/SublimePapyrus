@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>PushForm</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>PapyrusUtil.PushForm (PapyrusUtil)</description>
-	<content><![CDATA[PushForm(${1:Form[] ArrayValues}, ${2:Form push})]]></content>
-</snippet>

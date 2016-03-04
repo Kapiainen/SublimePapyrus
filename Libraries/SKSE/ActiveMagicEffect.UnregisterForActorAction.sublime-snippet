@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>UnregisterForActorAction</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ActiveMagicEffect.UnregisterForActorAction (SKSE)</description>
-	<content><![CDATA[UnregisterForActorAction(${1:int actionType})]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>ResetHelpMessage</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Message.ResetHelpMessage</description>
-	<content><![CDATA[ResetHelpMessage(${1:string asEvent})]]></content>
-</snippet>

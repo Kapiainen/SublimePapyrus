@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetWornItemId</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Actor.GetWornItemId (SKSE)</description>
-	<content><![CDATA[GetWornItemId(${1:int slotMask})]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>Enable</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ObjectReference.Enable</description>
-	<content><![CDATA[Enable(${1:bool abFadeIn = false})]]></content>
-</snippet>

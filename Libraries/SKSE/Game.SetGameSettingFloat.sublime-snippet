@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetGameSettingFloat</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Game.SetGameSettingFloat (SKSE)</description>
-	<content><![CDATA[SetGameSettingFloat(${1:string setting}, ${2:float value})]]></content>
-</snippet>

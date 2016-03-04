@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetPosition</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ObjectReference.SetPosition</description>
-	<content><![CDATA[SetPosition(${1:float afX}, ${2:float afY}, ${3:float afZ})]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SliceObjRefArray</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>PapyrusUtil.SliceObjRefArray (PapyrusUtil)</description>
-	<content><![CDATA[SliceObjRefArray(${1:ObjectReference[] ArrayValues}, ${2:int StartIndex}, ${3:int EndIndex})]]></content>
-</snippet>

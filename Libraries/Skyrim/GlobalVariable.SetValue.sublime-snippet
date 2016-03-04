@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetValue</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>GlobalVariable.SetValue</description>
-	<content><![CDATA[SetValue(${1:float afNewValue})]]></content>
-</snippet>

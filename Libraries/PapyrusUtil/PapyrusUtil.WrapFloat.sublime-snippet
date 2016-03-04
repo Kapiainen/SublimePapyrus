@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>WrapFloat</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>PapyrusUtil.WrapFloat (PapyrusUtil)</description>
-	<content><![CDATA[WrapFloat(${1:float value}, ${2:float end}, ${3:float start = 0})]]></content>
-</snippet>

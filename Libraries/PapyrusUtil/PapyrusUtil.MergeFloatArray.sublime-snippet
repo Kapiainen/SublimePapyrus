@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>MergeFloatArray</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>PapyrusUtil.MergeFloatArray (PapyrusUtil)</description>
-	<content><![CDATA[MergeFloatArray(${1:float[] ArrayValues1}, ${2:float[] ArrayValues2}, ${3:bool RemoveDupes = false})]]></content>
-</snippet>

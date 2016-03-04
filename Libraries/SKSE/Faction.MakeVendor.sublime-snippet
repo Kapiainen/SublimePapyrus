@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>MakeVendor</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Faction.MakeVendor (SKSE)</description>
-	<content><![CDATA[MakeVendor()]]></content>
-</snippet>

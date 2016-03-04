@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>CountReplaceAnimation</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ObjectUtil.CountReplaceAnimation (PapyrusUtil)</description>
-	<content><![CDATA[CountReplaceAnimation(${1:ObjectReference obj})]]></content>
-</snippet>

@@ -1,8 +1,0 @@
-<snippet>
-	<tabTrigger>OnItemAdded</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ObjectReference.OnItemAdded</description>
-	<content><![CDATA[Event OnItemAdded(${1:Form akBaseItem}, ${2:int aiItemCount}, ${3:ObjectReference akItemReference}, ${4:ObjectReference akSourceContainer})
-	${0}
-EndEvent]]></content>
-</snippet>

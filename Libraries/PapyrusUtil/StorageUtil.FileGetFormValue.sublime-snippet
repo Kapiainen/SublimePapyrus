@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>FileGetFormValue</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>StorageUtil.FileGetFormValue (PapyrusUtil)</description>
-	<content><![CDATA[FileGetFormValue(${1:string KeyName}, ${2:Form missing = none})]]></content>
-</snippet>

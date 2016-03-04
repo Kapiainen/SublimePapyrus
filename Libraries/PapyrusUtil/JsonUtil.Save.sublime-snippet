@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>Save</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>JsonUtil.Save (PapyrusUtil)</description>
-	<content><![CDATA[Save(${1:string FileName}, ${2:bool minify = false})]]></content>
-</snippet>

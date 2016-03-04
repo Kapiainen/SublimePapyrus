@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetMenuPropertyFormA</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>uiextensions.SetMenuPropertyFormA (UIExtensions)</description>
-	<content><![CDATA[SetMenuPropertyFormA(${1:string menuName}, ${2:string propertyName}, ${3:Form[] value})]]></content>
-</snippet>

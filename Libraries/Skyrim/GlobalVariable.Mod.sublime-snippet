@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>Mod</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>GlobalVariable.Mod</description>
-	<content><![CDATA[Mod(${1:float afHowMuch})]]></content>
-</snippet>

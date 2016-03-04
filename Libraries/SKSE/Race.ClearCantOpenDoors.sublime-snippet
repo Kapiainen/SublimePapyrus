@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>ClearCantOpenDoors</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Race.ClearCantOpenDoors (SKSE)</description>
-	<content><![CDATA[ClearCantOpenDoors()]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetCrimeGoldViolent</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Faction.GetCrimeGoldViolent</description>
-	<content><![CDATA[GetCrimeGoldViolent()]]></content>
-</snippet>

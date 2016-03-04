@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetReplaceAnimation</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ObjectUtil.SetReplaceAnimation (PapyrusUtil)</description>
-	<content><![CDATA[SetReplaceAnimation(${1:ObjectReference obj}, ${2:string oldAnimEvent}, ${3:Idle newAnim})]]></content>
-</snippet>

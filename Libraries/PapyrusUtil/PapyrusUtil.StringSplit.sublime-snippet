@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>StringSplit</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>PapyrusUtil.StringSplit (PapyrusUtil)</description>
-	<content><![CDATA[StringSplit(${1:string ArgString}, ${2:string Delimiter})]]></content>
-</snippet>

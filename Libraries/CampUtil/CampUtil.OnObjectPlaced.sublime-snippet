@@ -1,8 +1,0 @@
-<snippet>
-	<tabTrigger>OnObjectPlaced</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>CampUtil.OnObjectPlaced (CampUtil)</description>
-	<content><![CDATA[Event Campfire_OnObjectPlaced(${1:Form akPlacedObject}, ${2:float afPositionX}, ${3:float afPositionY}, ${4:float afPositionZ}, ${5:float afAngleX}, ${6:float afAngleY}, ${7:float afAngleZ}, ${8:bool abIsTent})
-	${0}
-EndEvent]]></content>
-</snippet>

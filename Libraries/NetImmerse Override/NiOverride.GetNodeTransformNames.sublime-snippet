@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetNodeTransformNames</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>NiOverride.GetNodeTransformNames (NetImmerse Override)</description>
-	<content><![CDATA[GetNodeTransformNames(${1:ObjectReference akRef}, ${2:bool firstPerson}, ${3:bool isFemale})]]></content>
-</snippet>

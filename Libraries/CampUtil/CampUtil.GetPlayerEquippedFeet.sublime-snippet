@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetPlayerEquippedFeet</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>CampUtil.GetPlayerEquippedFeet (CampUtil)</description>
-	<content><![CDATA[GetPlayerEquippedFeet()]]></content>
-</snippet>

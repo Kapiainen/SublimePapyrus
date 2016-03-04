@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>StringListHas</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>StorageUtil.StringListHas (PapyrusUtil)</description>
-	<content><![CDATA[StringListHas(${1:Form ObjKey}, ${2:string KeyName}, ${3:string value})]]></content>
-</snippet>

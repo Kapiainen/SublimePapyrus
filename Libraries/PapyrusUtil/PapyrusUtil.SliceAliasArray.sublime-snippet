@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SliceAliasArray</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>PapyrusUtil.SliceAliasArray (PapyrusUtil)</description>
-	<content><![CDATA[SliceAliasArray(${1:Alias[] ArrayValues}, ${2:int StartIndex}, ${3:int EndIndex})]]></content>
-</snippet>

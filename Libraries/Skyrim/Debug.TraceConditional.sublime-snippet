@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>TraceConditional</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Debug.TraceConditional</description>
-	<content><![CDATA[TraceConditional(${1:string TextToPrint}, ${2:bool ShowTrace})]]></content>
-</snippet>

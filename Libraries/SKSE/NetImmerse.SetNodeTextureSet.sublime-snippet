@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetNodeTextureSet</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>NetImmerse.SetNodeTextureSet (SKSE)</description>
-	<content><![CDATA[SetNodeTextureSet(${1:ObjectReference ref}, ${2:string node}, ${3:TextureSet tSet}, ${4:bool firstPerson})]]></content>
-</snippet>

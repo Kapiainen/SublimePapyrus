@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetPropertyFloat</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>NiOverride.GetPropertyFloat (NetImmerse Override)</description>
-	<content><![CDATA[GetPropertyFloat(${1:ObjectReference ref}, ${2:bool firstPerson}, ${3:Armor arm}, ${4:ArmorAddon addon}, ${5:string node}, ${6:int key}, ${7:int index})]]></content>
-</snippet>

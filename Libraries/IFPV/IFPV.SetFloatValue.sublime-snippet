@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetFloatValue</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>IFPV.SetFloatValue (IFPV)</description>
-	<content><![CDATA[SetFloatValue(${1:string name}, ${2:float value})]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>object</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>JArray.object (JContainers)</description>
-	<content><![CDATA[object()]]></content>
-</snippet>

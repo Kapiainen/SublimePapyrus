@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetObjectUniqueID</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>NiOverride.GetObjectUniqueID (NetImmerse Override)</description>
-	<content><![CDATA[GetObjectUniqueID(${1:ObjectReference akObject}, ${2:bool makeUnique = true})]]></content>
-</snippet>

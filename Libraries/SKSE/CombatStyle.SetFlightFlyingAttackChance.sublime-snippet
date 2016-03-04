@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetFlightFlyingAttackChance</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>CombatStyle.SetFlightFlyingAttackChance (SKSE)</description>
-	<content><![CDATA[SetFlightFlyingAttackChance(${1:float mult})]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>CountFalse</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>PapyrusUtil.CountFalse (PapyrusUtil)</description>
-	<content><![CDATA[CountFalse(${1:bool[] ArrayValues})]]></content>
-</snippet>

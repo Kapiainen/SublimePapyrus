@@ -1,8 +1,0 @@
-<snippet>
-	<tabTrigger>OnStoryCrimeGold</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Quest.OnStoryCrimeGold</description>
-	<content><![CDATA[Event OnStoryCrimeGold(${1:ObjectReference akVictim}, ${2:ObjectReference akCriminal}, ${3:Form akFaction}, ${4:int aiGoldAmount}, ${5:int aiCrime})
-	${0}
-EndEvent]]></content>
-</snippet>

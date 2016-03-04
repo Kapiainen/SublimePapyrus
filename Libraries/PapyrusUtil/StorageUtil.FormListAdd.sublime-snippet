@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>FormListAdd</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>StorageUtil.FormListAdd (PapyrusUtil)</description>
-	<content><![CDATA[FormListAdd(${1:Form ObjKey}, ${2:string KeyName}, ${3:Form value}, ${4:bool allowDuplicate = true})]]></content>
-</snippet>

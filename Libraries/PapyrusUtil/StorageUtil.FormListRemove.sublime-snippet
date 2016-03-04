@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>FormListRemove</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>StorageUtil.FormListRemove (PapyrusUtil)</description>
-	<content><![CDATA[FormListRemove(${1:Form ObjKey}, ${2:string KeyName}, ${3:Form value}, ${4:bool allInstances = false})]]></content>
-</snippet>

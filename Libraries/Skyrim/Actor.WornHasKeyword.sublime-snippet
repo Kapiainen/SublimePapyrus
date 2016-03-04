@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>WornHasKeyword</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Actor.WornHasKeyword</description>
-	<content><![CDATA[WornHasKeyword(${1:Keyword akKeyword})]]></content>
-</snippet>

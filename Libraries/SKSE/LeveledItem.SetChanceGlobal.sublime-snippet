@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetChanceGlobal</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>LeveledItem.SetChanceGlobal (SKSE)</description>
-	<content><![CDATA[SetChanceGlobal(${1:GlobalVariable glob})]]></content>
-</snippet>

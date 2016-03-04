@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>CountFloat</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>PapyrusUtil.CountFloat (PapyrusUtil)</description>
-	<content><![CDATA[CountFloat(${1:float[] ArrayValues}, ${2:float EqualTo})]]></content>
-</snippet>

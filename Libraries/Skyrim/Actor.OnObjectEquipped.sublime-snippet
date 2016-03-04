@@ -1,8 +1,0 @@
-<snippet>
-	<tabTrigger>OnObjectEquipped</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Actor.OnObjectEquipped</description>
-	<content><![CDATA[Event OnObjectEquipped(${1:Form akBaseObject}, ${2:ObjectReference akReference})
-	${0}
-EndEvent]]></content>
-</snippet>

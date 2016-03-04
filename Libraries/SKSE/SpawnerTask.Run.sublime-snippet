@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>Run</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>SpawnerTask.Run (SKSE)</description>
-	<content><![CDATA[Run(${1:int handle})]]></content>
-</snippet>

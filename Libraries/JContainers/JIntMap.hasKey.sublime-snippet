@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>hasKey</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>JIntMap.hasKey (JContainers)</description>
-	<content><![CDATA[hasKey(${1:int object}, ${2:int key})]]></content>
-</snippet>

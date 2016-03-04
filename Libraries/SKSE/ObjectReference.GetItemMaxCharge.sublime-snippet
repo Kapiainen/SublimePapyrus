@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetItemMaxCharge</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ObjectReference.GetItemMaxCharge (SKSE)</description>
-	<content><![CDATA[GetItemMaxCharge()]]></content>
-</snippet>

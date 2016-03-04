@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetRace</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Actor.GetRace</description>
-	<content><![CDATA[GetRace()]]></content>
-</snippet>

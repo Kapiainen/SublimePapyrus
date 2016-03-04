@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>UpdateWheelVisibility</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>uiwheelmenu.UpdateWheelVisibility (UIExtensions)</description>
-	<content><![CDATA[UpdateWheelVisibility()]]></content>
-</snippet>

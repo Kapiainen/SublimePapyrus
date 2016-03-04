@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>CountTrue</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>PapyrusUtil.CountTrue (PapyrusUtil)</description>
-	<content><![CDATA[CountTrue(${1:bool[] ArrayValues})]]></content>
-</snippet>

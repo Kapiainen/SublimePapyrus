@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetNodeWorldPositionX</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>NetImmerse.GetNodeWorldPositionX (SKSE)</description>
-	<content><![CDATA[GetNodeWorldPositionX(${1:ObjectReference ref}, ${2:string node}, ${3:bool firstPerson})]]></content>
-</snippet>

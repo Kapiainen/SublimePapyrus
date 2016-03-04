@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>EnableLinkChain</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ObjectReference.EnableLinkChain</description>
-	<content><![CDATA[EnableLinkChain(${1:Keyword apKeyword = None})]]></content>
-</snippet>

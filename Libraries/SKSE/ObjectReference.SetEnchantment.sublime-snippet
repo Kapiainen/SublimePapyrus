@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetEnchantment</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ObjectReference.SetEnchantment (SKSE)</description>
-	<content><![CDATA[SetEnchantment(${1:Enchantment source}, ${2:float maxCharge})]]></content>
-</snippet>

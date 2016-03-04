@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>AddNodeTransformPosition</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>NiOverride.AddNodeTransformPosition (NetImmerse Override)</description>
-	<content><![CDATA[AddNodeTransformPosition(${1:ObjectReference akRef}, ${2:bool firstPerson}, ${3:bool isFemale}, ${4:string nodeName}, ${5:string key}, ${6:float[] pos})]]></content>
-</snippet>

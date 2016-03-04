@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>IsGhost</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Actor.IsGhost</description>
-	<content><![CDATA[IsGhost()]]></content>
-</snippet>

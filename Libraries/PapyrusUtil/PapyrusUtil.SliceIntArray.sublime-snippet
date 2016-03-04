@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SliceIntArray</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>PapyrusUtil.SliceIntArray (PapyrusUtil)</description>
-	<content><![CDATA[SliceIntArray(${1:int[] ArrayValues}, ${2:int StartIndex}, ${3:int EndIndex})]]></content>
-</snippet>

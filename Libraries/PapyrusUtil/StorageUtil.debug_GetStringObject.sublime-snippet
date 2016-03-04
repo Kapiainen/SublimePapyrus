@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>debug_GetStringObject</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>StorageUtil.debug_GetStringObject (PapyrusUtil)</description>
-	<content><![CDATA[debug_GetStringObject(${1:int index})]]></content>
-</snippet>

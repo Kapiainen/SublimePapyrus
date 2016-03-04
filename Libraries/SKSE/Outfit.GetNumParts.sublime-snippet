@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetNumParts</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Outfit.GetNumParts (SKSE)</description>
-	<content><![CDATA[GetNumParts()]]></content>
-</snippet>

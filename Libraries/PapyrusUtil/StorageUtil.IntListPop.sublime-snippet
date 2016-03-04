@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>IntListPop</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>StorageUtil.IntListPop (PapyrusUtil)</description>
-	<content><![CDATA[IntListPop(${1:Form ObjKey}, ${2:string KeyName})]]></content>
-</snippet>

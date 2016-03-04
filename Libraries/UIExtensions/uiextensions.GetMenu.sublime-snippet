@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetMenu</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>uiextensions.GetMenu (UIExtensions)</description>
-	<content><![CDATA[GetMenu(${1:string menuName}, ${2:bool reset = true})]]></content>
-</snippet>

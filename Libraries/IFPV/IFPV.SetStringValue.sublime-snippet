@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetStringValue</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>IFPV.SetStringValue (IFPV)</description>
-	<content><![CDATA[SetStringValue(${1:string name}, ${2:string value})]]></content>
-</snippet>

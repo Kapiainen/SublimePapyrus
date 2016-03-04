@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>IsDead</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Actor.IsDead</description>
-	<content><![CDATA[IsDead()]]></content>
-</snippet>

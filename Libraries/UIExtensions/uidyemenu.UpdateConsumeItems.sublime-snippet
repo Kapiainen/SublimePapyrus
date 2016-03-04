@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>UpdateConsumeItems</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>uidyemenu.UpdateConsumeItems (UIExtensions)</description>
-	<content><![CDATA[UpdateConsumeItems()]]></content>
-</snippet>

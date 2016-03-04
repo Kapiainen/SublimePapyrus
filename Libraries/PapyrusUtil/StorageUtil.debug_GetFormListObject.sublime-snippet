@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>debug_GetFormListObject</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>StorageUtil.debug_GetFormListObject (PapyrusUtil)</description>
-	<content><![CDATA[debug_GetFormListObject(${1:int index})]]></content>
-</snippet>

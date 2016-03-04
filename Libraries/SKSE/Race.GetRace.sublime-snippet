@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetRace</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Race.GetRace (SKSE)</description>
-	<content><![CDATA[GetRace(${1:string editorId})]]></content>
-</snippet>

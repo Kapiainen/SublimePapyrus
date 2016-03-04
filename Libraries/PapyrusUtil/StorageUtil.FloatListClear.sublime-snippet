@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>FloatListClear</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>StorageUtil.FloatListClear (PapyrusUtil)</description>
-	<content><![CDATA[FloatListClear(${1:Form ObjKey}, ${2:string KeyName})]]></content>
-</snippet>

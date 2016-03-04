@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>IntListPluck</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>StorageUtil.IntListPluck (PapyrusUtil)</description>
-	<content><![CDATA[IntListPluck(${1:Form ObjKey}, ${2:string KeyName}, ${3:int index}, ${4:int missing})]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>readFromFile</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>JDB.readFromFile (JContainers)</description>
-	<content><![CDATA[readFromFile(${1:string path})]]></content>
-</snippet>

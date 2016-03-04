@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>ClearObjStringValuePrefix</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>StorageUtil.ClearObjStringValuePrefix (PapyrusUtil)</description>
-	<content><![CDATA[ClearObjStringValuePrefix(${1:Form ObjKey}, ${2:string PrefixKey})]]></content>
-</snippet>

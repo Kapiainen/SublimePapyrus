@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>Unload</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>JsonUtil.Unload (PapyrusUtil)</description>
-	<content><![CDATA[Unload(${1:string FileName}, ${2:bool saveChanges = true}, ${3:bool minify = false})]]></content>
-</snippet>

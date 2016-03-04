@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>Show</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Message.Show</description>
-	<content><![CDATA[Show(${1:float afArg1 = 0}, ${2:float afArg2 = 0}, ${3:float afArg3 = 0}, ${4:float afArg4 = 0}, ${5:float afArg5 = 0}, ${6:float afArg6 = 0}, ${7:float afArg7 = 0}, ${8:float afArg8 = 0}, ${9:float afArg9 = 0})]]></content>
-</snippet>

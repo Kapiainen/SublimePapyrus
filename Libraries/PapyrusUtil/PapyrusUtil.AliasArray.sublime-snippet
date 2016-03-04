@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>AliasArray</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>PapyrusUtil.AliasArray (PapyrusUtil)</description>
-	<content><![CDATA[AliasArray(${1:int size}, ${2:Alias filler = none})]]></content>
-</snippet>

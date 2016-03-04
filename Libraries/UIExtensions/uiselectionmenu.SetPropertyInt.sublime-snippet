@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetPropertyInt</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>uiselectionmenu.SetPropertyInt (UIExtensions)</description>
-	<content><![CDATA[SetPropertyInt(${1:string propertyName}, ${2:int value})]]></content>
-</snippet>

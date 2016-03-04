@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>IsFood</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Potion.IsFood (SKSE)</description>
-	<content><![CDATA[IsFood()]]></content>
-</snippet>

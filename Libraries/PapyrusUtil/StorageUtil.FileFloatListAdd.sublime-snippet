@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>FileFloatListAdd</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>StorageUtil.FileFloatListAdd (PapyrusUtil)</description>
-	<content><![CDATA[FileFloatListAdd(${1:string KeyName}, ${2:float value}, ${3:bool allowDuplicate = true})]]></content>
-</snippet>

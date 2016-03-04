@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>MergeObjRefArray</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>PapyrusUtil.MergeObjRefArray (PapyrusUtil)</description>
-	<content><![CDATA[MergeObjRefArray(${1:ObjectReference[] ArrayValues1}, ${2:ObjectReference[] ArrayValues2}, ${3:bool RemoveDupes = false})]]></content>
-</snippet>

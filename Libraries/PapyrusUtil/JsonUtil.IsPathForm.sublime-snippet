@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>IsPathForm</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>JsonUtil.IsPathForm (PapyrusUtil)</description>
-	<content><![CDATA[IsPathForm(${1:string FileName}, ${2:string Path})]]></content>
-</snippet>

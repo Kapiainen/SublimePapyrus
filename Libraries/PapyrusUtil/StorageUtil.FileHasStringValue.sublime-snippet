@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>FileHasStringValue</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>StorageUtil.FileHasStringValue (PapyrusUtil)</description>
-	<content><![CDATA[FileHasStringValue(${1:string KeyName})]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>IsActivateChild</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ObjectReference.IsActivateChild</description>
-	<content><![CDATA[IsActivateChild(${1:ObjectReference akChild})]]></content>
-</snippet>

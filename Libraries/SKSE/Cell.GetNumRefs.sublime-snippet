@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetNumRefs</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Cell.GetNumRefs (SKSE)</description>
-	<content><![CDATA[GetNumRefs(${1:int formTypeFilter = 0})]]></content>
-</snippet>

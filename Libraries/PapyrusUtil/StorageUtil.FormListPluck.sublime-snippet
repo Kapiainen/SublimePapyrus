@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>FormListPluck</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>StorageUtil.FormListPluck (PapyrusUtil)</description>
-	<content><![CDATA[FormListPluck(${1:Form ObjKey}, ${2:string KeyName}, ${3:int index}, ${4:Form missing})]]></content>
-</snippet>

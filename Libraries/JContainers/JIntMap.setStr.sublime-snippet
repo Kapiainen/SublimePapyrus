@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>setStr</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>JIntMap.setStr (JContainers)</description>
-	<content><![CDATA[setStr(${1:int object}, ${2:int key}, ${3:string value})]]></content>
-</snippet>

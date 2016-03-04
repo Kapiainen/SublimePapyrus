@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>RegisterForSingleUpdate</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Form.RegisterForSingleUpdate</description>
-	<content><![CDATA[RegisterForSingleUpdate(${1:float afInterval})]]></content>
-</snippet>

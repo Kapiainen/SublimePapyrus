@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>AddPackageOverride</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ActorUtil.AddPackageOverride (PapyrusUtil)</description>
-	<content><![CDATA[AddPackageOverride(${1:Actor targetActor}, ${2:Package targetPackage}, ${3:int priority = 30}, ${4:int flags = 0})]]></content>
-</snippet>

@@ -1,8 +1,0 @@
-<snippet>
-	<tabTrigger>OnDetachedFromCell</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ObjectReference.OnDetachedFromCell</description>
-	<content><![CDATA[Event OnDetachedFromCell()
-	${0}
-EndEvent]]></content>
-</snippet>

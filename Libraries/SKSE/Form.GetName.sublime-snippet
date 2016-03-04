@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetName</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Form.GetName (SKSE)</description>
-	<content><![CDATA[GetName()]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetCurrentTent</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>CampUtil.GetCurrentTent (CampUtil)</description>
-	<content><![CDATA[GetCurrentTent()]]></content>
-</snippet>

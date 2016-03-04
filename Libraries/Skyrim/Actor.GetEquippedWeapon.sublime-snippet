@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetEquippedWeapon</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Actor.GetEquippedWeapon</description>
-	<content><![CDATA[GetEquippedWeapon(${1:bool abLeftHand = false})]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>AddNodeOverrideString</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>NiOverride.AddNodeOverrideString (NetImmerse Override)</description>
-	<content><![CDATA[AddNodeOverrideString(${1:ObjectReference ref}, ${2:bool isFemale}, ${3:string node}, ${4:int key}, ${5:int index}, ${6:string value}, ${7:bool persist})]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>solveObj</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>JDB.solveObj (JContainers)</description>
-	<content><![CDATA[solveObj(${1:string path}, ${2:int default})]]></content>
-</snippet>

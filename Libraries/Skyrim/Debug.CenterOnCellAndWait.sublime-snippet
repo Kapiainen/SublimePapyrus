@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>CenterOnCellAndWait</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Debug.CenterOnCellAndWait</description>
-	<content><![CDATA[CenterOnCellAndWait(${1:string asCellname})]]></content>
-</snippet>

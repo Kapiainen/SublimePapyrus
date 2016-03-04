@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>HasWorldModel</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Form.HasWorldModel (SKSE)</description>
-	<content><![CDATA[HasWorldModel()]]></content>
-</snippet>

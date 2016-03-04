@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>getStr</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>JMap.getStr (JContainers)</description>
-	<content><![CDATA[getStr(${1:int object}, ${2:string key}, ${3:string default})]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>ResizeAliasArray</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Utility.ResizeAliasArray (SKSE)</description>
-	<content><![CDATA[ResizeAliasArray(${1:Alias[] source}, ${2:int size}, ${3:Alias fill = None})]]></content>
-</snippet>

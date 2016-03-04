@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>ClearReplaceAnimation</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ObjectUtil.ClearReplaceAnimation (PapyrusUtil)</description>
-	<content><![CDATA[ClearReplaceAnimation(${1:ObjectReference obj})]]></content>
-</snippet>

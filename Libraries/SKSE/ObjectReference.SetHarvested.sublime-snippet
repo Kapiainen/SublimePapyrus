@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetHarvested</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ObjectReference.SetHarvested (SKSE)</description>
-	<content><![CDATA[SetHarvested(${1:bool harvested})]]></content>
-</snippet>

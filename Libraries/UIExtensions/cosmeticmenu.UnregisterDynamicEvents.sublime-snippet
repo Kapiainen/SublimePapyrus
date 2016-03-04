@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>UnregisterDynamicEvents</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>cosmeticmenu.UnregisterDynamicEvents (UIExtensions)</description>
-	<content><![CDATA[UnregisterDynamicEvents(${1:string type})]]></content>
-</snippet>

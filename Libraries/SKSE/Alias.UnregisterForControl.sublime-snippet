@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>UnregisterForControl</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Alias.UnregisterForControl (SKSE)</description>
-	<content><![CDATA[UnregisterForControl(${1:string control})]]></content>
-</snippet>

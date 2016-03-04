@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>CountFloatValuePrefix</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>JsonUtil.CountFloatValuePrefix (PapyrusUtil)</description>
-	<content><![CDATA[CountFloatValuePrefix(${1:string FileName}, ${2:string PrefixKey})]]></content>
-</snippet>

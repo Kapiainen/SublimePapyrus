@@ -1,8 +1,0 @@
-<snippet>
-	<tabTrigger>OnSpellCast</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ReferenceAlias.OnSpellCast</description>
-	<content><![CDATA[Event OnSpellCast(${1:Form akSpell})
-	${0}
-EndEvent]]></content>
-</snippet>

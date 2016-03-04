@@ -1,0 +1,34 @@
+[
+    {
+        "caption": "SublimePapyrus: Insert menu name (Skyrim - SKSE)",
+        "command": "sublime_papyrus_skyrim_skse_menu_suggestions"
+    },
+    {
+        "caption": "SublimePapyrus: Insert input keycode (Skyrim - SKSE)",
+        "command": "sublime_papyrus_skyrim_skse_keycode_suggestions"
+    },
+    {
+        "caption": "SublimePapyrus: Insert control name (Skyrim - SKSE)",
+        "command": "sublime_papyrus_skyrim_skse_control_suggestions"
+    },
+    {
+        "caption": "SublimePapyrus: Insert DefaultObject key (Skyrim - SKSE)",
+        "command": "sublime_papyrus_skyrim_skse_default_object_suggestions"
+    },
+    {
+        "caption": "SublimePapyrus: Insert ActorValueInfo name (Skyrim - SKSE)",
+        "command": "sublime_papyrus_skyrim_skse_actor_value_info_name_suggestions"
+    },
+    {
+        "caption": "SublimePapyrus: Insert ActorValueInfo ID (Skyrim - SKSE)",
+        "command": "sublime_papyrus_skyrim_skse_actor_value_info_id_suggestions"
+    },
+    {
+        "caption": "SublimePapyrus: Insert actor action ID (Skyrim - SKSE)",
+        "command": "sublime_papyrus_skyrim_skse_actor_action_id_suggestions"
+    },
+    {
+        "caption": "SublimePapyrus: Insert player camera state ID (Skyrim - SKSE)",
+        "command": "sublime_papyrus_skyrim_skse_player_camera_state_suggestions"
+    }
+]

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>CreateFormArray</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Utility.CreateFormArray (SKSE)</description>
-	<content><![CDATA[CreateFormArray(${1:int size}, ${2:Form fill = None})]]></content>
-</snippet>

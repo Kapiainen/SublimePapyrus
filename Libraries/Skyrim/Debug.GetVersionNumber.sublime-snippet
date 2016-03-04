@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetVersionNumber</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Debug.GetVersionNumber</description>
-	<content><![CDATA[GetVersionNumber()]]></content>
-</snippet>

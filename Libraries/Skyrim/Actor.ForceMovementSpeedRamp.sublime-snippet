@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>ForceMovementSpeedRamp</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Actor.ForceMovementSpeedRamp</description>
-	<content><![CDATA[ForceMovementSpeedRamp(${1:float afSpeedMult}, ${2:float afRampTime = 0})]]></content>
-</snippet>

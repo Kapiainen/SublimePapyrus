@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>MakeChildRace</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Race.MakeChildRace (SKSE)</description>
-	<content><![CDATA[MakeChildRace()]]></content>
-</snippet>

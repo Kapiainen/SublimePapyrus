@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>AddEmptyOption</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>SKI_ConfigBase.AddEmptyOption (SkyUI)</description>
-	<content><![CDATA[AddEmptyOption()]]></content>
-</snippet>

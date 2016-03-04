@@ -1,8 +1,0 @@
-<snippet>
-	<tabTrigger>OnGainLOS</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ActiveMagicEffect.OnGainLOS</description>
-	<content><![CDATA[Event OnGainLOS(${1:Actor akViewer}, ${2:ObjectReference akTarget})
-	${0}
-EndEvent]]></content>
-</snippet>

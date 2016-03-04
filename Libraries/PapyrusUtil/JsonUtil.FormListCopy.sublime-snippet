@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>FormListCopy</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>JsonUtil.FormListCopy (PapyrusUtil)</description>
-	<content><![CDATA[FormListCopy(${1:string FileName}, ${2:string KeyName}, ${3:Form[] copy})]]></content>
-</snippet>

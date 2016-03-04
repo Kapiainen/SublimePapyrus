@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>HasBodyMorphName</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>NiOverride.HasBodyMorphName (NetImmerse Override)</description>
-	<content><![CDATA[HasBodyMorphName(${1:ObjectReference ref}, ${2:string keyName})]]></content>
-</snippet>

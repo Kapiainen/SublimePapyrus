@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetIntValue</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>StorageUtil.SetIntValue (PapyrusUtil)</description>
-	<content><![CDATA[SetIntValue(${1:Form ObjKey}, ${2:string KeyName}, ${3:int value})]]></content>
-</snippet>

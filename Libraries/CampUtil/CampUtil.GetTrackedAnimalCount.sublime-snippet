@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetTrackedAnimalCount</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>CampUtil.GetTrackedAnimalCount (CampUtil)</description>
-	<content><![CDATA[GetTrackedAnimalCount()]]></content>
-</snippet>

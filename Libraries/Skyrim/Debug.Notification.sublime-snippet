@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>Notification</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Debug.Notification</description>
-	<content><![CDATA[Notification(${1:string asNotificationText})]]></content>
-</snippet>

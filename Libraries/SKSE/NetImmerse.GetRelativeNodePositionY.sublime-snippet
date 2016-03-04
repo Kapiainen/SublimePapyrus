@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetRelativeNodePositionY</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>NetImmerse.GetRelativeNodePositionY (SKSE)</description>
-	<content><![CDATA[GetRelativeNodePositionY(${1:ObjectReference ref}, ${2:string nodeA}, ${3:string nodeB}, ${4:bool firstPerson})]]></content>
-</snippet>

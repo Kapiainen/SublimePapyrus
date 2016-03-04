@@ -1,8 +1,0 @@
-<snippet>
-	<tabTrigger>OnStoryCure</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Quest.OnStoryCure</description>
-	<content><![CDATA[Event OnStoryCure(${1:Form akInfection})
-	${0}
-EndEvent]]></content>
-</snippet>

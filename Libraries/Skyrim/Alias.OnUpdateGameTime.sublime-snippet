@@ -1,8 +1,0 @@
-<snippet>
-	<tabTrigger>OnUpdateGameTime</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Alias.OnUpdateGameTime</description>
-	<content><![CDATA[Event OnUpdateGameTime()
-	${0}
-EndEvent]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetWorkbenchKeyword</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ConstructibleObject.GetWorkbenchKeyword (SKSE)</description>
-	<content><![CDATA[GetWorkbenchKeyword()]]></content>
-</snippet>

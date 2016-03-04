@@ -1,8 +1,0 @@
-<snippet>
-	<tabTrigger>OnTriggerEnter</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ReferenceAlias.OnTriggerEnter</description>
-	<content><![CDATA[Event OnTriggerEnter(${1:ObjectReference akActionRef})
-	${0}
-EndEvent]]></content>
-</snippet>

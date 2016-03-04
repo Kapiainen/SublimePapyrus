@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>RemoveInt</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>PapyrusUtil.RemoveInt (PapyrusUtil)</description>
-	<content><![CDATA[RemoveInt(${1:int[] ArrayValues}, ${2:int ToRemove})]]></content>
-</snippet>

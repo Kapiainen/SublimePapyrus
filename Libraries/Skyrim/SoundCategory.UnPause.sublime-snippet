@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>UnPause</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>SoundCategory.UnPause</description>
-	<content><![CDATA[UnPause()]]></content>
-</snippet>

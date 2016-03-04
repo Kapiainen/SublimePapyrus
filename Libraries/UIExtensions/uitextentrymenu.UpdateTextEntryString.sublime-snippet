@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>UpdateTextEntryString</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>uitextentrymenu.UpdateTextEntryString (UIExtensions)</description>
-	<content><![CDATA[UpdateTextEntryString()]]></content>
-</snippet>

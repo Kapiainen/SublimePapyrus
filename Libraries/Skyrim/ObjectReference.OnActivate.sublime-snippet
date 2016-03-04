@@ -1,8 +1,0 @@
-<snippet>
-	<tabTrigger>OnActivate</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ObjectReference.OnActivate</description>
-	<content><![CDATA[Event OnActivate(${1:ObjectReference akActionRef})
-	${0}
-EndEvent]]></content>
-</snippet>

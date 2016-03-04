@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>writeToFile</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>JValue.writeToFile (JContainers)</description>
-	<content><![CDATA[writeToFile(${1:int object}, ${2:string filePath})]]></content>
-</snippet>

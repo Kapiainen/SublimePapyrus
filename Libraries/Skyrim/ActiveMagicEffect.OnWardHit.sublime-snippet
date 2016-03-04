@@ -1,8 +1,0 @@
-<snippet>
-	<tabTrigger>OnWardHit</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ActiveMagicEffect.OnWardHit</description>
-	<content><![CDATA[Event OnWardHit(${1:ObjectReference akCaster}, ${2:Spell akSpell}, ${3:int aiStatus})
-	${0}
-EndEvent]]></content>
-</snippet>

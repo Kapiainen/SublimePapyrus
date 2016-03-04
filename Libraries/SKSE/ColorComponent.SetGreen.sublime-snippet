@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetGreen</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ColorComponent.SetGreen (SKSE)</description>
-	<content><![CDATA[SetGreen(${1:int argb}, ${2:int g})]]></content>
-</snippet>

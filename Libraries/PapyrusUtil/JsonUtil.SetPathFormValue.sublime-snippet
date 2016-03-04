@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetPathFormValue</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>JsonUtil.SetPathFormValue (PapyrusUtil)</description>
-	<content><![CDATA[SetPathFormValue(${1:string FileName}, ${2:string Path}, ${3:form value})]]></content>
-</snippet>

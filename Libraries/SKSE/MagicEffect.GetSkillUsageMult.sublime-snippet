@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetSkillUsageMult</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>MagicEffect.GetSkillUsageMult (SKSE)</description>
-	<content><![CDATA[GetSkillUsageMult()]]></content>
-</snippet>

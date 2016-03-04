@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>getForm</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>JMap.getForm (JContainers)</description>
-	<content><![CDATA[getForm(${1:int object}, ${2:string key}, ${3:form default})]]></content>
-</snippet>

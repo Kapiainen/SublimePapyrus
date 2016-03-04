@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>getAllFilenamesInFolder</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>FISSInterface.getAllFilenamesInFolder (FISS)</description>
-	<content><![CDATA[getAllFilenamesInFolder(${1:string path})]]></content>
-</snippet>

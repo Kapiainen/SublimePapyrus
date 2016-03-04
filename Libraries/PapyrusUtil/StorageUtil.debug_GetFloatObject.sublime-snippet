@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>debug_GetFloatObject</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>StorageUtil.debug_GetFloatObject (PapyrusUtil)</description>
-	<content><![CDATA[debug_GetFloatObject(${1:int index})]]></content>
-</snippet>

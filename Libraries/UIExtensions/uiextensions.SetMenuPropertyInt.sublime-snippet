@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetMenuPropertyInt</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>uiextensions.SetMenuPropertyInt (UIExtensions)</description>
-	<content><![CDATA[SetMenuPropertyInt(${1:string menuName}, ${2:string propertyName}, ${3:int value})]]></content>
-</snippet>

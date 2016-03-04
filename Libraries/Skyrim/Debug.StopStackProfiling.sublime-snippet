@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>StopStackProfiling</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Debug.StopStackProfiling</description>
-	<content><![CDATA[StopStackProfiling()]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>FormListGet</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>JsonUtil.FormListGet (PapyrusUtil)</description>
-	<content><![CDATA[FormListGet(${1:string FileName}, ${2:string KeyName}, ${3:int index})]]></content>
-</snippet>

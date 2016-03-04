@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>userDirectory</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>JContainers.userDirectory (JContainers)</description>
-	<content><![CDATA[userDirectory()]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetHotkeyBoundObject</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Game.GetHotkeyBoundObject (SKSE)</description>
-	<content><![CDATA[GetHotkeyBoundObject(${1:int hotkey})]]></content>
-</snippet>

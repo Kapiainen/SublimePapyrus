@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetNthLevel</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>LeveledActor.GetNthLevel (SKSE)</description>
-	<content><![CDATA[GetNthLevel(${1:int n})]]></content>
-</snippet>

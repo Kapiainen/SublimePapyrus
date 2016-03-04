@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>PushFloat</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>PapyrusUtil.PushFloat (PapyrusUtil)</description>
-	<content><![CDATA[PushFloat(${1:float[] ArrayValues}, ${2:float push})]]></content>
-</snippet>

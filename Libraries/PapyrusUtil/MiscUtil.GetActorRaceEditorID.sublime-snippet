@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetActorRaceEditorID</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>MiscUtil.GetActorRaceEditorID (PapyrusUtil)</description>
-	<content><![CDATA[GetActorRaceEditorID(${1:Actor actorRef})]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetMagicMult</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>CombatStyle.GetMagicMult (SKSE)</description>
-	<content><![CDATA[GetMagicMult()]]></content>
-</snippet>

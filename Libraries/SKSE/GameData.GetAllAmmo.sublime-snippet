@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetAllAmmo</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>GameData.GetAllAmmo (SKSE)</description>
-	<content><![CDATA[GetAllAmmo(${1:string modName}, ${2:Keyword[] keywords = None}, ${3:bool playable = true})]]></content>
-</snippet>

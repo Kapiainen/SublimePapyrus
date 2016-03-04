@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetPlayerExperience</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Game.GetPlayerExperience (SKSE)</description>
-	<content><![CDATA[GetPlayerExperience()]]></content>
-</snippet>

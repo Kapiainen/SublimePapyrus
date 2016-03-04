@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetDeliveryType</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>MagicEffect.GetDeliveryType (SKSE)</description>
-	<content><![CDATA[GetDeliveryType()]]></content>
-</snippet>

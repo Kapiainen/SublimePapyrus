@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>FindRandomActorFromRef</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Game.FindRandomActorFromRef</description>
-	<content><![CDATA[FindRandomActorFromRef(${1:ObjectReference arCenter}, ${2:float afRadius})]]></content>
-</snippet>

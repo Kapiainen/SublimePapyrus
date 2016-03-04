@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>set</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>GlobalVariable.set</description>
-	<content><![CDATA[set(${1:float afValue})]]></content>
-</snippet>

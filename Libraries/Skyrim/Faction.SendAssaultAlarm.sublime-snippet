@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SendAssaultAlarm</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Faction.SendAssaultAlarm</description>
-	<content><![CDATA[SendAssaultAlarm()]]></content>
-</snippet>

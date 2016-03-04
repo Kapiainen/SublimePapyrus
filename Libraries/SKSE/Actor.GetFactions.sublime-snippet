@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetFactions</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Actor.GetFactions (SKSE)</description>
-	<content><![CDATA[GetFactions(${1:int minRank}, ${2:int maxRank})]]></content>
-</snippet>

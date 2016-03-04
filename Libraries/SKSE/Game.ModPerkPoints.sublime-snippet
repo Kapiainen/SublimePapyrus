@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>ModPerkPoints</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Game.ModPerkPoints (SKSE)</description>
-	<content><![CDATA[ModPerkPoints(${1:int perkPoints})]]></content>
-</snippet>

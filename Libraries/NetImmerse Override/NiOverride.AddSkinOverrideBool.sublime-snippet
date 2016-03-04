@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>AddSkinOverrideBool</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>NiOverride.AddSkinOverrideBool (NetImmerse Override)</description>
-	<content><![CDATA[AddSkinOverrideBool(${1:ObjectReference ref}, ${2:bool isFemale}, ${3:bool firstPerson}, ${4:int slotMask}, ${5:int key}, ${6:int index}, ${7:bool value}, ${8:bool persist})]]></content>
-</snippet>

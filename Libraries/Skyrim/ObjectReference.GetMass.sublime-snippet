@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetMass</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ObjectReference.GetMass</description>
-	<content><![CDATA[GetMass()]]></content>
-</snippet>

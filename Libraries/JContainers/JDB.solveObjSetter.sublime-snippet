@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>solveObjSetter</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>JDB.solveObjSetter (JContainers)</description>
-	<content><![CDATA[solveObjSetter(${1:string path}, ${2:int value}, ${3:bool createMissingKeys})]]></content>
-</snippet>

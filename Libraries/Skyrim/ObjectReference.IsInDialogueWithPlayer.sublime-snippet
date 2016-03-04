@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>IsInDialogueWithPlayer</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ObjectReference.IsInDialogueWithPlayer</description>
-	<content><![CDATA[IsInDialogueWithPlayer()]]></content>
-</snippet>

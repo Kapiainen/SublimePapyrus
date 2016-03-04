@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>RegisterDynamicEvents</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>cosmeticmenu.RegisterDynamicEvents (UIExtensions)</description>
-	<content><![CDATA[RegisterDynamicEvents(${1:string type})]]></content>
-</snippet>

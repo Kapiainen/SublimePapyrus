@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetResult</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ConstructibleObject.SetResult (SKSE)</description>
-	<content><![CDATA[SetResult(${1:Form result})]]></content>
-</snippet>

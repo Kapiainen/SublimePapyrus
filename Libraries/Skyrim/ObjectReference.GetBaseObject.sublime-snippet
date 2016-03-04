@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetBaseObject</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ObjectReference.GetBaseObject</description>
-	<content><![CDATA[GetBaseObject()]]></content>
-</snippet>

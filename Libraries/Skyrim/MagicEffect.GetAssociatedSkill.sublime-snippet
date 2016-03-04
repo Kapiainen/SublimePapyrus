@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetAssociatedSkill</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>MagicEffect.GetAssociatedSkill</description>
-	<content><![CDATA[GetAssociatedSkill()]]></content>
-</snippet>

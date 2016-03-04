@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>sort</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>JArray.sort (JContainers)</description>
-	<content><![CDATA[sort(${1:int object})]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>UpdateItemDyeColor</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>NiOverride.UpdateItemDyeColor (NetImmerse Override)</description>
-	<content><![CDATA[UpdateItemDyeColor(${1:ObjectReference akActor}, ${2:int uniqueId})]]></content>
-</snippet>

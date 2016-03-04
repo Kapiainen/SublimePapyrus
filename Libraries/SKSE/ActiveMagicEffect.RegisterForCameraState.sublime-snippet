@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>RegisterForCameraState</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ActiveMagicEffect.RegisterForCameraState (SKSE)</description>
-	<content><![CDATA[RegisterForCameraState()]]></content>
-</snippet>

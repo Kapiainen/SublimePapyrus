@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetNthTintMaskTexturePath</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Game.GetNthTintMaskTexturePath (SKSE)</description>
-	<content><![CDATA[GetNthTintMaskTexturePath(${1:int n})]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>ApplyCrossFade</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ImageSpaceModifier.ApplyCrossFade</description>
-	<content><![CDATA[ApplyCrossFade(${1:float afFadeDuration = 1})]]></content>
-</snippet>

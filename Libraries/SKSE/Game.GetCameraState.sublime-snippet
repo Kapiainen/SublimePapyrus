@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetCameraState</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Game.GetCameraState (SKSE)</description>
-	<content><![CDATA[GetCameraState()]]></content>
-</snippet>

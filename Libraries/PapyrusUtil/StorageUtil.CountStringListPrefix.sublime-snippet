@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>CountStringListPrefix</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>StorageUtil.CountStringListPrefix (PapyrusUtil)</description>
-	<content><![CDATA[CountStringListPrefix(${1:string PrefixKey})]]></content>
-</snippet>

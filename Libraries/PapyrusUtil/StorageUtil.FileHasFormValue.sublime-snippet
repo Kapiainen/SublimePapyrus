@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>FileHasFormValue</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>StorageUtil.FileHasFormValue (PapyrusUtil)</description>
-	<content><![CDATA[FileHasFormValue(${1:string KeyName})]]></content>
-</snippet>

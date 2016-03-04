@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>StringListToArray</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>StorageUtil.StringListToArray (PapyrusUtil)</description>
-	<content><![CDATA[StringListToArray(${1:Form ObjKey}, ${2:string KeyName})]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetScale</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ObjectReference.SetScale</description>
-	<content><![CDATA[SetScale(${1:float afScale})]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetContainerForms</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ObjectReference.GetContainerForms (SKSE)</description>
-	<content><![CDATA[GetContainerForms()]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetFactionRank</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Actor.GetFactionRank</description>
-	<content><![CDATA[GetFactionRank(${1:Faction akFaction})]]></content>
-</snippet>

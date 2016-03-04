@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetPerks</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ActorValueInfo.GetPerks (SKSE)</description>
-	<content><![CDATA[GetPerks(${1:Actor akActor = None}, ${2:bool unowned = true}, ${3:bool allRanks = false})]]></content>
-</snippet>

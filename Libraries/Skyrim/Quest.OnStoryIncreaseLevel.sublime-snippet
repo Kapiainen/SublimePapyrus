@@ -1,8 +1,0 @@
-<snippet>
-	<tabTrigger>OnStoryIncreaseLevel</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Quest.OnStoryIncreaseLevel</description>
-	<content><![CDATA[Event OnStoryIncreaseLevel(${1:int aiNewLevel})
-	${0}
-EndEvent]]></content>
-</snippet>

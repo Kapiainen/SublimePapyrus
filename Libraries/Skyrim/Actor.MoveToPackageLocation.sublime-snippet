@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>MoveToPackageLocation</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Actor.MoveToPackageLocation</description>
-	<content><![CDATA[MoveToPackageLocation()]]></content>
-</snippet>

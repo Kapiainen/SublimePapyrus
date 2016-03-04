@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetSkillLegendaryLevel</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ActorValueInfo.SetSkillLegendaryLevel (SKSE)</description>
-	<content><![CDATA[SetSkillLegendaryLevel(${1:int level})]]></content>
-</snippet>

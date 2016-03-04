@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>ResizeBoolArray</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>PapyrusUtil.ResizeBoolArray (PapyrusUtil)</description>
-	<content><![CDATA[ResizeBoolArray(${1:bool[] ArrayValues}, ${2:int toSize}, ${3:bool filler = false})]]></content>
-</snippet>

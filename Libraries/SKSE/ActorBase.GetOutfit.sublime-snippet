@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetOutfit</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ActorBase.GetOutfit (SKSE)</description>
-	<content><![CDATA[GetOutfit(${1:bool bSleepOutfit = false})]]></content>
-</snippet>

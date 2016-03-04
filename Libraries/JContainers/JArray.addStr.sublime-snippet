@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>addStr</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>JArray.addStr (JContainers)</description>
-	<content><![CDATA[addStr(${1:int object}, ${2:string value}, ${3:int addToIndex})]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetArea</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>MagicEffect.SetArea (SKSE)</description>
-	<content><![CDATA[SetArea(${1:int area})]]></content>
-</snippet>

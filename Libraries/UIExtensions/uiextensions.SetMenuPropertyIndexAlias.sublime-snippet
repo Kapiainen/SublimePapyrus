@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetMenuPropertyIndexAlias</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>uiextensions.SetMenuPropertyIndexAlias (UIExtensions)</description>
-	<content><![CDATA[SetMenuPropertyIndexAlias(${1:string menuName}, ${2:string propertyName}, ${3:int index}, ${4:Alias value})]]></content>
-</snippet>

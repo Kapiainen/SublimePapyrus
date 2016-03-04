@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>ClearFactionFlag</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Faction.ClearFactionFlag (SKSE)</description>
-	<content><![CDATA[ClearFactionFlag(${1:int flag})]]></content>
-</snippet>

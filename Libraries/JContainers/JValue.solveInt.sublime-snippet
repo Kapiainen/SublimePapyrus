@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>solveInt</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>JValue.solveInt (JContainers)</description>
-	<content><![CDATA[solveInt(${1:int object}, ${2:string path}, ${3:int default})]]></content>
-</snippet>

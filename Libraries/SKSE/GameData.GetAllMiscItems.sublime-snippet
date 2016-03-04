@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetAllMiscItems</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>GameData.GetAllMiscItems (SKSE)</description>
-	<content><![CDATA[GetAllMiscItems(${1:string modName}, ${2:Keyword[] keywords = None})]]></content>
-</snippet>

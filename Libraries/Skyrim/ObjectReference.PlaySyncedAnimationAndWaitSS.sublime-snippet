@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>PlaySyncedAnimationAndWaitSS</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ObjectReference.PlaySyncedAnimationAndWaitSS</description>
-	<content><![CDATA[PlaySyncedAnimationAndWaitSS(${1:string asAnimation1}, ${2:string asEvent1}, ${3:ObjectReference akObj2}, ${4:string asAnimation2}, ${5:string asEvent2})]]></content>
-</snippet>

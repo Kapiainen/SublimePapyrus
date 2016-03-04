@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>count</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>JMap.count (JContainers)</description>
-	<content><![CDATA[count(${1:int object})]]></content>
-</snippet>

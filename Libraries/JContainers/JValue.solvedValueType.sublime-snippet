@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>solvedValueType</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>JValue.solvedValueType (JContainers)</description>
-	<content><![CDATA[solvedValueType(${1:int object}, ${2:string path})]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetCurrentCrosshairRef</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Game.GetCurrentCrosshairRef (SKSE)</description>
-	<content><![CDATA[GetCurrentCrosshairRef()]]></content>
-</snippet>

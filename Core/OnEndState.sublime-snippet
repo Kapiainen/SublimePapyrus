@@ -1,8 +1,0 @@
-<snippet>
-	<tabTrigger>OnEndState</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>OnEndState</description>
-	<content><![CDATA[Event OnEndState()
-	${0}
-EndEvent]]></content>
-</snippet>

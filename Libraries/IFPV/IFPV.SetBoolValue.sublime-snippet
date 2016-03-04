@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetBoolValue</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>IFPV.SetBoolValue (IFPV)</description>
-	<content><![CDATA[SetBoolValue(${1:string name}, ${2:bool value})]]></content>
-</snippet>

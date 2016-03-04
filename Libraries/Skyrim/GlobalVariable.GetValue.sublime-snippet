@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetValue</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>GlobalVariable.GetValue</description>
-	<content><![CDATA[GetValue()]]></content>
-</snippet>

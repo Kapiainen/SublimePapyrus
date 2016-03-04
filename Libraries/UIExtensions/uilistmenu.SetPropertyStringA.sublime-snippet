@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetPropertyStringA</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>uilistmenu.SetPropertyStringA (UIExtensions)</description>
-	<content><![CDATA[SetPropertyStringA(${1:string propertyName}, ${2:string[] value})]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>beginSave</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>FISSInterface.beginSave (FISS)</description>
-	<content><![CDATA[beginSave(${1:string filename}, ${2:string modname})]]></content>
-</snippet>

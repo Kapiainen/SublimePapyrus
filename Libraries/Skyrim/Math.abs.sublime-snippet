@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>abs</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Math.abs</description>
-	<content><![CDATA[abs(${1:float afValue})]]></content>
-</snippet>

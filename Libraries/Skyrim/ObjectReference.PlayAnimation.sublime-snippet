@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>PlayAnimation</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ObjectReference.PlayAnimation</description>
-	<content><![CDATA[PlayAnimation(${1:string asAnimation})]]></content>
-</snippet>

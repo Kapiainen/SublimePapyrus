@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>IsSprinting</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Actor.IsSprinting</description>
-	<content><![CDATA[IsSprinting()]]></content>
-</snippet>

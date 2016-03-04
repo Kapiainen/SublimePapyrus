@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetErrors</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>JsonUtil.GetErrors (PapyrusUtil)</description>
-	<content><![CDATA[GetErrors(${1:string FileName})]]></content>
-</snippet>

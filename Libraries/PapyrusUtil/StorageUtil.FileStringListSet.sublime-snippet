@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>FileStringListSet</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>StorageUtil.FileStringListSet (PapyrusUtil)</description>
-	<content><![CDATA[FileStringListSet(${1:string KeyName}, ${2:int index}, ${3:string value})]]></content>
-</snippet>

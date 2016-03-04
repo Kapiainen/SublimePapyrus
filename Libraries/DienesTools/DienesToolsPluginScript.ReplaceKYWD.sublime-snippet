@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>ReplaceKYWD</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>DienesToolsPluginScript.ReplaceKYWD (DienesTools)</description>
-	<content><![CDATA[ReplaceKYWD(${1:Form akForm}, ${2:Keyword akToReplace}, ${3:Keyword akToAdd})]]></content>
-</snippet>

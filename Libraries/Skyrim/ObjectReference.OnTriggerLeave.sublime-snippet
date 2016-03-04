@@ -1,8 +1,0 @@
-<snippet>
-	<tabTrigger>OnTriggerLeave</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ObjectReference.OnTriggerLeave</description>
-	<content><![CDATA[Event OnTriggerLeave(${1:ObjectReference akActionRef})
-	${0}
-EndEvent]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>RemoveActor</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>PapyrusUtil.RemoveActor (PapyrusUtil)</description>
-	<content><![CDATA[RemoveActor(${1:Actor[] ArrayValues}, ${2:Actor ToRemove})]]></content>
-</snippet>

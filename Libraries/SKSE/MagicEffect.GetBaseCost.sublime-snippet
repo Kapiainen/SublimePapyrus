@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetBaseCost</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>MagicEffect.GetBaseCost (SKSE)</description>
-	<content><![CDATA[GetBaseCost()]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetGameSettingString</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Game.GetGameSettingString</description>
-	<content><![CDATA[GetGameSettingString(${1:string asGameSetting})]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetStringExtraData</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>NiOverride.GetStringExtraData (NetImmerse Override)</description>
-	<content><![CDATA[GetStringExtraData(${1:ObjectReference akRef}, ${2:bool firstPerson}, ${3:string nodeName}, ${4:string dataName})]]></content>
-</snippet>

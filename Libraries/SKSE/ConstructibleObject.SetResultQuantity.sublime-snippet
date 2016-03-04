@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetResultQuantity</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ConstructibleObject.SetResultQuantity (SKSE)</description>
-	<content><![CDATA[SetResultQuantity(${1:int quantity})]]></content>
-</snippet>

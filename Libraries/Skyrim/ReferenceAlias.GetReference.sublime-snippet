@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetReference</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ReferenceAlias.GetReference</description>
-	<content><![CDATA[GetReference()]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetForm</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>DefaultObjectManager.GetForm (SKSE)</description>
-	<content><![CDATA[GetForm(${1:string key})]]></content>
-</snippet>

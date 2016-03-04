@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>FileFormListClear</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>StorageUtil.FileFormListClear (PapyrusUtil)</description>
-	<content><![CDATA[FileFormListClear(${1:string KeyName})]]></content>
-</snippet>

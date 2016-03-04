@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetNthTintMaskColor</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Game.GetNthTintMaskColor (SKSE)</description>
-	<content><![CDATA[GetNthTintMaskColor(${1:int n})]]></content>
-</snippet>

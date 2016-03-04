@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>IsPlayerPlacingObject</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>CampUtil.IsPlayerPlacingObject (CampUtil)</description>
-	<content><![CDATA[IsPlayerPlacingObject()]]></content>
-</snippet>

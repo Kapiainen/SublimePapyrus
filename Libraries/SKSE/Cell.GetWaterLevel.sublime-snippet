@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetWaterLevel</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Cell.GetWaterLevel (SKSE)</description>
-	<content><![CDATA[GetWaterLevel()]]></content>
-</snippet>

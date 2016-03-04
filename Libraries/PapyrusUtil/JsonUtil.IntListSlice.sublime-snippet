@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>IntListSlice</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>JsonUtil.IntListSlice (PapyrusUtil)</description>
-	<content><![CDATA[IntListSlice(${1:string FileName}, ${2:string KeyName}, ${3:int[] slice}, ${4:int startIndex = 0})]]></content>
-</snippet>

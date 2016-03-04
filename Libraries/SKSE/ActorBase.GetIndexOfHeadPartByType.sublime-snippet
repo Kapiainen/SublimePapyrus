@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetIndexOfHeadPartByType</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ActorBase.GetIndexOfHeadPartByType (SKSE)</description>
-	<content><![CDATA[GetIndexOfHeadPartByType(${1:int type})]]></content>
-</snippet>

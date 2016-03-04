@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetAllIngredients</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>GameData.GetAllIngredients (SKSE)</description>
-	<content><![CDATA[GetAllIngredients(${1:string modName}, ${2:Keyword[] keywords = None})]]></content>
-</snippet>

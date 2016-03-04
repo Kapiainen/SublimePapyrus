@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>FileIntListInsert</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>StorageUtil.FileIntListInsert (PapyrusUtil)</description>
-	<content><![CDATA[FileIntListInsert(${1:string KeyName}, ${2:int index}, ${3:int value})]]></content>
-</snippet>

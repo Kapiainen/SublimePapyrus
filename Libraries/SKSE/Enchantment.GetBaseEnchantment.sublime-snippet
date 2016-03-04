@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetBaseEnchantment</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Enchantment.GetBaseEnchantment (SKSE)</description>
-	<content><![CDATA[GetBaseEnchantment()]]></content>
-</snippet>

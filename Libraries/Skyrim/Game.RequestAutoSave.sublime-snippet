@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>RequestAutoSave</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Game.RequestAutoSave</description>
-	<content><![CDATA[RequestAutoSave()]]></content>
-</snippet>

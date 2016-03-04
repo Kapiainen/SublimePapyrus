@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetRangedMult</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>CombatStyle.GetRangedMult (SKSE)</description>
-	<content><![CDATA[GetRangedMult()]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetNoFavorAllowed</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ObjectReference.SetNoFavorAllowed</description>
-	<content><![CDATA[SetNoFavorAllowed(${1:bool abNoFavor = true})]]></content>
-</snippet>

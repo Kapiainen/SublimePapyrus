@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>UpdateItemSourceForm</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>uidyemenu.UpdateItemSourceForm (UIExtensions)</description>
-	<content><![CDATA[UpdateItemSourceForm()]]></content>
-</snippet>

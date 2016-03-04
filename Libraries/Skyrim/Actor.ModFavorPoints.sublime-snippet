@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>ModFavorPoints</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Actor.ModFavorPoints</description>
-	<content><![CDATA[ModFavorPoints(${1:int iFavorPoints = 1})]]></content>
-</snippet>

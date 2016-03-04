@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>FastTravel</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Game.FastTravel</description>
-	<content><![CDATA[FastTravel(${1:ObjectReference akDestination})]]></content>
-</snippet>

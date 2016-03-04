@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetNotShowOnStealthMeter</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Actor.SetNotShowOnStealthMeter</description>
-	<content><![CDATA[SetNotShowOnStealthMeter(${1:bool abNotShow})]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetNumIngredients</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ConstructibleObject.GetNumIngredients (SKSE)</description>
-	<content><![CDATA[GetNumIngredients()]]></content>
-</snippet>

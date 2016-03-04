@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>CenterOnCell</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Debug.CenterOnCell</description>
-	<content><![CDATA[CenterOnCell(${1:string asCellname})]]></content>
-</snippet>

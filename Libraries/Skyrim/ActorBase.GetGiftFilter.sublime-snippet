@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetGiftFilter</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ActorBase.GetGiftFilter</description>
-	<content><![CDATA[GetGiftFilter()]]></content>
-</snippet>

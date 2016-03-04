@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>writeToFile</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>JDB.writeToFile (JContainers)</description>
-	<content><![CDATA[writeToFile(${1:string path})]]></content>
-</snippet>

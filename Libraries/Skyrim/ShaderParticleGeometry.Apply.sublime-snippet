@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>Apply</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ShaderParticleGeometry.Apply</description>
-	<content><![CDATA[Apply(${1:float afFadeTime})]]></content>
-</snippet>

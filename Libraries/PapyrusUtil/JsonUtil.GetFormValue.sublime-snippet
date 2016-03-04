@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetFormValue</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>JsonUtil.GetFormValue (PapyrusUtil)</description>
-	<content><![CDATA[GetFormValue(${1:string FileName}, ${2:string KeyName}, ${3:form missing = none})]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetPriority</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Quest.GetPriority (SKSE)</description>
-	<content><![CDATA[GetPriority()]]></content>
-</snippet>

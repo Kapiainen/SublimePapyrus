@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetAlpha</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ColorComponent.SetAlpha (SKSE)</description>
-	<content><![CDATA[SetAlpha(${1:int argb}, ${2:int a})]]></content>
-</snippet>

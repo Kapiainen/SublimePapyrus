@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>StringListInsert</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>StorageUtil.StringListInsert (PapyrusUtil)</description>
-	<content><![CDATA[StringListInsert(${1:Form ObjKey}, ${2:string KeyName}, ${3:int index}, ${4:string value})]]></content>
-</snippet>

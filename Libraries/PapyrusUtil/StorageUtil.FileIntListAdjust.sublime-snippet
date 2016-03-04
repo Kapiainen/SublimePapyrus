@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>FileIntListAdjust</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>StorageUtil.FileIntListAdjust (PapyrusUtil)</description>
-	<content><![CDATA[FileIntListAdjust(${1:string KeyName}, ${2:int index}, ${3:int amount})]]></content>
-</snippet>

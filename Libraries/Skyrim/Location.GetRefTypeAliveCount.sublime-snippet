@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetRefTypeAliveCount</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Location.GetRefTypeAliveCount</description>
-	<content><![CDATA[GetRefTypeAliveCount(${1:LocationRefType akRefType})]]></content>
-</snippet>

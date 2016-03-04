@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetTintMaskColor</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Game.GetTintMaskColor (SKSE)</description>
-	<content><![CDATA[GetTintMaskColor(${1:int type}, ${2:int index})]]></content>
-</snippet>

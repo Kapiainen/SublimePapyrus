@@ -1,8 +1,0 @@
-<snippet>
-	<tabTrigger>OnGrab</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ObjectReference.OnGrab</description>
-	<content><![CDATA[Event OnGrab()
-	${0}
-EndEvent]]></content>
-</snippet>

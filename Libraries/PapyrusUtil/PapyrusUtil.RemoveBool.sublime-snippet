@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>RemoveBool</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>PapyrusUtil.RemoveBool (PapyrusUtil)</description>
-	<content><![CDATA[RemoveBool(${1:bool[] ArrayValues}, ${2:bool ToRemove})]]></content>
-</snippet>

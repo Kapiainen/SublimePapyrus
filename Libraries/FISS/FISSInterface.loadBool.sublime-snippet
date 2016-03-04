@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>loadBool</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>FISSInterface.loadBool (FISS)</description>
-	<content><![CDATA[loadBool(${1:string name})]]></content>
-</snippet>

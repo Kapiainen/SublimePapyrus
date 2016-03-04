@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>endLoad</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>FISSInterface.endLoad (FISS)</description>
-	<content><![CDATA[endLoad()]]></content>
-</snippet>

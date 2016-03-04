@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>sin</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Math.sin</description>
-	<content><![CDATA[sin(${1:float afValue})]]></content>
-</snippet>

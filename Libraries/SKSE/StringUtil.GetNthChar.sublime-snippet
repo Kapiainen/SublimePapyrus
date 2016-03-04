@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetNthChar</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>StringUtil.GetNthChar (SKSE)</description>
-	<content><![CDATA[GetNthChar(${1:string s}, ${2:int index})]]></content>
-</snippet>

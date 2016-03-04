@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>CountBool</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>PapyrusUtil.CountBool (PapyrusUtil)</description>
-	<content><![CDATA[CountBool(${1:bool[] ArrayValues}, ${2:bool EqualTo})]]></content>
-</snippet>

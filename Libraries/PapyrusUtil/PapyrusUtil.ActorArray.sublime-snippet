@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>ActorArray</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>PapyrusUtil.ActorArray (PapyrusUtil)</description>
-	<content><![CDATA[ActorArray(${1:int size}, ${2:Actor filler = none})]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>RemoveNodeTransformPosition</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>NiOverride.RemoveNodeTransformPosition (NetImmerse Override)</description>
-	<content><![CDATA[RemoveNodeTransformPosition(${1:ObjectReference akRef}, ${2:bool firstPerson}, ${3:bool isFemale}, ${4:string nodeName}, ${5:string key})]]></content>
-</snippet>

@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetReaction</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Faction.SetReaction</description>
-	<content><![CDATA[SetReaction(${1:Faction akOther}, ${2:int aiNewValue})]]></content>
-</snippet>

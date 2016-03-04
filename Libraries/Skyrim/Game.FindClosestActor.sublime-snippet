@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>FindClosestActor</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Game.FindClosestActor</description>
-	<content><![CDATA[FindClosestActor(${1:float afX}, ${2:float afY}, ${3:float afZ}, ${4:float afRadius})]]></content>
-</snippet>

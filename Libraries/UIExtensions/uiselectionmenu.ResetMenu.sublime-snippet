@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>ResetMenu</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>uiselectionmenu.ResetMenu (UIExtensions)</description>
-	<content><![CDATA[ResetMenu()]]></content>
-</snippet>

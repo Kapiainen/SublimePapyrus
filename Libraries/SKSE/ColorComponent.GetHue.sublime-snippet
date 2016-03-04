@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>GetHue</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>ColorComponent.GetHue (SKSE)</description>
-	<content><![CDATA[GetHue(${1:int argb})]]></content>
-</snippet>

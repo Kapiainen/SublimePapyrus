@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>SetExpressionModifier</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>Actor.SetExpressionModifier (SKSE)</description>
-	<content><![CDATA[SetExpressionModifier(${1:int index}, ${2:float value})]]></content>
-</snippet>

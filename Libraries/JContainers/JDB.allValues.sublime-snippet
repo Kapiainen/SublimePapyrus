@@ -1,6 +1,0 @@
-<snippet>
-	<tabTrigger>allValues</tabTrigger>
-	<scope>source.papyrus</scope>
-	<description>JDB.allValues (JContainers)</description>
-	<content><![CDATA[allValues()]]></content>
-</snippet>
