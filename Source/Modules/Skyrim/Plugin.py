@@ -166,17 +166,17 @@ class EventListener(sublime_plugin.EventListener):
 			delay = settings.get("linter_delay", 500)/1000.0
 			if delay < 0.050:
 				delay = 0.050
-		if PYTHON_VERSION[0] == 2:
-			self.fileName = view.file_name()
-			if self.fileName:
+		self.fileName = view.file_name()
+		if self.fileName:
+			if PYTHON_VERSION[0] == 2:
 				self.scriptContents = view.substr(sublime.Region(0, view.size()))			
 				self.sourcePaths = SublimePapyrus.GetSourcePaths(view)
 				SublimePapyrus.ClearLinterHighlights(view)
 				t = threading.Timer(delay, self.Linter, kwargs={"view": None})
 				t.start()
-		elif PYTHON_VERSION[0] >= 3:
-			t = threading.Timer(delay, self.Linter, kwargs={"view": view})
-			t.start()
+			elif PYTHON_VERSION[0] >= 3:
+				t = threading.Timer(delay, self.Linter, kwargs={"view": view})
+				t.start()
 
 	def Linter(self, view):
 		self.linterQueue -= 1 # Remove from queue
@@ -190,13 +190,14 @@ class EventListener(sublime_plugin.EventListener):
 		#start = time.time()
 		error = False
 		def Exit():
+			#print("Linter: Finished in %f milliseconds and releasing lock..." % ((time.time()-start)*1000.0))
 			self.linterRunning = False
 			return False
 		with self.cacheLock:
+			#start = time.time()
 			settings = None
 			if view:
 				settings = SublimePapyrus.GetSettings()
-			#start = time.time()
 			if int(sublime.version()) >= 3103 and view.is_auto_complete_visible(): # If a list of completions is visible, then cancel
 				return Exit()
 			if view:
@@ -226,8 +227,6 @@ class EventListener(sublime_plugin.EventListener):
 						SublimePapyrus.ShowMessage("Lexical error on line %d, column %d: %s" % (e.line, e.column, e.message))
 						if settings.get("linter_panel_error_messages", False):
 							view.window().show_quick_panel([[e.message, "Line %d, column %d" % (e.line, e.column)]], None)
-					#else:
-					#	print("Lexical error on line %d, column %d: %s" % (e.line, e.column, e.message))
 					error = True
 					return Exit()
 				if self.syn:
@@ -243,14 +242,9 @@ class EventListener(sublime_plugin.EventListener):
 								SublimePapyrus.ShowMessage("Syntactic error on line %d: %s" % (e.line, e.message))
 								if settings.get("linter_panel_error_messages", False):
 									view.window().show_quick_panel([[e.message, "Line %d" % e.line]], None)
-							#else:
-							#	print("Syntactic error on line %d: %s" % (e.line, e.message))
 							error = True
 					if statements:
-						if view:
-							self.SetStatements(view.file_name(), statements[:]) # Cache a copy of the statements
-						else:
-							self.SetStatements(self.fileName, statements[:]) # Cache a copy of the statements
+						self.SetStatements(self.fileName, statements[:]) # Cache a copy of the statements
 					else:
 						return Exit()
 					if error:
@@ -267,18 +261,13 @@ class EventListener(sublime_plugin.EventListener):
 								SublimePapyrus.ShowMessage("Semantic error on line %d: %s" % (e.line, e.message))
 								if settings.get("linter_panel_error_messages", False):
 									view.window().show_quick_panel([[e.message, "Line %d" % e.line]], None)
-							#else:
-							#	print("Semantic error on line %d: %s" % (e.line, e.message))
 							error = True
 							return Exit()
 						except Linter.Cancel as e:
 							pass
-		#print("Linter: Finished in %f milliseconds and releasing lock..." % ((time.time()-start)*1000.0))
 		if not error:
 			if view:
 				SublimePapyrus.ShowMessage("Linter found no issues...")
-			#else:
-			#	print("Linter found no issues...")
 		return Exit()
 
 	def Completions(self, view, prefix, locations):
@@ -349,63 +338,64 @@ class EventListener(sublime_plugin.EventListener):
 				except Linter.SemanticError as e:
 					return Exit()
 				except Linter.Cancel as e:
-					scriptName = None
-					try:
-						if stat:
-							if stat.type == self.sem.STAT_EXPRESSION:
-								scriptName = self.sem.NodeVisitor(stat.data.expression)
-							elif stat.type == self.sem.STAT_ASSIGNMENT:
-								scriptName = self.sem.NodeVisitor(stat.data.rightExpression)
-							elif stat.type == self.sem.STAT_VARIABLEDEF:
-								scriptName = self.sem.NodeVisitor(stat.data.value)
-							elif stat.type == self.sem.STAT_IF:
-								scriptName = self.sem.NodeVisitor(stat.data.expression)
-							elif stat.type == self.sem.STAT_ELSEIF:
-								scriptName = self.sem.NodeVisitor(stat.data.expression)
-							elif stat.type == self.sem.STAT_WHILE:
-								scriptName = self.sem.NodeVisitor(stat.data.expression)
-							elif stat.type == self.sem.STAT_RETURN:
-								scriptName = self.sem.NodeVisitor(stat.data.expression)
-						elif expr:
-							scriptName = self.sem.NodeVisitor(expr)
-					except Linter.SemanticError as e:
-						return Exit()
-					if scriptName:
-						if scriptName == self.sem.KW_SELF:
-							for scope in e.functions:
-								for name, obj in scope.items():
-									if obj.type == self.sem.STAT_FUNCTIONDEF:
-										completions.append(SublimePapyrus.MakeFunctionCompletion(obj, self.sem))
-									elif obj.type == self.sem.STAT_EVENTDEF:
-										completions.append(SublimePapyrus.MakeEventCompletion(obj, self.sem))
-						elif "[]" in scriptName:
-							typ = scriptName[:-2].capitalize()
-							completions.append(("find\tint func.", "Find(${1:%s akElement}, ${2:Int aiStartIndex = 0})" % typ,))
-							completions.append(("rfind\tint func.", "RFind(${1:%s akElement}, ${2:Int aiStartIndex = -1})" % typ,))
-						else:
-							properties = self.GetPropertyCompletions(scriptName)
-							functions = self.GetFunctionCompletions(scriptName)
-							if properties and functions:
-								completions.extend(properties)
-								completions.extend(functions)
+					if len(e.variables) > 2:
+						scriptName = None
+						try:
+							if stat:
+								if stat.type == self.sem.STAT_EXPRESSION:
+									scriptName = self.sem.NodeVisitor(stat.data.expression)
+								elif stat.type == self.sem.STAT_ASSIGNMENT:
+									scriptName = self.sem.NodeVisitor(stat.data.rightExpression)
+								elif stat.type == self.sem.STAT_VARIABLEDEF:
+									scriptName = self.sem.NodeVisitor(stat.data.value)
+								elif stat.type == self.sem.STAT_IF:
+									scriptName = self.sem.NodeVisitor(stat.data.expression)
+								elif stat.type == self.sem.STAT_ELSEIF:
+									scriptName = self.sem.NodeVisitor(stat.data.expression)
+								elif stat.type == self.sem.STAT_WHILE:
+									scriptName = self.sem.NodeVisitor(stat.data.expression)
+								elif stat.type == self.sem.STAT_RETURN:
+									scriptName = self.sem.NodeVisitor(stat.data.expression)
+							elif expr:
+								scriptName = self.sem.NodeVisitor(expr)
+						except Linter.SemanticError as e:
+							return Exit()
+						if scriptName:
+							if scriptName == self.sem.KW_SELF:
+								for scope in e.functions:
+									for name, obj in scope.items():
+										if obj.type == self.sem.STAT_FUNCTIONDEF:
+											completions.append(SublimePapyrus.MakeFunctionCompletion(obj, self.sem))
+										elif obj.type == self.sem.STAT_EVENTDEF:
+											completions.append(SublimePapyrus.MakeEventCompletion(obj, self.sem))
+							elif "[]" in scriptName:
+								typ = scriptName[:-2].capitalize()
+								completions.append(("find\tint func.", "Find(${1:%s akElement}, ${2:Int aiStartIndex = 0})" % typ,))
+								completions.append(("rfind\tint func.", "RFind(${1:%s akElement}, ${2:Int aiStartIndex = -1})" % typ,))
 							else:
-								try:
-									script = self.sem.GetCachedScript(scriptName)
-								except:
-									return Exit()
-								if script:
-									if not properties:
-										properties = []
-										for name, obj in script.properties.items():
-											properties.append(SublimePapyrus.MakePropertyCompletion(obj))
-											self.SetPropertyCompletions(scriptName, properties)
+								properties = self.GetPropertyCompletions(scriptName)
+								functions = self.GetFunctionCompletions(scriptName)
+								if properties and functions:
 									completions.extend(properties)
-									if not functions:
-										functions = []
-										for name, obj in script.functions.items():
-											functions.append(SublimePapyrus.MakeFunctionCompletion(obj, self.sem))
-											self.SetFunctionCompletions(scriptName, functions)
 									completions.extend(functions)
+								else:
+									try:
+										script = self.sem.GetCachedScript(scriptName)
+									except:
+										return Exit()
+									if script:
+										if not properties:
+											properties = []
+											for name, obj in script.properties.items():
+												properties.append(SublimePapyrus.MakePropertyCompletion(obj))
+												self.SetPropertyCompletions(scriptName, properties)
+										completions.extend(properties)
+										if not functions:
+											functions = []
+											for name, obj in script.functions.items():
+												functions.append(SublimePapyrus.MakeFunctionCompletion(obj, self.sem))
+												self.SetFunctionCompletions(scriptName, functions)
+										completions.extend(functions)
 			else: # Objects from the script that is being edited
 				try:
 					self.sem.Process(statements, SublimePapyrus.GetSourcePaths(view), line)
