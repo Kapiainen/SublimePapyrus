@@ -168,6 +168,10 @@ Single file build system and a batch build variant.
     - SKSE mod event names
 
 ## **Changelog**
+Version 1.0.4 - 2016/03/05:
+  - Fixed a bug in the linter related to casting from arrays to other types.
+  - Fixed a bug that caused certain completions to be suggested outside of function/event definitions when they should not.
+
 Version 1.0.3 - 2016/03/05:
   - Added completions for Find and RFind functions for arrays.
   - Added missing return type in the description of the GetState function's completion.
