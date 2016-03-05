@@ -2202,7 +2202,9 @@ class Semantic(SharedResources):
 		elif node.type == self.NODE_BINARYOPERATOR:
 			if node.data.operator.type == self.KW_AS:
 				leftResult = self.NodeVisitor(node.data.leftOperand, expected)
-				rightResult = node.data.rightOperand.data.token.value
+				rightResult = node.data.rightOperand.data.token.value.upper()
+				if "[]" in leftResult and rightResult != self.KW_STRING and rightResult != self.KW_BOOL:
+					self.Abort("Arrays can only be cast to STRING and BOOL.")
 				result = rightResult
 			elif node.data.operator.type == self.OP_DOT:
 				leftResult = self.NodeVisitor(node.data.leftOperand, expected)
@@ -2244,21 +2246,21 @@ class Semantic(SharedResources):
 	def CanAutoCast(self, src, dest):
 		if not src or not dest:
 			return False
+		if dest == self.KW_BOOL:
+			return True
+		elif dest == self.KW_STRING:
+			return True
 		if "[]" in src:
 			return False
 		elif "[]" in dest:
 			return False
-		if dest == self.KW_BOOL:
-			return True
-		elif dest == self.KW_INT:
+		if dest == self.KW_INT:
 			return False
 		elif dest == self.KW_FLOAT:
 			if src == self.KW_INT:
 				return True
 			else:
 				return False
-		elif dest == self.KW_STRING:
-			return True
 		else:
 			if src == self.KW_NONE:
 				return True
