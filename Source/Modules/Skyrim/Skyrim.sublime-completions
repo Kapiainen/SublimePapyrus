@@ -2,7 +2,9 @@
 	"scope": "source.papyrus.skyrim",
 	"completions":
 	[
-		{"trigger": "getstate\tfunc.", "contents": "GetState()"},
+		{"trigger": "find\tint func.", "contents": "Find(${1:Type akElement}, ${2:Int aiStartIndex = 0})"},
+		{"trigger": "rfind\tint func.", "contents": "RFind(${1:Type akElement}, ${2:Int aiStartIndex = -1})"},
+		{"trigger": "getstate\tstring func.", "contents": "GetState()"},
 		{"trigger": "gotostate\tfunc.", "contents": "GoToState(${1:String asState})"},
 		{"trigger": "onbeginstate\tevent", "contents": "Event OnBeginState()\n\t${0}\nEndEvent"},
 		{"trigger": "onendstate\tevent", "contents": "Event OnEndState()\n\t${0}\nEndEvent"},

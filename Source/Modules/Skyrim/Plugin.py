@@ -350,23 +350,26 @@ class EventListener(sublime_plugin.EventListener):
 					return Exit()
 				except Linter.Cancel as e:
 					scriptName = None
-					if stat:
-						if stat.type == self.sem.STAT_EXPRESSION:
-							scriptName = self.sem.NodeVisitor(stat.data.expression)
-						elif stat.type == self.sem.STAT_ASSIGNMENT:
-							scriptName = self.sem.NodeVisitor(stat.data.rightExpression)
-						elif stat.type == self.sem.STAT_VARIABLEDEF:
-							scriptName = self.sem.NodeVisitor(stat.data.value)
-						elif stat.type == self.sem.STAT_IF:
-							scriptName = self.sem.NodeVisitor(stat.data.expression)
-						elif stat.type == self.sem.STAT_ELSEIF:
-							scriptName = self.sem.NodeVisitor(stat.data.expression)
-						elif stat.type == self.sem.STAT_WHILE:
-							scriptName = self.sem.NodeVisitor(stat.data.expression)
-						elif stat.type == self.sem.STAT_RETURN:
-							scriptName = self.sem.NodeVisitor(stat.data.expression)
-					elif expr:
-						scriptName = self.sem.NodeVisitor(expr)
+					try:
+						if stat:
+							if stat.type == self.sem.STAT_EXPRESSION:
+								scriptName = self.sem.NodeVisitor(stat.data.expression)
+							elif stat.type == self.sem.STAT_ASSIGNMENT:
+								scriptName = self.sem.NodeVisitor(stat.data.rightExpression)
+							elif stat.type == self.sem.STAT_VARIABLEDEF:
+								scriptName = self.sem.NodeVisitor(stat.data.value)
+							elif stat.type == self.sem.STAT_IF:
+								scriptName = self.sem.NodeVisitor(stat.data.expression)
+							elif stat.type == self.sem.STAT_ELSEIF:
+								scriptName = self.sem.NodeVisitor(stat.data.expression)
+							elif stat.type == self.sem.STAT_WHILE:
+								scriptName = self.sem.NodeVisitor(stat.data.expression)
+							elif stat.type == self.sem.STAT_RETURN:
+								scriptName = self.sem.NodeVisitor(stat.data.expression)
+						elif expr:
+							scriptName = self.sem.NodeVisitor(expr)
+					except Linter.SemanticError as e:
+						return Exit()
 					if scriptName:
 						if scriptName == self.sem.KW_SELF:
 							for scope in e.functions:
@@ -375,6 +378,10 @@ class EventListener(sublime_plugin.EventListener):
 										completions.append(SublimePapyrus.MakeFunctionCompletion(obj, self.sem))
 									elif obj.type == self.sem.STAT_EVENTDEF:
 										completions.append(SublimePapyrus.MakeEventCompletion(obj, self.sem))
+						elif "[]" in scriptName:
+							typ = scriptName[:-2].capitalize()
+							completions.append(("find\tint func.", "Find(${1:%s akElement}, ${2:Int aiStartIndex = 0})" % typ,))
+							completions.append(("rfind\tint func.", "RFind(${1:%s akElement}, ${2:Int aiStartIndex = -1})" % typ,))
 						else:
 							properties = self.GetPropertyCompletions(scriptName)
 							functions = self.GetFunctionCompletions(scriptName)
@@ -512,7 +519,7 @@ class EventListener(sublime_plugin.EventListener):
 			("return\tstat.", "Return ${1:$SELECTION}",),
 			("while\twhile-loop", "While(${1:$SELECTION})\n\t${0}\nEndWhile",),
 			("for\tpseudo for-loop", "Int ${1:iCount} = 0\nWhile(${1:iCount} < ${2:maxSize})\n\t${0}\n\t${1:iCount} += 1\nEndWhile",),
-			("getstate\tfunc.", "GetState()",),
+			("getstate\tstring func.", "GetState()",),
 			("gotostate\tfunc.", "GoToState(${1:String asState})",),
 			("onbeginstate\tevent", "OnBeginState()",),
 			("onendstate\tevent", "OnEndState()",),
