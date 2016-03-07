@@ -173,7 +173,7 @@ class Lexical(SharedResources):
 			(self.OP_MULTIPLICATION, r"\*"),
 			(self.OP_DIVISION, r"/"),
 			(self.OP_MODULUS, r"%"),
-			(self.STRING, r"\"[^\"]*?\""),
+			(self.STRING, r"\".*?(?:(?<=\\\\)\"|(?<!\\)\")"),
 			(self.NEWLINE, r"[\n\r]"),
 			(self.WHITESPACE, r"[ \t]"),
 			(self.UNMATCHED, r"."),
