@@ -187,7 +187,7 @@ class EventListener(sublime_plugin.EventListener):
 		self.linterRunning = True # Block further attempts to run the linter until this instance has finished
 		if view:
 			SublimePapyrus.ClearLinterHighlights(view)
-		#start = time.time()
+		#start = None
 		error = False
 		def Exit():
 			#print("Linter: Finished in %f milliseconds and releasing lock..." % ((time.time()-start)*1000.0))
@@ -277,14 +277,15 @@ class EventListener(sublime_plugin.EventListener):
 			return
 		self.completionRunning = True
 		SublimePapyrus.ClearLinterHighlights(view)
-		start = time.time()
+		#start = None
 		def Exit():
+			#print("Completions: Finished in %f milliseconds and releasing lock..." % ((time.time()-start)*1000.0))
 			self.completionRunning = False
 			return None
 		completions = []
 		flags = None
 		with self.cacheLock:
-			start = time.time()
+			#start = time.time()
 			fileName = view.file_name()
 			if not fileName:
 				return Exit()
@@ -496,7 +497,6 @@ class EventListener(sublime_plugin.EventListener):
 				completions.extend(scripts)
 			#completions.extend(self.GetBaseKeywordCompletions())
 		Exit()
-		#print("Completions: Finished in %f milliseconds and releasing lock..." % ((time.time()-start)*1000.0))
 		return completions
 
 	def GetBaseFunctionBlockCompletions(self):
