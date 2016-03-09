@@ -210,14 +210,11 @@ class EventListener(sublime_plugin.EventListener):
 					scriptContents = self.scriptContents
 				lines = []
 				tokens = []
-				skip = False
 				try:
 					for token in self.lex.Process(scriptContents):
 						if token.type == self.lex.NEWLINE:
-							if not skip:
-								if tokens:
-									lines.append(tokens)
-							skip = False
+							if tokens:
+								lines.append(tokens)
 							tokens = []
 						else:
 							tokens.append(token)
@@ -261,7 +258,6 @@ class EventListener(sublime_plugin.EventListener):
 								SublimePapyrus.ShowMessage("Semantic error on line %d: %s" % (e.line, e.message))
 								if settings.get("linter_panel_error_messages", False):
 									view.window().show_quick_panel([[e.message, "Line %d" % e.line]], None)
-							error = True
 							return Exit()
 						except Linter.Cancel as e:
 							pass
