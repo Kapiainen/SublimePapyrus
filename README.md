@@ -102,15 +102,24 @@ Settings are located in *Preferences* > *Package Settings* > *SublimePapyrus*.
 Syntax highlighting for the version of Papyrus that is used in ***The Elder Scrolls V: Skyrim***.
 
 #### Linter
+Requirements:
+- The linter has to be enabled in the settings.
+- The script that is being edited to have been saved as a file.
+
 The linter performs lexical, syntactic, and semantic analysis on the source code of scripts as they are being edited. Lines that cause errors are highlighted and the error messages are shown as status messages (bottom left corner of Sublime Text).
 
-Caching is used by the linter in order to improve performance and cache invalidation only exists for a few scenarios. Modifications to the import folders setting (e.g. changing the order of paths) requires a restart of Sublime Text in order to clear the cache and ensure that the right scripts are being used.
+Caching is used by the linter in order to improve performance and cache invalidation only occurs in a few scenarios. Modifications to the import folders setting (e.g. changing the order of paths) requires a restart of Sublime Text in order to clear the cache and ensure that the right scripts are being used.
 
 The linter does work in Sublime Text 2, but error messages and highlighting is not possible due to technical limitations, which do not apply to Sublime Text 3, regarding the API in Sublime Text 2 when the linter is triggered by editing a script. Error messages and highlighting is possible in Sublime Text 2 when the linter is triggered by saving a script.
 
 Information about settings relevant to the linter can be found **[here](#settings)**.
 
 #### Intelligent code completion
+Requirements:
+- The system has to be enabled in the settings.
+- The same requirements as in the case of the linter.
+- The script has to have been processed by the linter.
+
 The intelligent code completion system utilizes the linter to produce suggestions in a context-aware manner. This system can:
 - Return completions for all functions, events, properties, and variables (including function/event parameters) that exist within the scope of the line that is being edited. This includes functions, events, and properties that have been inherited from a parent script, if a parent script has been defined.
 
@@ -168,6 +177,9 @@ Single file build system and a batch build variant.
     - SKSE mod event names
 
 ## **Changelog**
+Version 1.0.6 - 2016/03/09:
+  - Fixed an issue that produced incorrect completions for array parameters in function and event completions.
+
 Version 1.0.5 - 2016/03/08:
   - Fixed string literal regex in the linter.
 
