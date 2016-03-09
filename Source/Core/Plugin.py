@@ -276,7 +276,7 @@ def MakeFunctionCompletion(stat, sem, calling = True, script = ""):
 					if param.expression:
 						content = content + "${%d:%s[] %s = %s}, " % (i, param.type, param.identifier, sem.GetLiteral(param.expression, True))
 					else:
-						content = content + "${%d:%s %s}, " % (i, param.typeIdentifier, param.identifier)
+						content = content + "${%d:%s[] %s}, " % (i, param.typeIdentifier, param.identifier)
 				else:
 					if param.expression:
 						content = content + "${%d:%s %s = %s}, " % (i, param.typeIdentifier, param.identifier, sem.GetLiteral(param.expression, True))
@@ -296,7 +296,7 @@ def MakeFunctionCompletion(stat, sem, calling = True, script = ""):
 					if param.expression:
 						content = content + "${%d:%s[] %s = %s}, " % (i, param.typeIdentifier, param.identifier, sem.GetLiteral(param.expression, True))
 					else:
-						content = content + "${%d:%s %s}, " % (i, param.typeIdentifier, param.identifier)
+						content = content + "${%d:%s[] %s}, " % (i, param.typeIdentifier, param.identifier)
 				else:
 					if param.expression:
 						content = content + "${%d:%s %s = %s}, " % (i, param.typeIdentifier, param.identifier, sem.GetLiteral(param.expression, True))
@@ -334,7 +334,7 @@ def MakeEventCompletion(stat, sem, calling = True, script = ""):
 					if param.expression:
 						content = content + "${%d:%s[] %s = %s}, " % (i, param.typeIdentifier, param.identifier, sem.GetLiteral(param.expression, True))
 					else:
-						content = content + "${%d:%s %s}, " % (i, param.typeIdentifier, param.identifier)
+						content = content + "${%d:%s[] %s}, " % (i, param.typeIdentifier, param.identifier)
 				else:
 					if param.expression:
 						content = content + "${%d:%s %s = %s}, " % (i, param.typeIdentifier, param.identifier, sem.GetLiteral(param.expression, True))
@@ -354,7 +354,7 @@ def MakeEventCompletion(stat, sem, calling = True, script = ""):
 					if param.expression:
 						content = content + "${%d:%s[] %s = %s}, " % (i, param.typeIdentifier, param.identifier, sem.GetLiteral(param.expression, True))
 					else:
-						content = content + "${%d:%s %s}, " % (i, param.typeIdentifier, param.identifier)
+						content = content + "${%d:%s[] %s}, " % (i, param.typeIdentifier, param.identifier)
 				else:
 					if param.expression:
 						content = content + "${%d:%s %s = %s}, " % (i, param.typeIdentifier, param.identifier, sem.GetLiteral(param.expression, True))
