@@ -38,9 +38,10 @@ class SublimePapyrusSkyrimGenerateCompletionsCommand(sublime_plugin.WindowComman
 					self.window.show_quick_panel(self.paths, self.on_select, 0, -1, None)
 
 	def on_select(self, index):
-		self.path = self.paths[index]
-		thread = threading.Thread(target=self.generate_completions)
-		thread.start()
+		if index >= 0:
+			self.path = self.paths[index]
+			thread = threading.Thread(target=self.generate_completions)
+			thread.start()
 
 	def generate_completions(self):
 		outputFolder = os.path.join(sublime.packages_path(), "User")
