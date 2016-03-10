@@ -177,6 +177,10 @@ Single file build system and a batch build variant.
     - SKSE mod event names
 
 ## **Changelog**
+Version 1.0.7 - 2016/03/10:
+  - Fixed a bug in the 'Generate completions' command.
+  - Linter optimizations.
+
 Version 1.0.6 - 2016/03/09:
   - Fixed an issue that produced incorrect completions for array parameters in function and event completions.
 
