@@ -1,4 +1,3 @@
-#import sublime, sublime_plugin, os, re, sys, collections
 import os, re, sys, collections
 
 # General #########################################################################################
@@ -118,7 +117,13 @@ class SharedResources(object):
 		self.DEFINITION_STATE = "DEFINITION_STATE"
 
 # Lexical analysis ################################################################################
-Token = collections.namedtuple("Token", ["type", "value", "line", "column"])
+class Token(object):
+	__slots__ = ["type", "value", "line", "column"]
+	def __init__(self, aType, aValue, aLine, aColumn):
+		self.type = aType
+		self.value = aValue
+		self.line = aLine
+		self.column = aColumn
 
 class LexicalError(Exception):
 	def __init__(self, message, line, column):
@@ -267,38 +272,192 @@ class LimitedLexical(Lexical):
 		pass
 
 # Syntactic analysis ##############################################################################
-# Statement types
-Statement = collections.namedtuple("Statement", ["type", "line", "data"])
-Keyword = collections.namedtuple("Keyword", ["type"])
-Scriptheader = collections.namedtuple("Scriptheader", ["name", "parent", "flags"])
-Import = collections.namedtuple("Import", ["name"])
-FunctionDef = collections.namedtuple("FunctionDef", ["type", "typeIdentifier", "array", "name", "identifier", "parameters", "flags"])
-EventDef = collections.namedtuple("EventDef", ["type", "name", "identifier", "parameters", "flags"])
-ParameterDef = collections.namedtuple("ParameterDef", ["type", "typeIdentifier", "array", "name", "identifier", "expression"])
-If = collections.namedtuple("If", ["expression"])
-ElseIf = collections.namedtuple("ElseIf", ["expression"])
-While = collections.namedtuple("While", ["expression"])
-VariableDef = collections.namedtuple("VariableDef", ["type", "typeIdentifier", "array", "name", "identifier", "value", "flags"])
-PropertyDef = collections.namedtuple("PropertyDef", ["type", "typeIdentifier", "array", "name", "identifier", "value", "flags"])
-Return = collections.namedtuple("Return", ["expression"])
-Documentation = collections.namedtuple("Documentation", ["value"])
-StateDef = collections.namedtuple("StateDef", ["name", "auto"])
-Expression = collections.namedtuple("Expression", ["expression"])
-Assignment = collections.namedtuple("Assignment", ["operator", "leftExpression", "rightExpression"])
+class Statement(object):
+	__slots__ = ["type", "line", "data"]
+	def __init__(self, aType, aLine, aData):
+		self.type = aType
+		self.line = aLine
+		self.data = aData
+
+class Keyword(object):
+	__slots__ = ["type"]
+	def __init__(self, aType):
+		self.type = aType
+
+class Scriptheader(object):
+	__slots__ = ["name", "parent", "flags"]
+	def __init__(self, aName, aParent, aFlags):
+		self.name = aName
+		self.parent = aParent
+		self.flags = aFlags
+
+class Import(object):
+	__slots__ = ["name"]
+	def __init__(self, aName):
+		self.name = aName
+
+class FunctionDef(object):
+	__slots__ = ["type", "typeIdentifier", "array", "name", "identifier", "parameters", "flags"]
+	def __init__(self, aType, aTypeIdentifier, aArray, aName, aIdentifier, aParameters, aFlags):
+		self.type = aType
+		self.typeIdentifier = aTypeIdentifier
+		self.array = aArray
+		self.name = aName
+		self.identifier = aIdentifier
+		self.parameters = aParameters
+		self.flags = aFlags
+
+class EventDef(object):
+	__slots__ = ["type", "name", "identifier", "parameters", "flags"]
+	def __init__(self, aType, aName, aIdentifier, aParameters, aFlags):
+		self.type = aType
+		self.name = aName
+		self.identifier = aIdentifier
+		self.parameters = aParameters
+		self.flags = aFlags
+
+class ParameterDef(object):
+	__slots__ = ["type", "typeIdentifier", "array", "name", "identifier", "expression"]
+	def __init__(self, aType, aTypeIdentifier, aArray, aName, aIdentifier, aExpression):
+		self.type = aType
+		self.typeIdentifier = aTypeIdentifier
+		self.array = aArray
+		self.name = aName
+		self.identifier = aIdentifier
+		self.expression = aExpression
+
+class If(object):
+	__slots__ = ["expression"]
+	def __init__(self, aExpression):
+		self.expression = aExpression
+
+class ElseIf(object):
+	__slots__ = ["expression"]
+	def __init__(self, aExpression):
+		self.expression = aExpression
+
+class While(object):
+	__slots__ = ["expression"]
+	def __init__(self, aExpression):
+		self.expression = aExpression
+
+class VariableDef(object):
+	__slots__ = ["type", "typeIdentifier", "array", "name", "identifier", "value", "flags"]
+	def __init__(self, aType, aTypeIdentifier, aArray, aName, aIdentifier, aValue, aFlags):
+		self.type = aType
+		self.typeIdentifier = aTypeIdentifier
+		self.array = aArray
+		self.name = aName
+		self.identifier = aIdentifier
+		self.value = aValue
+		self.flags = aFlags
+
+class PropertyDef(object):
+	__slots__ = ["type", "typeIdentifier", "array", "name", "identifier", "value", "flags"]
+	def __init__(self, aType, aTypeIdentifier, aArray, aName, aIdentifier, aValue, aFlags):
+		self.type = aType
+		self.typeIdentifier = aTypeIdentifier
+		self.array = aArray
+		self.name = aName
+		self.identifier = aIdentifier
+		self.value = aValue
+		self.flags = aFlags
+
+class Return(object):
+	__slots__ = ["expression"]
+	def __init__(self, aExpression):
+		self.expression = aExpression
+
+class Documentation(object):
+	__slots__ = ["value"]
+	def __init__(self, aValue):
+		self.value = aValue
+
+class StateDef(object):
+	__slots__ = ["name", "auto"]
+	def __init__(self, aName, aAuto):
+		self.name = aName
+		self.auto = aAuto
+
+class Expression(object):
+	__slots__ = ["expression"]
+	def __init__(self, aExpression):
+		self.expression = aExpression
+
+class Assignment(object):
+	__slots__ = ["operator", "leftExpression", "rightExpression"]
+	def __init__(self, aOperator, aLeftExpression, aRightExpression):
+		self.operator = aOperator
+		self.leftExpression = aLeftExpression
+		self.rightExpression = aRightExpression
 
 # Abstract syntax tree node types
-Node = collections.namedtuple("Node", ["type", "data"])
-BinaryOperatorNode = collections.namedtuple("BinaryOperatorNode", ["operator", "leftOperand", "rightOperand"])
-UnaryOperatorNode = collections.namedtuple("UnaryOperatorNode", ["operator", "operand"])
-ExpressionNode = collections.namedtuple("ExpressionNode", ["child"])
-ArrayAtomNode = collections.namedtuple("ArrayAtomNode", ["child", "expression"])
-ArrayFuncOrIdNode = collections.namedtuple("ArrayFuncOrIdNode", ["child", "expression"])
-ConstantNode = collections.namedtuple("ConstantNode", ["token"])
-FunctionCallNode = collections.namedtuple("FunctionCallNode", ["name", "arguments"])
-FunctionCallArgument = collections.namedtuple("FunctionCallArgument", ["name", "expression"])
-IdentifierNode = collections.namedtuple("IdentifierNode", ["token"])
-LengthNode = collections.namedtuple("LengthNode", [])
-ArrayCreationNode = collections.namedtuple("ArrayCreationNode", ["typeToken", "sizeToken"])
+class Node(object):
+	__slots__ = ["type", "data"]
+	def __init__(self, aType, aData):
+		self.type = aType
+		self.data = aData
+
+class BinaryOperatorNode(object):
+	__slots__ = ["operator", "leftOperand", "rightOperand"]
+	def __init__(self, aOperator, aLeftOperand, aRightOperand):
+		self.operator = aOperator
+		self.leftOperand = aLeftOperand
+		self.rightOperand = aRightOperand
+
+class UnaryOperatorNode(object):
+	__slots__ = ["operator", "operand"]
+	def __init__(self, aOperator, aOperand):
+		self.operator = aOperator
+		self.operand = aOperand
+
+class ExpressionNode(object):
+	__slots__ = ["child"]
+	def __init__(self, aChild):
+		self.child = aChild
+
+class ArrayAtomNode(object):
+	__slots__ = ["child", "expression"]
+	def __init__(self, aChild, aExpression):
+		self.child = aChild
+		self.expression = aExpression
+
+class ArrayFuncOrIdNode(object):
+	__slots__ = ["child", "expression"]
+	def __init__(self, aChild, aExpression):
+		self.child = aChild
+		self.expression = aExpression
+
+class ConstantNode(object):
+	__slots__ = ["token"]
+	def __init__(self, aToken):
+		self.token = aToken
+
+class FunctionCallNode(object):
+	__slots__ = ["name", "arguments"]
+	def __init__(self, aName, aArguments):
+		self.name = aName
+		self.arguments = aArguments
+
+class FunctionCallArgument(object):
+	__slots__ = ["name", "expression"]
+	def __init__(self, aName, aExpression):
+		self.name = aName
+		self.expression = aExpression
+
+class IdentifierNode(object):
+	__slots__ = ["token"]
+	def __init__(self, aToken):
+		self.token = aToken
+
+class LengthNode(object):
+	__slots__ = []
+
+class ArrayCreationNode(object):
+	__slots__ = ["typeToken", "sizeToken"]
+	def __init__(self, aTypeToken, aSizeToken):
+		self.typeToken = aTypeToken
+		self.sizeToken = aSizeToken
 
 class SyntacticError(Exception):
 	def __init__(self, message, line):
@@ -324,13 +483,14 @@ class Syntactic(SharedResources):
 			self.token_index = 0
 			self.stat = None
 			self.token = self.tokens[0]
+			self.token_count = len(self.tokens)
 			if self.Statement() >= 0:
 				return self.stat
 		return None
 
 	def Consume(self):
 		self.token_index = self.token_index + 1
-		if self.token_index < len(self.tokens):
+		if self.token_index < self.token_count:
 			self.token = self.tokens[self.token_index]
 			return True
 		else:
@@ -344,6 +504,12 @@ class Syntactic(SharedResources):
 		else:
 			return False
 
+	def Peek(self, amount = 1):
+		if self.token_index < self.token_count-amount:
+			return self.tokens[self.token_index+amount]
+		else:
+			return None
+
 	def Expect(self, asType):
 		if self.Accept(asType):
 			return True
@@ -354,7 +520,7 @@ class Syntactic(SharedResources):
 				self.Abort("Expected symbol '%s'." % (asType))
 
 	def TokensRemaining(self):
-		return self.token_index < len(self.tokens)
+		return self.token_index < self.token_count
 
 	def GetIndex(self):
 		return self.token_index
@@ -487,44 +653,77 @@ class Syntactic(SharedResources):
 		line = -1
 		if self.token:
 			line = self.token.line
-		if self.If():
-			pass
-		elif self.ElseIf():
-			pass
-		elif self.Accept(self.KW_ELSE):
+		if self.token.type == self.KW_IF:
+			self.If()
+		elif self.token.type == self.KW_ELSEIF:
+			self.ElseIf()
+		elif self.token.type == self.KW_ELSE:
+			self.Accept(self.KW_ELSE)
 			self.stat = self.keywordstat(line)
-		elif self.Accept(self.KW_ENDIF):
+		elif self.token.type == self.KW_ENDIF:
+			self.Accept(self.KW_ENDIF)
 			self.stat = self.keywordstat(line)
-		elif self.While():
-			pass
-		elif self.Accept(self.KW_ENDWHILE):
+		elif self.token.type == self.KW_WHILE:
+			self.While()
+		elif self.token.type == self.KW_ENDWHILE:
+			self.Accept(self.KW_ENDWHILE)
 			self.stat = self.keywordstat(line)
-		elif self.Attempt(self.VariableDef):
-			pass
-		elif self.Return():
-			pass
-		elif self.Import():
-			pass
-		elif self.Attempt(self.FunctionDef):
-			pass
-		elif self.Accept(self.KW_ENDFUNCTION):
+		elif self.token.type == self.IDENTIFIER or self.token.type == self.KW_BOOL or self.token.type == self.KW_FLOAT or self.token.type == self.KW_INT or self.token.type == self.KW_STRING:
+			nextToken = self.Peek()
+			if nextToken and nextToken.type == self.LEFT_BRACKET:
+				nextToken = self.Peek(2)
+				if nextToken and nextToken.type == self.RIGHT_BRACKET:
+					nextToken = self.Peek(3)
+					if not nextToken:
+						self.Abort("Expected FUNCTION, PROPERTY, or an identifier.", self.token.line)
+					if nextToken.type == self.KW_FUNCTION:
+						self.FunctionDef()
+					elif nextToken.type == self.KW_PROPERTY:
+						self.PropertyDef()
+					elif nextToken.type == self.IDENTIFIER:
+						self.VariableDef()
+					else:
+						self.ExpressionOrAssignment()
+				else:
+					self.ExpressionOrAssignment()
+			elif nextToken:
+				if nextToken.type == self.KW_FUNCTION:
+					self.FunctionDef()
+				elif nextToken.type == self.KW_PROPERTY:
+					self.PropertyDef()
+				elif nextToken.type == self.IDENTIFIER:
+					self.VariableDef()
+				else:
+					self.ExpressionOrAssignment()
+			else:
+				self.ExpressionOrAssignment()
+		elif self.token.type == self.KW_FUNCTION:
+			self.FunctionDef()
+		elif self.token.type == self.KW_RETURN:
+			self.Return()
+		elif self.token.type == self.KW_IMPORT:
+			self.Import()
+		elif self.token.type == self.KW_ENDFUNCTION:
+			self.Accept(self.KW_ENDFUNCTION)
 			self.stat = self.keywordstat(line)
-		elif self.EventDef():
-			pass
-		elif self.Accept(self.KW_ENDEVENT):
+		elif self.token.type == self.KW_EVENT:
+			self.EventDef()
+		elif self.token.type == self.KW_ENDEVENT:
+			self.Accept(self.KW_ENDEVENT)
 			self.stat = self.keywordstat(line)
-		elif self.Attempt(self.PropertyDef):
-			pass
-		elif self.Accept(self.KW_ENDPROPERTY):
+		elif self.token.type == self.KW_ENDPROPERTY:
+			self.Accept(self.KW_ENDPROPERTY)
 			self.stat = self.keywordstat(line)
-		elif self.Accept(self.DOCUMENTATION_STRING):
+		elif self.token.type == self.DOCUMENTATION_STRING:
+			self.Accept(self.DOCUMENTATION_STRING)
 			self.stat = Statement(self.STAT_DOCUMENTATION, line, Documentation(self.GetPreviousValue()))
-		elif self.Attempt(self.State):
-			pass
-		elif self.Accept(self.KW_ENDSTATE):
+		elif self.token.type == self.KW_STATE or (self.token.type == self.KW_AUTO and self.Peek().type == self.KW_STATE):
+			self.State()
+		elif self.token.type == self.KW_ENDSTATE:
+			self.Accept(self.KW_ENDSTATE)
 			self.stat = self.keywordstat(line)
-		elif self.ScriptHeader():
-			pass
+		elif self.token.type == self.KW_SCRIPTNAME:
+			self.ScriptHeader()
 		elif self.ExpressionOrAssignment():
 			pass
 		if self.Accept(self.NEWLINE): # End of line
@@ -669,7 +868,7 @@ class Syntactic(SharedResources):
 						pass
 					return False
 			else:
-				self.stat =  Statement(self.STAT_RETURN, self.GetPreviousLine(), Return(None))
+				self.stat = Statement(self.STAT_RETURN, self.GetPreviousLine(), Return(None))
 			return True
 		else:
 			return False
@@ -1143,7 +1342,13 @@ class LimitedSyntactic(Syntactic):
 		return 0
 
 # Semantic analysis ###############################################################################
-CachedScript = collections.namedtuple("CachedScript", ["extends", "properties", "functions", "states"])
+class CachedScript(object):
+	__slots__ = ["extends", "properties", "functions", "states"]
+	def __init__(self, aExtends, aProperties, aFunctions, aStates):
+		self.extends = aExtends
+		self.properties = aProperties
+		self.functions = aFunctions
+		self.states = aStates
 
 class SemanticError(Exception):
 	def __init__(self, message, line):
@@ -1181,35 +1386,6 @@ class Semantic(SharedResources):
 			return result
 		else:
 			return None
-
-#	Cache (dict) of statements for each processed file. Scriptname as key.
-#	First pass to process scriptwide items
-#	Second pass to process local items
-#	Import, type, property, function, and event declarations lead to attempts to cache scripts, if they have not yet been cached.
-#
-#	NodeVisitor traverses the parse tree and does type and scope checking
-#		If an identifier does not match any known variable, property, nor function/event parameter, then look for a script by that name and cache it.
-#			A function might be declared and the return type would have to be figured out.
-#
-#	Identifiers
-#		List of dicts (NAME: STATEMENT)
-#		Variables/properties
-#			[0] = inherited
-#			[1] = scriptwide
-#			[N] = local scope
-#
-#		Functions/events
-#			[0] = inherited
-#			[1] = scriptwide
-#			[2] = state
-#
-#		States
-#			[0] = inherited
-#			[1] = scriptwide
-#
-#	Completion
-#		Get list of available variables/properties and functions/events in the current scope
-#		Get cached scripts to add to the completions cache
 
 	# Variables and properties
 	def PushVariableScope(self):
@@ -1398,29 +1574,32 @@ class Semantic(SharedResources):
 					lines = []
 					tokens = []
 					skip = False
-					for token in self.lex.Process(scriptContents):
-						if token.type == self.lex.NEWLINE:
-							if not skip:
-								if tokens:
-									lines.append(tokens)
-							skip = False
-							tokens = []
-						elif token.type == self.lex.UNMATCHED:
-							skip = True
-						else:
-							tokens.append(token)
-					self.syn.error_line = None
+					try:
+						for token in self.lex.Process(scriptContents):
+							if token.type == self.lex.NEWLINE:
+								if not skip:
+									if tokens:
+										lines.append(tokens)
+								skip = False
+								tokens = []
+							elif token.type == self.lex.UNMATCHED:
+								skip = True
+							else:
+								tokens.append(token)
+					except LexicalError as e:
+						return False
 					extends = []
 					functions = {}
 					properties = {}
 					states = {}
 					statements = []
-					for line in lines:
-						stat = self.syn.Process(line)
-						if stat:
-							statements.append(stat)
-						elif self.syn.error_line:
-							pass
+					try:
+						for line in lines:
+							stat = self.syn.Process(line)
+							if stat:
+								statements.append(stat)
+					except SyntacticError as e:
+						return False
 					header = False
 					if statements[0].type == self.STAT_SCRIPTHEADER:
 						if statements[0].data.parent:
