@@ -117,11 +117,9 @@ class EventListener(sublime_plugin.EventListener):
 	# Clear cache in order to force an update
 	def on_close(self, view):
 		if self.IsValidScope(view):
-			filePath = view.file_name()
-			if filePath:
-				folderPath, fileName = os.path.split(filePath)
-				scriptName = fileName[:fileName.rfind(".")].upper()
-				self.ClearStatementCache(scriptName)
+			bufferID = view.buffer_id()
+			if bufferID:
+				self.ClearStatementCache(bufferID)
 
 	# Linter
 	def on_post_save(self, view):
@@ -150,10 +148,14 @@ class EventListener(sublime_plugin.EventListener):
 		if self.IsValidScope(view):
 			settings = SublimePapyrus.GetSettings()
 			if settings and settings.get("intelligent_code_completion", True):
-				completions = self.Completions(view, prefix, locations)
-				if completions == None:
-					completions = []
-				completions.extend(self.GetBaseKeywordCompletions())
+				completions = None
+				if not view.find("scriptname", 0, sublime.IGNORECASE):
+					completions = [("scriptname\tscript header definition", "ScriptName ${0:Name}",)]
+				else:
+					completions = self.Completions(view, prefix, locations)
+					if completions == None:
+						completions = []
+					completions.extend(self.GetBaseKeywordCompletions())
 				completions = (list(set(completions)), sublime.INHIBIT_WORD_COMPLETIONS|sublime.INHIBIT_EXPLICIT_COMPLETIONS,)
 				return completions
 
@@ -167,8 +169,8 @@ class EventListener(sublime_plugin.EventListener):
 			delay = settings.get("linter_delay", 500)/1000.0
 			if delay < 0.050:
 				delay = 0.050
-		self.fileName = view.file_name()
-		if self.fileName:
+		self.bufferID = view.buffer_id()
+		if self.bufferID:
 			if PYTHON_VERSION[0] == 2:
 				self.scriptContents = view.substr(sublime.Region(0, view.size()))			
 				self.sourcePaths = SublimePapyrus.GetSourcePaths(view)
@@ -242,7 +244,7 @@ class EventListener(sublime_plugin.EventListener):
 									view.window().show_quick_panel([[e.message, "Line %d" % e.line]], None)
 							error = True
 					if statements:
-						self.SetStatements(self.fileName, statements[:]) # Cache a copy of the statements
+						self.SetStatements(self.bufferID, statements[:]) # Cache a copy of the statements
 					else:
 						return Exit()
 					if error:
@@ -283,10 +285,10 @@ class EventListener(sublime_plugin.EventListener):
 		flags = None
 		with self.cacheLock:
 			#start = time.time()
-			fileName = view.file_name()
-			if not fileName:
+			bufferID = view.buffer_id()
+			if not bufferID:
 				return Exit()
-			statements = self.GetStatements(fileName)
+			statements = self.GetStatements(bufferID)
 			if not statements:
 				SublimePapyrus.ShowMessage("Run linter once to generate statements for the completion system to use...")
 				return Exit()
@@ -486,13 +488,13 @@ class EventListener(sublime_plugin.EventListener):
 					scripts = []
 					paths = SublimePapyrus.GetSourcePaths(view)
 					for path in paths:
-						files = [f for f in os.listdir(path) if ".psc" in f]
-						for file in files:
-							scripts.append(("%s\tscript" % file[:-4].lower(), "%s" % file[:-4]))
+						if os.path.isdir(path):
+							files = [f for f in os.listdir(path) if ".psc" in f]
+							for file in files:
+								scripts.append(("%s\tscript" % file[:-4].lower(), "%s" % file[:-4]))
 					scripts = list(set(scripts))
 					self.SetTypeCompletions(scripts)
 				completions.extend(scripts)
-			#completions.extend(self.GetBaseKeywordCompletions())
 		Exit()
 		return completions
 
@@ -546,12 +548,13 @@ class EventListener(sublime_plugin.EventListener):
 		return [
 			("auto\tkeyword", "Auto",),
 			("autoreadonly\tkeyword", "AutoReadOnly",),
+			("conditional\tkeyword", "Conditional",),
+			("extends\tkeyword", "Extends ${0}",),
 			("global\tkeyword", "Global",),
 			("import\timport script", "Import ${1:$SELECTION}",),
 			("native\tkeyword", "Native",),
 			("property\tproperty definition", "${1:Type} Property ${2:PropertyName} ${3:Auto}",),
 			("fullproperty\tfull property definition", "${1:Type} Property ${2:PropertyName}\n\t${1:Type} Function Get()\n\t\t${3}\n\tEndFunction\n\n\tFunction Set(${1:Type} Variable)\n\t\t${4}\n\tEndFunction\nEndProperty",),
-			("scriptname\tscript header definition", "ScriptName ${1:Name} ${2:Extends} ${3:Parent}",),
 			("autostate\tauto state definition", "Auto State ${1:state}\n\t$0\nEndState",),
 			("state\tstate definition", "State ${1:$SELECTION}\n\t${0}\nEndState",)
 		]
