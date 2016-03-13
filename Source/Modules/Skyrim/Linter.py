@@ -2384,6 +2384,8 @@ class Semantic(SharedResources):
 				rightResult = node.data.rightOperand.data.token.value.upper()
 				if "[]" in leftResult and rightResult != self.KW_STRING and rightResult != self.KW_BOOL:
 					self.Abort("Arrays can only be cast to STRING and BOOL.")
+				if not self.GetCachedScript(rightResult):
+					self.Abort("%s is not a type that exists." % rightResult)
 				result = rightResult
 			elif node.data.operator.type == self.OP_DOT:
 				leftResult = self.NodeVisitor(node.data.leftOperand, expected)
