@@ -1356,6 +1356,13 @@ class SemanticError(Exception):
 		self.message = message
 		self.line = line
 
+class NodeResult(object):
+	__slots__ = ["type", "array", "object"]
+	def __init__(self, aType, aArray, aObject):
+		self.type = aType.upper()
+		self.array = aArray
+		self.object = aObject
+
 class Cancel(Exception):
 	def __init__(self, line, variables, functions, states, imports):
 		super(Cancel, self).__init__()
@@ -1647,6 +1654,7 @@ class Semantic(SharedResources):
 		else:
 			if self.CacheScript(name, line):
 				return self.cache.get(name, None)
+		return None
 
 	def Process(self, statements, paths, cancel = None): # Return True if successful, False if failed
 		# Reset properties
@@ -1696,7 +1704,7 @@ class Semantic(SharedResources):
 						if stat.data.value.type != self.KW_NONE:
 							self.Abort("Array properties can only be initialized with NONE.", stat.line)
 					else:
-						if stat.data.type != stat.data.value.type and not self.CanAutoCast(stat.data.value.type, stat.data.type):
+						if stat.data.type != stat.data.value.type and not self.CanAutoCast(NodeResult(stat.data.value.type, False, True), NodeResult(stat.data.type, False, True)):
 							self.Abort("Initialization of %s property with a %s literal." % (stat.data.type, stat.data.value.type), stat.line)
 				if self.KW_CONDITIONAL in stat.data.flags and not self.KW_CONDITIONAL in self.header.data.flags:
 					self.Abort("The %s property has the CONDITIONAL flag, but the script header does not." % stat.data.name, stat.line)
@@ -1726,7 +1734,7 @@ class Semantic(SharedResources):
 						value = self.GetLiteral(stat.data.value)
 						if not value:
 							self.Abort("Variables can only be initialized with literals when defined outside of functions/events.", stat.line)
-						if stat.data.type != value and not self.CanAutoCast(value, stat.data.type):
+						if stat.data.type != value and not self.CanAutoCast(NodeResult(value, False, True), NodeResult(stat.data.type, False, True)):
 							self.Abort("Initialization of a %s variable with a %s literal." % (stat.data.type, value), stat.line)
 				if self.KW_CONDITIONAL in stat.data.flags and not self.KW_CONDITIONAL in self.header.data.flags:
 					self.Abort("The %s variable has the CONDITIONAL flag, but the script header does not." % stat.data.name, stat.line)
@@ -1869,12 +1877,12 @@ class Semantic(SharedResources):
 				self.PopVariableScope()
 				raise Cancel(start.line, self.variables, self.functions, self.states, self.imports)
 		end = statements.pop()
-		typ = start.data.type
-		if typ:
+		typ = None
+		if start.data.type:
 			if start.data.array:
-				typ = "%s[]" % typ
-		else:
-			typ = self.KW_NONE
+				typ = NodeResult(start.data.type, True, True)
+			else:
+				typ = NodeResult(start.data.type, False, True)
 		docString = None
 		if len(statements) > 0:
 			if statements[0].type == self.STAT_DOCUMENTATION:
@@ -1891,7 +1899,7 @@ class Semantic(SharedResources):
 						value = self.GetLiteral(param.expression)
 						if not value:
 							self.Abort("Parameters can only be initialized with literals.", start.line)
-						if param.type != value and not self.CanAutoCast(value, param.type):
+						if param.type != value and not self.CanAutoCast(NodeResult(value, False, True), NodeResult(param.type, False, True)):
 							self.Abort("Initialization of %s parameter with %s literal." % (param.type, value), start.line)
 		self.statements = statements
 		while len(self.statements) > 0:
@@ -2091,11 +2099,11 @@ class Semantic(SharedResources):
 			if not self.cancel:
 				expr = self.NodeVisitor(self.statements[0].data.value)
 				if expr:
-					if expr[-2:] == "[]":
+					if expr.array:
 						if not self.statements[0].data.array:
 							self.Abort("The expression resolves to an array type, but the variable is not an array variable.")
 							return False
-						if self.statements[0].data.type != expr[:-2]:
+						if self.statements[0].data.type != expr.type:
 							self.Abort("The expression resolves to an array type, but the variable is an array of another type.")
 							return False
 					elif self.statements[0].data.array:
@@ -2103,8 +2111,8 @@ class Semantic(SharedResources):
 						if val != self.KW_NONE:
 							self.Abort("Array variables can only be initialized with NONE.")
 							return False
-					elif self.statements[0].data.type != expr:
-						if not self.CanAutoCast(expr, self.statements[0].data.type):
+					elif self.statements[0].data.type != expr.type:
+						if not self.CanAutoCast(expr, NodeResult(self.statements[0].data.type, self.statements[0].data.array, True)):
 							self.Abort("The expression resolves to the incorrect type and cannot be automatically cast to the correct type.")
 							return False
 				else:
@@ -2120,7 +2128,7 @@ class Semantic(SharedResources):
 				self.Abort("The left-hand side expression resolves to NONE.")
 				return False
 			right = self.NodeVisitor(self.statements[0].data.rightExpression)
-			if left != right and not self.CanAutoCast(right, left):
+			if left.type != right.type and left.array != right.array and left.object != right.object and not self.CanAutoCast(right, left):
 				self.Abort("The right-hand side expression does not resolve to the same type as the left-hand side expression and cannot be auto-cast.")
 				return False
 		self.statements.pop(0)
@@ -2136,25 +2144,9 @@ class Semantic(SharedResources):
 		if self.statements[0].data.expression:
 			if not self.cancel:
 				expr = self.NodeVisitor(self.statements[0].data.expression)
-				if expr != typ and not self.CanAutoCast(expr, typ):
-					self.Abort("The returned value's type does not match the function's return type.")
-					return False
-		self.statements.pop(0)
-		return True
-
-		if typ == self.KW_NONE:
-			if stat.data.expression != None:
-				self.Abort("This function/event cannot return a value.", stat.line)
-				return False
-		else:
-			if self.statements[0].data.expression:
-				if not self.cancel:
-					expr = self.NodeVisitor(self.statements[0].data.expression)
-					if not expr:
-						self.Abort(None, self.statements[0].line)
-						return False
-					if expr != typ and not self.CanAutoCast(expr, typ):
-						self.Abort("The returned value's type does not match the function's return type.", self.statements[0].line)
+				if typ:
+					if expr.type != typ.type and expr.array != typ.array and not self.CanAutoCast(expr, typ):
+						self.Abort("The returned value's type does not match the function's return type.")
 						return False
 		self.statements.pop(0)
 		return True
@@ -2169,81 +2161,82 @@ class Semantic(SharedResources):
 		elif node.type == self.NODE_ARRAYATOM or node.type == self.NODE_ARRAYFUNCORID:
 			result = self.NodeVisitor(node.data.child, expected)
 			if node.data.expression:
-				if result == self.KW_NONE:
+				if result.type == self.KW_NONE:
 					self.Abort("Expected an array object instead of NONE.")
-				elif not "[]" in result:
+				elif not result.array:
 					self.Abort("Expected an array object.")
 				expr = self.NodeVisitor(node.data.expression)
-				if expr != self.KW_INT:
+				if expr.type != self.KW_INT or expr.array:
 					self.Abort("Expected an expression that resolves to INT when accessing an array element.")
-				result = result[:-2]
+				result = NodeResult(result.type, False, result.object)
 		elif node.type == self.NODE_CONSTANT:
 			if node.data.token.type == self.BOOL:
-				result = self.KW_BOOL
+				result = NodeResult(self.KW_BOOL, False, True)
 			elif node.data.token.type == self.FLOAT:
-				result = self.KW_FLOAT
+				result = NodeResult(self.KW_FLOAT, False, True)
 			elif node.data.token.type == self.INT:
-				result = self.KW_INT
+				result = NodeResult(self.KW_INT, False, True)
 			elif node.data.token.type == self.STRING:
-				result = self.KW_STRING
+				result = NodeResult(self.KW_STRING, False, True)
 			elif node.data.token.type == self.KW_NONE:
-				result = self.KW_NONE
+				result = NodeResult(self.KW_NONE, False, True)
 			else:
 				self.Abort("Unknown literal type.")
 		elif node.type == self.NODE_FUNCTIONCALL:
 			func = None
-			if expected == self.KW_SELF:
+			if expected and expected.type == self.KW_SELF:
 				func = self.GetFunction(node.data.name.value.upper())
 				if func:
 					if func.data.type:
 						if func.data.array:
-							result = "%s[]" % func.data.type
+							result = NodeResult(func.data.type, True, True)
 						else:
-							result = func.data.type
+							result = NodeResult(func.data.type, False, True)
 					else:
-						result = self.KW_NONE
+						result = NodeResult(self.KW_NONE, False, True)
 				else:
 					self.Abort("This script does not have a function/event called %s." % node.data.name.value)
-			elif expected:
-				if "[]" in expected:
-					typ = expected[:-2]
-					script = self.GetCachedScript(typ)
+			elif expected and expected.type:
+				if expected.array:
+					script = self.GetCachedScript(expected.type)
 					if script:
 						funcName = node.data.name.value.upper()
 						if funcName == "FIND":
-							func = Statement(self.STAT_FUNCTIONDEF, 0, FunctionDef("INT", "Int", False, "FIND", "Find", [ParameterDef(typ, typ.capitalize(), False, "AKELEMENT", "akElement", None), ParameterDef("INT", "Int", False, "AISTARTINDEX", "aiStartIndex", Node(self.NODE_EXPRESSION, ExpressionNode(Node(self.NODE_CONSTANT, ConstantNode(Token(self.INT, "0", 0, 0))))))], [self.KW_NATIVE]))							
-							result = self.KW_INT
+							func = Statement(self.STAT_FUNCTIONDEF, 0, FunctionDef("INT", "Int", False, "FIND", "Find", [ParameterDef(expected.type, expected.type.capitalize(), False, "AKELEMENT", "akElement", None), ParameterDef("INT", "Int", False, "AISTARTINDEX", "aiStartIndex", Node(self.NODE_EXPRESSION, ExpressionNode(Node(self.NODE_CONSTANT, ConstantNode(Token(self.INT, "0", 0, 0))))))], [self.KW_NATIVE]))							
+							result = NodeResult(self.KW_INT, False, True)
 						elif funcName == "RFIND":
-							func = Statement(self.STAT_FUNCTIONDEF, 0, FunctionDef("INT", "Int", False, "RFIND", "RFind", [ParameterDef(typ, typ.capitalize(), False, "AKELEMENT", "akElement", None), ParameterDef("INT", "Int", False, "AISTARTINDEX", "aiStartIndex", Node(self.NODE_EXPRESSION, ExpressionNode(Node(self.NODE_UNARYOPERATOR, UnaryOperatorNode(self.OP_SUBTRACTION, Node(self.NODE_CONSTANT, ConstantNode(Token(self.INT, "1", 0, 0))))))))], [self.KW_NATIVE]))
-							result = self.KW_INT
+							func = Statement(self.STAT_FUNCTIONDEF, 0, FunctionDef("INT", "Int", False, "RFIND", "RFind", [ParameterDef(expected.type, expected.type.capitalize(), False, "AKELEMENT", "akElement", None), ParameterDef("INT", "Int", False, "AISTARTINDEX", "aiStartIndex", Node(self.NODE_EXPRESSION, ExpressionNode(Node(self.NODE_UNARYOPERATOR, UnaryOperatorNode(self.OP_SUBTRACTION, Node(self.NODE_CONSTANT, ConstantNode(Token(self.INT, "1", 0, 0))))))))], [self.KW_NATIVE]))
+							result = NodeResult(self.KW_INT, False, True)
 						else:
 							self.Abort("Arrays objects only have FIND and RFIND functions.")
 				else:
-					script = self.GetCachedScript(expected)
+					script = self.GetCachedScript(expected.type)
 					if script:
 						func = script.functions.get(node.data.name.value.upper(), None)
 						if func:
+							if expected.object and self.KW_GLOBAL in func.data.flags:
+								self.Abort("Attempted to call a global function on an object.")
+							elif not expected.object and not self.KW_GLOBAL in func.data.flags:
+								self.Abort("Attempted to call a non-global function by directly referencing the script.")
 							if func.data.type:
 								if func.data.array:
-									result = "%s[]" % func.data.type
+									result = NodeResult(func.data.type, True, True)
 								else:
-									result = func.data.type
+									result = NodeResult(func.data.type, False, True)
 							else:
-								result = self.KW_NONE
+								result = NodeResult(self.KW_NONE, False, True)
 						else:
-							self.Abort("%s does not have a function/event called %s." % (expected, node.data.name.value))
-					else:
-						pass
+							self.Abort("%s does not have a function/event called %s." % (expected.type, node.data.name.value))
 			else:
 				func = self.GetFunction(node.data.name.value)
 				if func:
 					if func.data.type:
 						if func.data.array:
-							result = "%s[]" % func.data.type
+							result = NodeResult(func.data.type, True, True)
 						else:
-							result = func.data.type
+							result = NodeResult(func.data.type, False, True)
 					else:
-						result = self.KW_NONE
+						result = NodeResult(self.KW_NONE, False, True)
 				for imp in self.imports:
 					script = self.GetCachedScript(imp)
 					if script:
@@ -2255,11 +2248,11 @@ class Semantic(SharedResources):
 							if self.KW_GLOBAL in func.data.flags:
 								if func.data.type:
 									if func.data.array:
-										result = "%s[]" % func.data.type
+										result = NodeResult(func.data.type, True, True)
 									else:
-										result = func.data.type
+										result = NodeResult(func.data.type, False, True)
 								else:
-									result = self.KW_NONE
+									result = NodeResult(self.KW_NONE, False, True)
 				if not result:
 					self.Abort("%s is not a function/event that exists in this scope." % node.data.name.value)
 			if func:
@@ -2280,11 +2273,11 @@ class Semantic(SharedResources):
 								argExpr = self.NodeVisitor(args[0].expression)
 								paramType = None
 								if params[0].array:
-									paramType = "%s[]" % params[0].type
+									paramType = NodeResult(params[0].type, True, True)
 								else:
-									paramType = params[0].type
-								if argExpr != paramType and not self.CanAutoCast(argExpr, paramType):
-									self.Abort("Parameter %s is of type %s, but the argument evaluates to %s, which cannot be auto-cast to the parameter's type." % (params[0].name, paramType, argExpr))
+									paramType = NodeResult(params[0].type, False, True)
+								if argExpr.type != paramType.type and argExpr.array != paramType.array and argExpr.object != paramType.object and not self.CanAutoCast(argExpr, paramType):
+									self.Abort("Parameter %s is of type %s, but the argument evaluates to %s, which cannot be auto-cast to the parameter's type." % (params[0].name, paramType.type, argExpr.type)) # Array?
 								args.pop(i)
 								break
 							i += 1
@@ -2296,22 +2289,22 @@ class Semantic(SharedResources):
 								argExpr = self.NodeVisitor(args[0].expression)
 								paramType = None
 								if params[0].array:
-									paramType = "%s[]" % params[0].type
+									paramType = NodeResult(params[0].type, True, True)
 								else:
-									paramType = params[0].type
-								if argExpr != paramType and not self.CanAutoCast(argExpr, paramType):
-									self.Abort("Parameter %s is of type %s, but the argument evaluates to %s, which cannot be auto-cast to the parameter's type." % (params[0].name, paramType, argExpr))
+									paramType = NodeResult(params[0].type, False, True)
+								if argExpr.type != paramType.type and argExpr.array != paramType.array and argExpr.object != paramType.object and not self.CanAutoCast(argExpr, paramType):
+									self.Abort("Parameter %s is of type %s, but the argument evaluates to %s, which cannot be auto-cast to the parameter's type." % (params[0].name, paramType.type, argExpr.type)) # Array?
 								args.pop(0)
 						else:
 							if len(args) > 0:
 								argExpr = self.NodeVisitor(args[0].expression)
 								paramType = None
 								if params[0].array:
-									paramType = "%s[]" % params[0].type
+									paramType = NodeResult(params[0].type, True, True)
 								else:
-									paramType = params[0].type
-								if argExpr != paramType and not self.CanAutoCast(argExpr, paramType):
-									self.Abort("Parameter %s is of type %s, but the argument evaluates to %s, which cannot be auto-cast to the parameter's type." % (params[0].name, paramType, argExpr))
+									paramType = NodeResult(params[0].type, False, True)
+								if argExpr.type != paramType.type and argExpr.array != paramType.array and argExpr.object != paramType.object and not self.CanAutoCast(argExpr, paramType):
+									self.Abort("Parameter %s is of type %s, but the argument evaluates to %s, which cannot be auto-cast to the parameter's type." % (params[0].name, paramType.type, argExpr.type)) # Array?
 								args.pop(0)
 							else:
 								self.Abort("Mandatory parameter %s was not given an argument." % params[0].name)
@@ -2330,62 +2323,65 @@ class Semantic(SharedResources):
 								self.Abort("%s is not a parameter that exists in %s." % (argName, func.data.name))
 						self.Abort("Multiple arguments were passed to at least one parameter.")
 					elif argCount > paramCount:
-						self.Abort("The %s function/event has %d parameters, but %d arguments were passed to it." % (func.data.name, paramCount, argCount))
+						if argCount == 1:
+							self.Abort("The %s function/event has %d parameters, but %d argument was passed to it." % (func.data.name, paramCount, argCount))
+						else:
+							self.Abort("The %s function/event has %d parameters, but %d arguments were passed to it." % (func.data.name, paramCount, argCount))
 		elif node.type == self.NODE_IDENTIFIER:
-			if expected: # Another script
-				if expected == self.KW_SELF:
+			if expected and expected.type: # Another script
+				if expected.type == self.KW_SELF:
 					prop = self.GetVariable(node.data.token.value.upper())
 					if prop and prop.type == self.STAT_PROPERTYDEF:
 						if prop.data.array:
-							result = "%s[]" % prop.data.type
+							result = NodeResult(prop.data.type, True, True)
 						else:
-							result = prop.data.type
+							result = NodeResult(prop.data.type, False, True)
 					else:
 						self.Abort("This script does not have a property called %s." % (node.data.token.value))
 				else:
-					script = self.GetCachedScript(expected)
+					script = self.GetCachedScript(expected.type)
 					if script:
 						prop = script.properties.get(node.data.token.value.upper(), None)
 						if prop:
 							if prop.data.array:
-								result = "%s[]" % prop.data.type
+								result = NodeResult(prop.data.type, True, True)
 							else:
-								result = prop.data.type
+								result = NodeResult(prop.data.type, False, True)
 						else:
-							self.Abort("%s does not have a property called %s." % (expected, node.data.token.value))
+							self.Abort("%s does not have a property called %s." % (expected.type, node.data.token.value))
 					else:
 						pass
 			else: # Self or parent
 				if node.data.token.type == self.KW_PARENT:
 					if self.header.data.parent:
-						result = self.header.data.parent
+						result = NodeResult(self.header.data.parent, False, True)
 					else:
 						self.Abort("A parent script has not been defined in this script.")
 				elif node.data.token.type == self.KW_SELF:
-					result = self.KW_SELF
+					result = NodeResult(self.KW_SELF, False, True)
 				else:
 					var = self.GetVariable(node.data.token.value)
 					if var:
 						if var.data.array:
-							result = "%s[]" % var.data.type
+							result = NodeResult(var.data.type, True, True)
 						else:
-							result = var.data.type
+							result = NodeResult(var.data.type, False, True)
 					else:
-						result = node.data.token.value
-						if not self.GetCachedScript(result):
-							self.Abort("%s is not a script." % result)
+						result = NodeResult(node.data.token.value, False, False)
+						if not self.GetCachedScript(result.type):
+							self.Abort("%s is not a script." % result.type)
 		elif node.type == self.NODE_LENGTH:
-			result = self.KW_INT
+			result = NodeResult(self.KW_INT, False, True)
 		elif node.type == self.NODE_ARRAYCREATION:
-			result = "%s[]" % node.data.typeToken.value
+			result = NodeResult(node.data.typeToken.value, True, True)
 		elif node.type == self.NODE_BINARYOPERATOR:
 			if node.data.operator.type == self.KW_AS:
 				leftResult = self.NodeVisitor(node.data.leftOperand, expected)
-				rightResult = node.data.rightOperand.data.token.value.upper()
-				if "[]" in leftResult and rightResult != self.KW_STRING and rightResult != self.KW_BOOL:
+				rightResult = NodeResult(node.data.rightOperand.data.token.value, False, True)
+				if leftResult.array and rightResult.type != self.KW_STRING and rightResult.type != self.KW_BOOL:
 					self.Abort("Arrays can only be cast to STRING and BOOL.")
-				if not self.GetCachedScript(rightResult):
-					self.Abort("%s is not a type that exists." % rightResult)
+				if rightResult.type != self.KW_BOOL and rightResult.type != self.KW_FLOAT and rightResult.type != self.KW_INT and rightResult.type != self.KW_STRING and not self.GetCachedScript(rightResult.type):
+					self.Abort("%s is not a type that exists." % rightResult.type)
 				result = rightResult
 			elif node.data.operator.type == self.OP_DOT:
 				leftResult = self.NodeVisitor(node.data.leftOperand, expected)
@@ -2395,7 +2391,7 @@ class Semantic(SharedResources):
 			elif node.data.operator.type == self.OP_ADDITION or node.data.operator.type == self.OP_SUBTRACTION or node.data.operator.type == self.OP_MULTIPLICATION or node.data.operator.type == self.OP_DIVISION or node.data.operator.type == self.OP_MODULUS:
 				leftResult = self.NodeVisitor(node.data.leftOperand, expected)
 				rightResult = self.NodeVisitor(node.data.rightOperand, expected)
-				if leftResult != rightResult:
+				if leftResult.type != rightResult.type and leftResult.array != rightResult.array and leftResult.object != rightResult.object:
 					if self.CanAutoCast(leftResult, rightResult):
 						result = rightResult
 					elif self.CanAutoCast(rightResult, leftResult):
@@ -2420,49 +2416,49 @@ class Semantic(SharedResources):
 		#print("\nExiting node: %s" % node.type)
 		#print("Returning type: %s" % result)
 		if result:
-			return result.upper()
+			return result
 		else:
 			return None
 
 	def CanAutoCast(self, src, dest):
 		if not src or not dest:
 			return False
-		if dest == self.KW_BOOL:
+		if dest.type == self.KW_BOOL:
 			return True
-		elif dest == self.KW_STRING:
+		elif dest.type == self.KW_STRING:
 			return True
-		if "[]" in src:
+		if src.array:
 			return False
-		elif "[]" in dest:
+		elif dest.array:
 			return False
-		if dest == self.KW_INT:
+		if dest.type == self.KW_INT:
 			return False
-		elif dest == self.KW_FLOAT:
-			if src == self.KW_INT:
+		elif dest.type == self.KW_FLOAT:
+			if src.type == self.KW_INT:
 				return True
 			else:
 				return False
 		else:
-			if src == self.KW_NONE:
+			if src.type == self.KW_NONE:
 				return True
 			else:
-				if src == self.KW_SELF:
+				if src.type == self.KW_SELF:
 					if self.header.data.parent:
-						if dest == self.header.data.parent:
+						if dest.type == self.header.data.parent:
 							return True
 						else:
 							script = self.GetCachedScript(self.header.data.parent)
 							if script:
-								if dest in script.extends:
+								if dest.type in script.extends:
 									return True
 								else:
 									return False
 							else:
 								return False
 				else:
-					script = self.GetCachedScript(src)
+					script = self.GetCachedScript(src.type)
 					if script:
-						if dest in script.extends:
+						if dest.type in script.extends:
 							return True
 						else:
 							return False

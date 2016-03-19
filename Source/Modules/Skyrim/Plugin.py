@@ -361,26 +361,26 @@ class EventListener(sublime_plugin.EventListener):
 						except Linter.SemanticError as e:
 							return Exit()
 						if scriptName:
-							if scriptName == self.sem.KW_SELF:
+							if scriptName.type == self.sem.KW_SELF:
 								for scope in e.functions:
 									for name, obj in scope.items():
 										if obj.type == self.sem.STAT_FUNCTIONDEF:
 											completions.append(SublimePapyrus.MakeFunctionCompletion(obj, self.sem))
 										elif obj.type == self.sem.STAT_EVENTDEF:
 											completions.append(SublimePapyrus.MakeEventCompletion(obj, self.sem))
-							elif "[]" in scriptName:
-								typ = scriptName[:-2].capitalize()
+							elif scriptName.array:
+								typ = scriptName.type.capitalize()
 								completions.append(("find\tint func.", "Find(${1:%s akElement}, ${2:Int aiStartIndex = 0})" % typ,))
 								completions.append(("rfind\tint func.", "RFind(${1:%s akElement}, ${2:Int aiStartIndex = -1})" % typ,))
 							else:
-								properties = self.GetPropertyCompletions(scriptName)
-								functions = self.GetFunctionCompletions(scriptName)
+								properties = self.GetPropertyCompletions(scriptName.type)
+								functions = self.GetFunctionCompletions(scriptName.type)
 								if properties and functions:
 									completions.extend(properties)
 									completions.extend(functions)
 								else:
 									try:
-										script = self.sem.GetCachedScript(scriptName)
+										script = self.sem.GetCachedScript(scriptName.type)
 									except:
 										return Exit()
 									if script:
@@ -388,13 +388,13 @@ class EventListener(sublime_plugin.EventListener):
 											properties = []
 											for name, obj in script.properties.items():
 												properties.append(SublimePapyrus.MakePropertyCompletion(obj))
-												self.SetPropertyCompletions(scriptName, properties)
+												self.SetPropertyCompletions(scriptName.type, properties)
 										completions.extend(properties)
 										if not functions:
 											functions = []
 											for name, obj in script.functions.items():
 												functions.append(SublimePapyrus.MakeFunctionCompletion(obj, self.sem))
-												self.SetFunctionCompletions(scriptName, functions)
+												self.SetFunctionCompletions(scriptName.type, functions)
 										completions.extend(functions)
 			else: # Objects from the script that is being edited
 				try:
