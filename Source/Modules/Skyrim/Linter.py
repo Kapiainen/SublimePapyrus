@@ -1009,14 +1009,10 @@ class Syntactic(SharedResources):
 		return True
 
 	def If(self):
-		if self.Accept(self.KW_IF):
-			if not self.Expression():
-				self.Abort("Expected an expression.")
-				return False
-			self.stat = Statement(self.STAT_IF, self.GetPreviousLine(), If(self.Pop()))
-			return True
-		else:
-			return False
+		self.Expect(self.KW_IF)
+		self.Expression()
+		self.stat = Statement(self.STAT_IF, self.GetPreviousLine(), If(self.Pop()))
+		return True
 
 	def ElseIf(self):
 		if self.Accept(self.KW_ELSEIF):
