@@ -867,32 +867,28 @@ class Syntactic(SharedResources):
 				return True
 
 	def VariableDef(self):
-		if self.AcceptType():
-			line = self.GetPreviousLine()
-			typ = None
-			if self.GetPreviousType() == self.IDENTIFIER:
-				typ = self.GetPreviousValue()
-			else:
-				typ = self.GetPreviousType()
-			array = False
-			if self.Accept(self.LEFT_BRACKET):
-				if not self.Accept(self.RIGHT_BRACKET):
-					return False
-				array = True
-			if self.Accept(self.IDENTIFIER):
-				name = self.GetPreviousValue()
-				value = None
-				if self.Accept(self.OP_ASSIGN):
-					if not self.Expression():
-						self.Abort("Expected an expression on line %d." % line)
-						return False
-					value = self.Pop()
-				flags = []
-				if self.Accept(self.KW_CONDITIONAL):
-					flags.append(self.GetPreviousType())
-				self.stat = Statement(self.STAT_VARIABLEDEF, line, VariableDef(typ.upper(), typ, array, name.upper(), name, value, flags))
-				return True
-		return False
+		self.ExpectType(True)
+		line = self.GetPreviousLine()
+		typ = None
+		if self.GetPreviousType() == self.IDENTIFIER:
+			typ = self.GetPreviousValue()
+		else:
+			typ = self.GetPreviousType()
+		array = False
+		if self.Accept(self.LEFT_BRACKET):
+			self.Expect(self.RIGHT_BRACKET)
+			array = True
+		self.Expect(self.IDENTIFIER)
+		name = self.GetPreviousValue()
+		value = None
+		if self.Accept(self.OP_ASSIGN):
+			self.Expression()
+			value = self.Pop()
+		flags = []
+		if self.Accept(self.KW_CONDITIONAL):
+			flags.append(self.GetPreviousType())
+		self.stat = Statement(self.STAT_VARIABLEDEF, line, VariableDef(typ.upper(), typ, array, name.upper(), name, value, flags))
+		return True
 
 	def ScriptHeader(self):
 		if self.Accept(self.KW_SCRIPTNAME):
