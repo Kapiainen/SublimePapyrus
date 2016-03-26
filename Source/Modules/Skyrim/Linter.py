@@ -1272,29 +1272,47 @@ class Syntactic(SharedResources):
 		return False
 
 class LimitedSyntactic(Syntactic):
-	def Abort(self, asMessage = None):
-		pass
-
 	def Statement(self):
 		# Only interested in specific types of statements.
-		if self.ScriptHeader():
-			pass
-		elif self.EventDef():
-			pass
-		elif self.Accept(self.KW_ENDEVENT):
-			self.stat = self.keywordstat(self.GetPreviousLine())
-		elif self.Accept(self.KW_ENDFUNCTION):
-			self.stat = self.keywordstat(self.GetPreviousLine())
-		elif self.Accept(self.KW_ENDPROPERTY):
-			self.stat = self.keywordstat(self.GetPreviousLine())
-		elif self.Attempt(self.State):
-			pass
-		elif self.Accept(self.KW_ENDSTATE):
-			self.stat = self.keywordstat(self.GetPreviousLine())
-		elif self.Attempt(self.PropertyDef):
-			pass
-		elif self.Attempt(self.FunctionDef):
-			pass
+		line = -1
+		if self.token:
+			line = self.token.line
+		if self.token.type == self.KW_SCRIPTNAME:
+			self.ScriptHeader()
+		elif self.token.type == self.KW_EVENT:
+			self.EventDef()
+		elif self.token.type == self.KW_ENDEVENT:
+			self.Accept(self.KW_ENDEVENT)
+			self.stat = self.keywordstat(line)
+		elif self.token.type == self.KW_FUNCTION:
+			self.FunctionDef()
+		elif self.token.type == self.KW_ENDFUNCTION:
+			self.Accept(self.KW_ENDFUNCTION)
+		elif self.token.type == self.KW_ENDPROPERTY:
+			self.Accept(self.KW_ENDPROPERTY)
+			self.stat = self.keywordstat(line)
+		elif self.token.type == self.IDENTIFIER or self.token.type == self.KW_BOOL or self.token.type == self.KW_FLOAT or self.token.type == self.KW_INT or self.token.type == self.KW_STRING:
+			nextToken = self.Peek()
+			if nextToken and nextToken.type == self.LEFT_BRACKET:
+				nextToken = self.Peek(2)
+				if nextToken and nextToken.type == self.RIGHT_BRACKET:
+					nextToken = self.Peek(3)
+					if not nextToken:
+						self.Abort("Expected FUNCTION, PROPERTY, or an identifier.", self.token.line)
+					if nextToken.type == self.KW_FUNCTION:
+						self.FunctionDef()
+					elif nextToken.type == self.KW_PROPERTY:
+						self.PropertyDef()
+			elif nextToken:
+				if nextToken.type == self.KW_FUNCTION:
+					self.FunctionDef()
+				elif nextToken.type == self.KW_PROPERTY:
+					self.PropertyDef()
+		elif self.token.type == self.KW_STATE or (self.token.type == self.KW_AUTO and self.Peek().type == self.KW_STATE):
+			self.State()
+		elif self.token.type == self.KW_ENDSTATE:
+			self.Accept(self.KW_ENDSTATE)
+			self.stat = self.keywordstat(line)
 		else:
 			return -1
 		return 0
