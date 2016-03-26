@@ -1235,20 +1235,26 @@ class Syntactic(SharedResources):
 			self.Shift(Node(self.NODE_FUNCTIONCALL, FunctionCallNode(self.Pop(), arguments)))
 
 		def Argument():
-			s = self.GetIndex()
 			ident = None
-			if self.Accept(self.IDENTIFIER):
-				ident = self.GetPreviousToken()
-				if not self.Accept(self.OP_ASSIGN):
-					ident = None
-					self.GoTo(s)
-			if self.Expression():
+			nextToken = self.Peek()
+			if nextToken and nextToken.type == self.OP_ASSIGN:
+				if self.Accept(self.IDENTIFIER):
+					ident = self.GetPreviousToken()
+					self.Accept(self.OP_ASSIGN)
+					self.Expression()
+					expr = self.Pop()
+					self.Shift(Node(self.NODE_FUNCTIONCALLARGUMENT, FunctionCallArgument(ident, expr)))
+					return True
+				else:
+					if self.token:
+						raise ExpectedIdentifierError(self.token.line, "Unexpected %s symbol ('%s')." % (self.token.type, self.token.value))
+					else:
+						raise ExpectedIdentifierError(self.GetPreviousLine())
+			else:
+				self.Expression()
 				expr = self.Pop()
 				self.Shift(Node(self.NODE_FUNCTIONCALLARGUMENT, FunctionCallArgument(ident, expr)))
 				return True
-			else:
-				self.Abort("Expected an expression.")
-				return False
 
 		if self.Accept(self.IDENTIFIER):
 			self.Shift()
@@ -1259,16 +1265,14 @@ class Syntactic(SharedResources):
 					Reduce()
 					return True
 				else:
-					if Argument():
-						while self.Accept(self.COMMA):
-							if not Argument():
-								return False
-					if not self.Expect(self.RIGHT_PARENTHESIS):
-						return False
+					Argument()
+					while self.Accept(self.COMMA):
+						Argument()
+					self.Expect(self.RIGHT_PARENTHESIS)
 					self.Shift()
 					Reduce()
 					return True
-			self.Pop()
+			#self.Pop()
 		return False
 
 class LimitedSyntactic(Syntactic):
