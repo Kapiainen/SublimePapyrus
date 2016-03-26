@@ -460,10 +460,38 @@ class ArrayCreationNode(object):
 		self.sizeToken = aSizeToken
 
 class SyntacticError(Exception):
-	def __init__(self, message, line):
+	def __init__(self, line, message):
 		super(SyntacticError, self).__init__(message)
 		self.message = message
 		self.line = line
+		
+class ExpectedTypeError(SyntacticError):
+	def __init__(self, line, baseTypes, message = ""):
+		if baseTypes:
+			super(ExpectedTypeError, self).__init__(line, ("%s %s" % (message, "Expected a type identifier.")).strip())
+		else:
+			super(ExpectedTypeError, self).__init__(line, ("%s %s" % (message, "Expected a non-base type identifier.")).strip())
+		self.baseTypes = baseTypes
+
+class ExpectedExpressionError(SyntacticError):
+	def __init__(self, line, message = ""):
+		super(ExpectedExpressionError, self).__init__(line, ("%s %s" % (message, "Expected an expression.")).strip())
+
+class ExpectedIdentifierError(SyntacticError):
+	def __init__(self, line, message = ""):
+		super(ExpectedIdentifierError, self).__init__(line, ("%s%s" % (message, "Expected an identifier.")).strip())
+
+class ExpectedLiteralError(SyntacticError):
+	def __init__(self, line, message = ""):
+		super(ExpectedLiteralError, self).__init__(line, ("%s %s" % (message, "Expected a literal.")).strip())
+
+class ExpectedOperatorError(SyntacticError):
+	def __init__(self, line, message = ""):
+		super(ExpectedOperatorError, self).__init__(line, ("%s %s" % (message, "Expected an operator.")).strip())
+
+class ExpectedKeywordError(SyntacticError):
+	def __init__(self, line, message):
+		super(ExpectedKeywordError, self).__init__(line, message)
 
 class Syntactic(SharedResources):
 	def __init__(self):
@@ -471,9 +499,9 @@ class Syntactic(SharedResources):
 
 	def Abort(self, message = None):
 		if self.token:
-			raise SyntacticError(message, self.token.line)
+			raise SyntacticError(self.token.line, message)
 		else:
-			raise SyntacticError(message, self.GetPreviousLine())
+			raise SyntacticError(self.GetPreviousLine(), message)
 
 	def Process(self, tokens):
 		if tokens:
@@ -515,9 +543,9 @@ class Syntactic(SharedResources):
 			return True
 		else:
 			if self.token != None:
-				self.Abort("Unexpected symbol '%s' ('%s') on column %d. Expected '%s'." % (self.token.type, self.token.value, self.token.column, asType))
+				raise SyntacticError(self.token.line, "Unexpected symbol '%s' ('%s') on column %d. Expected '%s'." % (self.token.type, self.token.value, self.token.column, asType))
 			else:
-				self.Abort("Expected symbol '%s'." % (asType))
+				raise SyntacticError(self.GetPreviousLine(), "Expected symbol '%s'." % (asType))
 
 	def TokensRemaining(self):
 		return self.token_index < self.token_count
@@ -567,21 +595,29 @@ class Syntactic(SharedResources):
 				self.GoTo(start)
 				return False
 
-	def AcceptType(self):
-		if self.Accept(self.IDENTIFIER) or self.Accept(self.KW_BOOL) or self.Accept(self.KW_FLOAT) or self.Accept(self.KW_INT) or self.Accept(self.KW_STRING):
+	def AcceptType(self, baseTypes):
+		if self.Accept(self.IDENTIFIER):
+			return True
+		elif baseTypes and (self.Accept(self.KW_BOOL) or self.Accept(self.KW_FLOAT) or self.Accept(self.KW_INT) or self.Accept(self.KW_STRING)):
 			return True
 		else:
 			return False
 
-	def ExpectType(self):
-		if self.AcceptType():
+	def ExpectType(self, baseTypes):
+		if self.AcceptType(baseTypes):
 			return True
 		else:
 			if self.token != None:
-				self.Abort("Unexpected symbol '%s' ('%s') on column %d. Expected a type identifier." % (self.token.type, self.token.value, self.token.column))
+				message = "Unexpected symbol '%s' ('%s') on column %d." % (self.token.type, self.token.value, self.token.column)
+				if baseTypes:
+					raise ExpectedTypeError(self.GetPreviousLine(), True, message)
+				else:
+					raise ExpectedTypeError(self.GetPreviousLine(), False, message)
 			else:
-				self.Abort("Expected a type identifier.")
-			return False
+				if baseTypes:
+					raise ExpectedTypeError(self.GetPreviousLine(), True)
+				else:
+					raise ExpectedTypeError(self.GetPreviousLine(), False)
 
 	def AcceptLiteral(self):
 		if self.Accept(self.BOOL) or self.Accept(self.FLOAT) or self.Accept(self.INT) or self.Accept(self.STRING) or self.Accept(self.KW_NONE):
@@ -596,10 +632,9 @@ class Syntactic(SharedResources):
 			return True
 		else:
 			if self.token != None:
-				self.Abort("Unexpected symbol '%s' ('%s') on column %d. Expected a literal." % (self.token.type, self.token.value, self.token.column))
+				raise ExpectedLiteralError(self.token.line, "Unexpected symbol '%s' ('%s') on column %d." % (self.token.type, self.token.value, self.token.column))
 			else:
-				self.Abort("Expected a literal.")
-			return False
+				raise ExpectedLiteralError(self.GetPreviousLine())
 
 	def AcceptComparison(self):
 		if self.Accept(self.CMP_EQUAL) or self.Accept(self.CMP_NOT_EQUAL) or self.Accept(self.CMP_GREATER_THAN_OR_EQUAL) or self.Accept(self.CMP_LESS_THAN_OR_EQUAL) or self.Accept(self.CMP_GREATER_THAN) or self.Accept(self.CMP_LESS_THAN):
@@ -612,10 +647,9 @@ class Syntactic(SharedResources):
 			return True
 		else:
 			if self.token != None:
-				self.Abort("Unexpected symbol '%s' ('%s') on column %d. Expected a comparison operator." % (self.token.type, self.token.value, self.token.column))
+				raise ExpectedOperatorError(self.token.line, "Unexpected symbol '%s' ('%s') on column %d. Expected a comparison operator." % (self.token.type, self.token.value, self.token.column))
 			else:
-				self.Abort("Expected a comparison operator.")
-			return False
+				raise ExpectedOperatorError(self.GetPreviousLine(), "Expected a comparison operator.")
 
 	def AcceptAssignment(self):
 		if self.Accept(self.OP_ASSIGN) or self.Accept(self.OP_ADDITION_ASSIGN) or self.Accept(self.OP_SUBTRACTION_ASSIGN) or self.Accept(self.OP_MULTIPLICATION_ASSIGN) or self.Accept(self.OP_DIVISION_ASSIGN) or self.Accept(self.OP_MODULUS_ASSIGN):
@@ -628,13 +662,12 @@ class Syntactic(SharedResources):
 			return True
 		else:
 			if self.token != None:
-				self.Abort("Unexpected symbol '%s' ('%s') on column %d. Expected an assignment operator." % (self.token.type, self.token.value, self.token.column))
+				raise ExpectedOperatorError(self.token.line, "Unexpected symbol '%s' ('%s') on column %d. Expected an assignment operator." % (self.token.type, self.token.value, self.token.column))
 			else:
-				self.Abort("Expected an assignment operator.")
-			return False
+				raise ExpectedOperatorError(self.GetPreviousLine(), "Expected an assignment operator.")
 
 	def AcceptIdentifier(self):
-		if self.Accept(self.IDENTIFIER) or self.Accept(self.KW_BOOL) or self.Accept(self.KW_FLOAT) or self.Accept(self.KW_INT) or self.Accept(self.KW_STRING) or self.Accept(self.KW_SELF) or self.Accept(self.KW_PARENT):
+		if self.Accept(self.IDENTIFIER) or self.Accept(self.KW_SELF) or self.Accept(self.KW_PARENT):
 			return True
 		else:
 			return False
@@ -644,10 +677,9 @@ class Syntactic(SharedResources):
 			return True
 		else:
 			if self.token != None:
-				self.Abort("Unexpected symbol '%s' ('%s') on column %d. Expected an identifier." % (self.token.type, self.token.value, self.token.column))
+				raise ExpectedIdentifierError(self.token.line, "Unexpected symbol '%s' ('%s') on column %d." % (self.token.type, self.token.value, self.token.column))
 			else:
-				self.Abort("Expected an identifier.")
-			return False
+				raise ExpectedIdentifierError(self.GetPreviousLine())
 
 	def Statement(self):
 		line = -1
