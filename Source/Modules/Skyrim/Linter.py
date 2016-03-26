@@ -1310,7 +1310,7 @@ class Semantic(SharedResources):
 					else:
 						self.Abort("A variable or property has already been defined with the same name on line %d." % temp.line, stat.line)
 			return True
-		return False
+		self.Abort("Expected a variable declaration, a property declaration, or a function/event signature.", stat.line)
 
 	def GetVariable(self, name):
 		name = name.upper()
@@ -1581,8 +1581,7 @@ class Semantic(SharedResources):
 		while len(statements) > 0:
 			stat = statements.pop(0)
 			if stat.type == self.STAT_PROPERTYDEF:
-				if not self.AddVariable(stat):
-					return False
+				self.AddVariable(stat)
 				if stat.data.value:
 					if stat.data.array:
 						if stat.data.value.type != self.KW_NONE:
@@ -1607,8 +1606,7 @@ class Semantic(SharedResources):
 						if statements[0].type == self.STAT_DOCUMENTATION:
 							docString = statements.pop(0)
 			elif stat.type == self.STAT_VARIABLEDEF:
-				if not self.AddVariable(stat):
-					return False
+				self.AddVariable(stat)
 				if stat.data.value:
 					if stat.data.array:
 						if self.GetLiteral(stat.data.value) != self.KW_NONE:
@@ -1622,8 +1620,7 @@ class Semantic(SharedResources):
 				if self.KW_CONDITIONAL in stat.data.flags and not self.KW_CONDITIONAL in self.header.data.flags:
 					self.Abort("The %s variable has the CONDITIONAL flag, but the script header does not." % stat.data.name, stat.line)
 			elif stat.type == self.STAT_FUNCTIONDEF:
-				if not self.AddFunction(stat):
-					return False
+				self.AddFunction(stat)
 				if not self.KW_NATIVE in stat.data.flags:
 					func = [stat]
 					while len(statements) > 0 and not (statements[0].type == self.STAT_KEYWORD and statements[0].data.type == self.KW_ENDFUNCTION):
@@ -1642,8 +1639,7 @@ class Semantic(SharedResources):
 						if statements[0].type == self.STAT_DOCUMENTATION:
 							docString = statements.pop(0)
 			elif stat.type == self.STAT_EVENTDEF:
-				if not self.AddFunction(stat):
-					return False
+				self.AddFunction(stat)
 				if not self.KW_NATIVE in stat.data.flags:
 					event = [stat]
 					while len(statements) > 0 and not (statements[0].type == self.STAT_KEYWORD and statements[0].data.type == self.KW_ENDEVENT):
@@ -1767,8 +1763,7 @@ class Semantic(SharedResources):
 		if len(statements) > 0:
 			if statements[0].type == self.STAT_DOCUMENTATION:
 				docString = statements.pop(0)
-		if not self.AddVariable(start):
-			return False
+		self.AddVariable(start)
 		if start.type == self.STAT_FUNCTIONDEF:
 			for param in start.data.parameters:
 				if param.expression:
@@ -1822,8 +1817,7 @@ class Semantic(SharedResources):
 				self.PopFunctionScope()
 				raise EmptyStateCancel(self.functions)
 		end = statements.pop()
-		if not self.AddState(start):
-			return False
+		self.AddState(start)
 		definitions = []
 		while len(statements) > 0:
 			if statements[0].type == self.STAT_FUNCTIONDEF:
@@ -1832,8 +1826,7 @@ class Semantic(SharedResources):
 					self.Abort("%s has been defined in the state already." % statements[0].data.name, statements[0].line)
 				if exists == 0:
 					self.Abort("%s has not been defined in the empty state." % statements[0].data.name, statements[0].line)
-				if not self.AddFunction(statements[0]):
-					return False
+				self.AddFunction(statements[0])
 				if not self.KW_NATIVE in statements[0].data.flags:
 					func = [statements.pop(0)]
 					while len(statements) > 0 and not (statements[0].type == self.STAT_KEYWORD and statements[0].data.type == self.KW_ENDFUNCTION):
@@ -1849,8 +1842,7 @@ class Semantic(SharedResources):
 					self.Abort("%s has not been defined in the empty state." % statements[0].data.name, statements[0].line)
 				if exists == -1:
 					self.Abort("%s has already been defined in the same state." % statements[0].data.name, statements[0].line)
-				if not self.AddFunction(statements[0]):
-					return False
+				self.AddFunction(statements[0])
 				if not self.KW_NATIVE in statements[0].data.flags:
 					event = [statements.pop(0)]
 					while len(statements) > 0 and not (statements[0].type == self.STAT_KEYWORD and statements[0].data.type == self.KW_ENDEVENT):
@@ -1967,8 +1959,7 @@ class Semantic(SharedResources):
 		return True
 
 	def VariableDef(self):
-		if not self.AddVariable(self.statements[0]):
-			return False
+		self.AddVariable(self.statements[0])
 		if self.statements[0].data.value:
 			if not self.cancel:
 				expr = self.NodeVisitor(self.statements[0].data.value)
