@@ -782,20 +782,14 @@ class Syntactic(SharedResources):
 
 	def State(self):
 		if self.Accept(self.KW_AUTO):
-			if self.Accept(self.KW_STATE):
-				if self.Expect(self.IDENTIFIER):
-					self.stat = Statement(self.STAT_STATEDEF, self.GetPreviousLine(), StateDef(self.GetPreviousValue(), True))
-					return True
-				else:
-					return False
+			self.Expect(self.KW_STATE)
+			self.Expect(self.IDENTIFIER)
+			self.stat = Statement(self.STAT_STATEDEF, self.GetPreviousLine(), StateDef(self.GetPreviousValue(), True))
+			return True
 		elif self.Accept(self.KW_STATE):
-			if self.Expect(self.IDENTIFIER):
-				self.stat = Statement(self.STAT_STATEDEF, self.GetPreviousLine(), StateDef(self.GetPreviousValue(), False))
-				return True
-			else:
-				return False
-		else:
-			return False
+			self.Expect(self.IDENTIFIER)
+			self.stat = Statement(self.STAT_STATEDEF, self.GetPreviousLine(), StateDef(self.GetPreviousValue(), False))
+			return True
 
 	def While(self):
 		if self.Accept(self.KW_WHILE):
