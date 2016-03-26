@@ -1015,14 +1015,10 @@ class Syntactic(SharedResources):
 		return True
 
 	def ElseIf(self):
-		if self.Accept(self.KW_ELSEIF):
-			if not self.Expression():
-				self.Abort("Expected an expression.")
-				return False
-			self.stat = Statement(self.STAT_ELSEIF, self.GetPreviousLine(), ElseIf(self.Pop()))
-			return True
-		else:
-			return False
+		self.Expect(self.KW_ELSEIF)
+		self.Expression()
+		self.stat = Statement(self.STAT_ELSEIF, self.GetPreviousLine(), ElseIf(self.Pop()))
+		return True
 
 	def Shift(self, item = None):
 		if item:
