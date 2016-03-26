@@ -143,22 +143,6 @@ class EventListener(sublime_plugin.EventListener):
 			if settings and settings.get("linter_on_modified", True):
 				self.QueueLinter(view)
 
-	# Completions
-	def on_query_completions(self, view, prefix, locations):
-		if self.IsValidScope(view):
-			settings = SublimePapyrus.GetSettings()
-			if settings and settings.get("intelligent_code_completion", True):
-				completions = None
-				if not view.find("scriptname", 0, sublime.IGNORECASE):
-					completions = [("scriptname\tscript header definition", "ScriptName ${0:Name}",)]
-				else:
-					completions = self.Completions(view, prefix, locations)
-					if completions == None:
-						completions = []
-					completions.extend(self.GetBaseKeywordCompletions())
-				completions = (list(set(completions)), sublime.INHIBIT_WORD_COMPLETIONS|sublime.INHIBIT_EXPLICIT_COMPLETIONS,)
-				return completions
-
 	def QueueLinter(self, view):
 		if self.linterRunning: # If an instance of the linter is running, then cancel
 			return
@@ -269,6 +253,22 @@ class EventListener(sublime_plugin.EventListener):
 				SublimePapyrus.ShowMessage("Linter found no issues...")
 		return Exit()
 
+	# Completions
+	def on_query_completions(self, view, prefix, locations):
+		if self.IsValidScope(view):
+			settings = SublimePapyrus.GetSettings()
+			if settings and settings.get("intelligent_code_completion", True):
+				completions = None
+				if not view.find("scriptname", 0, sublime.IGNORECASE):
+					completions = [("scriptname\tscript header definition", "ScriptName ${0:Name}",)]
+				else:
+					completions = self.Completions(view, prefix, locations)
+					if completions == None:
+						completions = []
+					completions.extend(self.GetBaseKeywordCompletions())
+				completions = (list(set(completions)), sublime.INHIBIT_WORD_COMPLETIONS|sublime.INHIBIT_EXPLICIT_COMPLETIONS,)
+				return completions
+
 	def Completions(self, view, prefix, locations):
 		if self.completionRunning:
 			return
@@ -297,8 +297,10 @@ class EventListener(sublime_plugin.EventListener):
 			line = lineColumn[0]+1
 			column = lineColumn[1]+1
 			lineString = view.substr(sublime.Region(view.line(locations[0]).begin(), locations[0]-len(prefix))).strip()
-			print("No completions have been implemented")
+			
 			return Exit()
+
+			# OLD STUFF STARTS HERE
 			if lineString[-1:] == ".":
 				lineString = lineString[:-1]
 				i = len(lineString)
