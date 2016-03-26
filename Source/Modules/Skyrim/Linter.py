@@ -1216,52 +1216,6 @@ class Syntactic(SharedResources):
 			Reduce()
 			return True
 
-#class LimitedSyntactic(Syntactic): #TODO Remove
-#	def Statement(self):
-#		# Only interested in specific types of statements.
-#		line = -1
-#		if self.token:
-#			line = self.token.line
-#		if self.token.type == self.KW_SCRIPTNAME:
-#			self.ScriptHeader()
-#		elif self.token.type == self.KW_EVENT:
-#			self.EventDef()
-#		elif self.token.type == self.KW_ENDEVENT:
-#			self.Accept(self.KW_ENDEVENT)
-#			self.stat = self.keywordstat(line)
-#		elif self.token.type == self.KW_FUNCTION:
-#			self.FunctionDef()
-#		elif self.token.type == self.KW_ENDFUNCTION:
-#			self.Accept(self.KW_ENDFUNCTION)
-#		elif self.token.type == self.KW_ENDPROPERTY:
-#			self.Accept(self.KW_ENDPROPERTY)
-#			self.stat = self.keywordstat(line)
-#		elif self.token.type == self.IDENTIFIER or self.token.type == self.KW_BOOL or self.token.type == self.KW_FLOAT or self.token.type == self.KW_INT or self.token.type == self.KW_STRING:
-#			nextToken = self.Peek()
-#			if nextToken and nextToken.type == self.LEFT_BRACKET:
-#				nextToken = self.Peek(2)
-#				if nextToken and nextToken.type == self.RIGHT_BRACKET:
-#					nextToken = self.Peek(3)
-#					if not nextToken:
-#						self.Abort("Expected FUNCTION, PROPERTY, or an identifier.")
-#					if nextToken.type == self.KW_FUNCTION:
-#						self.FunctionDef()
-#					elif nextToken.type == self.KW_PROPERTY:
-#						self.PropertyDef()
-#			elif nextToken:
-#				if nextToken.type == self.KW_FUNCTION:
-#					self.FunctionDef()
-#				elif nextToken.type == self.KW_PROPERTY:
-#					self.PropertyDef()
-#		elif self.token.type == self.KW_STATE or (self.token.type == self.KW_AUTO and self.Peek().type == self.KW_STATE):
-#			self.State()
-#		elif self.token.type == self.KW_ENDSTATE:
-#			self.Accept(self.KW_ENDSTATE)
-#			self.stat = self.keywordstat(line)
-#		else:
-#			return -1
-#		return 0
-
 # Semantic analysis ###############################################################################
 class CachedScript(object):
 	__slots__ = ["extends", "properties", "functions", "states"]
@@ -1323,13 +1277,6 @@ class Semantic(SharedResources):
 		if not line:
 			line = 1
 		raise SemanticError(message, line)
-
-#	def GetCachedKeys(self): #TODO Remove if unused
-#		result = [key for key, name in self.cache.items()]
-#		if result:
-#			return result
-#		else:
-#			return None
 
 	# Variables and properties
 	def PushVariableScope(self):
@@ -1510,12 +1457,6 @@ class Semantic(SharedResources):
 				if name == f.upper():
 					return os.path.join(path, f)
 		return None
-#		Original #TODO Remove
-#		for path in self.paths:
-#			fullPath = os.path.join(path, name + ".psc")
-#			if os.path.isfile(fullPath):
-#				return fullPath
-#		return None
 
 	def CacheScript(self, name, path = None, line = None):
 		name = name.upper()
