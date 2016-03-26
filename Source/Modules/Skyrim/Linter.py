@@ -231,37 +231,39 @@ class Lexical(SharedResources):
 		tokens = []
 		line = 1
 		column = -1
-		skip = [False, ""]
-		multiline = 0
 		for match in self.regex.finditer(asString):
 			t = match.lastgroup
 			v = match.group(t)
 			if t == self.WHITESPACE:
 				continue
 			elif t == self.COMMENT_LINE:
+				yield Token(self.COMMENT_LINE, None, line, match.start()-column)
 				continue
 			elif t == self.COMMENT_BLOCK:
 				i = v.count("\n")
-				line += i
-				column = match.end()-1
+				if i > 0:
+					line += i
+					column = match.end()-1
+				yield Token(self.COMMENT_BLOCK, None, line, match.start()-column)
 				continue
 			elif t == self.MULTILINE:
-				multiline += 1
+				line += 1
+				column = match.end()-1
 				continue
 			if t == self.IDENTIFIER:
 				temp = v.upper()
 				if temp in self.keywords:
 					t = temp
-			elif t == self.DOCUMENTATION_STRING:
+			elif t == self.DOCUMENTATION_STRING or t == self.STRING:
+				yield Token(t, v[1:-1], line, match.start()-column)
 				i = v.count("\n")
-				line += i
-				v = v[1:-1]
-				column = match.end()-1
+				if i > 0:
+					line += i
+					column = match.end()-1
+				continue
 			elif t == self.UNMATCHED:
 				self.Abort("Encountered an unexpected '%s' character." % v, line, match.start()-column)
 			yield Token(t, v, line, match.start()-column)
-			line += multiline
-			multiline = 0
 			if t == self.NEWLINE:
 				line += 1
 				column = match.end()-1
@@ -455,6 +457,7 @@ class ArrayCreationNode(object):
 		self.typeToken = aTypeToken
 		self.sizeToken = aSizeToken
 
+# Exceptions
 class SyntacticError(Exception):
 	def __init__(self, line, message):
 		super(SyntacticError, self).__init__(message)
@@ -469,10 +472,6 @@ class ExpectedTypeError(SyntacticError):
 			super(ExpectedTypeError, self).__init__(line, ("%s %s" % (message, "Expected a non-base type identifier.")).strip())
 		self.baseTypes = baseTypes
 
-class ExpectedExpressionError(SyntacticError):
-	def __init__(self, line, message = ""):
-		super(ExpectedExpressionError, self).__init__(line, ("%s %s" % (message, "Expected an expression.")).strip())
-
 class ExpectedIdentifierError(SyntacticError):
 	def __init__(self, line, message = ""):
 		super(ExpectedIdentifierError, self).__init__(line, ("%s%s" % (message, "Expected an identifier.")).strip())
@@ -482,8 +481,16 @@ class ExpectedLiteralError(SyntacticError):
 		super(ExpectedLiteralError, self).__init__(line, ("%s %s" % (message, "Expected a literal.")).strip())
 
 class ExpectedOperatorError(SyntacticError):
+	def __init__(self, line, message):
+		super(ExpectedOperatorError, self).__init__(line, message)
+
+class ExpectedParameterIdentifierError(SyntacticError):
 	def __init__(self, line, message = ""):
-		super(ExpectedOperatorError, self).__init__(line, ("%s %s" % (message, "Expected an operator.")).strip())
+		super(ExpectedParameterIdentifierError, self).__init__(line, ("%s %s" % (message, "Expected a parameter identifier.")).strip())
+
+class ExpectedFunctionIdentifierError(SyntacticError):
+	def __init__(self, line, message = ""):
+		super(ExpectedFunctionIdentifierError, self).__init__(line, ("%s %s" % (message, "Expected a function identifier.")).strip())
 
 class ExpectedKeywordError(SyntacticError):
 	def __init__(self, line, message):
@@ -651,6 +658,24 @@ class Syntactic(SharedResources):
 				raise ExpectedIdentifierError(self.token.line, "Unexpected symbol '%s' ('%s') on column %d." % (self.token.type, self.token.value, self.token.column))
 			else:
 				raise ExpectedIdentifierError(self.GetPreviousLine())
+
+	def ExpectParameterIdentifier(self):
+		if self.Accept(self.IDENTIFIER):
+			return True
+		else:
+			if self.token != None:
+				raise ExpectedParameterIdentifierError(self.token.line, "Unexpected symbol '%s' ('%s') on column %d." % (self.token.type, self.token.value, self.token.column))
+			else:
+				raise ExpectedParameterIdentifierError(self.GetPreviousLine())
+
+	def ExpectFunctionIdentifier(self):
+		if self.Accept(self.IDENTIFIER):
+			return True
+		else:
+			if self.token != None:
+				raise ExpectedFunctionIdentifierError(self.token.line, "Unexpected symbol '%s' ('%s') on column %d." % (self.token.type, self.token.value, self.token.column))
+			else:
+				raise ExpectedFunctionIdentifierError(self.GetPreviousLine())
 
 	def Statement(self):
 		line = -1
@@ -1154,25 +1179,15 @@ class Syntactic(SharedResources):
 			ident = None
 			nextToken = self.Peek()
 			if nextToken and nextToken.type == self.OP_ASSIGN:
-				if self.Accept(self.IDENTIFIER):
-					ident = self.GetPreviousToken()
-					self.Accept(self.OP_ASSIGN)
-					self.Expression()
-					expr = self.Pop()
-					self.Shift(Node(self.NODE_FUNCTIONCALLARGUMENT, FunctionCallArgument(ident, expr)))
-					return True
-				else:
-					if self.token:
-						raise ExpectedIdentifierError(self.token.line, "Unexpected %s symbol ('%s')." % (self.token.type, self.token.value))
-					else:
-						raise ExpectedIdentifierError(self.GetPreviousLine())
-			else:
-				self.Expression()
-				expr = self.Pop()
-				self.Shift(Node(self.NODE_FUNCTIONCALLARGUMENT, FunctionCallArgument(ident, expr)))
-				return True
+				self.ExpectParameterIdentifier()
+				ident = self.GetPreviousToken()
+				self.Expect(self.OP_ASSIGN)
+			self.Expression()
+			expr = self.Pop()
+			self.Shift(Node(self.NODE_FUNCTIONCALLARGUMENT, FunctionCallArgument(ident, expr)))
+			return True
 
-		self.Expect(self.IDENTIFIER)
+		self.ExpectFunctionIdentifier()
 		self.Shift()
 		self.Expect(self.LEFT_PARENTHESIS)
 		self.Shift()
@@ -1431,18 +1446,13 @@ class Semantic(SharedResources):
 					scriptContents = f.read()
 					lines = []
 					tokens = []
-					skip = False
 					try:
 						for token in self.lex.Process(scriptContents):
 							if token.type == self.lex.NEWLINE:
-								if not skip:
-									if tokens:
-										lines.append(tokens)
-								skip = False
+								if tokens:
+									lines.append(tokens)
 								tokens = []
-							elif token.type == self.lex.UNMATCHED:
-								skip = True
-							else:
+							elif token.type != self.COMMENT_LINE and token.type != self.COMMENT_BLOCK:
 								tokens.append(token)
 					except LexicalError as e:
 						self.Abort("Found a lexical error in %s script." % name)
