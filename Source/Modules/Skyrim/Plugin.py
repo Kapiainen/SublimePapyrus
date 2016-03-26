@@ -628,7 +628,22 @@ class EventListener(sublime_plugin.EventListener):
 
 	def GetTypeCompletions(self):
 		with self.cacheLock:
-			return self.completionCache.get("types", None)
+			temp = self.completionCache.get("types", None)
+			if temp:
+				return temp
+			else:
+				scripts = []
+				if baseTypes:
+					scripts.extend([("bool\ttype", "Bool",), ("float\ttype", "Float",), ("int\ttype", "Int",), ("string\ttype", "String",)])
+				paths = SublimePapyrus.GetSourcePaths(view)
+				for path in paths:
+					if os.path.isdir(path):
+						files = [f for f in os.listdir(path) if ".psc" in f]
+						for file in files:
+							scripts.append(("%s\tscript" % file[:-4].lower(), "%s" % file[:-4]))
+				scripts = list(set(scripts))
+				self.SetTypeCompletions(scripts)
+				return scripts
 
 	def SetTypeCompletions(self, obj):
 		with self.cacheLock:
