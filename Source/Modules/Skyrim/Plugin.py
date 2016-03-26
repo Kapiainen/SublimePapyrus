@@ -297,6 +297,8 @@ class EventListener(sublime_plugin.EventListener):
 			line = lineColumn[0]+1
 			column = lineColumn[1]+1
 			lineString = view.substr(sublime.Region(view.line(locations[0]).begin(), locations[0]-len(prefix))).strip()
+			print("No completions have been implemented")
+			return Exit()
 			if lineString[-1:] == ".":
 				lineString = lineString[:-1]
 				i = len(lineString)
