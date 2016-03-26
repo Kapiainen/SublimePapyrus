@@ -768,18 +768,17 @@ class Syntactic(SharedResources):
 				return -1
 
 	def ExpressionOrAssignment(self):
-		if self.Expression():
-			left = self.Pop()
-			if self.AcceptAssignment():
-				operator = self.GetPreviousToken()
-				if self.Expression():
-					right = self.Pop()
-					self.stat = Statement(self.STAT_ASSIGNMENT, self.GetPreviousLine(), Assignment(operator, left, right))
-					return True
-			elif self.token == None:
-				self.stat = Statement(self.STAT_EXPRESSION, self.GetPreviousLine(), Expression(left))
-				return True
-		return False
+		self.Expression()
+		left = self.Pop()
+		if self.AcceptAssignment():
+			operator = self.GetPreviousToken()
+			self.Expression()
+			right = self.Pop()
+			self.stat = Statement(self.STAT_ASSIGNMENT, self.GetPreviousLine(), Assignment(operator, left, right))
+			return True
+		elif self.token == None:
+			self.stat = Statement(self.STAT_EXPRESSION, self.GetPreviousLine(), Expression(left))
+			return True
 
 	def State(self):
 		if self.Accept(self.KW_AUTO):
