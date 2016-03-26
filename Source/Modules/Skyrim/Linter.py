@@ -226,8 +226,8 @@ class Lexical(SharedResources):
 
 	def Process(self, asString): # Takes a string and yields tokens.
 		if not self.regex: # If total regex pattern has not been compiled yet, then do so now.
-		    temp = "|".join("(?P<%s>%s)" % pair for pair in self.token_specs)
-		    self.regex = re.compile(temp, re.IGNORECASE)
+			temp = "|".join("(?P<%s>%s)" % pair for pair in self.token_specs)
+			self.regex = re.compile(temp, re.IGNORECASE)
 		tokens = []
 		line = 1
 		column = -1
@@ -266,10 +266,6 @@ class Lexical(SharedResources):
 				line += 1
 				column = match.end()-1
 		yield Token(self.NEWLINE, "\n", line, 1)
-
-class LimitedLexical(Lexical):
-	def Abort(self, value, line, column):
-		pass
 
 # Syntactic analysis ##############################################################################
 class Statement(object):
@@ -707,7 +703,7 @@ class Syntactic(SharedResources):
 				if nextToken and nextToken.type == self.RIGHT_BRACKET:
 					nextToken = self.Peek(3)
 					if not nextToken:
-						self.Abort("Expected FUNCTION, PROPERTY, or an identifier.", self.token.line)
+						self.Abort("Expected FUNCTION, PROPERTY, or an identifier.")
 					if nextToken.type == self.KW_FUNCTION:
 						self.FunctionDef()
 					elif nextToken.type == self.KW_PROPERTY:
@@ -1047,93 +1043,64 @@ class Syntactic(SharedResources):
 		def Reduce():
 			self.Shift(Node(self.NODE_EXPRESSION, ExpressionNode(self.Pop())))
 
-		if self.AndExpression():
-			while self.Accept(self.LOG_OR):
-				self.Shift()
-				if not self.AndExpression():
-					self.Abort("Expected an AndExpression.")
-					return False
-				self.ReduceBinaryOperator()
-			Reduce()
-			return True
-		else:
-			return False
+		self.AndExpression()
+		while self.Accept(self.LOG_OR):
+			self.Shift()
+			self.AndExpression()
+			self.ReduceBinaryOperator()
+		Reduce()
+		return True
 
 	def AndExpression(self):
-		if self.BoolExpression():
-			while self.Accept(self.LOG_AND):
-				self.Shift()
-				if not self.BoolExpression():
-					self.Abort("Expected a BoolExpression.")
-					return False
-				self.ReduceBinaryOperator()
-			return True
-		else:
-			return False
+		self.BoolExpression()
+		while self.Accept(self.LOG_AND):
+			self.Shift()
+			self.BoolExpression()
+			self.ReduceBinaryOperator()
+		return True
 
 	def BoolExpression(self):
-		if self.AddExpression():
-			while self.AcceptComparison():
-				self.Shift()
-				if not self.AddExpression():
-					self.Abort("Expected an AddExpression.")
-					return False
-				self.ReduceBinaryOperator()
-			return True
-		else:
-			return False
+		self.AddExpression()
+		while self.AcceptComparison():
+			self.Shift()
+			self.AddExpression()
+			self.ReduceBinaryOperator()
+		return True
 
 	def AddExpression(self):
-		if self.MultExpression():
-			while self.Accept(self.OP_ADDITION) or self.Accept(self.OP_SUBTRACTION):
-				self.Shift()
-				if not self.MultExpression():
-					self.Abort("Expected a MultExpression.")
-					return False
-				self.ReduceBinaryOperator()
-			return True
-		else:
-			return False
+		self.MultExpression()
+		while self.Accept(self.OP_ADDITION) or self.Accept(self.OP_SUBTRACTION):
+			self.Shift()
+			self.MultExpression()
+			self.ReduceBinaryOperator()
+		return True
 
 	def MultExpression(self):
-		if self.UnaryExpression():
-			while self.Accept(self.OP_MULTIPLICATION) or self.Accept(self.OP_DIVISION) or self.Accept(self.OP_MODULUS):
-				self.Shift()
-				if not self.UnaryExpression():
-					self.Abort("Expected a UnaryExpression.")
-					return False
-				self.ReduceBinaryOperator()
-			return True
-		else:
-			return False
+		self.UnaryExpression()
+		while self.Accept(self.OP_MULTIPLICATION) or self.Accept(self.OP_DIVISION) or self.Accept(self.OP_MODULUS):
+			self.Shift()
+			self.UnaryExpression()
+			self.ReduceBinaryOperator()
+		return True
 
 	def UnaryExpression(self):
 		unaryOp = False
-		s = self.GetIndex()
 		if self.Accept(self.OP_SUBTRACTION) or self.Accept(self.LOG_NOT):
 			self.Shift()
 			unaryOp = True
-			pass
-		if self.CastAtom():
-			if unaryOp:
-				self.ReduceUnaryOperator()
-			return True
-		else:
-			if unaryOp:
-				self.GoTo(s)
-			return False
+		self.CastAtom()
+		if unaryOp:
+			self.ReduceUnaryOperator()
+		return True
 
 	def CastAtom(self):
-		if self.DotAtom():
-			if self.Accept(self.KW_AS):
-				self.Shift()
-				if not self.ExpectType():
-					return False
-				self.Shift(Node(self.NODE_IDENTIFIER, IdentifierNode(self.GetPreviousToken())))
-				self.ReduceBinaryOperator()
-			return True
-		else:
-			return False
+		self.DotAtom()
+		if self.Accept(self.KW_AS):
+			self.Shift()
+			self.ExpectType(True)
+			self.Shift(Node(self.NODE_IDENTIFIER, IdentifierNode(self.GetPreviousToken())))
+			self.ReduceBinaryOperator()
+		return True
 
 	def DotAtom(self):
 		if self.AcceptLiteral():
@@ -1142,87 +1109,63 @@ class Syntactic(SharedResources):
 		elif self.ArrayAtom():
 			while self.Accept(self.OP_DOT):
 				self.Shift()
-				if not self.ArrayFuncOrId():
-					self.Abort("Expected a function call or an identifier.")
-					return False
+				self.ArrayFuncOrId()
 				self.ReduceBinaryOperator()
 			return True
-		else:
-			return False
 
 	def ArrayAtom(self):
 		def Reduce():
 			temp = self.Pop()
 			self.Shift(Node(self.NODE_ARRAYATOM, ArrayAtomNode(self.Pop(), temp)))
 
-		if self.Atom():
-			if self.Accept(self.LEFT_BRACKET):
-				if not self.Expression():
-					self.Abort("Expected an expression when accessing an array element.")
-					return False
-				if not self.Expect(self.RIGHT_BRACKET):
-					return False
-				Reduce()
-			return True
-		else:
-			return False
+		self.Atom()
+		if self.Accept(self.LEFT_BRACKET):
+			self.Expression()
+			self.Expect(self.RIGHT_BRACKET)
+			Reduce()
+		return True
 
 	def Atom(self):
 		if self.Accept(self.KW_NEW):
-			if not self.ExpectType():
-				return False
+			self.ExpectType(True)
 			typ = self.GetPreviousToken()
-			if not self.Expect(self.LEFT_BRACKET):
-				return False
-			if not self.Expect(self.INT):
+			self.Expect(self.LEFT_BRACKET)
+			if not self.Accept(self.INT):
 				self.Abort("Expected an int literal.")
-				return False
 			size = self.GetPreviousToken()
-			if not self.Expect(self.RIGHT_BRACKET):
-				return False
+			self.Expect(self.RIGHT_BRACKET)
 			self.Shift(Node(self.NODE_ARRAYCREATION, ArrayCreationNode(typ, size)))
 			return True
 		elif self.Accept(self.LEFT_PARENTHESIS):
-			if not self.Expression():
-				return False
-			if not self.Expect(self.RIGHT_PARENTHESIS):
-				return False
+			self.Expression()
+			self.Expect(self.RIGHT_PARENTHESIS)
 			return True
 		elif self.FuncOrId():
 			return True
-		else:
-			return False
 
 	def ArrayFuncOrId(self):
 		def Reduce():
 			temp = self.Pop()
 			self.Shift(Node(self.NODE_ARRAYFUNCORID, ArrayFuncOrIdNode(self.Pop(), temp)))
 
-		if self.FuncOrId():
-			if self.Accept(self.LEFT_BRACKET):
-				if not self.Expression():
-					return False
-				if not self.Expect(self.RIGHT_BRACKET):
-					return False
-				Reduce()
-			return True
-		else:
-			return False
+		self.FuncOrId()
+		if self.Accept(self.LEFT_BRACKET):
+			self.Expression()
+			self.Expect(self.RIGHT_BRACKET)
+			Reduce()
+		return True
 
 	def FuncOrId(self):
-		if self.Accept(self.KW_LENGTH):
+		nextToken = self.Peek()
+		if nextToken and nextToken.type == self.LEFT_PARENTHESIS:
+			self.FunctionCall()
+			return True
+		elif self.Accept(self.KW_LENGTH):
 			self.Shift(Node(self.NODE_LENGTH, LengthNode()))
 			return True
-		elif self.AcceptIdentifier():
-			ident = self.GetPreviousToken()
-			s = self.GetIndex()-1
-			if not self.Accept(self.LEFT_PARENTHESIS):
-				self.Shift(Node(self.NODE_IDENTIFIER, IdentifierNode(ident)))
-				return True
-			self.GoTo(s)
-		if self.Attempt(self.FunctionCall):
+		elif self.ExpectIdentifier():
+			self.Shift(Node(self.NODE_IDENTIFIER, IdentifierNode(self.GetPreviousToken())))
 			return True
-		return False
 
 	def FunctionCall(self):
 		def Reduce():
@@ -1256,70 +1199,68 @@ class Syntactic(SharedResources):
 				self.Shift(Node(self.NODE_FUNCTIONCALLARGUMENT, FunctionCallArgument(ident, expr)))
 				return True
 
-		if self.Accept(self.IDENTIFIER):
+		self.Expect(self.IDENTIFIER)
+		self.Shift()
+		self.Expect(self.LEFT_PARENTHESIS)
+		self.Shift()
+		if self.Accept(self.RIGHT_PARENTHESIS):
 			self.Shift()
-			if self.Accept(self.LEFT_PARENTHESIS):
-				self.Shift()
-				if self.Accept(self.RIGHT_PARENTHESIS):
-					self.Shift()
-					Reduce()
-					return True
-				else:
-					Argument()
-					while self.Accept(self.COMMA):
-						Argument()
-					self.Expect(self.RIGHT_PARENTHESIS)
-					self.Shift()
-					Reduce()
-					return True
-			#self.Pop()
-		return False
-
-class LimitedSyntactic(Syntactic):
-	def Statement(self):
-		# Only interested in specific types of statements.
-		line = -1
-		if self.token:
-			line = self.token.line
-		if self.token.type == self.KW_SCRIPTNAME:
-			self.ScriptHeader()
-		elif self.token.type == self.KW_EVENT:
-			self.EventDef()
-		elif self.token.type == self.KW_ENDEVENT:
-			self.Accept(self.KW_ENDEVENT)
-			self.stat = self.keywordstat(line)
-		elif self.token.type == self.KW_FUNCTION:
-			self.FunctionDef()
-		elif self.token.type == self.KW_ENDFUNCTION:
-			self.Accept(self.KW_ENDFUNCTION)
-		elif self.token.type == self.KW_ENDPROPERTY:
-			self.Accept(self.KW_ENDPROPERTY)
-			self.stat = self.keywordstat(line)
-		elif self.token.type == self.IDENTIFIER or self.token.type == self.KW_BOOL or self.token.type == self.KW_FLOAT or self.token.type == self.KW_INT or self.token.type == self.KW_STRING:
-			nextToken = self.Peek()
-			if nextToken and nextToken.type == self.LEFT_BRACKET:
-				nextToken = self.Peek(2)
-				if nextToken and nextToken.type == self.RIGHT_BRACKET:
-					nextToken = self.Peek(3)
-					if not nextToken:
-						self.Abort("Expected FUNCTION, PROPERTY, or an identifier.", self.token.line)
-					if nextToken.type == self.KW_FUNCTION:
-						self.FunctionDef()
-					elif nextToken.type == self.KW_PROPERTY:
-						self.PropertyDef()
-			elif nextToken:
-				if nextToken.type == self.KW_FUNCTION:
-					self.FunctionDef()
-				elif nextToken.type == self.KW_PROPERTY:
-					self.PropertyDef()
-		elif self.token.type == self.KW_STATE or (self.token.type == self.KW_AUTO and self.Peek().type == self.KW_STATE):
-			self.State()
-		elif self.token.type == self.KW_ENDSTATE:
-			self.Accept(self.KW_ENDSTATE)
-			self.stat = self.keywordstat(line)
+			Reduce()
+			return True
 		else:
-			return -1
-		return 0
+			Argument()
+			while self.Accept(self.COMMA):
+				Argument()
+			self.Expect(self.RIGHT_PARENTHESIS)
+			self.Shift()
+			Reduce()
+			return True
+
+#class LimitedSyntactic(Syntactic): #TODO Remove
+#	def Statement(self):
+#		# Only interested in specific types of statements.
+#		line = -1
+#		if self.token:
+#			line = self.token.line
+#		if self.token.type == self.KW_SCRIPTNAME:
+#			self.ScriptHeader()
+#		elif self.token.type == self.KW_EVENT:
+#			self.EventDef()
+#		elif self.token.type == self.KW_ENDEVENT:
+#			self.Accept(self.KW_ENDEVENT)
+#			self.stat = self.keywordstat(line)
+#		elif self.token.type == self.KW_FUNCTION:
+#			self.FunctionDef()
+#		elif self.token.type == self.KW_ENDFUNCTION:
+#			self.Accept(self.KW_ENDFUNCTION)
+#		elif self.token.type == self.KW_ENDPROPERTY:
+#			self.Accept(self.KW_ENDPROPERTY)
+#			self.stat = self.keywordstat(line)
+#		elif self.token.type == self.IDENTIFIER or self.token.type == self.KW_BOOL or self.token.type == self.KW_FLOAT or self.token.type == self.KW_INT or self.token.type == self.KW_STRING:
+#			nextToken = self.Peek()
+#			if nextToken and nextToken.type == self.LEFT_BRACKET:
+#				nextToken = self.Peek(2)
+#				if nextToken and nextToken.type == self.RIGHT_BRACKET:
+#					nextToken = self.Peek(3)
+#					if not nextToken:
+#						self.Abort("Expected FUNCTION, PROPERTY, or an identifier.")
+#					if nextToken.type == self.KW_FUNCTION:
+#						self.FunctionDef()
+#					elif nextToken.type == self.KW_PROPERTY:
+#						self.PropertyDef()
+#			elif nextToken:
+#				if nextToken.type == self.KW_FUNCTION:
+#					self.FunctionDef()
+#				elif nextToken.type == self.KW_PROPERTY:
+#					self.PropertyDef()
+#		elif self.token.type == self.KW_STATE or (self.token.type == self.KW_AUTO and self.Peek().type == self.KW_STATE):
+#			self.State()
+#		elif self.token.type == self.KW_ENDSTATE:
+#			self.Accept(self.KW_ENDSTATE)
+#			self.stat = self.keywordstat(line)
+#		else:
+#			return -1
+#		return 0
 
 # Semantic analysis ###############################################################################
 class CachedScript(object):
@@ -1343,36 +1284,52 @@ class NodeResult(object):
 		self.array = aArray
 		self.object = aObject
 
-class Cancel(Exception):
-	def __init__(self, line, variables, functions, states, imports):
-		super(Cancel, self).__init__()
-		self.line = line
-		self.variables = variables
-		self.functions = functions
-		self.states = states
-		self.imports = imports
+class EmptyStateCancel(SemanticError):
+	def __init__(self, aFunctions):
+		super(EmptyStateCancel, self).__init__(None, None)
+		self.functions = aFunctions
+
+class StateCancel(SemanticError):
+	def __init__(self, aFunctions):
+		super(StateCancel, self).__init__(None, None)
+		self.functions = aFunctions
+
+class FunctionDefinitionCancel(SemanticError):
+	def __init__(self, aType, aFunctions, aVariables, aImports):
+		super(FunctionDefinitionCancel, self).__init__(None, None)
+		self.type = aType
+		self.functions = aFunctions
+		self.variables = aVariables
+		self.imports = aImports
+
+class PropertyDefinitionCancel(SemanticError):
+	def __init__(self, aType, aArray, aFunctions):
+		super(PropertyDefinitionCancel, self).__init__(None, None)
+		self.type = aType
+		self.array = aArray
+		self.functions = aFunctions
 
 class Semantic(SharedResources):
 	def __init__(self):
 		super(Semantic, self).__init__()
 		self.cache = {}
-		self.lex = LimitedLexical()
-		self.syn = LimitedSyntactic()
+		self.lex = Lexical()
+		self.syn = Syntactic()
 
 	def Abort(self, message = None, line = None):
 		if not line:
 			if self.statements and self.statements[0]:
 				line = self.statements[0].line
+		if not line:
+			line = 1
 		raise SemanticError(message, line)
 
-	def GetCachedKeys(self):
-		result = []
-		for key, items in self.cache.items():
-			result.append(key)
-		if result:
-			return result
-		else:
-			return None
+#	def GetCachedKeys(self): #TODO Remove if unused
+#		result = [key for key, name in self.cache.items()]
+#		if result:
+#			return result
+#		else:
+#			return None
 
 	# Variables and properties
 	def PushVariableScope(self):
@@ -1392,6 +1349,9 @@ class Semantic(SharedResources):
 				if not self.CacheScript(stat.data.type, line=stat.line):
 					self.Abort("Could not import %s." % stat.data.type, stat.line)
 					return False
+				if self.GetPath(stat.data.name):
+					self.Abort("Variables/properties cannot have the same name as a type.", stat.line)
+					return False
 				return True
 			self.Abort("A variable or property has already been defined with the same name on line %d." % temp.line, stat.line)
 			return False
@@ -1403,6 +1363,9 @@ class Semantic(SharedResources):
 						self.variables[len(self.variables)-1][param.name] = Statement(self.STAT_PARAMETER, stat.line, param)
 						if not self.CacheScript(param.type, line=stat.line):
 							self.Abort("Could not import %s." % param.type, stat.line)
+							return False
+						if self.GetPath(param.name):
+							self.Abort("Parameters cannot have the same name as a type.", stat.line)
 							return False
 					else:
 						self.Abort("A variable or property has already been defined with the same name on line %d." % temp.line, stat.line)
@@ -1529,7 +1492,8 @@ class Semantic(SharedResources):
 		if not script: # Script has not been cached yet
 			fullPath = self.GetPath(name)
 			if fullPath:
-				self.CacheScript(name, fullPath)
+				if not self.CacheScript(name, fullPath):
+					return None
 			else:
 				self.Abort("Could not find parent script among source folders.")
 				return None
@@ -1581,6 +1545,7 @@ class Semantic(SharedResources):
 							else:
 								tokens.append(token)
 					except LexicalError as e:
+						self.Abort("Found a lexical error in %s script." % name)
 						return False
 					extends = []
 					functions = {}
@@ -1593,6 +1558,7 @@ class Semantic(SharedResources):
 							if stat:
 								statements.append(stat)
 					except SyntacticError as e:
+						self.Abort("Found a syntactic error in %s script." % name)
 						return False
 					header = False
 					if statements[0].type == self.STAT_SCRIPTHEADER:
@@ -1675,6 +1641,16 @@ class Semantic(SharedResources):
 		else:
 			self.Abort("First line has to be the scriptheader.", statements[0].line)
 			return False
+		if not self.functions[0].get("GOTOSTATE", None):
+			self.functions[0]["GOTOSTATE"] = Statement(self.STAT_FUNCTIONDEF, 0, FunctionDef(None, None, False, "GOTOSTATE", "GoToState", [ParameterDef(self.KW_STRING, "String", False, "ASNEWSTATE", "asNewState", None)], []))
+		if not self.functions[0].get("GETSTATE", None):
+			self.functions[0]["GETSTATE"] = Statement(self.STAT_FUNCTIONDEF, 0, FunctionDef(self.KW_STRING, "String", False, "GETSTATE", "GetState", [], []))
+		if not self.functions[0].get("ONINIT", None):
+			self.functions[0]["ONINIT"] = Statement(self.STAT_EVENTDEF, 0, EventDef(None, "ONINIT", "OnInit", [], []))
+		if not self.functions[0].get("ONBEGINSTATE", None):
+			self.functions[0]["ONBEGINSTATE"] = Statement(self.STAT_EVENTDEF, 0, EventDef(None, "ONBEGINSTATE", "OnBeginState", [], []))
+		if not self.functions[0].get("ONENDSTATE", None):
+			self.functions[0]["ONENDSTATE"] = Statement(self.STAT_EVENTDEF, 0, EventDef(None, "ONENDSTATE", "OnEndState", [], []))
 		# Properties, functions, events, states, and scriptwide variables
 		self.variables.append({})
 		self.functions.append({})
@@ -1739,6 +1715,9 @@ class Semantic(SharedResources):
 						self.Abort("Unterminated function definition.", func[0].line)
 						return False
 				else:
+					self.PushVariableScope()
+					self.AddVariable(stat)
+					self.PopVariableScope()
 					docString = None
 					if len(statements) > 0:
 						if statements[0].type == self.STAT_DOCUMENTATION:
@@ -1757,6 +1736,9 @@ class Semantic(SharedResources):
 						self.Abort("Unterminated event definition.", event[0].line)
 						return False
 				else:
+					self.PushVariableScope()
+					self.AddVariable(stat)
+					self.PopVariableScope()
 					docString = None
 					if len(statements) > 0:
 						if statements[0].type == self.STAT_DOCUMENTATION:
@@ -1801,6 +1783,8 @@ class Semantic(SharedResources):
 					self.PushFunctionScope()
 					self.StateBlock(statements)
 					self.PopFunctionScope()
+		if self.cancel:
+			raise EmptyStateCancel(self.functions)
 		return True
 
 	def PropertyBlock(self, statements):
@@ -1808,7 +1792,7 @@ class Semantic(SharedResources):
 		if self.cancel:
 			if start.line >= self.cancel:
 				self.PopFunctionScope()
-				raise Cancel(start.line, self.variables, self.functions, self.states, self.imports)
+				raise EmptyStateCancel(self.functions)
 		end = statements.pop()
 		docString = None
 		if len(statements) > 0:
@@ -1827,7 +1811,7 @@ class Semantic(SharedResources):
 						return False
 					else:
 						if stat.data.name == "GET":
-							if stat.data.type != start.data.type:
+							if stat.data.type != start.data.type or stat.data.array != start.data.array:
 								self.Abort("The return type of the GET function and the property type must match.", stat.line)
 								return False
 				else:
@@ -1844,7 +1828,7 @@ class Semantic(SharedResources):
 					return False
 			else:
 				self.Abort("Illegal statement in a property definition.", statements[0].line)
-		if len(functions) == 0:
+		if len(functions) == 0 and self.cancel == None:
 			self.Abort("At least a SET or a GET function has to be defined in a property definition.", start.line)
 			return False
 		for key, func in functions.items():
@@ -1852,9 +1836,6 @@ class Semantic(SharedResources):
 			if not self.FunctionBlock(func):
 				return False
 			self.PopVariableScope()
-		if self.cancel:
-			if end.line >= self.cancel:
-				raise Cancel(end.line, self.variables, self.functions, self.states, self.imports)
 		return True
 
 	def FunctionBlock(self, statements):
@@ -1862,7 +1843,10 @@ class Semantic(SharedResources):
 		if self.cancel:
 			if start.line >= self.cancel:
 				self.PopVariableScope()
-				raise Cancel(start.line, self.variables, self.functions, self.states, self.imports)
+				if len(self.functions) > 2:
+					raise StateCancel(self.functions)
+				else:
+					raise EmptyStateCancel(self.functions)
 		end = statements.pop()
 		typ = None
 		if start.data.type:
@@ -1892,7 +1876,7 @@ class Semantic(SharedResources):
 		while len(self.statements) > 0:
 			if self.cancel:
 				if self.statements[0].line >= self.cancel:
-					raise Cancel(self.statements[0].line, self.variables, self.functions, self.states, self.imports)
+					raise FunctionDefinitionCancel(start.data.type, self.functions, self.variables, self.imports)
 			if self.statements[0].type == self.STAT_VARIABLEDEF:
 				if not self.VariableDef():
 					return False
@@ -1920,7 +1904,7 @@ class Semantic(SharedResources):
 				return False
 		if self.cancel:
 			if end.line >= self.cancel:
-				raise Cancel(end.line, self.variables, self.functions, self.states, self.imports)
+				raise FunctionDefinitionCancel(start.data.type, self.functions, self.variables, self.imports)
 		return True
 
 	def StateBlock(self, statements):
@@ -1928,7 +1912,7 @@ class Semantic(SharedResources):
 		if self.cancel:
 			if start.line >= self.cancel:
 				self.PopFunctionScope()
-				raise Cancel(start.line, self.variables, self.functions, self.states, self.imports)
+				raise EmptyStateCancel(self.functions)
 		end = statements.pop()
 		if not self.AddState(start):
 			return False
@@ -1986,7 +1970,7 @@ class Semantic(SharedResources):
 					self.PopVariableScope()
 		if self.cancel:
 			if end.line >= self.cancel:
-				raise Cancel(end.line, self.variables, self.functions, self.states, self.imports)
+				raise StateCancel(self.functions)
 		return True
 
 	def IfBlock(self, typ):
@@ -1996,7 +1980,10 @@ class Semantic(SharedResources):
 		while len(self.statements) > 0 and not (self.statements[0].type == self.STAT_KEYWORD and self.statements[0].data.type == self.KW_ENDIF):
 			if self.cancel:
 				if self.statements[0].line >= self.cancel:
-					raise Cancel(self.statements[0].line, self.variables, self.functions, self.states, self.imports)
+					if typ:
+						raise FunctionDefinitionCancel(typ.type, self.functions, self.variables, self.imports)
+					else:
+						raise FunctionDefinitionCancel(None, self.functions, self.variables, self.imports)
 			if self.statements[0].type == self.STAT_VARIABLEDEF:
 				if not self.VariableDef():
 					return False
@@ -2046,7 +2033,10 @@ class Semantic(SharedResources):
 		while len(self.statements) > 0 and not (self.statements[0].type == self.STAT_KEYWORD and self.statements[0].data.type == self.KW_ENDWHILE):
 			if self.cancel:
 				if self.statements[0].line >= self.cancel:
-					raise Cancel(self.statements[0].line, self.variables, self.functions, self.states, self.imports)
+					if typ:
+						raise FunctionDefinitionCancel(typ.type, self.functions, self.variables, self.imports)
+					else:
+						raise FunctionDefinitionCancel(None, self.functions, self.variables, self.imports)
 			if self.statements[0].type == self.STAT_VARIABLEDEF:
 				if not self.VariableDef():
 					return False
@@ -2263,8 +2253,14 @@ class Semantic(SharedResources):
 									paramType = NodeResult(params[0].type, True, True)
 								else:
 									paramType = NodeResult(params[0].type, False, True)
-								if argExpr.type != paramType.type and argExpr.array != paramType.array and argExpr.object != paramType.object and not self.CanAutoCast(argExpr, paramType):
-									self.Abort("Parameter %s is of type %s, but the argument evaluates to %s, which cannot be auto-cast to the parameter's type." % (params[0].name, paramType.type, argExpr.type)) # Array?
+								if (argExpr.type != paramType.type or argExpr.array != paramType.array or argExpr.object != paramType.object) and not self.CanAutoCast(argExpr, paramType):
+									aType = argExpr.type
+									if argExpr.array:
+										aType = "%s[]" % aType
+									pType = paramType.type
+									if paramType.array:
+										pType = "%s[]" % pType
+									self.Abort("Parameter %s is of type %s, but the argument evaluates to %s, which cannot be auto-cast to the parameter's type." % (params[0].name, pType, aType))
 								args.pop(i)
 								break
 							i += 1
@@ -2279,8 +2275,14 @@ class Semantic(SharedResources):
 									paramType = NodeResult(params[0].type, True, True)
 								else:
 									paramType = NodeResult(params[0].type, False, True)
-								if argExpr.type != paramType.type and argExpr.array != paramType.array and argExpr.object != paramType.object and not self.CanAutoCast(argExpr, paramType):
-									self.Abort("Parameter %s is of type %s, but the argument evaluates to %s, which cannot be auto-cast to the parameter's type." % (params[0].name, paramType.type, argExpr.type)) # Array?
+								if (argExpr.type != paramType.type or argExpr.array != paramType.array or argExpr.object != paramType.object) and not self.CanAutoCast(argExpr, paramType):
+									aType = argExpr.type
+									if argExpr.array:
+										aType = "%s[]" % aType
+									pType = paramType.type
+									if paramType.array:
+										pType = "%s[]" % pType
+									self.Abort("Parameter %s is of type %s, but the argument evaluates to %s, which cannot be auto-cast to the parameter's type." % (params[0].name, pType, aType))
 								args.pop(0)
 						else:
 							if len(args) > 0:
@@ -2290,8 +2292,14 @@ class Semantic(SharedResources):
 									paramType = NodeResult(params[0].type, True, True)
 								else:
 									paramType = NodeResult(params[0].type, False, True)
-								if argExpr.type != paramType.type and argExpr.array != paramType.array and argExpr.object != paramType.object and not self.CanAutoCast(argExpr, paramType):
-									self.Abort("Parameter %s is of type %s, but the argument evaluates to %s, which cannot be auto-cast to the parameter's type." % (params[0].name, paramType.type, argExpr.type)) # Array?
+								if (argExpr.type != paramType.type or argExpr.array != paramType.array or argExpr.object != paramType.object) and not self.CanAutoCast(argExpr, paramType):
+									aType = argExpr.type
+									if argExpr.array:
+										aType = "%s[]" % aType
+									pType = paramType.type
+									if paramType.array:
+										pType = "%s[]" % pType
+									self.Abort("Parameter %s is of type %s, but the argument evaluates to %s, which cannot be auto-cast to the parameter's type." % (params[0].name, pType, aType))
 								args.pop(0)
 							else:
 								self.Abort("Mandatory parameter %s was not given an argument." % params[0].name)
