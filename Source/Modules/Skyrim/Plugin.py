@@ -63,7 +63,7 @@ class SublimePapyrusSkyrimGenerateCompletionsCommand(sublime_plugin.WindowComman
 								if tokens:
 									lines.append(tokens)
 								tokens = []
-							else:
+							elif token.type != lex.COMMENT_LINE and token.type != lex.COMMENT_BLOCK:
 								tokens.append(token)
 					except Linter.LexicalError as e:
 						if PYTHON_VERSION[0] == 2:
@@ -203,7 +203,7 @@ class EventListener(sublime_plugin.EventListener):
 							if tokens:
 								lines.append(tokens)
 							tokens = []
-						else:
+						elif token.type != self.lex.COMMENT_LINE and token.type != self.lex.COMMENT_BLOCK:
 							tokens.append(token)
 				except Linter.LexicalError as e:
 					if view:
@@ -265,7 +265,6 @@ class EventListener(sublime_plugin.EventListener):
 					completions = self.Completions(view, prefix, locations)
 					if completions == None:
 						completions = []
-					completions.extend(self.GetBaseKeywordCompletions())
 				completions = (list(set(completions)), sublime.INHIBIT_WORD_COMPLETIONS|sublime.INHIBIT_EXPLICIT_COMPLETIONS,)
 				return completions
 
@@ -297,210 +296,48 @@ class EventListener(sublime_plugin.EventListener):
 			line = lineColumn[0]+1
 			column = lineColumn[1]+1
 			lineString = view.substr(sublime.Region(view.line(locations[0]).begin(), locations[0]-len(prefix))).strip()
-			
-			return Exit()
-
-			# OLD STUFF STARTS HERE
-			if lineString[-1:] == ".":
-				lineString = lineString[:-1]
-				i = len(lineString)
-				acc = 0
-				while i >= 0:
-					char = lineString[i:i+1]
-					if char == ")":
-						acc += 1
-					elif char == ",": # Parameter/argument separator
-						break
-					elif char == "(": # Start of arguments in a function call
-						if acc > 0:
-							acc -= 1
-						else:
-							break
-					i -= 1
-				if i >= 0:
-					lineString = lineString[i+1:]
-				tokens = []
-				try:
-					for token in self.lex.Process(lineString):
-						if token.type != self.lex.NEWLINE:
-							tokens.append(token)
-				except Linter.LexicalError as e:
-					return Exit()
-				if not tokens:
-					return Exit()
-				stat = None
-				expr = None
+			tokens = []
+			try:
+				for token in self.lex.Process(lineString):
+					if token.type != self.lex.NEWLINE:
+						tokens.append(token)
+			except Linter.LexicalError as e:
+				print(e.message)
+				return Exit()
+			tokenCount = len(tokens)
+			if tokenCount > 0 and tokens[tokenCount-1].type != self.lex.COMMENT_LINE:
 				try:
 					stat = self.syn.Process(tokens)
+				except ExpectedIdentifierError as e:
+					print(e.message)
+					Exit()
+					return completions
+				except ExpectedParameterIdentifierError as e:
+					print(e.message)
+					Exit()
+					return completions
+				except ExpectedFunctionIdentifierError as e:
+					print(e.message)
+					Exit()
+					return completions
+	#			except ExpectedLiteralError as e:
+	#				print(e.message)
+	#			except ExpectedOperatorError as e:
+	#				print(e.message)
+	#			except ExpectedKeywordError as e:
+	#				print(e.message)
 				except Linter.SyntacticError as e:
-					if self.syn.stack:
-						expr = self.syn.stack[0]
-					else:
-						return Exit()
-				try:
-					self.sem.Process(statements, SublimePapyrus.GetSourcePaths(view), line)
-				except Linter.SemanticError as e:
+					print(e.message)
 					return Exit()
-				except Linter.Cancel as e:
-					if len(e.variables) > 2:
-						scriptName = None
-						try:
-							if stat:
-								if stat.type == self.sem.STAT_EXPRESSION:
-									scriptName = self.sem.NodeVisitor(stat.data.expression)
-								elif stat.type == self.sem.STAT_ASSIGNMENT:
-									scriptName = self.sem.NodeVisitor(stat.data.rightExpression)
-								elif stat.type == self.sem.STAT_VARIABLEDEF:
-									scriptName = self.sem.NodeVisitor(stat.data.value)
-								elif stat.type == self.sem.STAT_IF:
-									scriptName = self.sem.NodeVisitor(stat.data.expression)
-								elif stat.type == self.sem.STAT_ELSEIF:
-									scriptName = self.sem.NodeVisitor(stat.data.expression)
-								elif stat.type == self.sem.STAT_WHILE:
-									scriptName = self.sem.NodeVisitor(stat.data.expression)
-								elif stat.type == self.sem.STAT_RETURN:
-									scriptName = self.sem.NodeVisitor(stat.data.expression)
-							elif expr:
-								scriptName = self.sem.NodeVisitor(expr)
-						except Linter.SemanticError as e:
-							return Exit()
-						if scriptName:
-							if scriptName.type == self.sem.KW_SELF:
-								for scope in e.functions:
-									for name, obj in scope.items():
-										if obj.type == self.sem.STAT_FUNCTIONDEF:
-											completions.append(SublimePapyrus.MakeFunctionCompletion(obj, self.sem))
-										elif obj.type == self.sem.STAT_EVENTDEF:
-											completions.append(SublimePapyrus.MakeEventCompletion(obj, self.sem))
-							elif scriptName.array:
-								typ = scriptName.type.capitalize()
-								completions.append(("find\tint func.", "Find(${1:%s akElement}, ${2:Int aiStartIndex = 0})" % typ,))
-								completions.append(("rfind\tint func.", "RFind(${1:%s akElement}, ${2:Int aiStartIndex = -1})" % typ,))
-							else:
-								properties = self.GetPropertyCompletions(scriptName.type)
-								functions = self.GetFunctionCompletions(scriptName.type)
-								if properties and functions:
-									completions.extend(properties)
-									completions.extend(functions)
-								else:
-									try:
-										script = self.sem.GetCachedScript(scriptName.type)
-									except:
-										return Exit()
-									if script:
-										if not properties:
-											properties = []
-											for name, obj in script.properties.items():
-												properties.append(SublimePapyrus.MakePropertyCompletion(obj))
-												self.SetPropertyCompletions(scriptName.type, properties)
-										completions.extend(properties)
-										if not functions:
-											functions = []
-											for name, obj in script.functions.items():
-												functions.append(SublimePapyrus.MakeFunctionCompletion(obj, self.sem))
-												self.SetFunctionCompletions(scriptName.type, functions)
-										completions.extend(functions)
-			else: # Objects from the script that is being edited
-				try:
-					self.sem.Process(statements, SublimePapyrus.GetSourcePaths(view), line)
-				except Linter.SemanticError as e:
-					return Exit()
-				except Linter.Cancel as e:
-					funcScopes = len(e.functions)
-					varScopes = len(e.variables)
-					if funcScopes > 2:
-						if varScopes > 2: # Function definition in a state
-							for scope in e.variables:
-								for name, obj in scope.items():
-									if obj.type == self.sem.STAT_PROPERTYDEF:
-										completions.append(SublimePapyrus.MakePropertyCompletion(obj))
-									elif obj.type == self.sem.STAT_VARIABLEDEF:
-										completions.append(SublimePapyrus.MakeVariableCompletion(obj))
-									elif obj.type == self.sem.STAT_PARAMETER:
-										completions.append(SublimePapyrus.MakeParameterCompletion(obj))
-							for scope in e.functions:
-								for name, obj in scope.items():
-									if obj.type == self.sem.STAT_FUNCTIONDEF:
-										completions.append(SublimePapyrus.MakeFunctionCompletion(obj, self.sem))
-									elif obj.type == self.sem.STAT_EVENTDEF:
-										completions.append(SublimePapyrus.MakeEventCompletion(obj, self.sem))
-							for imp in e.imports:
-								script = self.sem.GetCachedScript(imp)
-								if script:
-									for name, obj in script.functions.items():
-										if self.sem.KW_GLOBAL in obj.data.flags:
-											completions.append(SublimePapyrus.MakeFunctionCompletion(obj, self.sem))
-							completions.extend(self.GetBaseFunctionBlockCompletions())
-						else: # State definition
-							for name, obj in e.functions[0].items():
-								if not e.functions[2].get(name, None):
-									if obj.type == self.sem.STAT_FUNCTIONDEF:
-										completions.append(SublimePapyrus.MakeFunctionCompletion(obj, self.sem, False))
-									elif obj.type == self.sem.STAT_EVENTDEF:
-										completions.append(SublimePapyrus.MakeEventCompletion(obj, self.sem, False))
-							for name, obj in e.functions[1].items():
-								if not e.functions[2].get(name, None):
-									if obj.type == self.sem.STAT_FUNCTIONDEF:
-										completions.append(SublimePapyrus.MakeFunctionCompletion(obj, self.sem, False))
-									elif obj.type == self.sem.STAT_EVENTDEF:
-										completions.append(SublimePapyrus.MakeEventCompletion(obj, self.sem, False))
-							completions.extend(self.GetBaseStateCompletions())
-					else:
-						if varScopes > 2: # Function definition in the empty state
-							for scope in e.variables:
-								for name, obj in scope.items():
-									if obj.type == self.sem.STAT_PROPERTYDEF:
-										completions.append(SublimePapyrus.MakePropertyCompletion(obj))
-									elif obj.type == self.sem.STAT_VARIABLEDEF:
-										completions.append(SublimePapyrus.MakeVariableCompletion(obj))
-									elif obj.type == self.sem.STAT_PARAMETER:
-										completions.append(SublimePapyrus.MakeParameterCompletion(obj))
-							for scope in e.functions:
-								for name, obj in scope.items():
-									if obj.type == self.sem.STAT_FUNCTIONDEF:
-										completions.append(SublimePapyrus.MakeFunctionCompletion(obj, self.sem))
-									elif obj.type == self.sem.STAT_EVENTDEF:
-										completions.append(SublimePapyrus.MakeEventCompletion(obj, self.sem))
-							for imp in e.imports:
-								script = self.sem.GetCachedScript(imp)
-								if script:
-									for name, obj in script.functions.items():
-										if self.sem.KW_GLOBAL in obj.data.flags:
-											completions.append(SublimePapyrus.MakeFunctionCompletion(obj, self.sem))
-							completions.extend(self.GetBaseFunctionBlockCompletions())
-						else: # Empty state
-							for name, obj in e.functions[0].items():
-								if not e.functions[1].get(name, None):
-									if obj.type == self.sem.STAT_FUNCTIONDEF:
-										completions.append(SublimePapyrus.MakeFunctionCompletion(obj, self.sem, False))
-									elif obj.type == self.sem.STAT_EVENTDEF:
-										completions.append(SublimePapyrus.MakeEventCompletion(obj, self.sem, False))
-							completions.extend(self.GetBaseEmptyStateCompletions())
-							completions.extend(self.GetBaseStateCompletions())
-				else: # Empty state at the end of the file
-					for name, obj in self.sem.functions[0].items():
-						if not self.sem.functions[1].get(name, None):
-							if obj.type == self.sem.STAT_FUNCTIONDEF:
-								completions.append(SublimePapyrus.MakeFunctionCompletion(obj, self.sem, False))
-							elif obj.type == self.sem.STAT_EVENTDEF:
-								completions.append(SublimePapyrus.MakeEventCompletion(obj, self.sem, False))
-					completions.extend(self.GetBaseEmptyStateCompletions())
-					completions.extend(self.GetBaseStateCompletions())
-				# Script types, cache the results
-				scripts = self.GetTypeCompletions()
-				if not scripts:
-					scripts = []
-					paths = SublimePapyrus.GetSourcePaths(view)
-					for path in paths:
-						if os.path.isdir(path):
-							files = [f for f in os.listdir(path) if ".psc" in f]
-							for file in files:
-								scripts.append(("%s\tscript" % file[:-4].lower(), "%s" % file[:-4]))
-					scripts = list(set(scripts))
-					self.SetTypeCompletions(scripts)
-				completions.extend(scripts)
-		Exit()
-		return completions
+				if stat:
+					print(stat.type)
+					Exit()
+					return completions
+				else:
+					print("No statement could be formed")
+					Exit()
+					return completions
+			return Exit()
 
 	def GetBaseFunctionBlockCompletions(self):
 		return [
