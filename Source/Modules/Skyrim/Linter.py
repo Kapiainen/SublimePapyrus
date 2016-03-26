@@ -1560,11 +1560,18 @@ class Semantic(SharedResources):
 		return extends
 
 	def GetPath(self, name):
+		name = (name + ".psc").upper()
 		for path in self.paths:
-			fullPath = os.path.join(path, name + ".psc")
-			if os.path.isfile(fullPath):
-				return fullPath
+			for f in os.listdir(path):
+				if name == f.upper():
+					return os.path.join(path, f)
 		return None
+#		Original
+#		for path in self.paths:
+#			fullPath = os.path.join(path, name + ".psc")
+#			if os.path.isfile(fullPath):
+#				return fullPath
+#		return None
 
 	def CacheScript(self, name, path = None, line = None):
 		name = name.upper()
