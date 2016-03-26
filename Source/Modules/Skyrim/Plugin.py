@@ -276,15 +276,15 @@ class EventListener(sublime_plugin.EventListener):
 			return
 		self.completionRunning = True
 		SublimePapyrus.ClearLinterHighlights(view)
-		#start = None
+		start = None #DEBUG
 		def Exit():
-			#print("Completions: Finished in %f milliseconds and releasing lock..." % ((time.time()-start)*1000.0))
+			print("Completions: Finished in %f milliseconds and releasing lock..." % ((time.time()-start)*1000.0)) #DEBUG
 			self.completionRunning = False
 			return None
 		completions = []
 		flags = None
 		with self.cacheLock:
-			#start = time.time()
+			start = time.time() #DEBUG
 			bufferID = view.buffer_id()
 			if not bufferID:
 				return Exit()
