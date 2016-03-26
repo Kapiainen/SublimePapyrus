@@ -797,18 +797,6 @@ class Syntactic(SharedResources):
 			self.stat = Statement(self.STAT_WHILE, self.GetPreviousLine(), While(self.Pop()))
 			return True
 
-	def Assign(self):
-		if self.Expression():
-			if self.AcceptAssignment():
-				operator = self.GetPreviousToken()
-				line = self.GetPreviousLine()
-				if self.Expression():
-					right = self.Pop()
-					self.stat = Statement(self.STAT_ASSIGNMENT, line, Assignment(operator, self.Pop(), right))
-					return True
-		self.stack = []
-		return False
-
 	def PropertyDef(self):
 		if self.AcceptType():
 			line = self.GetPreviousLine()
