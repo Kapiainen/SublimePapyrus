@@ -505,7 +505,7 @@ class Syntactic(SharedResources):
 			return False
 
 	def Peek(self, amount = 1):
-		if self.token_index < self.token_count-amount:
+		if self.token_index+amount < self.token_count:
 			return self.tokens[self.token_index+amount]
 		else:
 			return None
@@ -1566,7 +1566,7 @@ class Semantic(SharedResources):
 				if name == f.upper():
 					return os.path.join(path, f)
 		return None
-#		Original
+#		Original #TODO Remove
 #		for path in self.paths:
 #			fullPath = os.path.join(path, name + ".psc")
 #			if os.path.isfile(fullPath):
