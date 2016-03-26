@@ -546,9 +546,6 @@ class Syntactic(SharedResources):
 	def TokensRemaining(self):
 		return self.token_index < self.token_count
 
-	def GetIndex(self):
-		return self.token_index
-
 	def GetPreviousToken(self):
 		if self.token_index > 0:
 			return self.tokens[self.token_index-1]
@@ -568,28 +565,6 @@ class Syntactic(SharedResources):
 	def GetPreviousColumn(self):
 		if self.token_index > 0:
 			return self.tokens[self.token_index-1].column
-
-	def GoTo(self, aiIndex):
-		self.token_index = aiIndex - 1
-		if self.token_index < -1:
-			self.token = None
-		else:
-			self.Consume()
-
-	def Attempt(self, func, args = None):
-		start = self.GetIndex()
-		if args:
-			if func(args):
-				return True
-			else:
-				self.GoTo(start)
-				return False
-		else:
-			if func():
-				return True
-			else:
-				self.GoTo(start)
-				return False
 
 	def AcceptType(self, baseTypes):
 		if self.Accept(self.IDENTIFIER):
@@ -1660,8 +1635,7 @@ class Semantic(SharedResources):
 			elif stat.type == self.STAT_IMPORT:
 				if not stat.data.name in self.imports:
 					self.imports.append(stat.data.name)
-					if not self.CacheScript(stat.data.name, line=stat.line):
-						return False
+					self.CacheScript(stat.data.name, line=stat.line)
 				else:
 					self.Abort("%s has already been imported in this script." % stat.data.name, stat.line)
 			elif stat.type == self.STAT_STATEDEF:
@@ -1738,8 +1712,7 @@ class Semantic(SharedResources):
 			self.Abort("At least a SET or a GET function has to be defined in a property definition.", start.line)
 		for key, func in functions.items():
 			self.PushVariableScope()
-			if not self.FunctionBlock(func):
-				return False
+			self.FunctionBlock(func)
 			self.PopVariableScope()
 		return True
 
@@ -1782,27 +1755,21 @@ class Semantic(SharedResources):
 				if self.statements[0].line >= self.cancel:
 					raise FunctionDefinitionCancel(start.data.type, self.functions, self.variables, self.imports)
 			if self.statements[0].type == self.STAT_VARIABLEDEF:
-				if not self.VariableDef():
-					return False
+				self.VariableDef()
 			elif self.statements[0].type == self.STAT_ASSIGNMENT:
-				if not self.Assignment():
-					return False
+				self.Assignment()
 			elif self.statements[0].type == self.STAT_EXPRESSION:
-				if not self.Expression():
-					return False
+				self.Expression()
 			elif self.statements[0].type == self.STAT_IF:
 				self.PushVariableScope()
-				if not self.IfBlock(typ):
-					return False
+				self.IfBlock(typ)
 				self.PopVariableScope()
 			elif self.statements[0].type == self.STAT_WHILE:
 				self.PushVariableScope()
-				if not self.WhileBlock(typ):
-					return False
+				self.WhileBlock(typ)
 				self.PopVariableScope()
 			elif self.statements[0].type == self.STAT_RETURN:
-				if not self.Return(typ):
-					return False
+				self.Return(typ)
 			else:
 				self.Abort("Illegal statement in a function definition.", self.statements[0].line)
 		if self.cancel:
@@ -1858,8 +1825,7 @@ class Semantic(SharedResources):
 			for typ, statements in obj.items():
 				if typ == self.DEFINITION_FUNCTION or typ == self.DEFINITION_EVENT:
 					self.PushVariableScope()
-					if not self.FunctionBlock(statements):
-						return False
+					self.FunctionBlock(statements)
 					self.PopVariableScope()
 		if self.cancel:
 			if end.line >= self.cancel:
@@ -1878,18 +1844,14 @@ class Semantic(SharedResources):
 					else:
 						raise FunctionDefinitionCancel(None, self.functions, self.variables, self.imports)
 			if self.statements[0].type == self.STAT_VARIABLEDEF:
-				if not self.VariableDef():
-					return False
+				self.VariableDef()
 			elif self.statements[0].type == self.STAT_ASSIGNMENT:
-				if not self.Assignment():
-					return False
+				self.Assignment()
 			elif self.statements[0].type == self.STAT_EXPRESSION:
-				if not self.Expression():
-					return False
+				self.Expression()
 			elif self.statements[0].type == self.STAT_IF:
 				self.PushVariableScope()
-				if not self.IfBlock(typ):
-					return False
+				self.IfBlock(typ)
 				self.PopVariableScope()
 			elif self.statements[0].type == self.STAT_ELSEIF:
 				self.PopVariableScope()
@@ -1903,12 +1865,10 @@ class Semantic(SharedResources):
 				self.statements.pop(0)
 			elif self.statements[0].type == self.STAT_WHILE:
 				self.PushVariableScope()
-				if not self.WhileBlock(typ):
-					return False
+				self.WhileBlock(typ)
 				self.PopVariableScope()
 			elif self.statements[0].type == self.STAT_RETURN:
-				if not self.Return(typ):
-					return False
+				self.Return(typ)
 			else:
 				self.Abort("Illegal statement in an if-block.", self.statements[0].line)
 		if len(self.statements) > 0:
@@ -1929,27 +1889,21 @@ class Semantic(SharedResources):
 					else:
 						raise FunctionDefinitionCancel(None, self.functions, self.variables, self.imports)
 			if self.statements[0].type == self.STAT_VARIABLEDEF:
-				if not self.VariableDef():
-					return False
+				self.VariableDef()
 			elif self.statements[0].type == self.STAT_ASSIGNMENT:
-				if not self.Assignment():
-					return False
+				self.Assignment()
 			elif self.statements[0].type == self.STAT_EXPRESSION:
-				if not self.Expression():
-					return False
+				self.Expression()
 			elif self.statements[0].type == self.STAT_IF:
 				self.PushVariableScope()
-				if not self.IfBlock(typ):
-					return False
+				self.IfBlock(typ)
 				self.PopVariableScope()
 			elif self.statements[0].type == self.STAT_WHILE:
 				self.PushVariableScope()
-				if not self.WhileBlock(typ):
-					return False
+				self.WhileBlock(typ)
 				self.PopVariableScope()
 			elif self.statements[0].type == self.STAT_RETURN:
-				if not self.Return(typ):
-					return False
+				self.Return(typ)
 			else:
 				self.Abort("Illegal statement in a while-loop.", self.statements[0].line)
 		if len(self.statements) > 0:
