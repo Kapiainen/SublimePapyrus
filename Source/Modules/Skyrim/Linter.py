@@ -859,17 +859,12 @@ class Syntactic(SharedResources):
 	def Return(self):
 		if self.Accept(self.KW_RETURN):
 			if self.TokensRemaining():
-				if self.Expression():
-					self.stat = Statement(self.STAT_RETURN, self.GetPreviousLine(), Return(self.Pop()))
-				else:
-					while self.Consume():
-						pass
-					return False
+				self.Expression()
+				self.stat = Statement(self.STAT_RETURN, self.GetPreviousLine(), Return(self.Pop()))
+				return True
 			else:
 				self.stat = Statement(self.STAT_RETURN, self.GetPreviousLine(), Return(None))
-			return True
-		else:
-			return False
+				return True
 
 	def VariableDef(self):
 		if self.AcceptType():
