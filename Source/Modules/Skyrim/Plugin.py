@@ -190,14 +190,14 @@ class EventListener(sublime_plugin.EventListener):
 		self.linterRunning = True # Block further attempts to run the linter until this instance has finished
 		if view:
 			SublimePapyrus.ClearLinterHighlights(view)
-		#start = None
+		start = None #DEBUG
 		error = False
 		def Exit():
-			#print("Linter: Finished in %f milliseconds and releasing lock..." % ((time.time()-start)*1000.0))
+			print("Linter: Finished in %f milliseconds and releasing lock..." % ((time.time()-start)*1000.0)) #DEBUG
 			self.linterRunning = False
 			return False
 		with self.cacheLock:
-			#start = time.time()
+			start = time.time() #DEBUG
 			settings = None
 			if view:
 				settings = SublimePapyrus.GetSettings()
