@@ -626,7 +626,7 @@ class EventListener(sublime_plugin.EventListener):
 				properties = self.completionCache.get("properties", None)
 			properties[script] = obj
 
-	def GetTypeCompletions(self):
+	def GetTypeCompletions(self, view, baseTypes = True):
 		with self.cacheLock:
 			temp = self.completionCache.get("types", None)
 			if temp:
