@@ -970,44 +970,36 @@ class Syntactic(SharedResources):
 		return True
 
 	def EventDef(self):
-		if self.Accept(self.KW_EVENT):
-			line = self.GetPreviousLine()
-			params = []
+		self.Expect(self.KW_EVENT)
+		line = self.GetPreviousLine()
+		params = []
 
-			def Parameter():
-				if self.AcceptType():
-					typ = self.GetPreviousValue()
-					array = False
-					if self.Accept(self.LEFT_BRACKET):
-						if not self.Expect(self.RIGHT_BRACKET):
-							return False
-						array = True
-					if not self.Expect(self.IDENTIFIER):
-						return False
-					name = self.GetPreviousValue()
-					params.append(ParameterDef(typ.upper(), typ, array, name.upper(), name, None))
-					return True
-				else:
-					return False
-
-			if not self.Expect(self.IDENTIFIER):
-				return False
+		def Parameter():
+			self.ExpectType(True)
+			typ = self.GetPreviousValue()
+			array = False
+			if self.Accept(self.LEFT_BRACKET):
+				self.Expect(self.RIGHT_BRACKET)
+				array = True
+			self.Expect(self.IDENTIFIER)
 			name = self.GetPreviousValue()
-			if not self.Expect(self.LEFT_PARENTHESIS):
-				return False
-			if Parameter():
-				while self.Accept(self.COMMA):
-					if not Parameter():
-						return False
-			if not self.Expect(self.RIGHT_PARENTHESIS):
-				return False
-			flags = []
-			if self.Accept(self.KW_NATIVE):
-				flags.append(self.GetPreviousType())
-			self.stat = Statement(self.STAT_EVENTDEF, line, EventDef(None, name.upper(), name, params, flags))
+			params.append(ParameterDef(typ.upper(), typ, array, name.upper(), name, None))
 			return True
-		else:
-			return False
+
+		self.Expect(self.IDENTIFIER)
+		name = self.GetPreviousValue()
+		nextToken = self.Peek()
+		self.Expect(self.LEFT_PARENTHESIS)
+		if nextToken and nextToken.type != self.RIGHT_PARENTHESIS:
+			Parameter()
+			while self.Accept(self.COMMA):
+				Parameter()
+		self.Expect(self.RIGHT_PARENTHESIS)
+		flags = []
+		if self.Accept(self.KW_NATIVE):
+			flags.append(self.GetPreviousType())
+		self.stat = Statement(self.STAT_EVENTDEF, line, EventDef(None, name.upper(), name, params, flags))
+		return True
 
 	def Import(self):
 		if self.Accept(self.KW_IMPORT):
