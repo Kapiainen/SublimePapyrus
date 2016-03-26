@@ -793,13 +793,9 @@ class Syntactic(SharedResources):
 
 	def While(self):
 		if self.Accept(self.KW_WHILE):
-			if not self.Expression():
-				self.Abort("Expected Expression")
-				return False
+			self.Expression()
 			self.stat = Statement(self.STAT_WHILE, self.GetPreviousLine(), While(self.Pop()))
 			return True
-		else:
-			return False
 
 	def Assign(self):
 		if self.Expression():
