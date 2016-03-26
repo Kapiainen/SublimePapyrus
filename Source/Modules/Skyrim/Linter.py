@@ -891,32 +891,28 @@ class Syntactic(SharedResources):
 		return True
 
 	def ScriptHeader(self):
-		if self.Accept(self.KW_SCRIPTNAME):
-			line = self.GetPreviousLine()
-			if not self.Expect(self.IDENTIFIER):
-				return False
-			name = self.GetPreviousValue()
-			parent = None
-			if self.Accept(self.KW_EXTENDS):
-				if not self.Expect(self.IDENTIFIER):
-					return False
-				parent = self.GetPreviousValue()
-			flags = []
+		self.Expect(self.KW_SCRIPTNAME)
+		line = self.GetPreviousLine()
+		self.Expect(self.IDENTIFIER)
+		name = self.GetPreviousValue()
+		parent = None
+		if self.Accept(self.KW_EXTENDS):
+			self.ExpectType(False)
+			parent = self.GetPreviousValue()
+		flags = []
+		if self.Accept(self.KW_CONDITIONAL):
+			flags.append(self.GetPreviousType())
+			if self.Accept(self.KW_HIDDEN):
+				flags.append(self.GetPreviousType())
+		elif self.Accept(self.KW_HIDDEN):
+			flags.append(self.GetPreviousType())
 			if self.Accept(self.KW_CONDITIONAL):
 				flags.append(self.GetPreviousType())
-				if self.Accept(self.KW_HIDDEN):
-					flags.append(self.GetPreviousType())
-			elif self.Accept(self.KW_HIDDEN):
-				flags.append(self.GetPreviousType())
-				if self.Accept(self.KW_CONDITIONAL):
-					flags.append(self.GetPreviousType())
-			if parent:
-				self.stat = Statement(self.STAT_SCRIPTHEADER, line, Scriptheader(name.upper(), parent.upper(), flags))
-			else:
-				self.stat = Statement(self.STAT_SCRIPTHEADER, line, Scriptheader(name.upper(), None, flags))
-			return True
+		if parent:
+			self.stat = Statement(self.STAT_SCRIPTHEADER, line, Scriptheader(name.upper(), parent.upper(), flags))
 		else:
-			return False
+			self.stat = Statement(self.STAT_SCRIPTHEADER, line, Scriptheader(name.upper(), None, flags))
+		return True
 
 	def FunctionDef(self):
 		params = []
