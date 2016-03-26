@@ -918,64 +918,56 @@ class Syntactic(SharedResources):
 		params = []
 
 		def Parameter():
-			if self.AcceptType():
-				typ = self.GetPreviousValue()
-				array = False
-				if self.Accept(self.LEFT_BRACKET):
-					if not self.Expect(self.RIGHT_BRACKET):
-						return False
-					array = True
-				if not self.Expect(self.IDENTIFIER):
+			self.ExpectType(True)
+			typ = self.GetPreviousValue()
+			array = False
+			if self.Accept(self.LEFT_BRACKET):
+				self.Expect(self.RIGHT_BRACKET)
+				array = True
+			self.Expect(self.IDENTIFIER)
+			name = self.GetPreviousValue()
+			value = None
+			if self.Accept(self.OP_ASSIGN):
+				defaultValues = True
+				if not self.Expression():
+					self.Abort("Expected an expression.")
 					return False
-				name = self.GetPreviousValue()
-				value = None
-				if self.Accept(self.OP_ASSIGN):
-					defaultValues = True
-					if not self.Expression():
-						self.Abort("Expected an expression.")
-						return False
-					value = self.Pop()
-				params.append(ParameterDef(typ.upper(), typ, array, name.upper(), name, value))
-				return True
-			else:
-				return False
+				value = self.Pop()
+			params.append(ParameterDef(typ.upper(), typ, array, name.upper(), name, value))
+			return True
+
 		typ = None
 		array = False
-		if self.AcceptType():
+		if self.AcceptType(True):
 			typ = self.GetPreviousValue()
 			if self.Accept(self.LEFT_BRACKET):
-				if not self.Accept(self.RIGHT_BRACKET):
-					return False
+				self.Expect(self.RIGHT_BRACKET)
 				array = True
-		if self.Accept(self.KW_FUNCTION):
-			line = self.GetPreviousLine()
-			if not self.Expect(self.IDENTIFIER):
-				return False
-			name = self.GetPreviousValue()
-			if not self.Expect(self.LEFT_PARENTHESIS):
-				return False
-			if Parameter():
-				while self.Accept(self.COMMA):
-					if not Parameter():
-						return False
-			if not self.Expect(self.RIGHT_PARENTHESIS):
-				return False
-			flags = []
+		self.Expect(self.KW_FUNCTION)
+		line = self.GetPreviousLine()
+		self.Expect(self.IDENTIFIER)
+		name = self.GetPreviousValue()
+		nextToken = self.Peek()
+		self.Expect(self.LEFT_PARENTHESIS)
+		if nextToken and nextToken.type != self.RIGHT_PARENTHESIS:			
+			Parameter()
+			while self.Accept(self.COMMA):
+				Parameter()
+		self.Expect(self.RIGHT_PARENTHESIS)	
+		flags = []
+		if self.Accept(self.KW_GLOBAL):
+			flags.append(self.GetPreviousType())
+			if self.Accept(self.KW_NATIVE):
+				flags.append(self.GetPreviousType())
+		elif self.Accept(self.KW_NATIVE):
+			flags.append(self.GetPreviousType())
 			if self.Accept(self.KW_GLOBAL):
 				flags.append(self.GetPreviousType())
-				if self.Accept(self.KW_NATIVE):
-					flags.append(self.GetPreviousType())
-			elif self.Accept(self.KW_NATIVE):
-				flags.append(self.GetPreviousType())
-				if self.Accept(self.KW_GLOBAL):
-					flags.append(self.GetPreviousType())
-			if typ:
-				self.stat = Statement(self.STAT_FUNCTIONDEF, line, FunctionDef(typ.upper(), typ, array, name.upper(), name, params, flags))
-			else:
-				self.stat = Statement(self.STAT_FUNCTIONDEF, line, FunctionDef(None, None, False, name.upper(), name, params, flags))
-			return True
+		if typ:
+			self.stat = Statement(self.STAT_FUNCTIONDEF, line, FunctionDef(typ.upper(), typ, array, name.upper(), name, params, flags))
 		else:
-			return False
+			self.stat = Statement(self.STAT_FUNCTIONDEF, line, FunctionDef(None, None, False, name.upper(), name, params, flags))
+		return True
 
 	def EventDef(self):
 		if self.Accept(self.KW_EVENT):
