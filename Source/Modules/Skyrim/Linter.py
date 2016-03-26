@@ -761,7 +761,6 @@ class Syntactic(SharedResources):
 				return 0
 			else: # Non-consumed token
 				self.Abort("Unexpected %s symbol ('%s') on column %d." % (self.token.type, self.token.value, self.token.column))
-				return -1
 
 	def ExpressionOrAssignment(self):
 		self.Expression()
@@ -927,7 +926,6 @@ class Syntactic(SharedResources):
 				defaultValues = True
 				if not self.Expression():
 					self.Abort("Expected an expression.")
-					return False
 				value = self.Pop()
 			params.append(ParameterDef(typ.upper(), typ, array, name.upper(), name, value))
 			return True
@@ -1295,13 +1293,10 @@ class Semantic(SharedResources):
 				self.variables[len(self.variables)-1][stat.data.name] = stat
 				if not self.CacheScript(stat.data.type, line=stat.line):
 					self.Abort("Could not import %s." % stat.data.type, stat.line)
-					return False
 				if self.GetPath(stat.data.name):
 					self.Abort("Variables/properties cannot have the same name as a type.", stat.line)
-					return False
 				return True
 			self.Abort("A variable or property has already been defined with the same name on line %d." % temp.line, stat.line)
-			return False
 		elif stat.type == self.STAT_FUNCTIONDEF or stat.type == self.STAT_EVENTDEF:
 			if stat.data.parameters:
 				for param in stat.data.parameters:
@@ -1310,13 +1305,10 @@ class Semantic(SharedResources):
 						self.variables[len(self.variables)-1][param.name] = Statement(self.STAT_PARAMETER, stat.line, param)
 						if not self.CacheScript(param.type, line=stat.line):
 							self.Abort("Could not import %s." % param.type, stat.line)
-							return False
 						if self.GetPath(param.name):
 							self.Abort("Parameters cannot have the same name as a type.", stat.line)
-							return False
 					else:
 						self.Abort("A variable or property has already been defined with the same name on line %d." % temp.line, stat.line)
-						return False
 			return True
 		return False
 
@@ -1351,15 +1343,12 @@ class Semantic(SharedResources):
 				old = self.GetFunction(stat.data.name)
 				if stat.data.type != old.data.type:
 					self.Abort("Return type does not match the return type of the overridden function.", stat.line)
-					return False
 				if len(stat.data.parameters) != len(old.data.parameters):
 					self.Abort("Different number of parameters than in the overridden function.", stat.line)
-					return False
 				i = 0
 				while i < len(stat.data.parameters):
 					if stat.data.parameters[i].type != old.data.parameters[i].type:
 						self.Abort("Parameter at index %d is of a different type than the corresponding parameter in the overridden function." % i, stat.line)
-						return False
 					i += 1
 				self.functions[len(self.functions)-1][stat.data.name] = stat
 				return True
@@ -1367,7 +1356,6 @@ class Semantic(SharedResources):
 				old = self.GetFunction(stat.data.name)
 				self.Abort("A function or event has already been defined with the same name on line %d." % old.line, stat.line)
 		self.Abort("Expected a function or event definition.", stat.line)
-		return False
 
 	def HasFunction(self, name):
 		name = name.upper()
@@ -1401,14 +1389,12 @@ class Semantic(SharedResources):
 					for key, state in self.states[len(self.states)-1].items():
 						if state.data.auto:
 							self.Abort("An auto state has already been defined on line %d." % state.line, stat.line)
-							return False
 				self.states[len(self.states)-1][name] = stat
 				return True
 			else:
 				state = self.GetState(name)
 				self.Abort("A state by the same name already exists in this script on line %d." % state.line, stat.line)
-				return False
-		return False
+		self.Abort("Expected a state definition.", stat.line)
 
 	def HasState(self, name):
 		name = name.upper()
@@ -1443,7 +1429,6 @@ class Semantic(SharedResources):
 					return None
 			else:
 				self.Abort("Could not find parent script among source folders.")
-				return None
 		parentExtends = self.cache[name].extends
 		extends = [name]
 		if parentExtends:
@@ -1467,7 +1452,6 @@ class Semantic(SharedResources):
 					fullPath = self.GetPath(name)
 					if not fullPath:
 						self.Abort("Could not find script ('%s')." % name, line)
-						return False
 				with open(fullPath) as f:
 					scriptContents = f.read()
 					lines = []
@@ -1487,7 +1471,6 @@ class Semantic(SharedResources):
 								tokens.append(token)
 					except LexicalError as e:
 						self.Abort("Found a lexical error in %s script." % name)
-						return False
 					extends = []
 					functions = {}
 					properties = {}
@@ -1500,7 +1483,6 @@ class Semantic(SharedResources):
 								statements.append(stat)
 					except SyntacticError as e:
 						self.Abort("Found a syntactic error in %s script." % name)
-						return False
 					header = False
 					if statements[0].type == self.STAT_SCRIPTHEADER:
 						if statements[0].data.parent:
@@ -1572,8 +1554,7 @@ class Semantic(SharedResources):
 					self.functions[0].update(parentScript.functions)
 					self.states[0].update(parentScript.states)
 				else:
-					self.Abort(None, self.header.line)
-					return False
+					self.Abort("Failed to process the parent script.", self.header.line)
 			# Doc string
 			docString = None
 			if len(statements) > 0:
@@ -1581,7 +1562,6 @@ class Semantic(SharedResources):
 					docString = statements.pop(0)
 		else:
 			self.Abort("First line has to be the scriptheader.", statements[0].line)
-			return False
 		if not self.functions[0].get("GOTOSTATE", None):
 			self.functions[0]["GOTOSTATE"] = Statement(self.STAT_FUNCTIONDEF, 0, FunctionDef(None, None, False, "GOTOSTATE", "GoToState", [ParameterDef(self.KW_STRING, "String", False, "ASNEWSTATE", "asNewState", None)], []))
 		if not self.functions[0].get("GETSTATE", None):
@@ -1621,7 +1601,6 @@ class Semantic(SharedResources):
 						definitions.append({self.DEFINITION_PROPERTY:prop})
 					else:
 						self.Abort("Unterminated property definition.", prop[0].line)
-						return False
 				else:
 					docString = None
 					if len(statements) > 0:
@@ -1654,7 +1633,6 @@ class Semantic(SharedResources):
 						definitions.append({self.DEFINITION_FUNCTION:func})
 					else:
 						self.Abort("Unterminated function definition.", func[0].line)
-						return False
 				else:
 					self.PushVariableScope()
 					self.AddVariable(stat)
@@ -1675,7 +1653,6 @@ class Semantic(SharedResources):
 						definitions.append({self.DEFINITION_EVENT:event})
 					else:
 						self.Abort("Unterminated event definition.", event[0].line)
-						return False
 				else:
 					self.PushVariableScope()
 					self.AddVariable(stat)
@@ -1691,7 +1668,6 @@ class Semantic(SharedResources):
 						return False
 				else:
 					self.Abort("%s has already been imported in this script." % stat.data.name, stat.line)
-					return False
 			elif stat.type == self.STAT_STATEDEF:
 				if stat.data.auto:
 					autoState = stat
@@ -1703,13 +1679,11 @@ class Semantic(SharedResources):
 					definitions.append({self.DEFINITION_STATE:state})
 				else:
 					self.Abort("Unterminated state definition.", state[0].line)
-					return False
 			else:
 				if stat.type == self.STAT_SCRIPTHEADER and self.header:
 					self.Abort("Only one script header is allowed per script.", stat.line)
 				else:
 					self.Abort("Illegal statement in this scope.", stat.line)
-				return False
 		for obj in definitions:
 			for typ, statements in obj.items():
 				if typ == self.DEFINITION_FUNCTION or typ == self.DEFINITION_EVENT:
@@ -1745,19 +1719,15 @@ class Semantic(SharedResources):
 				stat = statements.pop(0)
 				if stat.data.flags:
 					self.Abort("Functions in property definitions cannot have any flags.", stat.line)
-					return False
 				if stat.data.name == "SET" or stat.data.name == "GET":
 					if functions.get(stat.data.name, None):
 						self.Abort("The %s function has already been defined in this property." % stat.data.name, stat.line)
-						return False
 					else:
 						if stat.data.name == "GET":
 							if stat.data.type != start.data.type or stat.data.array != start.data.array:
 								self.Abort("The return type of the GET function and the property type must match.", stat.line)
-								return False
 				else:
 					self.Abort("Only SET and GET functions may be defined in a property definition.", stat.line)
-					return False
 				func = [stat]
 				while len(statements) > 0 and not (statements[0].type == self.STAT_KEYWORD and statements[0].data.type == self.KW_ENDFUNCTION):
 					func.append(statements.pop(0))
@@ -1766,12 +1736,10 @@ class Semantic(SharedResources):
 					functions[stat.data.name] = func
 				else:
 					self.Abort("Unterminated function definition.", stat.line)
-					return False
 			else:
 				self.Abort("Illegal statement in a property definition.", statements[0].line)
 		if len(functions) == 0 and self.cancel == None:
 			self.Abort("At least a SET or a GET function has to be defined in a property definition.", start.line)
-			return False
 		for key, func in functions.items():
 			self.PushVariableScope()
 			if not self.FunctionBlock(func):
@@ -1842,7 +1810,6 @@ class Semantic(SharedResources):
 					return False
 			else:
 				self.Abort("Illegal statement in a function definition.", self.statements[0].line)
-				return False
 		if self.cancel:
 			if end.line >= self.cancel:
 				raise FunctionDefinitionCancel(start.data.type, self.functions, self.variables, self.imports)
@@ -1863,10 +1830,8 @@ class Semantic(SharedResources):
 				exists = self.HasFunction(statements[0].data.name)
 				if exists == -1:
 					self.Abort("%s has been defined in the state already." % statements[0].data.name, statements[0].line)
-					return False
 				if exists == 0:
 					self.Abort("%s has not been defined in the empty state." % statements[0].data.name, statements[0].line)
-					return False
 				if not self.AddFunction(statements[0]):
 					return False
 				if not self.KW_NATIVE in statements[0].data.flags:
@@ -1878,15 +1843,12 @@ class Semantic(SharedResources):
 						definitions.append({self.DEFINITION_FUNCTION:func})
 					else:
 						self.Abort("Unterminated function definition.", func[0].line)
-						return False
 			elif statements[0].type == self.STAT_EVENTDEF:
 				exists = self.HasFunction(statements[0].data.name)
 				if exists == 0:
 					self.Abort("%s has not been defined in the empty state." % statements[0].data.name, statements[0].line)
-					return False
 				if exists == -1:
 					self.Abort("%s has already been defined in the same state." % statements[0].data.name, statements[0].line)
-					return False
 				if not self.AddFunction(statements[0]):
 					return False
 				if not self.KW_NATIVE in statements[0].data.flags:
@@ -1898,10 +1860,8 @@ class Semantic(SharedResources):
 						definitions.append({self.DEFINITION_EVENT:event})
 					else:
 						self.Abort("Unterminated event definition.", event[0].line)
-						return False
 			else:
 				self.Abort("Illegal statement in a state definition.", statements[0].line)
-				return False
 		for obj in definitions:
 			for typ, statements in obj.items():
 				if typ == self.DEFINITION_FUNCTION or typ == self.DEFINITION_EVENT:
@@ -1959,12 +1919,10 @@ class Semantic(SharedResources):
 					return False
 			else:
 				self.Abort("Illegal statement in an if-block.", self.statements[0].line)
-				return False
 		if len(self.statements) > 0:
 			self.statements.pop(0) # Pop EndIf statement
 		else:
 			self.Abort("Unterminated if-block.", start.line)
-			return False
 		return True
 
 	def WhileBlock(self, typ):
@@ -2002,12 +1960,10 @@ class Semantic(SharedResources):
 					return False
 			else:
 				self.Abort("Illegal statement in a while-loop.", self.statements[0].line)
-				return False
 		if len(self.statements) > 0:
 			self.statements.pop(0) # Pop EndWhile statement
 		else:
 			self.Abort("Unterminated while-loop.", start.line)
-			return False
 		return True
 
 	def VariableDef(self):
@@ -2020,22 +1976,17 @@ class Semantic(SharedResources):
 					if expr.array:
 						if not self.statements[0].data.array:
 							self.Abort("The expression resolves to an array type, but the variable is not an array variable.")
-							return False
 						if self.statements[0].data.type != expr.type:
 							self.Abort("The expression resolves to an array type, but the variable is an array of another type.")
-							return False
 					elif self.statements[0].data.array:
 						val = self.GetLiteral(self.statements[0].data.value)
 						if val != self.KW_NONE:
 							self.Abort("Array variables can only be initialized with NONE.")
-							return False
 					elif self.statements[0].data.type != expr.type:
 						if not self.CanAutoCast(expr, NodeResult(self.statements[0].data.type, self.statements[0].data.array, True)):
 							self.Abort("The expression resolves to the incorrect type and cannot be automatically cast to the correct type.")
-							return False
 				else:
 					self.Abort(None)
-					return False
 		self.statements.pop(0)
 		return True
 
@@ -2044,11 +1995,9 @@ class Semantic(SharedResources):
 			left = self.NodeVisitor(self.statements[0].data.leftExpression)
 			if left == self.KW_NONE:
 				self.Abort("The left-hand side expression resolves to NONE.")
-				return False
 			right = self.NodeVisitor(self.statements[0].data.rightExpression)
 			if left.type != right.type and left.array != right.array and left.object != right.object and not self.CanAutoCast(right, left):
 				self.Abort("The right-hand side expression does not resolve to the same type as the left-hand side expression and cannot be auto-cast.")
-				return False
 		self.statements.pop(0)
 		return True
 
@@ -2065,7 +2014,6 @@ class Semantic(SharedResources):
 				if typ:
 					if expr.type != typ.type and expr.array != typ.array and not self.CanAutoCast(expr, typ):
 						self.Abort("The returned value's type does not match the function's return type.")
-						return False
 		self.statements.pop(0)
 		return True
 
@@ -2348,13 +2296,12 @@ class Semantic(SharedResources):
 			result = self.NodeVisitor(node.data.operand)
 		else:
 			self.Abort("Unknown node type")
-			return None
 		#print("\nExiting node: %s" % node.type)
 		#print("Returning type: %s" % result)
 		if result:
 			return result
 		else:
-			return None
+			self.Abort("AST node returns None for some reason.")
 
 	def CanAutoCast(self, src, dest):
 		if not src or not dest:
