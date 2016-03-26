@@ -311,13 +311,7 @@ def MakeFunctionCompletion(stat, sem, calling = True, script = ""):
 				typ = "%s[] " % stat.data.typeIdentifier
 			else:
 				typ = "%s " % stat.data.typeIdentifier
-		flags = ""
-		if stat.data.flags:
-			flags = " %s" % " ".join([f.capitalize() for f in stat.data.flags])
-		if sem.KW_NATIVE.capitalize() in flags:
-			content = "%sFunction %s(%s)%s" % (typ, stat.data.identifier, content, flags)
-		else:
-			content = "%sFunction %s(%s)%s\n\t${0}\nEndFunction" % (typ, stat.data.identifier, content, flags)
+		content = "%sFunction %s(%s)\n\t${0}\nEndFunction" % (typ, stat.data.identifier, content)
 		return (tabTrigger + "\t" + description.lower(), content,)
 
 def MakeEventCompletion(stat, sem, calling = True, script = ""):
@@ -363,13 +357,7 @@ def MakeEventCompletion(stat, sem, calling = True, script = ""):
 				i += 1
 		if len(content) > 0:
 			content = content[:-2]
-		flags = ""
-		if stat.data.flags:
-			flags = " %s" % " ".join([f.capitalize() for f in stat.data.flags])
-		if sem.KW_NATIVE.capitalize() in flags:
-			content = "Event %s(%s)%s" % (stat.data.identifier, content, flags)
-		else:
-			content = "Event %s(%s)%s\n\t${0}\nEndEvent" % (stat.data.identifier, content, flags)
+		content = "Event %s(%s)\n\t${0}\nEndEvent" % (stat.data.identifier, content)
 		return (tabTrigger + "\t" + description.lower(), content,)
 
 def MakePropertyCompletion(stat):
