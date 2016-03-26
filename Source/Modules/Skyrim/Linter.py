@@ -1002,14 +1002,11 @@ class Syntactic(SharedResources):
 		return True
 
 	def Import(self):
-		if self.Accept(self.KW_IMPORT):
-			if not self.Expect(self.IDENTIFIER):
-				return False
-			name = self.GetPreviousValue()
-			self.stat = Statement(self.STAT_IMPORT, self.GetPreviousLine(), Import(name.upper()))
-			return True
-		else:
-			return False
+		self.Expect(self.KW_IMPORT)
+		self.ExpectType(False)
+		name = self.GetPreviousValue()
+		self.stat = Statement(self.STAT_IMPORT, self.GetPreviousLine(), Import(name.upper()))
+		return True
 
 	def If(self):
 		if self.Accept(self.KW_IF):
