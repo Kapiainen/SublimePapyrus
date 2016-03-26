@@ -798,74 +798,63 @@ class Syntactic(SharedResources):
 			return True
 
 	def PropertyDef(self):
-		if self.AcceptType():
-			line = self.GetPreviousLine()
-			typ = None
-			if self.GetPreviousType() == self.IDENTIFIER:
-				typ = self.GetPreviousValue()
+		self.ExpectType(True)
+		line = self.GetPreviousLine()
+		typ = None
+		if self.GetPreviousType() == self.IDENTIFIER:
+			typ = self.GetPreviousValue()
+		else:
+			typ = self.GetPreviousType()
+		array = False
+		if self.Accept(self.LEFT_BRACKET):
+			self.Expect(self.RIGHT_BRACKET)
+			array = True
+		self.Expect(self.KW_PROPERTY)
+		self.Expect(self.IDENTIFIER)
+		name = self.GetPreviousValue()
+		value = None
+		flags = []
+		if self.Accept(self.OP_ASSIGN):
+			self.ExpectLiteral()
+			value = self.GetPreviousToken()
+			if self.Accept(self.KW_AUTO):
+				flags.append(self.GetPreviousType())
+				if self.Accept(self.KW_HIDDEN):
+					flags.append(self.GetPreviousType())
+					if self.Accept(self.KW_CONDITIONAL):
+						flags.append(self.GetPreviousType())
+				elif self.Accept(self.KW_CONDITIONAL):
+					flags.append(self.GetPreviousType())
+					if self.Accept(self.KW_HIDDEN):
+						flags.append(self.GetPreviousType())
+			elif self.Accept(self.KW_AUTOREADONLY):
+				flags.append(self.GetPreviousType())
+				if self.Accept(self.KW_HIDDEN):
+					flags.append(self.GetPreviousType())
+					if self.Accept(self.KW_CONDITIONAL):
+						flags.append(self.GetPreviousType())
+				elif self.Accept(self.KW_CONDITIONAL):
+					flags.append(self.GetPreviousType())
+					if self.Accept(self.KW_HIDDEN):
+						flags.append(self.GetPreviousType())
 			else:
-				typ = self.GetPreviousType()
-			array = False
-			if self.Accept(self.LEFT_BRACKET):
-				if not self.Accept(self.RIGHT_BRACKET):
-					return False
-				array = True
-			if self.Accept(self.KW_PROPERTY):
-				if not self.Expect(self.IDENTIFIER):
-					return False
-				name = self.GetPreviousValue()
-				value = None
-				flags = []
-				if self.Accept(self.OP_ASSIGN):
-					if not self.ExpectLiteral():
-						return False
-					value = self.GetPreviousToken()
-					if self.Accept(self.KW_AUTO):
+				raise ExpectedKeywordError(line, "Initializing properties requires the AUTO or AUTOREADONLY keywords.")
+		else:
+			if self.Accept(self.KW_AUTO) or self.Accept(self.KW_AUTOREADONLY):
+				flags.append(self.GetPreviousType())
+				if self.Accept(self.KW_HIDDEN):
+					flags.append(self.GetPreviousType())
+					if self.Accept(self.KW_CONDITIONAL):
 						flags.append(self.GetPreviousType())
-						if self.Accept(self.KW_HIDDEN):
-							flags.append(self.GetPreviousType())
-							if self.Accept(self.KW_CONDITIONAL):
-								flags.append(self.GetPreviousType())
-						elif self.Accept(self.KW_CONDITIONAL):
-							flags.append(self.GetPreviousType())
-							if self.Accept(self.KW_HIDDEN):
-								flags.append(self.GetPreviousType())
-					else:
-						if self.Expect(self.KW_AUTOREADONLY):
-							flags.append(self.GetPreviousType())
-							if self.Accept(self.KW_HIDDEN):
-								flags.append(self.GetPreviousType())
-								if self.Accept(self.KW_CONDITIONAL):
-									flags.append(self.GetPreviousType())
-							elif self.Accept(self.KW_CONDITIONAL):
-								flags.append(self.GetPreviousType())
-								if self.Accept(self.KW_HIDDEN):
-									flags.append(self.GetPreviousType())
-						else:
-							return False
-				else:
-					if self.Accept(self.KW_AUTO):
+				elif self.Accept(self.KW_CONDITIONAL):
+					flags.append(self.GetPreviousType())
+					if self.Accept(self.KW_HIDDEN):
 						flags.append(self.GetPreviousType())
-						if self.Accept(self.KW_HIDDEN):
-							flags.append(self.GetPreviousType())
-							if self.Accept(self.KW_CONDITIONAL):
-								flags.append(self.GetPreviousType())
-						elif self.Accept(self.KW_CONDITIONAL):
-							flags.append(self.GetPreviousType())
-							if self.Accept(self.KW_HIDDEN):
-								flags.append(self.GetPreviousType())
-					else:
-						if self.Accept(self.KW_HIDDEN):
-							flags.append(self.GetPreviousType())
-							if self.Accept(self.KW_CONDITIONAL):
-								flags.append(self.GetPreviousType())
-						elif self.Accept(self.KW_CONDITIONAL):
-							flags.append(self.GetPreviousType())
-							if self.Accept(self.KW_HIDDEN):
-								flags.append(self.GetPreviousType())
-				self.stat = Statement(self.STAT_PROPERTYDEF, line, PropertyDef(typ.upper(), typ, array, name.upper(), name, value, flags))
-				return True
-		return False
+			else:
+				if self.Accept(self.KW_HIDDEN):
+					flags.append(self.GetPreviousType())
+		self.stat = Statement(self.STAT_PROPERTYDEF, line, PropertyDef(typ.upper(), typ, array, name.upper(), name, value, flags))
+		return True
 
 	def Return(self):
 		if self.Accept(self.KW_RETURN):
