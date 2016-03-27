@@ -308,24 +308,33 @@ class EventListener(sublime_plugin.EventListener):
 			if tokenCount > 0 and tokens[tokenCount-1].type != self.lex.COMMENT_LINE:
 				try:
 					stat = self.syn.Process(tokens)
-				except ExpectedIdentifierError as e:
-					print(e.message)
-					Exit()
-					return completions
-				except ExpectedParameterIdentifierError as e:
-					print(e.message)
-					Exit()
-					return completions
-				except ExpectedFunctionIdentifierError as e:
-					print(e.message)
-					Exit()
-					return completions
+	#			except ExpectedIdentifierError as e:
+	#				print(e.message)
+	#				Exit()
+	#				return completions
+	#			except ExpectedParameterIdentifierError as e:
+	#				print(e.message)
+	#				Exit()
+	#				return completions
+	#			except ExpectedFunctionIdentifierError as e:
+	#				print(e.message)
+	#				Exit()
+	#				return completions
 	#			except ExpectedLiteralError as e:
 	#				print(e.message)
 	#			except ExpectedOperatorError as e:
 	#				print(e.message)
 	#			except ExpectedKeywordError as e:
 	#				print(e.message)
+				except Linter.ExpectedIdentifierError as e:
+					print(e.message)
+					Exit()
+					return completions
+				except Linter.ExpectedTypeError as e:
+					print(e.message)
+					completions.extend(self.GetTypeCompletions(view, e.baseTypes))
+					Exit()
+					return completions
 				except Linter.SyntacticError as e:
 					print(e.message)
 					return Exit()
