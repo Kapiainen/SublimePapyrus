@@ -474,7 +474,7 @@ class ExpectedTypeError(SyntacticError):
 
 class ExpectedIdentifierError(SyntacticError):
 	def __init__(self, line, message = ""):
-		super(ExpectedIdentifierError, self).__init__(line, ("%s%s" % (message, "Expected an identifier.")).strip())
+		super(ExpectedIdentifierError, self).__init__(line, ("%s %s" % (message, "Expected an identifier.")).strip())
 
 class ExpectedLiteralError(SyntacticError):
 	def __init__(self, line, message = ""):
@@ -489,8 +489,14 @@ class ExpectedParameterIdentifierError(SyntacticError):
 		super(ExpectedParameterIdentifierError, self).__init__(line, ("%s %s" % (message, "Expected a parameter identifier.")).strip())
 
 class ExpectedFunctionIdentifierError(SyntacticError):
-	def __init__(self, line, message = ""):
+	def __init__(self, line, message = "", typ = None, array = False):
 		super(ExpectedFunctionIdentifierError, self).__init__(line, ("%s %s" % (message, "Expected a function identifier.")).strip())
+		self.type = typ
+		self.array = array
+
+class ExpectedEventIdentifierError(SyntacticError):
+	def __init__(self, line, message = ""):
+		super(ExpectedEventIdentifierError, self).__init__(line, ("%s %s" % (message, "Expected an event identifier.")).strip())
 
 class ExpectedKeywordError(SyntacticError):
 	def __init__(self, line, message):
@@ -668,14 +674,25 @@ class Syntactic(SharedResources):
 			else:
 				raise ExpectedParameterIdentifierError(self.GetPreviousLine())
 
-	def ExpectFunctionIdentifier(self):
+	def ExpectFunctionIdentifier(self, typ, array):
+		if self.Accept(self.IDENTIFIER):
+			return True
+		else:
+			if typ:
+				typ = typ.upper()
+			if self.token != None:
+				raise ExpectedFunctionIdentifierError(self.token.line, "Unexpected symbol '%s' ('%s') on column %d." % (self.token.type, self.token.value, self.token.column), typ, array)
+			else:
+				raise ExpectedFunctionIdentifierError(self.GetPreviousLine(), "", typ, array)
+
+	def ExpectEventIdentifier(self):
 		if self.Accept(self.IDENTIFIER):
 			return True
 		else:
 			if self.token != None:
-				raise ExpectedFunctionIdentifierError(self.token.line, "Unexpected symbol '%s' ('%s') on column %d." % (self.token.type, self.token.value, self.token.column))
+				raise ExpectedEventIdentifierError(self.token.line, "Unexpected symbol '%s' ('%s') on column %d." % (self.token.type, self.token.value, self.token.column))
 			else:
-				raise ExpectedFunctionIdentifierError(self.GetPreviousLine())
+				raise ExpectedEventIdentifierError(self.GetPreviousLine())
 
 	def Statement(self):
 		line = -1
@@ -939,7 +956,7 @@ class Syntactic(SharedResources):
 				array = True
 		self.Expect(self.KW_FUNCTION)
 		line = self.GetPreviousLine()
-		self.Expect(self.IDENTIFIER)
+		self.ExpectFunctionIdentifier(typ, array)
 		name = self.GetPreviousValue()
 		nextToken = self.Peek()
 		self.Expect(self.LEFT_PARENTHESIS)
@@ -980,7 +997,7 @@ class Syntactic(SharedResources):
 			params.append(ParameterDef(typ.upper(), typ, array, name.upper(), name, None))
 			return True
 
-		self.Expect(self.IDENTIFIER)
+		self.ExpectEventIdentifier()
 		name = self.GetPreviousValue()
 		nextToken = self.Peek()
 		self.Expect(self.LEFT_PARENTHESIS)
@@ -1187,7 +1204,7 @@ class Syntactic(SharedResources):
 			self.Shift(Node(self.NODE_FUNCTIONCALLARGUMENT, FunctionCallArgument(ident, expr)))
 			return True
 
-		self.ExpectFunctionIdentifier()
+		self.ExpectFunctionIdentifier(None, None)
 		self.Shift()
 		self.Expect(self.LEFT_PARENTHESIS)
 		self.Shift()
@@ -1213,18 +1230,42 @@ class CachedScript(object):
 		self.functions = aFunctions
 		self.states = aStates
 
-class SemanticError(Exception):
-	def __init__(self, message, line):
-		super(SemanticError, self).__init__(message)
-		self.message = message
-		self.line = line
-
 class NodeResult(object):
 	__slots__ = ["type", "array", "object"]
 	def __init__(self, aType, aArray, aObject):
 		self.type = aType.upper()
 		self.array = aArray
 		self.object = aObject
+
+class SemanticError(Exception):
+	def __init__(self, message, line):
+		super(SemanticError, self).__init__(message)
+		self.message = message
+		self.line = line
+
+class UnterminatedPropertyError(SemanticError):
+	def __init__(self, line):
+		super(UnterminatedPropertyError, self).__init__("Unterminated property definition.", line)
+
+class UnterminatedStateError(SemanticError):
+	def __init__(self, line):
+		super(UnterminatedStateError, self).__init__("Unterminated state definition.", line)
+
+class UnterminatedFunctionError(SemanticError):
+	def __init__(self, line):
+		super(UnterminatedFunctionError, self).__init__("Unterminated function definition.", line)
+
+class UnterminatedEventError(SemanticError):
+	def __init__(self, line):
+		super(UnterminatedEventError, self).__init__("Unterminated event definition.", line)
+
+class UnterminatedIfError(SemanticError):
+	def __init__(self, line):
+		super(UnterminatedIfError, self).__init__("Unterminated if-block.", line)
+
+class UnterminatedWhileError(SemanticError):
+	def __init__(self, line):
+		super(UnterminatedWhileError, self).__init__("Unterminated while-loop.", line)
 
 class EmptyStateCancel(SemanticError):
 	def __init__(self, aFunctions):
@@ -1237,9 +1278,9 @@ class StateCancel(SemanticError):
 		self.functions = aFunctions
 
 class FunctionDefinitionCancel(SemanticError):
-	def __init__(self, aType, aFunctions, aVariables, aImports):
+	def __init__(self, aSignature, aFunctions, aVariables, aImports):
 		super(FunctionDefinitionCancel, self).__init__(None, None)
-		self.type = aType
+		self.signature = aSignature
 		self.functions = aFunctions
 		self.variables = aVariables
 		self.imports = aImports
@@ -1584,7 +1625,7 @@ class Semantic(SharedResources):
 						prop.append(statements.pop(0))
 						definitions.append({self.DEFINITION_PROPERTY:prop})
 					else:
-						self.Abort("Unterminated property definition.", prop[0].line)
+						raise UnterminatedPropertyError(prop[0].line)
 				else:
 					docString = None
 					if len(statements) > 0:
@@ -1614,7 +1655,7 @@ class Semantic(SharedResources):
 						func.append(statements.pop(0))
 						definitions.append({self.DEFINITION_FUNCTION:func})
 					else:
-						self.Abort("Unterminated function definition.", func[0].line)
+						raise UnterminatedFunctionError(func[0].line)
 				else:
 					self.PushVariableScope()
 					self.AddVariable(stat)
@@ -1633,7 +1674,7 @@ class Semantic(SharedResources):
 						event.append(statements.pop(0))
 						definitions.append({self.DEFINITION_EVENT:event})
 					else:
-						self.Abort("Unterminated event definition.", event[0].line)
+						raise UnterminatedEventError(event[0].line)
 				else:
 					self.PushVariableScope()
 					self.AddVariable(stat)
@@ -1658,7 +1699,7 @@ class Semantic(SharedResources):
 					state.append(statements.pop(0))
 					definitions.append({self.DEFINITION_STATE:state})
 				else:
-					self.Abort("Unterminated state definition.", state[0].line)
+					raise UnterminatedStateError(stat[0].line)
 			else:
 				if stat.type == self.STAT_SCRIPTHEADER and self.header:
 					self.Abort("Only one script header is allowed per script.", stat.line)
@@ -1715,7 +1756,7 @@ class Semantic(SharedResources):
 					func.append(statements.pop(0))
 					functions[stat.data.name] = func
 				else:
-					self.Abort("Unterminated function definition.", stat.line)
+					raise UnterminatedFunctionError(stat.line)
 			else:
 				self.Abort("Illegal statement in a property definition.", statements[0].line)
 		if len(functions) == 0 and self.cancel == None:
@@ -1763,7 +1804,7 @@ class Semantic(SharedResources):
 		while len(self.statements) > 0:
 			if self.cancel:
 				if self.statements[0].line >= self.cancel:
-					raise FunctionDefinitionCancel(start.data.type, self.functions, self.variables, self.imports)
+					raise FunctionDefinitionCancel(start, self.functions, self.variables, self.imports)
 			if self.statements[0].type == self.STAT_VARIABLEDEF:
 				self.VariableDef()
 			elif self.statements[0].type == self.STAT_ASSIGNMENT:
@@ -1772,19 +1813,19 @@ class Semantic(SharedResources):
 				self.Expression()
 			elif self.statements[0].type == self.STAT_IF:
 				self.PushVariableScope()
-				self.IfBlock(typ)
+				self.IfBlock(start)
 				self.PopVariableScope()
 			elif self.statements[0].type == self.STAT_WHILE:
 				self.PushVariableScope()
-				self.WhileBlock(typ)
+				self.WhileBlock(start)
 				self.PopVariableScope()
 			elif self.statements[0].type == self.STAT_RETURN:
-				self.Return(typ)
+				self.Return(start)
 			else:
 				self.Abort("Illegal statement in a function definition.", self.statements[0].line)
 		if self.cancel:
 			if end.line >= self.cancel:
-				raise FunctionDefinitionCancel(start.data.type, self.functions, self.variables, self.imports)
+				raise FunctionDefinitionCancel(start, self.functions, self.variables, self.imports)
 		return True
 
 	def StateBlock(self, statements):
@@ -1812,7 +1853,7 @@ class Semantic(SharedResources):
 						func.append(statements.pop(0))
 						definitions.append({self.DEFINITION_FUNCTION:func})
 					else:
-						self.Abort("Unterminated function definition.", func[0].line)
+						raise UnterminatedFunctionError(func[0].line)
 			elif statements[0].type == self.STAT_EVENTDEF:
 				exists = self.HasFunction(statements[0].data.name)
 				if exists == 0:
@@ -1828,7 +1869,7 @@ class Semantic(SharedResources):
 						event.append(statements.pop(0))
 						definitions.append({self.DEFINITION_EVENT:event})
 					else:
-						self.Abort("Unterminated event definition.", event[0].line)
+						raise UnterminatedEventError(event[0].line)
 			else:
 				self.Abort("Illegal statement in a state definition.", statements[0].line)
 		for obj in definitions:
@@ -1842,17 +1883,14 @@ class Semantic(SharedResources):
 				raise StateCancel(self.functions)
 		return True
 
-	def IfBlock(self, typ):
+	def IfBlock(self, func):
 		if not self.cancel:
 			expr = self.NodeVisitor(self.statements[0].data.expression)
 		start = self.statements.pop(0)
 		while len(self.statements) > 0 and not (self.statements[0].type == self.STAT_KEYWORD and self.statements[0].data.type == self.KW_ENDIF):
 			if self.cancel:
 				if self.statements[0].line >= self.cancel:
-					if typ:
-						raise FunctionDefinitionCancel(typ.type, self.functions, self.variables, self.imports)
-					else:
-						raise FunctionDefinitionCancel(None, self.functions, self.variables, self.imports)
+					raise FunctionDefinitionCancel(func, self.functions, self.variables, self.imports)
 			if self.statements[0].type == self.STAT_VARIABLEDEF:
 				self.VariableDef()
 			elif self.statements[0].type == self.STAT_ASSIGNMENT:
@@ -1861,7 +1899,7 @@ class Semantic(SharedResources):
 				self.Expression()
 			elif self.statements[0].type == self.STAT_IF:
 				self.PushVariableScope()
-				self.IfBlock(typ)
+				self.IfBlock(func)
 				self.PopVariableScope()
 			elif self.statements[0].type == self.STAT_ELSEIF:
 				self.PopVariableScope()
@@ -1875,29 +1913,26 @@ class Semantic(SharedResources):
 				self.statements.pop(0)
 			elif self.statements[0].type == self.STAT_WHILE:
 				self.PushVariableScope()
-				self.WhileBlock(typ)
+				self.WhileBlock(func)
 				self.PopVariableScope()
 			elif self.statements[0].type == self.STAT_RETURN:
-				self.Return(typ)
+				self.Return(func)
 			else:
 				self.Abort("Illegal statement in an if-block.", self.statements[0].line)
 		if len(self.statements) > 0:
 			self.statements.pop(0) # Pop EndIf statement
 		else:
-			self.Abort("Unterminated if-block.", start.line)
+			raise UnterminatedIfError(start.line)
 		return True
 
-	def WhileBlock(self, typ):
+	def WhileBlock(self, func):
 		if not self.cancel:
 			expr = self.NodeVisitor(self.statements[0].data.expression)
-		self.statements.pop(0)
+		start = self.statements.pop(0)
 		while len(self.statements) > 0 and not (self.statements[0].type == self.STAT_KEYWORD and self.statements[0].data.type == self.KW_ENDWHILE):
 			if self.cancel:
 				if self.statements[0].line >= self.cancel:
-					if typ:
-						raise FunctionDefinitionCancel(typ.type, self.functions, self.variables, self.imports)
-					else:
-						raise FunctionDefinitionCancel(None, self.functions, self.variables, self.imports)
+					raise FunctionDefinitionCancel(func, self.functions, self.variables, self.imports)
 			if self.statements[0].type == self.STAT_VARIABLEDEF:
 				self.VariableDef()
 			elif self.statements[0].type == self.STAT_ASSIGNMENT:
@@ -1906,20 +1941,20 @@ class Semantic(SharedResources):
 				self.Expression()
 			elif self.statements[0].type == self.STAT_IF:
 				self.PushVariableScope()
-				self.IfBlock(typ)
+				self.IfBlock(func)
 				self.PopVariableScope()
 			elif self.statements[0].type == self.STAT_WHILE:
 				self.PushVariableScope()
-				self.WhileBlock(typ)
+				self.WhileBlock(func)
 				self.PopVariableScope()
 			elif self.statements[0].type == self.STAT_RETURN:
-				self.Return(typ)
+				self.Return(func)
 			else:
 				self.Abort("Illegal statement in a while-loop.", self.statements[0].line)
 		if len(self.statements) > 0:
 			self.statements.pop(0) # Pop EndWhile statement
 		else:
-			self.Abort("Unterminated while-loop.", start.line)
+			raise UnterminatedWhileError(start.line)
 		return True
 
 	def VariableDef(self):
@@ -1962,12 +1997,12 @@ class Semantic(SharedResources):
 		self.statements.pop(0)
 		return True
 
-	def Return(self, typ):
+	def Return(self, func):
 		if self.statements[0].data.expression:
 			if not self.cancel:
 				expr = self.NodeVisitor(self.statements[0].data.expression)
-				if typ:
-					if expr.type != typ.type and expr.array != typ.array and not self.CanAutoCast(expr, typ):
+				if func.data.type:
+					if expr.type != func.data.type and expr.array != func.data.array and not self.CanAutoCast(expr, func.data):
 						self.Abort("The returned value's type does not match the function's return type.")
 		self.statements.pop(0)
 		return True
