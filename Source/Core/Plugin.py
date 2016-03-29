@@ -255,7 +255,7 @@ class SublimePapyrusCompileScriptCommand(sublime_plugin.WindowCommand):
 					self.window.run_command("exec", args)
 
 # Make completions
-def MakeFunctionCompletion(stat, sem, calling = True, script = ""):
+def MakeFunctionCompletion(stat, sem, calling = True, script = "", precededByKeyword = False):
 	tabTrigger = stat.data.name.lower()
 	if script:
 		script = " (%s)" % script
@@ -305,20 +305,23 @@ def MakeFunctionCompletion(stat, sem, calling = True, script = ""):
 				i += 1
 		if len(content) > 0:
 			content = content[:-2]
-		typ = ""
-		if stat.data.type:
-			if stat.data.array:
-				typ = "%s[] " % stat.data.typeIdentifier
-			else:
-				typ = "%s " % stat.data.typeIdentifier
-		content = "%sFunction %s(%s)\n\t${0}\nEndFunction" % (typ, stat.data.identifier, content)
+		if precededByKeyword:
+			content = "%s(%s)\n\t${0}\nEndFunction" % (stat.data.identifier, content)
+		else:
+			typ = ""
+			if stat.data.type:
+				if stat.data.array:
+					typ = "%s[] " % stat.data.typeIdentifier
+				else:
+					typ = "%s " % stat.data.typeIdentifier
+			content = "%sFunction %s(%s)\n\t${0}\nEndFunction" % (typ, stat.data.identifier, content)
 		return (tabTrigger + "\t" + description.lower(), content,)
 
-def MakeEventCompletion(stat, sem, calling = True, script = ""):
+def MakeEventCompletion(stat, sem, calling = True, script = "", precededByKeyword = False):
 	tabTrigger = stat.data.name.lower()
 	if script:
 		script = " (%s)" % script
-	description = "Event%s" % script
+	description = "event%s" % script
 	if calling:
 		content = ""
 		if stat.data.parameters:
@@ -357,7 +360,10 @@ def MakeEventCompletion(stat, sem, calling = True, script = ""):
 				i += 1
 		if len(content) > 0:
 			content = content[:-2]
-		content = "Event %s(%s)\n\t${0}\nEndEvent" % (stat.data.identifier, content)
+		if precededByKeyword:
+			content = "%s(%s)\n\t${0}\nEndEvent" % (stat.data.identifier, content)
+		else:
+			content = "Event %s(%s)\n\t${0}\nEndEvent" % (stat.data.identifier, content)
 		return (tabTrigger + "\t" + description.lower(), content,)
 
 def MakePropertyCompletion(stat):
