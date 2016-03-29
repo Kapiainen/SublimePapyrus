@@ -1,5 +1,7 @@
 import os, re, sys, collections
 
+PLATFORM_WINDOWS = os.name == "nt"
+
 # General #########################################################################################
 class SharedResources(object):
 	def __init__(self):
@@ -1467,12 +1469,20 @@ class Semantic(SharedResources):
 		return extends
 
 	def GetPath(self, name):
-		name = (name + ".psc").upper()
-		for path in self.paths:
-			for f in os.listdir(path):
-				if name == f.upper():
-					return os.path.join(path, f)
-		return None
+		global PLATFORM_WINDOWS
+		if PLATFORM_WINDOWS:
+			for path in self.paths:
+				fullPath = os.path.join(path, name + ".psc")
+				if os.path.isfile(fullPath):
+					return fullPath
+			return None
+		else:
+			name = (name + ".psc").upper()
+			for path in self.paths:
+				for f in os.listdir(path):
+					if name == f.upper():
+						return os.path.join(path, f)
+			return None
 
 	def CacheScript(self, name, path = None, line = None):
 		name = name.upper()
