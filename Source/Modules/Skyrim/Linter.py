@@ -1471,8 +1471,9 @@ class Semantic(SharedResources):
 	def GetPath(self, name):
 		global PLATFORM_WINDOWS
 		if PLATFORM_WINDOWS:
+			name = name + ".psc"
 			for path in self.paths:
-				fullPath = os.path.join(path, name + ".psc")
+				fullPath = os.path.join(path, name)
 				if os.path.isfile(fullPath):
 					return fullPath
 			return None
