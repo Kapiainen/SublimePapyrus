@@ -116,10 +116,12 @@ class EventListener(sublime_plugin.EventListener):
 		self.completionKeywordAuto = ("auto\tkeyword", "Auto",)
 		self.completionKeywordAutoReadOnly = ("autoreadonly\tkeyword", "AutoReadOnly",)
 		self.completionKeywordConditional = ("conditional\tkeyword", "Conditional",)
+		self.completionKeywordExtends = ("extends\tkeyword", "Extends ",)
 		self.completionKeywordGlobal = ("global\tkeyword", "Global",)
 		self.completionKeywordHidden = ("hidden\tkeyword", "Hidden",)
 		self.completionKeywordNative = ("native\tkeyword", "Native",)
-		self.completionKeywordExtends = ("extends\tkeyword", "Extends ",)
+		self.completionKeywordParent = ("parent\tkeyword", "Parent",)
+		self.completionKeywordSelf = ("self\tkeyword", "Self",)
 		self.completionDefinitionEvent = ("event\tevent definition", "Event ${1:EventName}(${2:Parameters})\n\t${0}\nEndEvent",)
 		self.completionDefinitionFunction = ("function\tfunction definition", "${1:Type} Function ${2:FunctionName}(${3:Parameters})\n\t${0}\nEndFunction",)
 
@@ -201,6 +203,7 @@ class EventListener(sublime_plugin.EventListener):
 			if view:
 				SublimePapyrus.ShowMessage("Starting linter...")
 			if self.lex:
+				lexStart = time.time()
 				scriptContents = None
 				if view:
 					scriptContents = view.substr(sublime.Region(0, view.size()))
@@ -224,7 +227,9 @@ class EventListener(sublime_plugin.EventListener):
 							view.window().show_quick_panel([[e.message, "Line %d, column %d" % (e.line, e.column)]], None)
 					error = True
 					return Exit()
+				print("Linter: Finished lexical in %f milliseconds..." % ((time.time()-lexStart)*1000.0)) #DEBUG
 				if self.syn:
+					synStart = time.time()
 					statements = []
 					for line in lines:
 						try:
@@ -238,13 +243,16 @@ class EventListener(sublime_plugin.EventListener):
 								if settings.get("linter_panel_error_messages", False):
 									view.window().show_quick_panel([[e.message, "Line %d" % e.line]], None)
 							error = True
+					print("Linter: Finished syntactic in %f milliseconds..." % ((time.time()-synStart)*1000.0)) #DEBUG
 					if statements:
 						self.SetStatements(self.bufferID, statements[:]) # Cache a copy of the statements
 					else:
 						return Exit()
 					if error:
 						return Exit()
+					
 					if self.sem:
+						semStart = time.time()
 						try:
 							if view:
 								self.sem.Process(statements, SublimePapyrus.GetSourcePaths(view))
@@ -257,6 +265,7 @@ class EventListener(sublime_plugin.EventListener):
 								if settings.get("linter_panel_error_messages", False):
 									view.window().show_quick_panel([[e.message, "Line %d" % e.line]], None)
 							return Exit()
+						print("Linter: Finished semantic in %f milliseconds..." % ((time.time()-semStart)*1000.0)) #DEBUG
 		if not error:
 			if view:
 				SublimePapyrus.ShowMessage("Linter found no issues...")
@@ -314,7 +323,7 @@ class EventListener(sublime_plugin.EventListener):
 				return
 			tokenCount = len(tokens)
 			if tokenCount > 0:
-				if tokens[tokenCount-1].type != self.lex.COMMENT_LINE:
+				if tokens[tokenCount-1].type != self.lex.COMMENT_LINE and tokens[tokenCount-1].type != self.lex.COMMENT_BLOCK and tokens[tokenCount-1].type != self.lex.DOCUMENTATION_STRING:
 					try:
 						stat = self.syn.Process(tokens)
 		#			except ExpectedIdentifierError as e:
@@ -393,7 +402,6 @@ class EventListener(sublime_plugin.EventListener):
 		#			except ExpectedKeywordError as e:
 		#				print(e.message)
 					except Linter.ExpectedIdentifierError as e:
-						print(e.message)
 						# SELF, PARENT, LENGTH, function/event/property/variable/parameter identifiers
 						try:
 							self.sem.Process(statements, SublimePapyrus.GetSourcePaths(view), line)
@@ -402,9 +410,128 @@ class EventListener(sublime_plugin.EventListener):
 						except Linter.StateCancel as f:
 							return
 						except Linter.FunctionDefinitionCancel as f:
-							print("In expression: %s" % f.signature.data.name)
+							if self.syn.stack:
+								stackCount = len(self.syn.stack)
+								if stackCount > 1 and self.syn.stack[stackCount-1].type == self.syn.OP_DOT:
+									try:
+										result = self.sem.NodeVisitor(self.syn.stack[stackCount-2])
+									except Linter.SemanticError as g:
+										return
+									if result.array:
+										typ = result.type.capitalize()
+										completions.append(("find\tint func.", "Find(${1:%s akElement}, ${2:Int aiStartIndex = 0})" % typ,))
+										completions.append(("rfind\tint func.", "RFind(${1:%s akElement}, ${2:Int aiStartIndex = -1})" % typ,))
+										completions.append(("length\tkeyword", "Length",))
+									else:
+										if result.object:
+											properties = self.GetPropertyCompletions(result.type)
+											functions = self.GetFunctionCompletions(result.type)
+											if properties and functions:
+												completions.extend(properties)
+												completions.extend(functions)
+											else:
+												if properties:
+													completions.extend(properties)
+												if functions:
+													completions.extend(functions)
+												try:
+													script = self.sem.GetCachedScript(result.type)
+												except:
+													return
+												if script:
+													if not properties:
+														properties = []
+														for name, obj in script.properties.items():
+															properties.append(SublimePapyrus.MakePropertyCompletion(obj))
+														self.SetPropertyCompletions(result.type, properties)
+														completions.extend(properties)
+													if not functions:
+														functions = []
+														for name, obj in script.functions.items():
+															if not self.sem.KW_GLOBAL in obj.data.flags:
+																functions.append(SublimePapyrus.MakeFunctionCompletion(obj, self.sem))
+														self.SetFunctionCompletions(result.type, functions)
+														completions.extend(functions)
+											
+										else:
+											functions = self.GetFunctionCompletions(result.type, True)
+											if functions:
+												completions.extend(functions)
+											else:
+												try:
+													script = self.sem.GetCachedScript(result.type)
+												except:
+													return
+												if script:
+													functions = []
+													for name, obj in script.functions.items():
+														if self.sem.KW_GLOBAL in obj.data.flags:
+															functions.append(SublimePapyrus.MakeFunctionCompletion(obj, self.sem))
+													self.SetFunctionCompletions(result.type, functions, True)
+													completions.extend(functions)
+								else:
+									completions.extend(self.GetTypeCompletions(view, False))
+									if not self.sem.KW_GLOBAL in f.signature.data.flags:
+										completions.append(self.completionKeywordSelf)
+										completions.append(self.completionKeywordParent)
+									for scope in f.variables:
+										for name, stat in scope.items():
+											if stat.type == self.sem.STAT_PROPERTYDEF:
+												completions.append(SublimePapyrus.MakePropertyCompletion(stat))
+											elif stat.type == self.sem.STAT_VARIABLEDEF:
+												completions.append(SublimePapyrus.MakeVariableCompletion(stat))
+											elif stat.type == self.sem.STAT_PARAMETER:
+												completions.append(SublimePapyrus.MakeParameterCompletion(stat))
+									if f.imports:
+										for imp in f.imports:
+											functions = self.GetFunctionCompletions(imp, True)
+											if functions:
+												completions.extend(functions)
+											else:
+												try:
+													script = self.sem.GetCachedScript(imp)
+												except:
+													return
+												if script:
+													functions = []
+													for name, obj in script.functions.items():
+														if self.sem.KW_GLOBAL in obj.data.flags:
+															functions.append(SublimePapyrus.MakeFunctionCompletion(obj, self.sem))
+													self.SetFunctionCompletions(imp, functions, True)
+													completions.extend(functions)
+							else:
+								completions.extend(self.GetTypeCompletions(view, False))
+								if not self.sem.KW_GLOBAL in f.signature.data.flags:
+									completions.append(self.completionKeywordSelf)
+									completions.append(self.completionKeywordParent)
+								for scope in f.variables:
+										for name, stat in scope.items():
+											if stat.type == self.sem.STAT_PROPERTYDEF:
+												completions.append(SublimePapyrus.MakePropertyCompletion(stat))
+											elif stat.type == self.sem.STAT_VARIABLEDEF:
+												completions.append(SublimePapyrus.MakeVariableCompletion(stat))
+											elif stat.type == self.sem.STAT_PARAMETER:
+												completions.append(SublimePapyrus.MakeParameterCompletion(stat))
+								if f.imports:
+									for imp in f.imports:
+										functions = self.GetFunctionCompletions(imp, True)
+										if functions:
+											completions.extend(functions)
+										else:
+											try:
+												script = self.sem.GetCachedScript(imp)
+											except:
+												return
+											if script:
+												functions = []
+												for name, obj in script.functions.items():
+													if self.sem.KW_GLOBAL in obj.data.flags:
+														functions.append(SublimePapyrus.MakeFunctionCompletion(obj, self.sem))
+												self.SetFunctionCompletions(imp, functions, True)
+												completions.extend(functions)
 							return completions
 						except Linter.PropertyDefinitionCancel as f:
+							# GET and SET
 							return
 						except Linter.UnterminatedPropertyError as f:
 							return
@@ -504,7 +631,7 @@ class EventListener(sublime_plugin.EventListener):
 								completions.append(SublimePapyrus.MakeParameterCompletion(stat))
 							elif stat.type == self.sem.STAT_PROPERTYDEF:
 								completions.append(SublimePapyrus.MakePropertyCompletion(stat))
-							elif stat.type == self.sen.STAT_VARIABLEDEF:
+							elif stat.type == self.sem.STAT_VARIABLEDEF:
 								completions.append(SublimePapyrus.MakeVariableCompletion(stat))
 					# Inherited and defined functions and events
 					functions = {}
@@ -523,7 +650,23 @@ class EventListener(sublime_plugin.EventListener):
 					completions.extend([comp for name, comp in functions.items()])
 					completions.extend([comp for name, comp in events.items()])
 					# Imported functions
-					#for imp in e.imports:
+					if e.imports:
+						for imp in e.imports:
+							functions = self.GetFunctionCompletions(imp, True)
+							if functions:
+								completions.extend(functions)
+							else:
+								try:
+									script = self.sem.GetCachedScript(imp)
+								except:
+									return
+								if script:
+									functions = []
+									for name, obj in script.functions.items():
+										if self.sem.KW_GLOBAL in obj.data.flags:
+											functions.append(SublimePapyrus.MakeFunctionCompletion(obj, self.sem))
+									self.SetFunctionCompletions(imp, functions, True)
+									completions.extend(functions)
 					return completions
 				except Linter.PropertyDefinitionCancel as e:
 					print("Property")
@@ -623,19 +766,30 @@ class EventListener(sublime_plugin.EventListener):
 		with self.cacheLock:
 			self.linterCache[script] = items
 
-	def GetFunctionCompletions(self, script):
+	def GetFunctionCompletions(self, script, glob = False):
 		with self.cacheLock:
 			functions = self.completionCache.get("functions", None)
 			if functions:
-				return functions.get(script, None)
+				functions = functions.get(script, False)
+				if not functions:
+					return None
+				if glob:
+					return functions.get("global", None)
+				else:
+					return functions.get("nonglobal", None)
 
-	def SetFunctionCompletions(self, script, obj):
+	def SetFunctionCompletions(self, script, obj, glob = False):
 		with self.cacheLock:
 			functions = self.completionCache.get("functions", None)
 			if not functions:
 				self.completionCache["functions"] = {}
 				functions = self.completionCache.get("functions", None)
-			functions[script] = obj
+			if not functions.get(script, False):
+				functions[script] = {}
+			if glob:
+				functions[script]["global"] = obj
+			else:
+				functions[script]["nonglobal"] = obj
 
 	def GetPropertyCompletions(self, script):
 		with self.cacheLock:
