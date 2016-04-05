@@ -1614,7 +1614,6 @@ class Semantic(SharedResources):
 		self.functions.append({})
 		self.states.append({})
 		self.definitions = {"": []}
-		self.state = ""
 		stateDefinitions = []
 		autoState = None
 		while len(statements) > 0:
@@ -1863,7 +1862,7 @@ class Semantic(SharedResources):
 				raise EmptyStateCancel(self.functions)
 		end = statements.pop()
 		self.AddState(start)
-		definitions = []
+		self.definitions[start.data.name] = []
 		while len(statements) > 0:
 			if statements[0].type == self.STAT_FUNCTIONDEF:
 				exists = self.HasFunction(statements[0].data.name)
@@ -1878,7 +1877,7 @@ class Semantic(SharedResources):
 						func.append(statements.pop(0))
 					if len(statements) > 0:
 						func.append(statements.pop(0))
-						definitions.append({self.DEFINITION_FUNCTION:func})
+						self.definitions[start.data.name].append(func)
 					else:
 						raise UnterminatedFunctionError(func[0].line)
 			elif statements[0].type == self.STAT_EVENTDEF:
@@ -1894,17 +1893,15 @@ class Semantic(SharedResources):
 						event.append(statements.pop(0))
 					if len(statements) > 0:
 						event.append(statements.pop(0))
-						definitions.append({self.DEFINITION_EVENT:event})
+						self.definitions[start.data.name].append(event)
 					else:
 						raise UnterminatedEventError(event[0].line)
 			else:
 				self.Abort("Illegal statement in a state definition.", statements[0].line)
-		for obj in definitions:
-			for typ, statements in obj.items():
-				if typ == self.DEFINITION_FUNCTION or typ == self.DEFINITION_EVENT:
-					self.PushVariableScope()
-					self.FunctionBlock(statements)
-					self.PopVariableScope()
+		for statements in self.definitions[start.data.name]:
+			self.PushVariableScope()
+			self.FunctionBlock(statements)
+			self.PopVariableScope()
 		if self.cancel:
 			if end.line >= self.cancel:
 				raise StateCancel(self.functions)
