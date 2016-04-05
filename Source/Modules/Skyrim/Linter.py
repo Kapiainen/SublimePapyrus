@@ -1413,20 +1413,20 @@ class Semantic(SharedResources):
 		return None
 
 	# States
-	def AddState(self, stat):
+	def AddState(self, stat, end):
 		if stat.type == self.STAT_STATEDEF:
 			name = stat.data.name.upper()
 			exists = self.HasState(name)
 			if exists >= 0:
 				if stat.data.auto:
 					for key, state in self.states[len(self.states)-1].items():
-						if state.data.auto:
-							self.Abort("An auto state has already been defined on line %d." % state.line, stat.line)
-				self.states[len(self.states)-1][name] = stat
+						if state[0].data.auto:
+							self.Abort("An auto state has already been defined on line %d." % state[0].line, stat.line)
+				self.states[len(self.states)-1][name] = [stat, end]
 				return True
 			else:
 				state = self.GetState(name)
-				self.Abort("A state by the same name already exists in this script on line %d." % state.line, stat.line)
+				self.Abort("A state by the same name already exists in this script on line %d." % state[0].line, stat.line)
 		self.Abort("Expected a state definition.", stat.line)
 
 	def HasState(self, name):
@@ -1861,7 +1861,7 @@ class Semantic(SharedResources):
 				self.PopFunctionScope()
 				raise EmptyStateCancel(self.functions)
 		end = statements.pop()
-		self.AddState(start)
+		self.AddState(start, end)
 		self.definitions[start.data.name] = []
 		while len(statements) > 0:
 			if statements[0].type == self.STAT_FUNCTIONDEF:
