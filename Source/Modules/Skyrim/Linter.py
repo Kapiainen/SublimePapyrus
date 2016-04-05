@@ -1738,20 +1738,23 @@ class Semantic(SharedResources):
 		return True
 
 	def PropertyBlock(self, statements):
-		start = statements.pop(0)
+		statementsLength = len(statements)
+		i = 0
+		start = statements[i]
+		i += 1
 		if self.cancel:
 			if start.line >= self.cancel:
 				self.PopFunctionScope()
 				raise EmptyStateCancel(self.functions)
-		end = statements.pop()
 		docString = None
-		if len(statements) > 0:
-			if statements[0].type == self.STAT_DOCUMENTATION:
-				docString = statements.pop(0)
+		if i < statementsLength:
+			if statements[i].type == self.STAT_DOCUMENTATION:
+				docString = statements[i]
+				i += 1
 		functions = {}
-		while len(statements) > 0:
-			if statements[0].type == self.STAT_FUNCTIONDEF:
-				stat = statements.pop(0)
+		while i < statementsLength:
+			if statements[i].type == self.STAT_FUNCTIONDEF:
+				stat = statements[i]
 				if stat.data.flags:
 					self.Abort("Functions in property definitions cannot have any flags.", stat.line)
 				if stat.data.name == "SET" or stat.data.name == "GET":
@@ -1764,15 +1767,20 @@ class Semantic(SharedResources):
 				else:
 					self.Abort("Only SET and GET functions may be defined in a property definition.", stat.line)
 				func = [stat]
-				while len(statements) > 0 and not (statements[0].type == self.STAT_KEYWORD and statements[0].data.type == self.KW_ENDFUNCTION):
-					func.append(statements.pop(0))
-				if len(statements) > 0:
-					func.append(statements.pop(0))
+				while i < statementsLength and not (statements[i].type == self.STAT_KEYWORD and statements[i].data.type == self.KW_ENDFUNCTION):
+					func.append(statements[i])
+					i += 1
+				if i < statementsLength:
+					func.append(statements[i])
 					functions[stat.data.name] = func
 				else:
 					raise UnterminatedFunctionError(stat.line)
+			elif statements[i].type == self.STAT_KEYWORD and statements[i].data.type == self.KW_ENDPROPERTY:
+				i += 1
+				break
 			else:
-				self.Abort("Illegal statement in a property definition.", statements[0].line)
+				self.Abort("Illegal statement in a property definition.", statements[i].line)
+			i += 1
 		if len(functions) == 0 and self.cancel == None:
 			self.Abort("At least a SET or a GET function has to be defined in a property definition.", start.line)
 		for key, func in functions.items():
