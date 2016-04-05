@@ -1613,7 +1613,9 @@ class Semantic(SharedResources):
 		self.variables.append({})
 		self.functions.append({})
 		self.states.append({})
-		definitions = []
+		self.definitions = {"": []}
+		self.state = ""
+		stateDefinitions = []
 		autoState = None
 		while len(statements) > 0:
 			stat = statements.pop(0)
@@ -1634,7 +1636,7 @@ class Semantic(SharedResources):
 						prop.append(statements.pop(0))
 					if len(statements) > 0:
 						prop.append(statements.pop(0))
-						definitions.append({self.DEFINITION_PROPERTY:prop})
+						self.definitions[""].append(prop)
 					else:
 						raise UnterminatedPropertyError(prop[0].line)
 				else:
@@ -1664,7 +1666,7 @@ class Semantic(SharedResources):
 						func.append(statements.pop(0))
 					if len(statements) > 0:
 						func.append(statements.pop(0))
-						definitions.append({self.DEFINITION_FUNCTION:func})
+						self.definitions[""].append(func)
 					else:
 						raise UnterminatedFunctionError(func[0].line)
 				else:
@@ -1683,7 +1685,7 @@ class Semantic(SharedResources):
 						event.append(statements.pop(0))
 					if len(statements) > 0:
 						event.append(statements.pop(0))
-						definitions.append({self.DEFINITION_EVENT:event})
+						self.definitions[""].append(event)
 					else:
 						raise UnterminatedEventError(event[0].line)
 				else:
@@ -1708,7 +1710,7 @@ class Semantic(SharedResources):
 					state.append(statements.pop(0))
 				if len(statements) > 0:
 					state.append(statements.pop(0))
-					definitions.append({self.DEFINITION_STATE:state})
+					stateDefinitions.append(state)
 				else:
 					raise UnterminatedStateError(stat[0].line)
 			else:
@@ -1716,20 +1718,21 @@ class Semantic(SharedResources):
 					self.Abort("Only one script header is allowed per script.", stat.line)
 				else:
 					self.Abort("Illegal statement in this scope.", stat.line)
-		for obj in definitions:
-			for typ, statements in obj.items():
-				if typ == self.DEFINITION_FUNCTION or typ == self.DEFINITION_EVENT:
-					self.PushVariableScope()
-					self.FunctionBlock(statements)
-					self.PopVariableScope()
-				elif typ == self.DEFINITION_PROPERTY:
-					self.PushFunctionScope()
-					self.PropertyBlock(statements)
-					self.PopFunctionScope()
-				elif typ == self.DEFINITION_STATE:
-					self.PushFunctionScope()
-					self.StateBlock(statements)
-					self.PopFunctionScope()
+		for statements in self.definitions[""]:
+			typ = statements[0].type
+			if typ == self.STAT_FUNCTIONDEF or typ == self.STAT_EVENTDEF:
+				self.PushVariableScope()
+				self.FunctionBlock(statements)
+				self.PopVariableScope()
+			elif typ == self.STAT_PROPERTYDEF:
+				self.PushFunctionScope()
+				self.PropertyBlock(statements)
+				self.PopFunctionScope()
+			print(typ)
+		for statements in stateDefinitions:
+			self.PushFunctionScope()
+			self.StateBlock(statements)
+			self.PopFunctionScope()
 		if self.cancel:
 			raise EmptyStateCancel(self.functions)
 		return True
