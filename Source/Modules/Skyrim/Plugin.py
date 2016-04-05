@@ -188,7 +188,6 @@ class EventListener(sublime_plugin.EventListener):
 		if view:
 			SublimePapyrus.ClearLinterHighlights(view)
 		start = None #DEBUG
-		error = False
 		def Exit():
 			print("Linter: Finished in %f milliseconds and releasing lock..." % ((time.time()-start)*1000.0)) #DEBUG
 			self.linterRunning = False
@@ -202,71 +201,57 @@ class EventListener(sublime_plugin.EventListener):
 				return Exit()
 			if view:
 				SublimePapyrus.ShowMessage("Starting linter...")
-			if self.lex:
-				lexStart = time.time()
-				scriptContents = None
-				if view:
-					scriptContents = view.substr(sublime.Region(0, view.size()))
-				else:
-					scriptContents = self.scriptContents
-				lines = []
-				tokens = []
-				try:
-					for token in self.lex.Process(scriptContents):
-						if token.type == self.lex.NEWLINE:
-							if tokens:
-								lines.append(tokens)
-							tokens = []
-						elif token.type != self.lex.COMMENT_LINE and token.type != self.lex.COMMENT_BLOCK:
-							tokens.append(token)
-				except Linter.LexicalError as e:
-					if view:
-						SublimePapyrus.HighlightLinter(view, e.line, e.column)
-						SublimePapyrus.ShowMessage("Lexical error on line %d, column %d: %s" % (e.line, e.column, e.message))
-						if settings.get("linter_panel_error_messages", False):
-							view.window().show_quick_panel([[e.message, "Line %d, column %d" % (e.line, e.column)]], None)
-					error = True
-					return Exit()
-				print("Linter: Finished lexical in %f milliseconds..." % ((time.time()-lexStart)*1000.0)) #DEBUG
-				if self.syn:
-					synStart = time.time()
-					statements = []
-					for line in lines:
-						try:
-							stat = self.syn.Process(line)
+			lexSynStart = time.time()
+			scriptContents = None
+			if view:
+				scriptContents = view.substr(sublime.Region(0, view.size()))
+			else:
+				scriptContents = self.scriptContents
+			statements = []
+			tokens = []
+			try:
+				for token in self.lex.Process(scriptContents):
+					if token.type == self.lex.NEWLINE:
+						if tokens:
+							stat = self.syn.Process(tokens)
 							if stat:
 								statements.append(stat)
-						except Linter.SyntacticError as e:
-							if view:
-								SublimePapyrus.HighlightLinter(view, e.line)
-								SublimePapyrus.ShowMessage("Syntactic error on line %d: %s" % (e.line, e.message))
-								if settings.get("linter_panel_error_messages", False):
-									view.window().show_quick_panel([[e.message, "Line %d" % e.line]], None)
-							error = True
-					print("Linter: Finished syntactic in %f milliseconds..." % ((time.time()-synStart)*1000.0)) #DEBUG
-					if statements:
-						self.SetStatements(self.bufferID, statements[:]) # Cache a copy of the statements
-					else:
-						return Exit()
-					if error:
-						return Exit()
-					
-					if self.sem:
-						semStart = time.time()
-						try:
-							if view:
-								self.sem.Process(statements, SublimePapyrus.GetSourcePaths(view))
-							else:
-								self.sem.Process(statements, self.sourcePaths)
-						except Linter.SemanticError as e:
-							if view:
-								SublimePapyrus.HighlightLinter(view, e.line)
-								SublimePapyrus.ShowMessage("Semantic error on line %d: %s" % (e.line, e.message))
-								if settings.get("linter_panel_error_messages", False):
-									view.window().show_quick_panel([[e.message, "Line %d" % e.line]], None)
-							return Exit()
-						print("Linter: Finished semantic in %f milliseconds..." % ((time.time()-semStart)*1000.0)) #DEBUG
-		if not error:
+							tokens = []
+					elif token.type != self.lex.COMMENT_LINE and token.type != self.lex.COMMENT_BLOCK:
+						tokens.append(token)
+			except Linter.LexicalError as e:
+				if view:
+					SublimePapyrus.HighlightLinter(view, e.line, e.column)
+					SublimePapyrus.ShowMessage("Lexical error on line %d, column %d: %s" % (e.line, e.column, e.message))
+					if settings.get("linter_panel_error_messages", False):
+						view.window().show_quick_panel([[e.message, "Line %d, column %d" % (e.line, e.column)]], None)
+				return Exit()
+			except Linter.SyntacticError as e:
+				if view:
+					SublimePapyrus.HighlightLinter(view, e.line)
+					SublimePapyrus.ShowMessage("Syntactic error on line %d: %s" % (e.line, e.message))
+					if settings.get("linter_panel_error_messages", False):
+						view.window().show_quick_panel([[e.message, "Line %d" % e.line]], None)
+				return Exit()
+			print("Linter: Finished lexical and syntactic in %f milliseconds..." % ((time.time()-lexSynStart)*1000.0)) #DEBUG
+			if statements:
+				self.SetStatements(self.bufferID, statements[:]) # Cache a copy of the statements
+			else:
+				return Exit()
+			semStart = time.time()
+			try:
+				if view:
+					self.sem.Process(statements, SublimePapyrus.GetSourcePaths(view))
+				else:
+					self.sem.Process(statements, self.sourcePaths)
+			except Linter.SemanticError as e:
+				if view:
+					SublimePapyrus.HighlightLinter(view, e.line)
+					SublimePapyrus.ShowMessage("Semantic error on line %d: %s" % (e.line, e.message))
+					if settings.get("linter_panel_error_messages", False):
+						view.window().show_quick_panel([[e.message, "Line %d" % e.line]], None)
+				return Exit()
+			print("Linter: Finished semantic in %f milliseconds..." % ((time.time()-semStart)*1000.0)) #DEBUG
 			if view:
 				SublimePapyrus.ShowMessage("Linter found no issues...")
 		return Exit()
