@@ -1232,6 +1232,15 @@ class CachedScript(object):
 		self.functions = aFunctions
 		self.states = aStates
 
+class Script(object):
+	__slots__ = ["functions", "variables", "states", "imports", "definitions"]
+	def __init__(self, aFunctions, aVariables, aStates, aImports, aDefinitions):
+		self.functions = aFunctions
+		self.variables = aVariables
+		self.states = aStates
+		self.imports = aImports
+		self.definitions = aDefinitions
+
 class NodeResult(object):
 	__slots__ = ["type", "array", "object"]
 	def __init__(self, aType, aArray, aObject):
@@ -1733,7 +1742,7 @@ class Semantic(SharedResources):
 			self.PopFunctionScope()
 		if self.cancel:
 			raise EmptyStateCancel(self.functions)
-		return True
+		return Script(self.functions[0:2], self.variables[0:2], self.states[0:2], self.imports, self.definitions)
 
 	def PropertyBlock(self, statements):
 		statementsLength = len(statements)
