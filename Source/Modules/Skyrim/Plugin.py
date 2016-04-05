@@ -201,7 +201,7 @@ class EventListener(sublime_plugin.EventListener):
 				return Exit()
 			if view:
 				SublimePapyrus.ShowMessage("Starting linter...")
-			lexSynStart = time.time()
+			lexSynStart = time.time() #DEBUG
 			scriptContents = None
 			if view:
 				scriptContents = view.substr(sublime.Region(0, view.size()))
@@ -238,7 +238,7 @@ class EventListener(sublime_plugin.EventListener):
 				self.SetStatements(self.bufferID, statements[:]) # Cache a copy of the statements
 			else:
 				return Exit()
-			semStart = time.time()
+			semStart = time.time() #DEBUG
 			try:
 				if view:
 					self.sem.Process(statements, SublimePapyrus.GetSourcePaths(view))
