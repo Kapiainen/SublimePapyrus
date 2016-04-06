@@ -2409,7 +2409,7 @@ class Semantic(SharedResources):
 		if result:
 			return result
 		else:
-			self.Abort("AST node returns None for some reason.", self.statements[self.statementsIndex].line)
+			return None
 
 	def CanAutoCast(self, src, dest):
 		if not src or not dest:
@@ -2495,33 +2495,23 @@ class Semantic(SharedResources):
 		self.functions = script.functions
 		self.states = script.states
 		self.imports = script.imports
-		# Foreach state
-		#	If in state
-		#		Foreach definition
-		#			If in definition
-		#				Process that definition
-		#		Raise StateCancel
-		# Foreach empty state definition
-		#	If in definition
-		#		Process that definition
-		# Raise EmptyStateCancel
 		for statements in script.definitions[""]:
 			if self.cancel >= statements[0].line and self.cancel <= statements[len(statements)-1].line:
 				if statements[0].type == self.STAT_PROPERTYDEF:
-					print("Property")
+					#print("Property")
 					self.PushFunctionScope()
 					self.PropertyBlock(statements)
 					#self.PopFunctionScope()
 					raise PropertyDefinitionCancel(statements[0].data.typeIdentifier, statements[0].data.array, self.functions)
 				elif statements[0].type == self.STAT_FUNCTIONDEF or statements[0].type == self.STAT_EVENTDEF:
-					print("Empty state function/event")
+					#print("Empty state function/event")
 					self.PushVariableScope()
 					self.FunctionBlock(statements)
 					#self.PopVariableScope()
 		for s in [s for s in script.definitions if s != ""]:
 			for statements in script.definitions[s]:
 				if self.cancel >= statements[0].line and self.cancel <= statements[len(statements)-1].line:
-					print("State function/event")
+					#print("State function/event")
 					self.PushVariableScope()
 					self.FunctionBlock(statements)
 					#self.PopVariableScope()
@@ -2533,7 +2523,7 @@ class Semantic(SharedResources):
 					stateFunctions[func[0].data.name] = func[0]
 				self.functions.append(stateFunctions)
 				raise StateCancel(self.functions)
-		print("Empty state")
+		#print("Empty state")
 		raise EmptyStateCancel(self.functions)
 		
 """
