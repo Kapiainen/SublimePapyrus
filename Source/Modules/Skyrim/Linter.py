@@ -1919,7 +1919,8 @@ class Semantic(SharedResources):
 		start = statements.pop(0)
 		end = statements.pop()
 		self.AddState(start, end)
-		self.definitions[start.data.name] = []
+		stateName = start.data.name.upper()
+		self.definitions[stateName] = []
 		while len(statements) > 0:
 			if statements[0].type == self.STAT_FUNCTIONDEF:
 				exists = self.HasFunction(statements[0].data.name)
@@ -1934,7 +1935,7 @@ class Semantic(SharedResources):
 						func.append(statements.pop(0))
 					if len(statements) > 0:
 						func.append(statements.pop(0))
-						self.definitions[start.data.name].append(func)
+						self.definitions[stateName].append(func)
 					else:
 						raise UnterminatedFunctionError(func[0].line)
 			elif statements[0].type == self.STAT_EVENTDEF:
@@ -1950,12 +1951,12 @@ class Semantic(SharedResources):
 						event.append(statements.pop(0))
 					if len(statements) > 0:
 						event.append(statements.pop(0))
-						self.definitions[start.data.name].append(event)
+						self.definitions[stateName].append(event)
 					else:
 						raise UnterminatedEventError(event[0].line)
 			else:
 				self.Abort("Illegal statement in a state definition.", statements[0].line)
-		for statements in self.definitions[start.data.name]:
+		for statements in self.definitions[stateName]:
 			self.PushVariableScope()
 			self.FunctionBlock(statements)
 			self.PopVariableScope()
@@ -2527,7 +2528,10 @@ class Semantic(SharedResources):
 					#return
 		for name, statements in script.states[1].items():
 			if self.cancel >= statements[0].line and self.cancel <= statements[len(statements)-1].line:
-				print("State")
+				stateFunctions = {}
+				for func in script.definitions[name]:
+					stateFunctions[func[0].data.name] = func[0]
+				self.functions.append(stateFunctions)
 				raise StateCancel(self.functions)
 		print("Empty state")
 		raise EmptyStateCancel(self.functions)
