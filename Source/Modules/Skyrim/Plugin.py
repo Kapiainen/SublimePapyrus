@@ -390,73 +390,74 @@ class EventListener(sublime_plugin.EventListener):
 						except Linter.FunctionDefinitionCancel as f:
 							if self.syn.stack:
 								stackCount = len(self.syn.stack)
-								if stackCount > 1 and self.syn.stack[stackCount-1].type == self.syn.OP_DOT:
-									try:
-										result = self.sem.NodeVisitor(self.syn.stack[stackCount-2])
-									except Linter.SemanticError as g:
-										return
-									if result.array:
-										typ = result.type.capitalize()
-										completions.append(("find\tint func.", "Find(${1:%s akElement}, ${2:Int aiStartIndex = 0})" % typ,))
-										completions.append(("rfind\tint func.", "RFind(${1:%s akElement}, ${2:Int aiStartIndex = -1})" % typ,))
-										completions.append(("length\tkeyword", "Length",))
-									else:
-										if result.object:
-											if result.type == self.sem.KW_SELF:
-												for name, stat in f.functions[1].items():
-													if stat.type == self.sem.STAT_EVENTDEF:
-														completions.append(SublimePapyrus.MakeEventCompletion(stat, self.sem, True, "self"))
-													elif stat.type == self.sem.STAT_FUNCTIONDEF:
-														completions.append(SublimePapyrus.MakeFunctionCompletion(stat, self.sem, True, "self"))
-												for scope in f.variables:
-													for name, stat in scope.items():
-														if stat.type == self.sem.STAT_PROPERTYDEF:
-															completions.append(SublimePapyrus.MakePropertyCompletion(stat))
+								if stackCount > 1:
+									if self.syn.stack[stackCount-1].type == self.syn.OP_DOT:
+										try:
+											result = self.sem.NodeVisitor(self.syn.stack[stackCount-2])
+										except Linter.SemanticError as g:
+											return
+										if result.array:
+											typ = result.type.capitalize()
+											completions.append(("find\tint func.", "Find(${1:%s akElement}, ${2:Int aiStartIndex = 0})" % typ,))
+											completions.append(("rfind\tint func.", "RFind(${1:%s akElement}, ${2:Int aiStartIndex = -1})" % typ,))
+											completions.append(("length\tkeyword", "Length",))
+										else:
+											if result.object:
+												if result.type == self.sem.KW_SELF:
+													for name, stat in f.functions[1].items():
+														if stat.type == self.sem.STAT_EVENTDEF:
+															completions.append(SublimePapyrus.MakeEventCompletion(stat, self.sem, True, "self"))
+														elif stat.type == self.sem.STAT_FUNCTIONDEF:
+															completions.append(SublimePapyrus.MakeFunctionCompletion(stat, self.sem, True, "self"))
+													for scope in f.variables:
+														for name, stat in scope.items():
+															if stat.type == self.sem.STAT_PROPERTYDEF:
+																completions.append(SublimePapyrus.MakePropertyCompletion(stat))
+												else:
+													properties = self.GetPropertyCompletions(result.type)
+													functions = self.GetFunctionCompletions(result.type)
+													if properties and functions:
+														completions.extend(properties)
+														completions.extend(functions)
+													else:
+														if properties:
+															completions.extend(properties)
+														if functions:
+															completions.extend(functions)
+														try:
+															script = self.sem.GetCachedScript(result.type)
+														except:
+															return
+														if script:
+															if not properties:
+																properties = []
+																for name, obj in script.properties.items():
+																	properties.append(SublimePapyrus.MakePropertyCompletion(obj))
+																self.SetPropertyCompletions(result.type, properties)
+																completions.extend(properties)
+															if not functions:
+																functions = []
+																for name, obj in script.functions.items():
+																	if not self.sem.KW_GLOBAL in obj.data.flags:
+																		functions.append(SublimePapyrus.MakeFunctionCompletion(obj, self.sem))
+																self.SetFunctionCompletions(result.type, functions)
+																completions.extend(functions)
 											else:
-												properties = self.GetPropertyCompletions(result.type)
-												functions = self.GetFunctionCompletions(result.type)
-												if properties and functions:
-													completions.extend(properties)
+												functions = self.GetFunctionCompletions(result.type, True)
+												if functions:
 													completions.extend(functions)
 												else:
-													if properties:
-														completions.extend(properties)
-													if functions:
-														completions.extend(functions)
 													try:
 														script = self.sem.GetCachedScript(result.type)
 													except:
 														return
 													if script:
-														if not properties:
-															properties = []
-															for name, obj in script.properties.items():
-																properties.append(SublimePapyrus.MakePropertyCompletion(obj))
-															self.SetPropertyCompletions(result.type, properties)
-															completions.extend(properties)
-														if not functions:
-															functions = []
-															for name, obj in script.functions.items():
-																if not self.sem.KW_GLOBAL in obj.data.flags:
-																	functions.append(SublimePapyrus.MakeFunctionCompletion(obj, self.sem))
-															self.SetFunctionCompletions(result.type, functions)
-															completions.extend(functions)
-										else:
-											functions = self.GetFunctionCompletions(result.type, True)
-											if functions:
-												completions.extend(functions)
-											else:
-												try:
-													script = self.sem.GetCachedScript(result.type)
-												except:
-													return
-												if script:
-													functions = []
-													for name, obj in script.functions.items():
-														if self.sem.KW_GLOBAL in obj.data.flags:
-															functions.append(SublimePapyrus.MakeFunctionCompletion(obj, self.sem))
-													self.SetFunctionCompletions(result.type, functions, True)
-													completions.extend(functions)
+														functions = []
+														for name, obj in script.functions.items():
+															if self.sem.KW_GLOBAL in obj.data.flags:
+																functions.append(SublimePapyrus.MakeFunctionCompletion(obj, self.sem))
+														self.SetFunctionCompletions(result.type, functions, True)
+														completions.extend(functions)
 								else:
 									completions.extend(self.GetTypeCompletions(view, False))
 									if not self.sem.KW_GLOBAL in f.signature.data.flags:
@@ -488,6 +489,21 @@ class EventListener(sublime_plugin.EventListener):
 													self.SetFunctionCompletions(imp, functions, True)
 													completions.extend(functions)
 							else:
+								if tokens[tokenCount-1].type == self.sem.OP_ASSIGN:
+									try:
+										stat = self.syn.Process(tokens[:-1])
+									except Linter.SemanticError as g:
+										return
+									if stat:
+										if stat.type == self.syn.STAT_EXPRESSION:
+											try:
+												result = self.sem.NodeVisitor(stat.data.expression)
+											except Linter.SemanticError as g:
+												return
+											if result.array:
+												completions.append(("new\tarray creation", "New %s[${1:}]" % result.type.capitalize(),))
+										elif stat.type == self.syn.STAT_VARIABLEDEF and stat.data.array:
+											completions.append(("new\tarray creation", "New %s[${1:}]" % stat.data.type.capitalize(),))										
 								completions.extend(self.GetTypeCompletions(view, False))
 								if not self.sem.KW_GLOBAL in f.signature.data.flags:
 									completions.append(self.completionKeywordSelf)
@@ -692,32 +708,6 @@ class EventListener(sublime_plugin.EventListener):
 				except Linter.SemanticError as e:
 					return
 			return
-
-	def GetBaseFunctionBlockCompletions(self):
-		return [
-			("new\tarray creation", "New ${1:$SELECTION}[${2:}]",),
-			("getstate\tstring func.", "GetState()",),
-			("gotostate\tfunc.", "GoToState(${1:String asState})",),
-			("onbeginstate\tevent", "OnBeginState()",),
-			("onendstate\tevent", "OnEndState()",),
-			("oninit\tevent", "OnInit()",)
-		]
-
-	def GetBaseKeywordCompletions(self):
-		return [
-			("false\tkeyword", "False",),
-			("none\tkeyword", "None",),
-			("true\tkeyword", "True",)
-		]
-
-	def GetBaseStateCompletions(self):
-		return [
-			("getstate\tfunc.", "Function GetState()\n\t${0}\nEndFunction",),
-			("gotostate\tfunc.", "Function GoToState(${1:String asState})\n\t${0}\nEndFunction",),
-			("onbeginstate\tevent", "Event OnBeginState()\n\t${0}\nEndEvent",),
-			("onendstate\tevent", "Event OnEndState()\n\t${0}\nEndEvent",),
-			("oninit\tevent", "Event OnInit()\n\t${0}\nEndEvent",)
-		]
 
 	def IsValidScope(self, view):
 		if self.validScope:
