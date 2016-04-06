@@ -402,35 +402,45 @@ class EventListener(sublime_plugin.EventListener):
 										completions.append(("length\tkeyword", "Length",))
 									else:
 										if result.object:
-											properties = self.GetPropertyCompletions(result.type)
-											functions = self.GetFunctionCompletions(result.type)
-											if properties and functions:
-												completions.extend(properties)
-												completions.extend(functions)
+											if result.type == self.sem.KW_SELF:
+												for name, stat in f.functions[1].items():
+													if stat.type == self.sem.STAT_EVENTDEF:
+														completions.append(SublimePapyrus.MakeEventCompletion(stat, self.sem, True, "self"))
+													elif stat.type == self.sem.STAT_FUNCTIONDEF:
+														completions.append(SublimePapyrus.MakeFunctionCompletion(stat, self.sem, True, "self"))
+												for scope in f.variables:
+													for name, stat in scope.items():
+														if stat.type == self.sem.STAT_PROPERTYDEF:
+															completions.append(SublimePapyrus.MakePropertyCompletion(stat))
 											else:
-												if properties:
+												properties = self.GetPropertyCompletions(result.type)
+												functions = self.GetFunctionCompletions(result.type)
+												if properties and functions:
 													completions.extend(properties)
-												if functions:
 													completions.extend(functions)
-												try:
-													script = self.sem.GetCachedScript(result.type)
-												except:
-													return
-												if script:
-													if not properties:
-														properties = []
-														for name, obj in script.properties.items():
-															properties.append(SublimePapyrus.MakePropertyCompletion(obj))
-														self.SetPropertyCompletions(result.type, properties)
+												else:
+													if properties:
 														completions.extend(properties)
-													if not functions:
-														functions = []
-														for name, obj in script.functions.items():
-															if not self.sem.KW_GLOBAL in obj.data.flags:
-																functions.append(SublimePapyrus.MakeFunctionCompletion(obj, self.sem))
-														self.SetFunctionCompletions(result.type, functions)
+													if functions:
 														completions.extend(functions)
-											
+													try:
+														script = self.sem.GetCachedScript(result.type)
+													except:
+														return
+													if script:
+														if not properties:
+															properties = []
+															for name, obj in script.properties.items():
+																properties.append(SublimePapyrus.MakePropertyCompletion(obj))
+															self.SetPropertyCompletions(result.type, properties)
+															completions.extend(properties)
+														if not functions:
+															functions = []
+															for name, obj in script.functions.items():
+																if not self.sem.KW_GLOBAL in obj.data.flags:
+																	functions.append(SublimePapyrus.MakeFunctionCompletion(obj, self.sem))
+															self.SetFunctionCompletions(result.type, functions)
+															completions.extend(functions)
 										else:
 											functions = self.GetFunctionCompletions(result.type, True)
 											if functions:
