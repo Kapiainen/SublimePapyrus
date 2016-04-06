@@ -84,13 +84,14 @@ class SublimePapyrusSkyrimGenerateCompletionsCommand(sublime_plugin.WindowComman
 								elif PYTHON_VERSION[0] >= 3:
 									SublimePapyrus.ShowMessage("Syntactic error on line %d in '%s': %s" % (e.line, path, e.message))
 								return
-						completions = [{"trigger": "%s\t%s" % (scriptName.lower(), "script"), "contents": scriptName}]
+						scriptNameLower = scriptName.lower()
+						completions = [{"trigger": "%s\t%s" % (scriptNameLower, "script"), "contents": scriptName}]
 						for stat in statements:
 							if stat.type == sem.STAT_FUNCTIONDEF:
-								temp = SublimePapyrus.MakeFunctionCompletion(stat, sem, script=scriptName)
+								temp = SublimePapyrus.MakeFunctionCompletion(stat, sem, script=scriptNameLower)
 								completions.append({"trigger": temp[0], "contents": temp[1]})
 							elif stat.type == sem.STAT_EVENTDEF:
-								temp = SublimePapyrus.MakeEventCompletion(stat, sem, calling=False, script=scriptName)
+								temp = SublimePapyrus.MakeEventCompletion(stat, sem, calling=False, script=scriptNameLower)
 								completions.append({"trigger": temp[0], "contents": temp[1]})
 						output = {
 							"scope": VALID_SCOPE,
@@ -113,6 +114,7 @@ class EventListener(sublime_plugin.EventListener):
 		self.syn = Linter.Syntactic()
 		self.sem = Linter.Semantic()
 		self.validScope = "source.papyrus.skyrim"
+		self.completionKeywordAs = ("as\tcast", "As ",)
 		self.completionKeywordAuto = ("auto\tkeyword", "Auto",)
 		self.completionKeywordAutoReadOnly = ("autoreadonly\tkeyword", "AutoReadOnly",)
 		self.completionKeywordConditional = ("conditional\tkeyword", "Conditional",)
@@ -396,6 +398,7 @@ class EventListener(sublime_plugin.EventListener):
 											result = self.sem.NodeVisitor(self.syn.stack[stackCount-2])
 										except Linter.SemanticError as g:
 											return
+										resultTypeLower = result.type.lower()
 										if result.array:
 											typ = result.type.capitalize()
 											completions.append(("find\tint func.", "Find(${1:%s akElement}, ${2:Int aiStartIndex = 0})" % typ,))
@@ -412,7 +415,7 @@ class EventListener(sublime_plugin.EventListener):
 													for scope in f.variables:
 														for name, stat in scope.items():
 															if stat.type == self.sem.STAT_PROPERTYDEF:
-																completions.append(SublimePapyrus.MakePropertyCompletion(stat))
+																completions.append(SublimePapyrus.MakePropertyCompletion(stat, "self")) #TODO
 												else:
 													properties = self.GetPropertyCompletions(result.type)
 													functions = self.GetFunctionCompletions(result.type)
@@ -432,14 +435,14 @@ class EventListener(sublime_plugin.EventListener):
 															if not properties:
 																properties = []
 																for name, obj in script.properties.items():
-																	properties.append(SublimePapyrus.MakePropertyCompletion(obj))
+																	properties.append(SublimePapyrus.MakePropertyCompletion(obj, resultTypeLower)) #TODO
 																self.SetPropertyCompletions(result.type, properties)
 																completions.extend(properties)
 															if not functions:
 																functions = []
 																for name, obj in script.functions.items():
 																	if not self.sem.KW_GLOBAL in obj.data.flags:
-																		functions.append(SublimePapyrus.MakeFunctionCompletion(obj, self.sem))
+																		functions.append(SublimePapyrus.MakeFunctionCompletion(obj, self.sem, True, resultTypeLower))
 																self.SetFunctionCompletions(result.type, functions)
 																completions.extend(functions)
 											else:
@@ -455,7 +458,7 @@ class EventListener(sublime_plugin.EventListener):
 														functions = []
 														for name, obj in script.functions.items():
 															if self.sem.KW_GLOBAL in obj.data.flags:
-																functions.append(SublimePapyrus.MakeFunctionCompletion(obj, self.sem))
+																functions.append(SublimePapyrus.MakeFunctionCompletion(obj, self.sem, True, resultTypeLower))
 														self.SetFunctionCompletions(result.type, functions, True)
 														completions.extend(functions)
 								else:
@@ -463,14 +466,21 @@ class EventListener(sublime_plugin.EventListener):
 									if not self.sem.KW_GLOBAL in f.signature.data.flags:
 										completions.append(self.completionKeywordSelf)
 										completions.append(self.completionKeywordParent)
-									for scope in f.variables:
+									for scope in f.variables[1:]:
 										for name, stat in scope.items():
 											if stat.type == self.sem.STAT_PROPERTYDEF:
-												completions.append(SublimePapyrus.MakePropertyCompletion(stat))
+												completions.append(SublimePapyrus.MakePropertyCompletion(stat, "self")) #TODO
 											elif stat.type == self.sem.STAT_VARIABLEDEF:
-												completions.append(SublimePapyrus.MakeVariableCompletion(stat))
+												completions.append(SublimePapyrus.MakeVariableCompletion(stat)) #TODO
 											elif stat.type == self.sem.STAT_PARAMETER:
-												completions.append(SublimePapyrus.MakeParameterCompletion(stat))
+												completions.append(SublimePapyrus.MakeParameterCompletion(stat)) #TODO
+									for name, stat in f.variables[0].items():
+										if stat.type == self.sem.STAT_PROPERTYDEF:
+											completions.append(SublimePapyrus.MakePropertyCompletion(stat, "parent")) #TODO
+										elif stat.type == self.sem.STAT_VARIABLEDEF:
+											completions.append(SublimePapyrus.MakeVariableCompletion(stat)) #TODO
+										elif stat.type == self.sem.STAT_PARAMETER:
+											completions.append(SublimePapyrus.MakeParameterCompletion(stat)) #TODO
 									if f.imports:
 										for imp in f.imports:
 											functions = self.GetFunctionCompletions(imp, True)
@@ -483,9 +493,10 @@ class EventListener(sublime_plugin.EventListener):
 													return
 												if script:
 													functions = []
+													impLower = imp.lower()
 													for name, obj in script.functions.items():
 														if self.sem.KW_GLOBAL in obj.data.flags:
-															functions.append(SublimePapyrus.MakeFunctionCompletion(obj, self.sem))
+															functions.append(SublimePapyrus.MakeFunctionCompletion(obj, self.sem, True, impLower))
 													self.SetFunctionCompletions(imp, functions, True)
 													completions.extend(functions)
 							else:
@@ -508,14 +519,21 @@ class EventListener(sublime_plugin.EventListener):
 								if not self.sem.KW_GLOBAL in f.signature.data.flags:
 									completions.append(self.completionKeywordSelf)
 									completions.append(self.completionKeywordParent)
-								for scope in f.variables:
-										for name, stat in scope.items():
-											if stat.type == self.sem.STAT_PROPERTYDEF:
-												completions.append(SublimePapyrus.MakePropertyCompletion(stat))
-											elif stat.type == self.sem.STAT_VARIABLEDEF:
-												completions.append(SublimePapyrus.MakeVariableCompletion(stat))
-											elif stat.type == self.sem.STAT_PARAMETER:
-												completions.append(SublimePapyrus.MakeParameterCompletion(stat))
+								for scope in f.variables[1:]:
+									for name, stat in scope.items():
+										if stat.type == self.sem.STAT_PROPERTYDEF:
+											completions.append(SublimePapyrus.MakePropertyCompletion(stat, "self")) #TODO
+										elif stat.type == self.sem.STAT_VARIABLEDEF:
+											completions.append(SublimePapyrus.MakeVariableCompletion(stat)) #TODO
+										elif stat.type == self.sem.STAT_PARAMETER:
+											completions.append(SublimePapyrus.MakeParameterCompletion(stat)) #TODO
+								for name, stat in f.variables[0].items():
+									if stat.type == self.sem.STAT_PROPERTYDEF:
+										completions.append(SublimePapyrus.MakePropertyCompletion(stat, "parent")) #TODO
+									elif stat.type == self.sem.STAT_VARIABLEDEF:
+										completions.append(SublimePapyrus.MakeVariableCompletion(stat)) #TODO
+									elif stat.type == self.sem.STAT_PARAMETER:
+										completions.append(SublimePapyrus.MakeParameterCompletion(stat)) #TODO
 								if f.imports:
 									for imp in f.imports:
 										functions = self.GetFunctionCompletions(imp, True)
@@ -528,14 +546,16 @@ class EventListener(sublime_plugin.EventListener):
 												return
 											if script:
 												functions = []
+												impLower = imp.lower()
 												for name, obj in script.functions.items():
 													if self.sem.KW_GLOBAL in obj.data.flags:
-														functions.append(SublimePapyrus.MakeFunctionCompletion(obj, self.sem))
+														functions.append(SublimePapyrus.MakeFunctionCompletion(obj, self.sem, True, impLower))
 												self.SetFunctionCompletions(imp, functions, True)
 												completions.extend(functions)
 							completions.append(("false\tkeyword", "False",))
 							completions.append(("none\tkeyword", "None",))
 							completions.append(("true\tkeyword", "True",))
+							completions.append(self.completionKeywordAs)
 							return completions
 						except Linter.PropertyDefinitionCancel as f:
 							print("Expected identifier in a property")
@@ -595,7 +615,7 @@ class EventListener(sublime_plugin.EventListener):
 							except Linter.SemanticError as e:
 								return
 						elif stat.type == self.syn.STAT_ASSIGNMENT or stat.type == self.syn.STAT_EXPRESSION:
-							completions.append(("as\tcast", "As ",))
+							completions.append(self.completionKeywordAs)
 						else:
 							print(stat.type)
 						return completions
@@ -652,14 +672,21 @@ class EventListener(sublime_plugin.EventListener):
 						completions.append(("parent\tkeyword", "Parent",))
 					completions.extend(self.GetTypeCompletions(view, True))
 					# Parameters, variables, and properties
-					for scope in e.variables:
+					for scope in e.variables[1:]:
 						for name, stat in scope.items():
 							if stat.type == self.sem.STAT_PARAMETER:
-								completions.append(SublimePapyrus.MakeParameterCompletion(stat))
+								completions.append(SublimePapyrus.MakeParameterCompletion(stat)) #TODO
 							elif stat.type == self.sem.STAT_PROPERTYDEF:
-								completions.append(SublimePapyrus.MakePropertyCompletion(stat))
+								completions.append(SublimePapyrus.MakePropertyCompletion(stat, "self")) #TODO
 							elif stat.type == self.sem.STAT_VARIABLEDEF:
-								completions.append(SublimePapyrus.MakeVariableCompletion(stat))
+								completions.append(SublimePapyrus.MakeVariableCompletion(stat)) #TODO
+					for name, stat in e.variables[0].items():
+						if stat.type == self.sem.STAT_PARAMETER:
+							completions.append(SublimePapyrus.MakeParameterCompletion(stat)) #TODO
+						elif stat.type == self.sem.STAT_PROPERTYDEF:
+							completions.append(SublimePapyrus.MakePropertyCompletion(stat, "parent")) #TODO
+						elif stat.type == self.sem.STAT_VARIABLEDEF:
+							completions.append(SublimePapyrus.MakeVariableCompletion(stat)) #TODO
 					# Inherited and defined functions and events
 					functions = {}
 					events = {}
@@ -689,9 +716,10 @@ class EventListener(sublime_plugin.EventListener):
 									return
 								if script:
 									functions = []
+									impLower = imp.lower()
 									for name, obj in script.functions.items():
 										if self.sem.KW_GLOBAL in obj.data.flags:
-											functions.append(SublimePapyrus.MakeFunctionCompletion(obj, self.sem))
+											functions.append(SublimePapyrus.MakeFunctionCompletion(obj, self.sem, True, impLower))
 									self.SetFunctionCompletions(imp, functions, True)
 									completions.extend(functions)
 					return completions
