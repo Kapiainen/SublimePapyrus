@@ -366,13 +366,15 @@ def MakeEventCompletion(stat, sem, calling = True, script = "", precededByKeywor
 			content = "Event %s(%s)\n\t${0}\nEndEvent" % (stat.data.identifier, content)
 		return (tabTrigger + "\t" + description.lower(), content,)
 
-def MakePropertyCompletion(stat):
+def MakePropertyCompletion(stat, script = ""):
 	tabTrigger = stat.data.name.lower()
 	description = ""
+	if script:
+		script = " (%s)" % script
 	if stat.data.array:
-		description = "%s[] prop." % (stat.data.typeIdentifier)
+		description = "%s[] prop.%s" % (stat.data.typeIdentifier, script)
 	else:
-		description = "%s prop." % (stat.data.typeIdentifier)
+		description = "%s prop.%s" % (stat.data.typeIdentifier, script)
 	content = stat.data.identifier
 	return (tabTrigger + "\t" + description.lower(), content,)
 
