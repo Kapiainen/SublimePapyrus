@@ -1843,40 +1843,38 @@ class Semantic(SharedResources):
 		if self.cancel:
 			self.statements = statements
 			self.statementsLength = len(statements)
-			i = 0
-			start = self.statements[i]
-			i += 1
+			self.statementsIndex = 1
+			start = self.statements[0]
 			self.AddVariable(start)
-			while i < self.statementsLength:
-				if self.statements[i].line >= self.cancel:
+			while self.statementsIndex < self.statementsLength:
+				if self.statements[self.statementsIndex].line >= self.cancel:
 					raise FunctionDefinitionCancel(start, self.functions, self.variables, self.imports)
-				if self.statements[i].type == self.STAT_VARIABLEDEF:
-					self.VariableDef(i)
-				elif self.statements[i].type == self.STAT_IF:
+				if self.statements[self.statementsIndex].type == self.STAT_VARIABLEDEF:
+					self.VariableDef()
+				elif self.statements[self.statementsIndex].type == self.STAT_IF:
 					self.PushVariableScope()
-					i = self.IfBlock(i)
+					self.IfBlock()
 					self.PopVariableScope()
-				elif self.statements[i].type == self.STAT_WHILE:
+				elif self.statements[self.statementsIndex].type == self.STAT_WHILE:
 					self.PushVariableScope()
-					i = self.WhileBlock(i)
+					self.WhileBlock()
 					self.PopVariableScope()
-				elif self.statements[i].type == self.STAT_KEYWORD and ((self.statements[i].data.type == self.KW_ENDFUNCTION and self.statements[0].type == self.STAT_FUNCTIONDEF) or (self.statements[i].data.type == self.KW_ENDEVENT and self.statements[0].type == self.STAT_EVENTDEF)):
+				elif self.statements[self.statementsIndex].type == self.STAT_KEYWORD and ((self.statements[self.statementsIndex].data.type == self.KW_ENDFUNCTION and self.statements[0].type == self.STAT_FUNCTIONDEF) or (self.statements[self.statementsIndex].data.type == self.KW_ENDEVENT and self.statements[0].type == self.STAT_EVENTDEF)):
 					break
-				i += 1
+				self.statementsIndex += 1
 			if self.statements[self.statementsLength-1].line >= self.cancel:
 				raise FunctionDefinitionCancel(start, self.functions, self.variables, self.imports)
 			return True
 		else:
 			self.statements = statements
 			self.statementsLength = len(statements)
-			i = 0
-			start = self.statements[i]
-			i += 1
+			self.statementsIndex = 1
+			start = self.statements[0]
 			docString = None
-			if i < self.statementsLength:
-				if self.statements[i].type == self.STAT_DOCUMENTATION:
-					docString = statements[i]
-					i += 1
+			if self.statementsIndex < self.statementsLength:
+				if self.statements[self.statementsIndex].type == self.STAT_DOCUMENTATION:
+					docString = statements[self.statementsIndex]
+					self.statementsIndex += 1
 			self.AddVariable(start)
 			if start.type == self.STAT_FUNCTIONDEF:
 				for param in start.data.parameters:
@@ -1890,31 +1888,31 @@ class Semantic(SharedResources):
 								self.Abort("Parameters can only be initialized with literals.", start.line)
 							if param.type != value and not self.CanAutoCast(NodeResult(value, False, True), NodeResult(param.type, False, True)):
 								self.Abort("Initialization of %s parameter with %s literal." % (param.type, value), start.line)
-			while i < self.statementsLength:
-				if self.statements[i].type == self.STAT_VARIABLEDEF:
-					self.VariableDef(i)
-				elif self.statements[i].type == self.STAT_ASSIGNMENT:
-					self.Assignment(i)
-				elif self.statements[i].type == self.STAT_EXPRESSION:
-					self.Expression(i)
-				elif self.statements[i].type == self.STAT_IF:
+			while self.statementsIndex < self.statementsLength:
+				if self.statements[self.statementsIndex].type == self.STAT_VARIABLEDEF:
+					self.VariableDef()
+				elif self.statements[self.statementsIndex].type == self.STAT_ASSIGNMENT:
+					self.Assignment()
+				elif self.statements[self.statementsIndex].type == self.STAT_EXPRESSION:
+					self.Expression()
+				elif self.statements[self.statementsIndex].type == self.STAT_IF:
 					self.PushVariableScope()
-					i = self.IfBlock(i)
+					self.IfBlock()
 					self.PopVariableScope()
-				elif self.statements[i].type == self.STAT_WHILE:
+				elif self.statements[self.statementsIndex].type == self.STAT_WHILE:
 					self.PushVariableScope()
-					i = self.WhileBlock(i)
+					self.WhileBlock()
 					self.PopVariableScope()
-				elif self.statements[i].type == self.STAT_RETURN:
-					self.Return(i)
-				elif self.statements[i].type == self.STAT_KEYWORD and ((self.statements[i].data.type == self.KW_ENDFUNCTION and self.statements[0].type == self.STAT_FUNCTIONDEF) or (self.statements[i].data.type == self.KW_ENDEVENT and self.statements[0].type == self.STAT_EVENTDEF)):
+				elif self.statements[self.statementsIndex].type == self.STAT_RETURN:
+					self.Return()
+				elif self.statements[self.statementsIndex].type == self.STAT_KEYWORD and ((self.statements[self.statementsIndex].data.type == self.KW_ENDFUNCTION and self.statements[0].type == self.STAT_FUNCTIONDEF) or (self.statements[self.statementsIndex].data.type == self.KW_ENDEVENT and self.statements[0].type == self.STAT_EVENTDEF)):
 					break
 				else:
 					if self.statements[0].type == self.STAT_FUNCTIONDEF:
-						self.Abort("Illegal statement in a function definition.", self.statements[i].line)
+						self.Abort("Illegal statement in a function definition.", self.statements[self.statementsIndex].line)
 					elif self.statements[0].type == self.STAT_EVENTDEF:
-						self.Abort("Illegal statement in an event definition.", self.statements[i].line)
-				i += 1
+						self.Abort("Illegal statement in an event definition.", self.statements[self.statementsIndex].line)
+				self.statementsIndex += 1
 			return True
 
 	def StateBlock(self, statements):
@@ -1963,160 +1961,160 @@ class Semantic(SharedResources):
 			self.PopVariableScope()
 		return True
 
-	def IfBlock(self, i):
+	def IfBlock(self):
 		if self.cancel:
-			i += 1
-			while i < self.statementsLength:
-				if self.statements[i].line >= self.cancel:
+			self.statementsIndex += 1
+			while self.statementsIndex < self.statementsLength:
+				if self.statements[self.statementsIndex].line >= self.cancel:
 					raise FunctionDefinitionCancel(self.statements[0], self.functions, self.variables, self.imports)
-				if self.statements[i].type == self.STAT_VARIABLEDEF:
-					self.VariableDef(i)
-				elif self.statements[i].type == self.STAT_IF:
+				if self.statements[self.statementsIndex].type == self.STAT_VARIABLEDEF:
+					self.VariableDef()
+				elif self.statements[self.statementsIndex].type == self.STAT_IF:
 					self.PushVariableScope()
-					i = self.IfBlock(i)
+					self.IfBlock()
 					self.PopVariableScope()
-				elif self.statements[i].type == self.STAT_ELSEIF:
-					self.PopVariableScope()
-					self.PushVariableScope()
-				elif self.statements[i].type == self.STAT_KEYWORD and self.statements[i].data.type == self.KW_ELSE:
+				elif self.statements[self.statementsIndex].type == self.STAT_ELSEIF:
 					self.PopVariableScope()
 					self.PushVariableScope()
-				elif self.statements[i].type == self.STAT_WHILE:
-					self.PushVariableScope()
-					i = self.WhileBlock(i)
+				elif self.statements[self.statementsIndex].type == self.STAT_KEYWORD and self.statements[self.statementsIndex].data.type == self.KW_ELSE:
 					self.PopVariableScope()
-				elif self.statements[i].type == self.STAT_KEYWORD and self.statements[i].data.type == self.KW_ENDIF:
+					self.PushVariableScope()
+				elif self.statements[self.statementsIndex].type == self.STAT_WHILE:
+					self.PushVariableScope()
+					self.WhileBlock()
+					self.PopVariableScope()
+				elif self.statements[self.statementsIndex].type == self.STAT_KEYWORD and self.statements[self.statementsIndex].data.type == self.KW_ENDIF:
 					break
-				i += 1
-			return i
-		else:
-			expr = self.NodeVisitor(self.statements[i].data.expression)
-			start = self.statements[i]
-			i += 1
-			while i < self.statementsLength:
-				if self.statements[i].type == self.STAT_VARIABLEDEF:
-					self.VariableDef(i)
-				elif self.statements[i].type == self.STAT_ASSIGNMENT:
-					self.Assignment(i)
-				elif self.statements[i].type == self.STAT_EXPRESSION:
-					self.Expression(i)
-				elif self.statements[i].type == self.STAT_IF:
-					self.PushVariableScope()
-					i = self.IfBlock(i)
-					self.PopVariableScope()
-				elif self.statements[i].type == self.STAT_ELSEIF:
-					self.PopVariableScope()
-					self.PushVariableScope()
-					expr = self.NodeVisitor(self.statements[i].data.expression)
-				elif self.statements[i].type == self.STAT_KEYWORD and self.statements[i].data.type == self.KW_ELSE:
-					self.PopVariableScope()
-					self.PushVariableScope()
-				elif self.statements[i].type == self.STAT_WHILE:
-					self.PushVariableScope()
-					i = self.WhileBlock(i)
-					self.PopVariableScope()
-				elif self.statements[i].type == self.STAT_RETURN:
-					self.Return(i)
-				elif self.statements[i].type == self.STAT_KEYWORD and self.statements[i].data.type == self.KW_ENDIF:
-					break
-				else:
-					self.Abort("Illegal statement in an if-block.", self.statements[i].line)
-				i += 1
-			if i >= self.statementsLength:
-				raise UnterminatedIfError(start.line)
-			return i
-
-	def WhileBlock(self, i):
-		if self.cancel:
-			i += 1
-			while i < self.statementsLength:
-				if self.statements[i].line >= self.cancel:
-					raise FunctionDefinitionCancel(self.statements[0], self.functions, self.variables, self.imports)
-				if self.statements[i].type == self.STAT_VARIABLEDEF:
-					self.VariableDef(i)
-				elif self.statements[i].type == self.STAT_IF:
-					self.PushVariableScope()
-					i = self.IfBlock(i)
-					self.PopVariableScope()
-				elif self.statements[i].type == self.STAT_WHILE:
-					self.PushVariableScope()
-					i = self.WhileBlock(i)
-					self.PopVariableScope()
-				elif self.statements[i].type == self.STAT_KEYWORD and self.statements[i].data.type == self.KW_ENDWHILE:
-					break
-				i += 1
-			return i
-		else:
-			expr = self.NodeVisitor(self.statements[i].data.expression)
-			start = self.statements[i]
-			i += 1
-			while i < self.statementsLength:
-				if self.statements[i].type == self.STAT_VARIABLEDEF:
-					self.VariableDef(i)
-				elif self.statements[i].type == self.STAT_ASSIGNMENT:
-					self.Assignment(i)
-				elif self.statements[i].type == self.STAT_EXPRESSION:
-					self.Expression(i)
-				elif self.statements[i].type == self.STAT_IF:
-					self.PushVariableScope()
-					i = self.IfBlock(i)
-					self.PopVariableScope()
-				elif self.statements[i].type == self.STAT_WHILE:
-					self.PushVariableScope()
-					i = self.WhileBlock(i)
-					self.PopVariableScope()
-				elif self.statements[i].type == self.STAT_RETURN:
-					self.Return(i)
-				elif self.statements[i].type == self.STAT_KEYWORD and self.statements[i].data.type == self.KW_ENDWHILE:
-					break
-				else:
-					self.Abort("Illegal statement in a while-loop.", self.statements[i].line)
-				i += 1
-			if i >= self.statementsLength:
-				raise UnterminatedWhileError(start.line)
-			return i
-
-	def VariableDef(self, i):
-		if self.cancel:
-			self.AddVariable(self.statements[i])
+				self.statementsIndex += 1
 			return True
 		else:
-			self.AddVariable(self.statements[i])
-			if self.statements[i].data.value:
-				expr = self.NodeVisitor(self.statements[i].data.value)
+			expr = self.NodeVisitor(self.statements[self.statementsIndex].data.expression)
+			start = self.statements[self.statementsIndex]
+			self.statementsIndex += 1
+			while self.statementsIndex < self.statementsLength:
+				if self.statements[self.statementsIndex].type == self.STAT_VARIABLEDEF:
+					self.VariableDef()
+				elif self.statements[self.statementsIndex].type == self.STAT_ASSIGNMENT:
+					self.Assignment()
+				elif self.statements[self.statementsIndex].type == self.STAT_EXPRESSION:
+					self.Expression()
+				elif self.statements[self.statementsIndex].type == self.STAT_IF:
+					self.PushVariableScope()
+					self.IfBlock()
+					self.PopVariableScope()
+				elif self.statements[self.statementsIndex].type == self.STAT_ELSEIF:
+					self.PopVariableScope()
+					self.PushVariableScope()
+					expr = self.NodeVisitor(self.statements[self.statementsIndex].data.expression)
+				elif self.statements[self.statementsIndex].type == self.STAT_KEYWORD and self.statements[self.statementsIndex].data.type == self.KW_ELSE:
+					self.PopVariableScope()
+					self.PushVariableScope()
+				elif self.statements[self.statementsIndex].type == self.STAT_WHILE:
+					self.PushVariableScope()
+					self.WhileBlock()
+					self.PopVariableScope()
+				elif self.statements[self.statementsIndex].type == self.STAT_RETURN:
+					self.Return()
+				elif self.statements[self.statementsIndex].type == self.STAT_KEYWORD and self.statements[self.statementsIndex].data.type == self.KW_ENDIF:
+					break
+				else:
+					self.Abort("Illegal statement in an if-block.", self.statements[self.statementsIndex].line)
+				self.statementsIndex += 1
+			if self.statementsIndex >= self.statementsLength:
+				raise UnterminatedIfError(start.line)
+			return True
+
+	def WhileBlock(self):
+		if self.cancel:
+			self.statementsIndex += 1
+			while self.statementsIndex < self.statementsLength:
+				if self.statements[self.statementsIndex].line >= self.cancel:
+					raise FunctionDefinitionCancel(self.statements[0], self.functions, self.variables, self.imports)
+				if self.statements[self.statementsIndex].type == self.STAT_VARIABLEDEF:
+					self.VariableDef()
+				elif self.statements[self.statementsIndex].type == self.STAT_IF:
+					self.PushVariableScope()
+					self.IfBlock()
+					self.PopVariableScope()
+				elif self.statements[self.statementsIndex].type == self.STAT_WHILE:
+					self.PushVariableScope()
+					self.WhileBlock()
+					self.PopVariableScope()
+				elif self.statements[self.statementsIndex].type == self.STAT_KEYWORD and self.statements[self.statementsIndex].data.type == self.KW_ENDWHILE:
+					break
+				self.statementsIndex += 1
+			return True
+		else:
+			expr = self.NodeVisitor(self.statements[self.statementsIndex].data.expression)
+			start = self.statements[self.statementsIndex]
+			self.statementsIndex += 1
+			while self.statementsIndex < self.statementsLength:
+				if self.statements[self.statementsIndex].type == self.STAT_VARIABLEDEF:
+					self.VariableDef()
+				elif self.statements[self.statementsIndex].type == self.STAT_ASSIGNMENT:
+					self.Assignment()
+				elif self.statements[self.statementsIndex].type == self.STAT_EXPRESSION:
+					self.Expression()
+				elif self.statements[self.statementsIndex].type == self.STAT_IF:
+					self.PushVariableScope()
+					self.IfBlock()
+					self.PopVariableScope()
+				elif self.statements[self.statementsIndex].type == self.STAT_WHILE:
+					self.PushVariableScope()
+					self.WhileBlock()
+					self.PopVariableScope()
+				elif self.statements[self.statementsIndex].type == self.STAT_RETURN:
+					self.Return()
+				elif self.statements[self.statementsIndex].type == self.STAT_KEYWORD and self.statements[self.statementsIndex].data.type == self.KW_ENDWHILE:
+					break
+				else:
+					self.Abort("Illegal statement in a while-loop.", self.statements[self.statementsIndex].line)
+				self.statementsIndex += 1
+			if self.statementsIndex >= self.statementsLength:
+				raise UnterminatedWhileError(start.line)
+			return True
+
+	def VariableDef(self):
+		if self.cancel:
+			self.AddVariable(self.statements[self.statementsIndex])
+			return True
+		else:
+			self.AddVariable(self.statements[self.statementsIndex])
+			if self.statements[self.statementsIndex].data.value:
+				expr = self.NodeVisitor(self.statements[self.statementsIndex].data.value)
 				if expr:
 					if expr.array:
-						if not self.statements[i].data.array:
+						if not self.statements[self.statementsIndex].data.array:
 							self.Abort("The expression resolves to an array type, but the variable is not an array variable.")
-						if self.statements[i].data.type != expr.type:
+						if self.statements[self.statementsIndex].data.type != expr.type:
 							self.Abort("The expression resolves to an array type, but the variable is an array of another type.")
-					elif self.statements[i].data.array:
-						val = self.GetLiteral(self.statements[i].data.value)
+					elif self.statements[self.statementsIndex].data.array:
+						val = self.GetLiteral(self.statements[self.statementsIndex].data.value)
 						if val != self.KW_NONE:
 							self.Abort("Array variables can only be initialized with NONE.")
-					elif self.statements[i].data.type != expr.type:
-						if not self.CanAutoCast(expr, NodeResult(self.statements[i].data.type, self.statements[i].data.array, True)):
+					elif self.statements[self.statementsIndex].data.type != expr.type:
+						if not self.CanAutoCast(expr, NodeResult(self.statements[self.statementsIndex].data.type, self.statements[self.statementsIndex].data.array, True)):
 							self.Abort("The expression resolves to the incorrect type and cannot be automatically cast to the correct type.")
 				else:
 					self.Abort(None)
 			return True
 
-	def Assignment(self, i):
-		left = self.NodeVisitor(self.statements[i].data.leftExpression)
+	def Assignment(self):
+		left = self.NodeVisitor(self.statements[self.statementsIndex].data.leftExpression)
 		if left == self.KW_NONE:
 			self.Abort("The left-hand side expression resolves to NONE.")
-		right = self.NodeVisitor(self.statements[i].data.rightExpression)
+		right = self.NodeVisitor(self.statements[self.statementsIndex].data.rightExpression)
 		if left.type != right.type and left.array != right.array and left.object != right.object and not self.CanAutoCast(right, left):
 			self.Abort("The right-hand side expression does not resolve to the same type as the left-hand side expression and cannot be auto-cast.")
 		return True
 
-	def Expression(self, i):
-		expr = self.NodeVisitor(self.statements[i].data.expression)
+	def Expression(self):
+		expr = self.NodeVisitor(self.statements[self.statementsIndex].data.expression)
 		return True
 
-	def Return(self, i):
-		if self.statements[i].data.expression:
-			expr = self.NodeVisitor(self.statements[i].data.expression)
+	def Return(self):
+		if self.statements[self.statementsIndex].data.expression:
+			expr = self.NodeVisitor(self.statements[self.statementsIndex].data.expression)
 			if self.statements[0].data.type:
 				if expr.type != self.statements[0].data.type and expr.array != self.statements[0].data.array and not self.CanAutoCast(expr, self.statements[0].data):
 					self.Abort("The returned value's type does not match the function's return type.")
@@ -2133,12 +2131,12 @@ class Semantic(SharedResources):
 			result = self.NodeVisitor(node.data.child, expected)
 			if node.data.expression:
 				if result.type == self.KW_NONE:
-					self.Abort("Expected an array object instead of NONE.")
+					self.Abort("Expected an array object instead of NONE.", self.statements[self.statementsIndex].line)
 				elif not result.array:
-					self.Abort("Expected an array object.")
+					self.Abort("Expected an array object.", self.statements[self.statementsIndex].line)
 				expr = self.NodeVisitor(node.data.expression)
 				if expr.type != self.KW_INT or expr.array:
-					self.Abort("Expected an expression that resolves to INT when accessing an array element.")
+					self.Abort("Expected an expression that resolves to INT when accessing an array element.", self.statements[self.statementsIndex].line)
 				result = NodeResult(result.type, False, result.object)
 		elif node.type == self.NODE_CONSTANT:
 			if node.data.token.type == self.BOOL:
@@ -2152,7 +2150,7 @@ class Semantic(SharedResources):
 			elif node.data.token.type == self.KW_NONE:
 				result = NodeResult(self.KW_NONE, False, True)
 			else:
-				self.Abort("Unknown literal type.")
+				self.Abort("Unknown literal type.", self.statements[self.statementsIndex].line)
 		elif node.type == self.NODE_FUNCTIONCALL:
 			func = None
 			if expected and expected.type == self.KW_SELF:
@@ -2166,7 +2164,7 @@ class Semantic(SharedResources):
 					else:
 						result = NodeResult(self.KW_NONE, False, True)
 				else:
-					self.Abort("This script does not have a function/event called %s." % node.data.name.value)
+					self.Abort("This script does not have a function/event called %s." % node.data.name.value, self.statements[self.statementsIndex].line)
 			elif expected and expected.type:
 				if expected.array:
 					script = self.GetCachedScript(expected.type)
@@ -2179,16 +2177,16 @@ class Semantic(SharedResources):
 							func = Statement(self.STAT_FUNCTIONDEF, 0, FunctionDef("INT", "Int", False, "RFIND", "RFind", [ParameterDef(expected.type, expected.type.capitalize(), False, "AKELEMENT", "akElement", None), ParameterDef("INT", "Int", False, "AISTARTINDEX", "aiStartIndex", Node(self.NODE_EXPRESSION, ExpressionNode(Node(self.NODE_UNARYOPERATOR, UnaryOperatorNode(self.OP_SUBTRACTION, Node(self.NODE_CONSTANT, ConstantNode(Token(self.INT, "1", 0, 0))))))))], [self.KW_NATIVE]))
 							result = NodeResult(self.KW_INT, False, True)
 						else:
-							self.Abort("Arrays objects only have FIND and RFIND functions.")
+							self.Abort("Arrays objects only have FIND and RFIND functions.", self.statements[self.statementsIndex].line)
 				else:
 					script = self.GetCachedScript(expected.type)
 					if script:
 						func = script.functions.get(node.data.name.value.upper(), None)
 						if func:
 							if expected.object and self.KW_GLOBAL in func.data.flags:
-								self.Abort("Attempted to call a global function on an object.")
+								self.Abort("Attempted to call a global function on an object.", self.statements[self.statementsIndex].line)
 							elif not expected.object and not self.KW_GLOBAL in func.data.flags:
-								self.Abort("Attempted to call a non-global function by directly referencing the script.")
+								self.Abort("Attempted to call a non-global function by directly referencing the script.", self.statements[self.statementsIndex].line)
 							if func.data.type:
 								if func.data.array:
 									result = NodeResult(func.data.type, True, True)
@@ -2197,7 +2195,7 @@ class Semantic(SharedResources):
 							else:
 								result = NodeResult(self.KW_NONE, False, True)
 						else:
-							self.Abort("%s does not have a function/event called %s." % (expected.type, node.data.name.value))
+							self.Abort("%s does not have a function/event called %s." % (expected.type, node.data.name.value), self.statements[self.statementsIndex].line)
 			else:
 				func = self.GetFunction(node.data.name.value)
 				if func:
@@ -2214,7 +2212,7 @@ class Semantic(SharedResources):
 						temp = script.functions.get(node.data.name.value.upper(), None)
 						if temp:
 							if func:
-								self.Abort("Ambiguous reference to a function called %s. It is unclear which version is being referenced." % node.data.name.value)
+								self.Abort("Ambiguous reference to a function called %s. It is unclear which version is being referenced." % node.data.name.value, self.statements[self.statementsIndex].line)
 							func = temp
 							if self.KW_GLOBAL in func.data.flags:
 								if func.data.type:
@@ -2225,7 +2223,7 @@ class Semantic(SharedResources):
 								else:
 									result = NodeResult(self.KW_NONE, False, True)
 				if not result:
-					self.Abort("%s is not a function/event that exists in this scope." % node.data.name.value)
+					self.Abort("%s is not a function/event that exists in this scope." % node.data.name.value, self.statements[self.statementsIndex].line)
 			if func:
 				params = func.data.parameters[:]
 				args = [a.data for a in node.data.arguments]
@@ -2239,7 +2237,7 @@ class Semantic(SharedResources):
 						j = len(args)
 						while i < j:
 							if not args[i].name:
-								self.Abort("Arguments are being passed out of order, but at least one argument does not specify which parameter it is passing a value to.")
+								self.Abort("Arguments are being passed out of order, but at least one argument does not specify which parameter it is passing a value to.", self.statements[self.statementsIndex].line)
 							if args[i].name.value.upper() == params[0].name:
 								argExpr = self.NodeVisitor(args[0].expression)
 								paramType = None
@@ -2254,12 +2252,12 @@ class Semantic(SharedResources):
 									pType = paramType.type
 									if paramType.array:
 										pType = "%s[]" % pType
-									self.Abort("Parameter %s is of type %s, but the argument evaluates to %s, which cannot be auto-cast to the parameter's type." % (params[0].name, pType, aType))
+									self.Abort("Parameter %s is of type %s, but the argument evaluates to %s, which cannot be auto-cast to the parameter's type." % (params[0].name, pType, aType), self.statements[self.statementsIndex].line)
 								args.pop(i)
 								break
 							i += 1
 						if len(args) == j and not params[0].expression:
-							self.Abort("An argument was not passed to the mandatory parameter %s." % params[0].name)
+							self.Abort("An argument was not passed to the mandatory parameter %s." % params[0].name, self.statements[self.statementsIndex].line)
 					else:
 						if params[0].expression:
 							if len(args) > 0:
@@ -2276,7 +2274,7 @@ class Semantic(SharedResources):
 									pType = paramType.type
 									if paramType.array:
 										pType = "%s[]" % pType
-									self.Abort("Parameter %s is of type %s, but the argument evaluates to %s, which cannot be auto-cast to the parameter's type." % (params[0].name, pType, aType))
+									self.Abort("Parameter %s is of type %s, but the argument evaluates to %s, which cannot be auto-cast to the parameter's type." % (params[0].name, pType, aType), self.statements[self.statementsIndex].line)
 								args.pop(0)
 						else:
 							if len(args) > 0:
@@ -2293,10 +2291,10 @@ class Semantic(SharedResources):
 									pType = paramType.type
 									if paramType.array:
 										pType = "%s[]" % pType
-									self.Abort("Parameter %s is of type %s, but the argument evaluates to %s, which cannot be auto-cast to the parameter's type." % (params[0].name, pType, aType))
+									self.Abort("Parameter %s is of type %s, but the argument evaluates to %s, which cannot be auto-cast to the parameter's type." % (params[0].name, pType, aType), self.statements[self.statementsIndex].line)
 								args.pop(0)
 							else:
-								self.Abort("Mandatory parameter %s was not given an argument." % params[0].name)
+								self.Abort("Mandatory parameter %s was not given an argument." % params[0].name, self.statements[self.statementsIndex].line)
 					params.pop(0)
 				if len(args) > 0:
 					paramCount = len(func.data.parameters)
@@ -2309,13 +2307,13 @@ class Semantic(SharedResources):
 								if param.name == argName:
 									found = True
 							if not found:
-								self.Abort("%s is not a parameter that exists in %s." % (argName, func.data.name))
-						self.Abort("Multiple arguments were passed to at least one parameter.")
+								self.Abort("%s is not a parameter that exists in %s." % (argName, func.data.name), self.statements[self.statementsIndex].line)
+						self.Abort("Multiple arguments were passed to at least one parameter.", self.statements[self.statementsIndex].line)
 					elif argCount > paramCount:
 						if argCount == 1:
-							self.Abort("The %s function/event has %d parameters, but %d argument was passed to it." % (func.data.name, paramCount, argCount))
+							self.Abort("The %s function/event has %d parameters, but %d argument was passed to it." % (func.data.name, paramCount, argCount), self.statements[self.statementsIndex].line)
 						else:
-							self.Abort("The %s function/event has %d parameters, but %d arguments were passed to it." % (func.data.name, paramCount, argCount))
+							self.Abort("The %s function/event has %d parameters, but %d arguments were passed to it." % (func.data.name, paramCount, argCount), self.statements[self.statementsIndex].line)
 		elif node.type == self.NODE_IDENTIFIER:
 			if expected and expected.type: # Another script
 				if expected.type == self.KW_SELF:
@@ -2326,7 +2324,7 @@ class Semantic(SharedResources):
 						else:
 							result = NodeResult(prop.data.type, False, True)
 					else:
-						self.Abort("This script does not have a property called %s." % (node.data.token.value))
+						self.Abort("This script does not have a property called %s." % (node.data.token.value), self.statements[self.statementsIndex].line)
 				else:
 					script = self.GetCachedScript(expected.type)
 					if script:
@@ -2337,7 +2335,7 @@ class Semantic(SharedResources):
 							else:
 								result = NodeResult(prop.data.type, False, True)
 						else:
-							self.Abort("%s does not have a property called %s." % (expected.type, node.data.token.value))
+							self.Abort("%s does not have a property called %s." % (expected.type, node.data.token.value), self.statements[self.statementsIndex].line)
 					else:
 						pass
 			else: # Self or parent
@@ -2345,7 +2343,7 @@ class Semantic(SharedResources):
 					if self.header.data.parent:
 						result = NodeResult(self.header.data.parent, False, True)
 					else:
-						self.Abort("A parent script has not been defined in this script.")
+						self.Abort("A parent script has not been defined in this script.", self.statements[self.statementsIndex].line)
 				elif node.data.token.type == self.KW_SELF:
 					result = NodeResult(self.KW_SELF, False, True)
 				else:
@@ -2358,7 +2356,7 @@ class Semantic(SharedResources):
 					else:
 						result = NodeResult(node.data.token.value, False, False)
 						if not self.GetCachedScript(result.type):
-							self.Abort("%s is not a script." % result.type)
+							self.Abort("%s is not a script." % result.type, self.statements[self.statementsIndex].line)
 		elif node.type == self.NODE_LENGTH:
 			result = NodeResult(self.KW_INT, False, True)
 		elif node.type == self.NODE_ARRAYCREATION:
@@ -2368,9 +2366,9 @@ class Semantic(SharedResources):
 				leftResult = self.NodeVisitor(node.data.leftOperand, expected)
 				rightResult = NodeResult(node.data.rightOperand.data.token.value, False, True)
 				if leftResult.array and rightResult.type != self.KW_STRING and rightResult.type != self.KW_BOOL:
-					self.Abort("Arrays can only be cast to STRING and BOOL.")
+					self.Abort("Arrays can only be cast to STRING and BOOL.", self.statements[self.statementsIndex].line)
 				if rightResult.type != self.KW_BOOL and rightResult.type != self.KW_FLOAT and rightResult.type != self.KW_INT and rightResult.type != self.KW_STRING and not self.GetCachedScript(rightResult.type):
-					self.Abort("%s is not a type that exists." % rightResult.type)
+					self.Abort("%s is not a type that exists." % rightResult.type, self.statements[self.statementsIndex].line)
 				result = rightResult
 			elif node.data.operator.type == self.OP_DOT:
 				leftResult = self.NodeVisitor(node.data.leftOperand, expected)
@@ -2386,7 +2384,7 @@ class Semantic(SharedResources):
 					elif self.CanAutoCast(rightResult, leftResult):
 						result = leftResult
 					else:
-						self.Abort("The two operands of an arithmetic operation are of different types that cannot be auto-cast to be the same.")
+						self.Abort("The two operands of an arithmetic operation are of different types that cannot be auto-cast to be the same.", self.statements[self.statementsIndex].line)
 				else:
 					result = rightResult
 			elif node.data.operator.type == self.LOG_AND or node.data.operator.type == self.LOG_OR:
@@ -2400,13 +2398,13 @@ class Semantic(SharedResources):
 		elif node.type == self.NODE_UNARYOPERATOR:
 			result = self.NodeVisitor(node.data.operand)
 		else:
-			self.Abort("Unknown node type")
+			self.Abort("Unknown node type", self.statements[self.statementsIndex].line)
 		#print("\nExiting node: %s" % node.type)
 		#print("Returning type: %s" % result)
 		if result:
 			return result
 		else:
-			self.Abort("AST node returns None for some reason.")
+			self.Abort("AST node returns None for some reason.", self.statements[self.statementsIndex].line)
 
 	def CanAutoCast(self, src, dest):
 		if not src or not dest:
@@ -2488,11 +2486,6 @@ class Semantic(SharedResources):
 		
 	def GetContext(self, script, line):
 		self.cancel = line
-		print("Getting context")
-		print(script.variables)
-		print(script.functions)
-		print(script.states)
-		print(script.imports)
 		self.variables = script.variables
 		self.functions = script.functions
 		self.states = script.states
