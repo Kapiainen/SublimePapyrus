@@ -234,10 +234,6 @@ class EventListener(sublime_plugin.EventListener):
 						view.window().show_quick_panel([[e.message, "Line %d" % e.line]], None)
 				return Exit()
 			print("Linter: Finished lexical and syntactic in %f milliseconds..." % ((time.time()-lexSynStart)*1000.0)) #DEBUG
-			if statements:
-				self.SetStatements(self.bufferID, statements[:]) # Cache a copy of the statements
-			else:
-				return Exit()
 			semStart = time.time() #DEBUG
 			try:
 				script = None
@@ -253,7 +249,7 @@ class EventListener(sublime_plugin.EventListener):
 					SublimePapyrus.ShowMessage("Semantic error on line %d: %s" % (e.line, e.message))
 					if settings.get("linter_panel_error_messages", False):
 						view.window().show_quick_panel([[e.message, "Line %d" % e.line]], None)
-				self.SetScript(self.bufferID, script)
+#				self.SetScript(self.bufferID, script)
 				return Exit()
 			print("Linter: Finished semantic in %f milliseconds..." % ((time.time()-semStart)*1000.0)) #DEBUG
 			if view:
@@ -386,8 +382,10 @@ class EventListener(sublime_plugin.EventListener):
 						try:
 							self.sem.GetContext(currentScript, line)
 						except Linter.EmptyStateCancel as f:
+							print("Expected identifier in empty state")
 							return
 						except Linter.StateCancel as f:
+							print("Expected identifier in state")
 							return
 						except Linter.FunctionDefinitionCancel as f:
 							if self.syn.stack:
@@ -509,22 +507,26 @@ class EventListener(sublime_plugin.EventListener):
 														functions.append(SublimePapyrus.MakeFunctionCompletion(obj, self.sem))
 												self.SetFunctionCompletions(imp, functions, True)
 												completions.extend(functions)
+							completions.append(("false\tkeyword", "False",))
+							completions.append(("none\tkeyword", "None",))
+							completions.append(("true\tkeyword", "True",))
 							return completions
 						except Linter.PropertyDefinitionCancel as f:
+							print("Expected identifier in a property")
 							# GET and SET
 							return
-						except Linter.UnterminatedPropertyError as f:
-							return
-						except Linter.UnterminatedStateError as f:
-							return
-						except Linter.UnterminatedFunctionError as f:
-							return
-						except Linter.UnterminatedEventError as f:
-							return
-						except Linter.UnterminatedIfError as f:
-							return
-						except Linter.UnterminatedWhileError as f:
-							return
+#						except Linter.UnterminatedPropertyError as f:
+#							return
+#						except Linter.UnterminatedStateError as f:
+#							return
+#						except Linter.UnterminatedFunctionError as f:
+#							return
+#						except Linter.UnterminatedEventError as f:
+#							return
+#						except Linter.UnterminatedIfError as f:
+#							return
+#						except Linter.UnterminatedWhileError as f:
+#							return
 						except Linter.SemanticError as f:
 							return
 						return
@@ -693,15 +695,8 @@ class EventListener(sublime_plugin.EventListener):
 
 	def GetBaseKeywordCompletions(self):
 		return [
-			("bool\ttype", "Bool",),
 			("false\tkeyword", "False",),
-			("float\ttype", "Float",),
-			("int\ttype", "Int",),
-			("length\tkeyword", "Length",),
 			("none\tkeyword", "None",),
-			("parent\tkeyword", "Parent",),
-			("self\tkeyword", "Self",),
-			("string\ttype", "String",),
 			("true\tkeyword", "True",)
 		]
 
@@ -744,14 +739,6 @@ class EventListener(sublime_plugin.EventListener):
 						children.append(name)
 				for child in children:
 					del self.sem.cache[child]
-
-	def GetStatements(self, script): #TODO Remove
-		with self.cacheLock:
-			return self.linterCache.get(script, None)
-
-	def SetStatements(self, script, items): #TODO Remove
-		with self.cacheLock:
-			self.linterCache[script] = items
 
 	def GetScript(self, bufferID):
 		with self.cacheLock:
