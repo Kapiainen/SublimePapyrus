@@ -1592,7 +1592,7 @@ class Semantic(SharedResources):
 		if temp:
 			return temp
 		else:
-			if self.CacheScript(name, line):
+			if self.CacheScript(name, None, line):
 				return self.cache.get(name, None)
 		return None
 
@@ -2340,11 +2340,15 @@ class Semantic(SharedResources):
 						pass
 			else: # Self or parent
 				if node.data.token.type == self.KW_PARENT:
+					if self.KW_GLOBAL in self.statements[0].data.flags:
+						self.Abort("PARENT does not exist in functions with the GLOBAL keyword.", self.statements[self.statementsIndex].line)
 					if self.header.data.parent:
 						result = NodeResult(self.header.data.parent, False, True)
 					else:
 						self.Abort("A parent script has not been defined in this script.", self.statements[self.statementsIndex].line)
 				elif node.data.token.type == self.KW_SELF:
+					if self.KW_GLOBAL in self.statements[0].data.flags:
+						self.Abort("SELF does not exist in functions with the GLOBAL keyword.", self.statements[self.statementsIndex].line)
 					result = NodeResult(self.KW_SELF, False, True)
 				else:
 					var = self.GetVariable(node.data.token.value)
@@ -2355,7 +2359,7 @@ class Semantic(SharedResources):
 							result = NodeResult(var.data.type, False, True)
 					else:
 						result = NodeResult(node.data.token.value, False, False)
-						if not self.GetCachedScript(result.type):
+						if not self.GetCachedScript(result.type, self.statements[self.statementsIndex].line):
 							self.Abort("%s is not a script." % result.type, self.statements[self.statementsIndex].line)
 		elif node.type == self.NODE_LENGTH:
 			result = NodeResult(self.KW_INT, False, True)
