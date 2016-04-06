@@ -240,16 +240,20 @@ class EventListener(sublime_plugin.EventListener):
 				return Exit()
 			semStart = time.time() #DEBUG
 			try:
+				script = None
 				if view:
-					self.sem.Process(statements, SublimePapyrus.GetSourcePaths(view))
+					script = self.sem.Process(statements, SublimePapyrus.GetSourcePaths(view))
 				else:
-					self.sem.Process(statements, self.sourcePaths)
+					script = self.sem.Process(statements, self.sourcePaths)
+				if script:
+					self.SetScript(self.bufferID, script)
 			except Linter.SemanticError as e:
 				if view:
 					SublimePapyrus.HighlightLinter(view, e.line)
 					SublimePapyrus.ShowMessage("Semantic error on line %d: %s" % (e.line, e.message))
 					if settings.get("linter_panel_error_messages", False):
 						view.window().show_quick_panel([[e.message, "Line %d" % e.line]], None)
+				self.SetScript(self.bufferID, script)
 				return Exit()
 			print("Linter: Finished semantic in %f milliseconds..." % ((time.time()-semStart)*1000.0)) #DEBUG
 			if view:
@@ -289,11 +293,10 @@ class EventListener(sublime_plugin.EventListener):
 			bufferID = view.buffer_id()
 			if not bufferID:
 				return
-			statements = self.GetStatements(bufferID)
-			if not statements:
-				SublimePapyrus.ShowMessage("Run linter once to generate statements for the completion system to use...")
+			currentScript = self.GetScript(bufferID)
+			if not currentScript:
+				SublimePapyrus.ShowMessage("Run the linter once...")
 				return
-			statements = statements[:]
 			lineColumn = view.rowcol(locations[0])
 			line = lineColumn[0]+1
 			column = lineColumn[1]+1
@@ -311,18 +314,10 @@ class EventListener(sublime_plugin.EventListener):
 				if tokens[tokenCount-1].type != self.lex.COMMENT_LINE and tokens[tokenCount-1].type != self.lex.COMMENT_BLOCK and tokens[tokenCount-1].type != self.lex.DOCUMENTATION_STRING:
 					try:
 						stat = self.syn.Process(tokens)
-		#			except ExpectedIdentifierError as e:
-		#				print(e.message)
-		#				Exit()
-		#				return completions
-		#			except ExpectedParameterIdentifierError as e:
-		#				print(e.message)
-		#				Exit()
-		#				return completions
 					except Linter.ExpectedFunctionIdentifierError as e:
 						print(e.message)
 						try:
-							self.sem.Process(statements, SublimePapyrus.GetSourcePaths(view), line)
+							self.sem.GetContext(currentScript, line)
 						except Linter.EmptyStateCancel as f:
 							# Inherited
 							for name, stat in f.functions[0].items():
@@ -348,20 +343,20 @@ class EventListener(sublime_plugin.EventListener):
 								typ = "%s[]" % f.type
 							else:
 								typ = f.type
-							if e.type:
-								if e.type == f.type and e.array == f.array:
-									completions.append(("get\t%s func." % typ, "Get()\n\t${0}\nEndFunction",))
-									return completions
-							else:
-								completions.append(("set\tfunc.", "Set(%s aParameter)\n\t${0}\nEndFunction" % typ,))
-								return completions
-							return
+							#if e.type:
+							if e.type == f.type and e.array == f.array:
+								completions.append(("get\t%s func." % typ, "Get()\n\t${0}\nEndFunction",))
+									#return completions
+							#else:
+							completions.append(("set\tfunc.", "Set(%s aParameter)\n\t${0}\nEndFunction" % typ,))
+								#return completions
+							return completions
 						except Linter.SemanticError as f:
 							return
 						return
 					except Linter.ExpectedEventIdentifierError as e:
 						try:
-							self.sem.Process(statements, SublimePapyrus.GetSourcePaths(view), line)
+							self.sem.GetContext(currentScript, line)
 						except Linter.EmptyStateCancel as f:
 							# Inherited
 							for name, stat in f.functions[0].items():
@@ -389,7 +384,7 @@ class EventListener(sublime_plugin.EventListener):
 					except Linter.ExpectedIdentifierError as e:
 						# SELF, PARENT, LENGTH, function/event/property/variable/parameter identifiers
 						try:
-							self.sem.Process(statements, SublimePapyrus.GetSourcePaths(view), line)
+							self.sem.GetContext(currentScript, line)
 						except Linter.EmptyStateCancel as f:
 							return
 						except Linter.StateCancel as f:
@@ -565,7 +560,7 @@ class EventListener(sublime_plugin.EventListener):
 							completions.append(self.completionKeywordNative)
 						elif stat.type == self.syn.STAT_VARIABLEDEF:
 							try:
-								self.sem.Process(statements, SublimePapyrus.GetSourcePaths(view), line)
+								self.sem.GetContext(currentScript, line)
 							except Linter.EmptyStateCancel as e:
 								completions.append(self.completionKeywordConditional)
 								return completions
@@ -580,7 +575,8 @@ class EventListener(sublime_plugin.EventListener):
 				print("No statement could be formed")
 				# Figure out context
 				try:
-					self.sem.Process(statements, SublimePapyrus.GetSourcePaths(view), line)
+					self.sem.GetContext(currentScript, line)
+					print("No exceptions")
 				except Linter.EmptyStateCancel as e:
 					completions.append(("import\timport script", "Import ",))
 					completions.append(("property\tproperty definition", "${1:Type} Property ${2:PropertyName} ${3:Auto}",))
@@ -654,8 +650,14 @@ class EventListener(sublime_plugin.EventListener):
 									completions.extend(functions)
 					return completions
 				except Linter.PropertyDefinitionCancel as e:
-					print("Property")
-					# GET and SET function definitions
+					print("Property (plugin)")
+					typ = None
+					if e.array:
+						typ = "%s[]" % e.type.capitalize()
+					else:
+						typ = "%s" % e.type.capitalize()
+					completions.append(("get\t%s func." % typ, "%s Function Get()\n\t${0}\nEndFunction" % typ,))
+					completions.append(("set\tfunc.", "Function Set(%s aParameter)\n\t${0}\nEndFunction" % typ,))
 					return completions
 				except Linter.UnterminatedPropertyError as e:
 					completions.append(("endproperty\tkeyword", "EndProperty",))
@@ -743,13 +745,21 @@ class EventListener(sublime_plugin.EventListener):
 				for child in children:
 					del self.sem.cache[child]
 
-	def GetStatements(self, script):
+	def GetStatements(self, script): #TODO Remove
 		with self.cacheLock:
 			return self.linterCache.get(script, None)
 
-	def SetStatements(self, script, items):
+	def SetStatements(self, script, items): #TODO Remove
 		with self.cacheLock:
 			self.linterCache[script] = items
+
+	def GetScript(self, bufferID):
+		with self.cacheLock:
+			return self.linterCache.get(bufferID, None)
+	
+	def SetScript(self, bufferID, script):
+		with self.cacheLock:
+			self.linterCache[bufferID] = script
 
 	def GetFunctionCompletions(self, script, glob = False):
 		with self.cacheLock:
