@@ -613,10 +613,28 @@ class EventListener(sublime_plugin.EventListener):
 					completions.append(("state\tstate definition", "State ${1:$SELECTION}\n\t${0}\nEndState",))
 					completions.append(self.completionDefinitionEvent)
 					completions.append(self.completionDefinitionFunction)
+					for name, stat in e.functions[0].items():
+						if not name in e.functions[1]:
+							if stat.type == self.sem.STAT_FUNCTIONDEF:
+								completions.append(SublimePapyrus.MakeFunctionCompletion(stat, self.sem, False, "parent"))
+							elif stat.type == self.sem.STAT_EVENTDEF:
+								completions.append(SublimePapyrus.MakeEventCompletion(stat, self.sem, False, "parent"))
 					return completions
 				except Linter.StateCancel as e:
 					print("State")
 					# Functions/events that have been inherited or defined in the empty state
+					for name, stat in e.functions[1].items():
+						if not name in e.functions[2]:
+							if stat.type == self.sem.STAT_FUNCTIONDEF:
+								completions.append(SublimePapyrus.MakeFunctionCompletion(stat, self.sem, False, "self"))
+							elif stat.type == self.sem.STAT_EVENTDEF:
+								completions.append(SublimePapyrus.MakeEventCompletion(stat, self.sem, False, "self"))
+					for name, stat in e.functions[0].items():
+						if not name in e.functions[1] and not name in e.functions[2]:
+							if stat.type == self.sem.STAT_FUNCTIONDEF:
+								completions.append(SublimePapyrus.MakeFunctionCompletion(stat, self.sem, False, "parent"))
+							elif stat.type == self.sem.STAT_EVENTDEF:
+								completions.append(SublimePapyrus.MakeEventCompletion(stat, self.sem, False, "parent"))
 					return completions
 				except Linter.FunctionDefinitionCancel as e:
 					print("Function: %s" % e.signature.data.name)
@@ -645,17 +663,17 @@ class EventListener(sublime_plugin.EventListener):
 					# Inherited and defined functions and events
 					functions = {}
 					events = {}
-					for scope in reversed(e.functions[1:]):
-						for name, stat in scope.items():
-							if stat.type == self.sem.STAT_FUNCTIONDEF and not functions.get(name, False):
-								functions[name] = SublimePapyrus.MakeFunctionCompletion(stat, self.sem, True, "self")
-							elif stat.type == self.sem.STAT_EVENTDEF and not events.get(name, False):
-								events[name] = SublimePapyrus.MakeEventCompletion(stat, self.sem, True, "self")
-					for name, stat in e.functions[0].items():
-						if stat.type == self.sem.STAT_FUNCTIONDEF and not functions.get(name, False):
-							functions[name] = SublimePapyrus.MakeFunctionCompletion(stat, self.sem, True, "parent")
+					for name, stat in e.functions[1].items():
+						if stat.type == self.sem.STAT_FUNCTIONDEF:
+							completions.append(SublimePapyrus.MakeFunctionCompletion(stat, self.sem, True, "self"))
 						elif stat.type == self.sem.STAT_EVENTDEF:
-							events[name] = SublimePapyrus.MakeEventCompletion(stat, self.sem, True, "parent")
+							completions.append(SublimePapyrus.MakeEventCompletion(stat, self.sem, True, "self"))
+					for name, stat in e.functions[0].items():
+						if not name in e.functions[1]:
+							if stat.type == self.sem.STAT_FUNCTIONDEF:
+								completions.append(SublimePapyrus.MakeFunctionCompletion(stat, self.sem, True, "parent"))
+							elif stat.type == self.sem.STAT_EVENTDEF:
+								completions.append(SublimePapyrus.MakeEventCompletion(stat, self.sem, True, "parent"))
 					completions.extend([comp for name, comp in functions.items()])
 					completions.extend([comp for name, comp in events.items()])
 					# Imported functions
