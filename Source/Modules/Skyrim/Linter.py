@@ -1330,28 +1330,38 @@ class Semantic(SharedResources):
 
 	def AddVariable(self, stat):
 		if stat.type == self.STAT_VARIABLEDEF or stat.type == self.STAT_PROPERTYDEF:
-			temp = self.GetVariable(stat.data.name)
-			if not temp:
+			if self.cancel:
 				self.variables[len(self.variables)-1][stat.data.name] = stat
-				if not self.CacheScript(stat.data.type, line=stat.line):
-					self.Abort("Could not import %s." % stat.data.type, stat.line)
-				if self.GetPath(stat.data.name):
-					self.Abort("Variables/properties cannot have the same name as a type.", stat.line)
 				return True
-			self.Abort("A variable or property has already been defined with the same name on line %d." % temp.line, stat.line)
+			else:
+				temp = self.GetVariable(stat.data.name)
+				if not temp:
+					self.variables[len(self.variables)-1][stat.data.name] = stat
+					if not self.CacheScript(stat.data.type, line=stat.line):
+						self.Abort("Could not import %s." % stat.data.type, stat.line)
+					if self.GetPath(stat.data.name):
+						self.Abort("Variables/properties cannot have the same name as a type.", stat.line)
+					return True
+				self.Abort("A variable or property has already been defined with the same name on line %d." % temp.line, stat.line)
 		elif stat.type == self.STAT_FUNCTIONDEF or stat.type == self.STAT_EVENTDEF:
-			if stat.data.parameters:
-				for param in stat.data.parameters:
-					temp = self.GetVariable(param.name)
-					if not temp:
+			if self.cancel:
+				if stat.data.parameters:
+					for param in stat.data.parameters:
 						self.variables[len(self.variables)-1][param.name] = Statement(self.STAT_PARAMETER, stat.line, param)
-						if not self.CacheScript(param.type, line=stat.line):
-							self.Abort("Could not import %s." % param.type, stat.line)
-						if self.GetPath(param.name):
-							self.Abort("Parameters cannot have the same name as a type.", stat.line)
-					else:
-						self.Abort("A variable or property has already been defined with the same name on line %d." % temp.line, stat.line)
-			return True
+				return True
+			else:
+				if stat.data.parameters:
+					for param in stat.data.parameters:
+						temp = self.GetVariable(param.name)
+						if not temp:
+							self.variables[len(self.variables)-1][param.name] = Statement(self.STAT_PARAMETER, stat.line, param)
+							if not self.CacheScript(param.type, line=stat.line):
+								self.Abort("Could not import %s." % param.type, stat.line)
+							if self.GetPath(param.name):
+								self.Abort("Parameters cannot have the same name as a type.", stat.line)
+						else:
+							self.Abort("A variable or property has already been defined with the same name on line %d." % temp.line, stat.line)
+				return True
 		self.Abort("Expected a variable declaration, a property declaration, or a function/event signature.", stat.line)
 
 	def GetVariable(self, name):
@@ -1377,26 +1387,30 @@ class Semantic(SharedResources):
 
 	def AddFunction(self, stat):
 		if stat.type == self.STAT_FUNCTIONDEF or stat.type == self.STAT_EVENTDEF:
-			exists = self.HasFunction(stat.data.name)
-			if exists == 0:
-				self.functions[len(self.functions)-1][stat.data.name] = stat
-				return True
-			elif exists == 1:
-				old = self.GetFunction(stat.data.name)
-				if stat.data.type != old.data.type:
-					self.Abort("Return type does not match the return type of the overridden function.", stat.line)
-				if len(stat.data.parameters) != len(old.data.parameters):
-					self.Abort("Different number of parameters than in the overridden function.", stat.line)
-				i = 0
-				while i < len(stat.data.parameters):
-					if stat.data.parameters[i].type != old.data.parameters[i].type:
-						self.Abort("Parameter at index %d is of a different type than the corresponding parameter in the overridden function." % i, stat.line)
-					i += 1
+			if self.cancel:
 				self.functions[len(self.functions)-1][stat.data.name] = stat
 				return True
 			else:
-				old = self.GetFunction(stat.data.name)
-				self.Abort("A function or event has already been defined with the same name on line %d." % old.line, stat.line)
+				exists = self.HasFunction(stat.data.name)
+				if exists == 0:
+					self.functions[len(self.functions)-1][stat.data.name] = stat
+					return True
+				elif exists == 1:
+					old = self.GetFunction(stat.data.name)
+					if stat.data.type != old.data.type:
+						self.Abort("Return type does not match the return type of the overridden function.", stat.line)
+					if len(stat.data.parameters) != len(old.data.parameters):
+						self.Abort("Different number of parameters than in the overridden function.", stat.line)
+					i = 0
+					while i < len(stat.data.parameters):
+						if stat.data.parameters[i].type != old.data.parameters[i].type:
+							self.Abort("Parameter at index %d is of a different type than the corresponding parameter in the overridden function." % i, stat.line)
+						i += 1
+					self.functions[len(self.functions)-1][stat.data.name] = stat
+					return True
+				else:
+					old = self.GetFunction(stat.data.name)
+					self.Abort("A function or event has already been defined with the same name on line %d." % old.line, stat.line)
 		self.Abort("Expected a function or event definition.", stat.line)
 
 	def HasFunction(self, name):
@@ -1424,18 +1438,22 @@ class Semantic(SharedResources):
 	# States
 	def AddState(self, stat, end):
 		if stat.type == self.STAT_STATEDEF:
-			name = stat.data.name.upper()
-			exists = self.HasState(name)
-			if exists >= 0:
-				if stat.data.auto:
-					for key, state in self.states[len(self.states)-1].items():
-						if state[0].data.auto:
-							self.Abort("An auto state has already been defined on line %d." % state[0].line, stat.line)
+			if self.cancel:
 				self.states[len(self.states)-1][name] = [stat, end]
 				return True
 			else:
-				state = self.GetState(name)
-				self.Abort("A state by the same name already exists in this script on line %d." % state[0].line, stat.line)
+				name = stat.data.name.upper()
+				exists = self.HasState(name)
+				if exists >= 0:
+					if stat.data.auto:
+						for key, state in self.states[len(self.states)-1].items():
+							if state[0].data.auto:
+								self.Abort("An auto state has already been defined on line %d." % state[0].line, stat.line)
+					self.states[len(self.states)-1][name] = [stat, end]
+					return True
+				else:
+					state = self.GetState(name)
+					self.Abort("A state by the same name already exists in this script on line %d." % state[0].line, stat.line)
 		self.Abort("Expected a state definition.", stat.line)
 
 	def HasState(self, name):
@@ -1578,11 +1596,11 @@ class Semantic(SharedResources):
 				return self.cache.get(name, None)
 		return None
 
-	def Process(self, statements, paths, cancel = None): # Return True if successful, False if failed
+	def Process(self, statements, paths): # Return True if successful, False if failed
 		# Reset properties
 		self.statements = None
 		self.paths = paths
-		self.cancel = cancel # This is != None only when called by the code completion system
+		self.cancel = None # This is != None only when called by the code completion system
 		self.variables = [{}]
 		self.functions = [{}]
 		self.states = [{}]
@@ -1740,135 +1758,167 @@ class Semantic(SharedResources):
 			self.PushFunctionScope()
 			self.StateBlock(statements)
 			self.PopFunctionScope()
-		if self.cancel:
-			raise EmptyStateCancel(self.functions)
 		return Script(self.functions[0:2], self.variables[0:2], self.states[0:2], self.imports, self.definitions)
 
 	def PropertyBlock(self, statements):
-		statementsLength = len(statements)
-		i = 0
-		start = statements[i]
-		i += 1
 		if self.cancel:
-			if start.line >= self.cancel:
-				self.PopFunctionScope()
-				raise EmptyStateCancel(self.functions)
-		docString = None
-		if i < statementsLength:
-			if statements[i].type == self.STAT_DOCUMENTATION:
-				docString = statements[i]
-				i += 1
-		functions = {}
-		while i < statementsLength:
-			if statements[i].type == self.STAT_FUNCTIONDEF:
-				stat = statements[i]
-				i += 1
-				if stat.data.flags:
-					self.Abort("Functions in property definitions cannot have any flags.", stat.line)
-				if stat.data.name == "SET" or stat.data.name == "GET":
-					if functions.get(stat.data.name, None):
-						self.Abort("The %s function has already been defined in this property." % stat.data.name, stat.line)
-					else:
-						if stat.data.name == "GET":
-							if stat.data.type != start.data.type or stat.data.array != start.data.array:
-								self.Abort("The return type of the GET function and the property type must match.", stat.line)
-				else:
-					self.Abort("Only SET and GET functions may be defined in a property definition.", stat.line)
-				func = [stat]
-				while i < statementsLength and not (statements[i].type == self.STAT_KEYWORD and statements[i].data.type == self.KW_ENDFUNCTION):
-					func.append(statements[i])
-					i += 1
-				if i < statementsLength:
-					func.append(statements[i])
-					functions[stat.data.name] = func
-				else:
-					raise UnterminatedFunctionError(stat.line)
-			elif statements[i].type == self.STAT_KEYWORD and statements[i].data.type == self.KW_ENDPROPERTY:
-				i += 1
-				break
-			else:
-				self.Abort("Illegal statement in a property definition.", statements[i].line)
+			statementsLength = len(statements)
+			i = 0
+			start = statements[i]
 			i += 1
-		if len(functions) == 0 and self.cancel == None:
-			self.Abort("At least a SET or a GET function has to be defined in a property definition.", start.line)
-		for key, func in functions.items():
-			self.PushVariableScope()
-			self.FunctionBlock(func)
-			self.PopVariableScope()
-		return True
+			functions = {}
+			while i < statementsLength:
+				if statements[i].type == self.STAT_FUNCTIONDEF:
+					stat = statements[i]
+					i += 1
+					func = [stat]
+					while i < statementsLength and not (statements[i].type == self.STAT_KEYWORD and statements[i].data.type == self.KW_ENDFUNCTION):
+						func.append(statements[i])
+						i += 1
+					if i < statementsLength:
+						func.append(statements[i])
+						functions[stat.data.name] = func
+					else:
+						raise UnterminatedFunctionError(stat.line)
+				elif statements[i].type == self.STAT_KEYWORD and statements[i].data.type == self.KW_ENDPROPERTY:
+					i += 1
+					break
+				i += 1
+			for key, func in functions.items():
+				if self.cancel >= func[0].line and self.cancel <= func[len(func)-1].line:
+					self.PushVariableScope()
+					self.FunctionBlock(func)
+					self.PopVariableScope()
+			return True
+		else:
+			statementsLength = len(statements)
+			i = 0
+			start = statements[i]
+			i += 1
+			docString = None
+			if i < statementsLength:
+				if statements[i].type == self.STAT_DOCUMENTATION:
+					docString = statements[i]
+					i += 1
+			functions = {}
+			while i < statementsLength:
+				if statements[i].type == self.STAT_FUNCTIONDEF:
+					stat = statements[i]
+					i += 1
+					if stat.data.flags:
+						self.Abort("Functions in property definitions cannot have any flags.", stat.line)
+					if stat.data.name == "SET" or stat.data.name == "GET":
+						if functions.get(stat.data.name, None):
+							self.Abort("The %s function has already been defined in this property." % stat.data.name, stat.line)
+						else:
+							if stat.data.name == "GET":
+								if stat.data.type != start.data.type or stat.data.array != start.data.array:
+									self.Abort("The return type of the GET function and the property type must match.", stat.line)
+					else:
+						self.Abort("Only SET and GET functions may be defined in a property definition.", stat.line)
+					func = [stat]
+					while i < statementsLength and not (statements[i].type == self.STAT_KEYWORD and statements[i].data.type == self.KW_ENDFUNCTION):
+						func.append(statements[i])
+						i += 1
+					if i < statementsLength:
+						func.append(statements[i])
+						functions[stat.data.name] = func
+					else:
+						raise UnterminatedFunctionError(stat.line)
+				elif statements[i].type == self.STAT_KEYWORD and statements[i].data.type == self.KW_ENDPROPERTY:
+					i += 1
+					break
+				else:
+					self.Abort("Illegal statement in a property definition.", statements[i].line)
+				i += 1
+			if len(functions) == 0:
+				self.Abort("At least a SET or a GET function has to be defined in a property definition.", start.line)
+			for key, func in functions.items():
+				self.PushVariableScope()
+				self.FunctionBlock(func)
+				self.PopVariableScope()
+			return True
 
 	def FunctionBlock(self, statements):
-		self.statements = statements
-		self.statementsLength = len(statements)
-		i = 0
-		start = self.statements[i]
-		i += 1
 		if self.cancel:
-			if start.line >= self.cancel:
-				self.PopVariableScope()
-				if len(self.functions) > 2:
-					raise StateCancel(self.functions)
-				else:
-					raise EmptyStateCancel(self.functions)
-		#end = statements.pop()
-		docString = None
-		if i < self.statementsLength:
-			if self.statements[i].type == self.STAT_DOCUMENTATION:
-				docString = statements[i]
-				i += 1
-		self.AddVariable(start)
-		if start.type == self.STAT_FUNCTIONDEF:
-			for param in start.data.parameters:
-				if param.expression:
-					if param.array:
-						if self.GetLiteral(param.expression) != self.KW_NONE:
-							self.Abort("Array parameters can only be initialized with NONE", start.line)
-					else:
-						value = self.GetLiteral(param.expression)
-						if not value:
-							self.Abort("Parameters can only be initialized with literals.", start.line)
-						if param.type != value and not self.CanAutoCast(NodeResult(value, False, True), NodeResult(param.type, False, True)):
-							self.Abort("Initialization of %s parameter with %s literal." % (param.type, value), start.line)
-		while i < self.statementsLength:
-			if self.cancel:
+			self.statements = statements
+			self.statementsLength = len(statements)
+			i = 0
+			start = self.statements[i]
+			i += 1
+			self.AddVariable(start)
+			while i < self.statementsLength:
 				if self.statements[i].line >= self.cancel:
 					raise FunctionDefinitionCancel(start, self.functions, self.variables, self.imports)
-			if self.statements[i].type == self.STAT_VARIABLEDEF:
-				self.VariableDef(i)
-			elif self.statements[i].type == self.STAT_ASSIGNMENT:
-				self.Assignment(i)
-			elif self.statements[i].type == self.STAT_EXPRESSION:
-				self.Expression(i)
-			elif self.statements[i].type == self.STAT_IF:
-				self.PushVariableScope()
-				i = self.IfBlock(i)
-				self.PopVariableScope()
-			elif self.statements[i].type == self.STAT_WHILE:
-				self.PushVariableScope()
-				i = self.WhileBlock(i)
-				self.PopVariableScope()
-			elif self.statements[i].type == self.STAT_RETURN:
-				self.Return(i)
-			elif self.statements[i].type == self.STAT_KEYWORD and ((self.statements[i].data.type == self.KW_ENDFUNCTION and self.statements[0].type == self.STAT_FUNCTIONDEF) or (self.statements[i].data.type == self.KW_ENDEVENT and self.statements[0].type == self.STAT_EVENTDEF)):
-				#i += 1
-				break
-			else:
-				if self.statements[0].type == self.STAT_FUNCTIONDEF:
-					self.Abort("Illegal statement in a function definition.", self.statements[i].line)
-				elif self.statements[0].type == self.STAT_EVENTDEF:
-					self.Abort("Illegal statement in an event definition.", self.statements[i].line)
-			i += 1
-		if self.cancel:
-			if self.statements[i].line >= self.cancel:
+				if self.statements[i].type == self.STAT_VARIABLEDEF:
+					self.VariableDef(i)
+				elif self.statements[i].type == self.STAT_IF:
+					self.PushVariableScope()
+					i = self.IfBlock(i)
+					self.PopVariableScope()
+				elif self.statements[i].type == self.STAT_WHILE:
+					self.PushVariableScope()
+					i = self.WhileBlock(i)
+					self.PopVariableScope()
+				elif self.statements[i].type == self.STAT_KEYWORD and ((self.statements[i].data.type == self.KW_ENDFUNCTION and self.statements[0].type == self.STAT_FUNCTIONDEF) or (self.statements[i].data.type == self.KW_ENDEVENT and self.statements[0].type == self.STAT_EVENTDEF)):
+					break
+				i += 1
+			if self.statements[self.statementsLength-1].line >= self.cancel:
 				raise FunctionDefinitionCancel(start, self.functions, self.variables, self.imports)
-		return True
+			return True
+		else:
+			self.statements = statements
+			self.statementsLength = len(statements)
+			i = 0
+			start = self.statements[i]
+			i += 1
+			docString = None
+			if i < self.statementsLength:
+				if self.statements[i].type == self.STAT_DOCUMENTATION:
+					docString = statements[i]
+					i += 1
+			self.AddVariable(start)
+			if start.type == self.STAT_FUNCTIONDEF:
+				for param in start.data.parameters:
+					if param.expression:
+						if param.array:
+							if self.GetLiteral(param.expression) != self.KW_NONE:
+								self.Abort("Array parameters can only be initialized with NONE", start.line)
+						else:
+							value = self.GetLiteral(param.expression)
+							if not value:
+								self.Abort("Parameters can only be initialized with literals.", start.line)
+							if param.type != value and not self.CanAutoCast(NodeResult(value, False, True), NodeResult(param.type, False, True)):
+								self.Abort("Initialization of %s parameter with %s literal." % (param.type, value), start.line)
+			while i < self.statementsLength:
+				if self.statements[i].type == self.STAT_VARIABLEDEF:
+					self.VariableDef(i)
+				elif self.statements[i].type == self.STAT_ASSIGNMENT:
+					self.Assignment(i)
+				elif self.statements[i].type == self.STAT_EXPRESSION:
+					self.Expression(i)
+				elif self.statements[i].type == self.STAT_IF:
+					self.PushVariableScope()
+					i = self.IfBlock(i)
+					self.PopVariableScope()
+				elif self.statements[i].type == self.STAT_WHILE:
+					self.PushVariableScope()
+					i = self.WhileBlock(i)
+					self.PopVariableScope()
+				elif self.statements[i].type == self.STAT_RETURN:
+					self.Return(i)
+				elif self.statements[i].type == self.STAT_KEYWORD and ((self.statements[i].data.type == self.KW_ENDFUNCTION and self.statements[0].type == self.STAT_FUNCTIONDEF) or (self.statements[i].data.type == self.KW_ENDEVENT and self.statements[0].type == self.STAT_EVENTDEF)):
+					break
+				else:
+					if self.statements[0].type == self.STAT_FUNCTIONDEF:
+						self.Abort("Illegal statement in a function definition.", self.statements[i].line)
+					elif self.statements[0].type == self.STAT_EVENTDEF:
+						self.Abort("Illegal statement in an event definition.", self.statements[i].line)
+				i += 1
+			return True
 
 	def StateBlock(self, statements):
 		start = statements.pop(0)
-		if self.cancel:
-			if start.line >= self.cancel:
-				self.PopFunctionScope()
-				raise EmptyStateCancel(self.functions)
 		end = statements.pop()
 		self.AddState(start, end)
 		self.definitions[start.data.name] = []
@@ -1911,91 +1961,128 @@ class Semantic(SharedResources):
 			self.PushVariableScope()
 			self.FunctionBlock(statements)
 			self.PopVariableScope()
-		if self.cancel:
-			if end.line >= self.cancel:
-				raise StateCancel(self.functions)
 		return True
 
 	def IfBlock(self, i):
-		if not self.cancel:
-			expr = self.NodeVisitor(self.statements[i].data.expression)
-		start = self.statements[i]
-		i += 1
-		while i < self.statementsLength:
-			if self.cancel:
+		if self.cancel:
+			i += 1
+			while i < self.statementsLength:
 				if self.statements[i].line >= self.cancel:
 					raise FunctionDefinitionCancel(self.statements[0], self.functions, self.variables, self.imports)
-			if self.statements[i].type == self.STAT_VARIABLEDEF:
-				self.VariableDef(i)
-			elif self.statements[i].type == self.STAT_ASSIGNMENT:
-				self.Assignment(i)
-			elif self.statements[i].type == self.STAT_EXPRESSION:
-				self.Expression(i)
-			elif self.statements[i].type == self.STAT_IF:
-				self.PushVariableScope()
-				i = self.IfBlock(i)
-				self.PopVariableScope()
-			elif self.statements[i].type == self.STAT_ELSEIF:
-				self.PopVariableScope()
-				self.PushVariableScope()
-				if not self.cancel:
-					expr = self.NodeVisitor(self.statements[i].data.expression)
-			elif self.statements[i].type == self.STAT_KEYWORD and self.statements[i].data.type == self.KW_ELSE:
-				self.PopVariableScope()
-				self.PushVariableScope()
-			elif self.statements[i].type == self.STAT_WHILE:
-				self.PushVariableScope()
-				i = self.WhileBlock(i)
-				self.PopVariableScope()
-			elif self.statements[i].type == self.STAT_RETURN:
-				self.Return(i)
-			elif self.statements[i].type == self.STAT_KEYWORD and self.statements[i].data.type == self.KW_ENDIF:
-				break
-			else:
-				self.Abort("Illegal statement in an if-block.", self.statements[i].line)
+				if self.statements[i].type == self.STAT_VARIABLEDEF:
+					self.VariableDef(i)
+				elif self.statements[i].type == self.STAT_IF:
+					self.PushVariableScope()
+					i = self.IfBlock(i)
+					self.PopVariableScope()
+				elif self.statements[i].type == self.STAT_ELSEIF:
+					self.PopVariableScope()
+					self.PushVariableScope()
+				elif self.statements[i].type == self.STAT_KEYWORD and self.statements[i].data.type == self.KW_ELSE:
+					self.PopVariableScope()
+					self.PushVariableScope()
+				elif self.statements[i].type == self.STAT_WHILE:
+					self.PushVariableScope()
+					i = self.WhileBlock(i)
+					self.PopVariableScope()
+				elif self.statements[i].type == self.STAT_KEYWORD and self.statements[i].data.type == self.KW_ENDIF:
+					break
+				i += 1
+			return i
+		else:
+			expr = self.NodeVisitor(self.statements[i].data.expression)
+			start = self.statements[i]
 			i += 1
-		if i >= self.statementsLength:
-			raise UnterminatedIfError(start.line)
-		return i
+			while i < self.statementsLength:
+				if self.statements[i].type == self.STAT_VARIABLEDEF:
+					self.VariableDef(i)
+				elif self.statements[i].type == self.STAT_ASSIGNMENT:
+					self.Assignment(i)
+				elif self.statements[i].type == self.STAT_EXPRESSION:
+					self.Expression(i)
+				elif self.statements[i].type == self.STAT_IF:
+					self.PushVariableScope()
+					i = self.IfBlock(i)
+					self.PopVariableScope()
+				elif self.statements[i].type == self.STAT_ELSEIF:
+					self.PopVariableScope()
+					self.PushVariableScope()
+					expr = self.NodeVisitor(self.statements[i].data.expression)
+				elif self.statements[i].type == self.STAT_KEYWORD and self.statements[i].data.type == self.KW_ELSE:
+					self.PopVariableScope()
+					self.PushVariableScope()
+				elif self.statements[i].type == self.STAT_WHILE:
+					self.PushVariableScope()
+					i = self.WhileBlock(i)
+					self.PopVariableScope()
+				elif self.statements[i].type == self.STAT_RETURN:
+					self.Return(i)
+				elif self.statements[i].type == self.STAT_KEYWORD and self.statements[i].data.type == self.KW_ENDIF:
+					break
+				else:
+					self.Abort("Illegal statement in an if-block.", self.statements[i].line)
+				i += 1
+			if i >= self.statementsLength:
+				raise UnterminatedIfError(start.line)
+			return i
 
 	def WhileBlock(self, i):
-		if not self.cancel:
-			expr = self.NodeVisitor(self.statements[i].data.expression)
-		start = self.statements[i]
-		i += 1
-		while i < self.statementsLength:
-			if self.cancel:
+		if self.cancel:
+			i += 1
+			while i < self.statementsLength:
 				if self.statements[i].line >= self.cancel:
 					raise FunctionDefinitionCancel(self.statements[0], self.functions, self.variables, self.imports)
-			if self.statements[i].type == self.STAT_VARIABLEDEF:
-				self.VariableDef(i)
-			elif self.statements[i].type == self.STAT_ASSIGNMENT:
-				self.Assignment(i)
-			elif self.statements[i].type == self.STAT_EXPRESSION:
-				self.Expression(i)
-			elif self.statements[i].type == self.STAT_IF:
-				self.PushVariableScope()
-				i = self.IfBlock(i)
-				self.PopVariableScope()
-			elif self.statements[i].type == self.STAT_WHILE:
-				self.PushVariableScope()
-				i = self.WhileBlock(i)
-				self.PopVariableScope()
-			elif self.statements[i].type == self.STAT_RETURN:
-				self.Return(i)
-			elif self.statements[i].type == self.STAT_KEYWORD and self.statements[i].data.type == self.KW_ENDWHILE:
-				break
-			else:
-				self.Abort("Illegal statement in a while-loop.", self.statements[i].line)
+				if self.statements[i].type == self.STAT_VARIABLEDEF:
+					self.VariableDef(i)
+				elif self.statements[i].type == self.STAT_IF:
+					self.PushVariableScope()
+					i = self.IfBlock(i)
+					self.PopVariableScope()
+				elif self.statements[i].type == self.STAT_WHILE:
+					self.PushVariableScope()
+					i = self.WhileBlock(i)
+					self.PopVariableScope()
+				elif self.statements[i].type == self.STAT_KEYWORD and self.statements[i].data.type == self.KW_ENDWHILE:
+					break
+				i += 1
+			return i
+		else:
+			expr = self.NodeVisitor(self.statements[i].data.expression)
+			start = self.statements[i]
 			i += 1
-		if i >= self.statementsLength:
-			raise UnterminatedWhileError(start.line)
-		return i
+			while i < self.statementsLength:
+				if self.statements[i].type == self.STAT_VARIABLEDEF:
+					self.VariableDef(i)
+				elif self.statements[i].type == self.STAT_ASSIGNMENT:
+					self.Assignment(i)
+				elif self.statements[i].type == self.STAT_EXPRESSION:
+					self.Expression(i)
+				elif self.statements[i].type == self.STAT_IF:
+					self.PushVariableScope()
+					i = self.IfBlock(i)
+					self.PopVariableScope()
+				elif self.statements[i].type == self.STAT_WHILE:
+					self.PushVariableScope()
+					i = self.WhileBlock(i)
+					self.PopVariableScope()
+				elif self.statements[i].type == self.STAT_RETURN:
+					self.Return(i)
+				elif self.statements[i].type == self.STAT_KEYWORD and self.statements[i].data.type == self.KW_ENDWHILE:
+					break
+				else:
+					self.Abort("Illegal statement in a while-loop.", self.statements[i].line)
+				i += 1
+			if i >= self.statementsLength:
+				raise UnterminatedWhileError(start.line)
+			return i
 
 	def VariableDef(self, i):
-		self.AddVariable(self.statements[i])
-		if self.statements[i].data.value:
-			if not self.cancel:
+		if self.cancel:
+			self.AddVariable(self.statements[i])
+			return True
+		else:
+			self.AddVariable(self.statements[i])
+			if self.statements[i].data.value:
 				expr = self.NodeVisitor(self.statements[i].data.value)
 				if expr:
 					if expr.array:
@@ -2012,30 +2099,27 @@ class Semantic(SharedResources):
 							self.Abort("The expression resolves to the incorrect type and cannot be automatically cast to the correct type.")
 				else:
 					self.Abort(None)
-		return True
+			return True
 
 	def Assignment(self, i):
-		if not self.cancel:
-			left = self.NodeVisitor(self.statements[i].data.leftExpression)
-			if left == self.KW_NONE:
-				self.Abort("The left-hand side expression resolves to NONE.")
-			right = self.NodeVisitor(self.statements[i].data.rightExpression)
-			if left.type != right.type and left.array != right.array and left.object != right.object and not self.CanAutoCast(right, left):
-				self.Abort("The right-hand side expression does not resolve to the same type as the left-hand side expression and cannot be auto-cast.")
+		left = self.NodeVisitor(self.statements[i].data.leftExpression)
+		if left == self.KW_NONE:
+			self.Abort("The left-hand side expression resolves to NONE.")
+		right = self.NodeVisitor(self.statements[i].data.rightExpression)
+		if left.type != right.type and left.array != right.array and left.object != right.object and not self.CanAutoCast(right, left):
+			self.Abort("The right-hand side expression does not resolve to the same type as the left-hand side expression and cannot be auto-cast.")
 		return True
 
 	def Expression(self, i):
-		if not self.cancel:
-			expr = self.NodeVisitor(self.statements[i].data.expression)
+		expr = self.NodeVisitor(self.statements[i].data.expression)
 		return True
 
 	def Return(self, i):
 		if self.statements[i].data.expression:
-			if not self.cancel:
-				expr = self.NodeVisitor(self.statements[i].data.expression)
-				if self.statements[0].data.type:
-					if expr.type != self.statements[0].data.type and expr.array != self.statements[0].data.array and not self.CanAutoCast(expr, self.statements[0].data):
-						self.Abort("The returned value's type does not match the function's return type.")
+			expr = self.NodeVisitor(self.statements[i].data.expression)
+			if self.statements[0].data.type:
+				if expr.type != self.statements[0].data.type and expr.array != self.statements[0].data.array and not self.CanAutoCast(expr, self.statements[0].data):
+					self.Abort("The returned value's type does not match the function's return type.")
 		return True
 
 	def NodeVisitor(self, node, expected = None):
@@ -2401,3 +2485,69 @@ class Semantic(SharedResources):
 							else:
 								return None
 		return None
+		
+	def GetContext(self, script, line):
+		self.cancel = line
+		print("Getting context")
+		print(script.variables)
+		print(script.functions)
+		print(script.states)
+		print(script.imports)
+		self.variables = script.variables
+		self.functions = script.functions
+		self.states = script.states
+		self.imports = script.imports
+		# Foreach state
+		#	If in state
+		#		Foreach definition
+		#			If in definition
+		#				Process that definition
+		#		Raise StateCancel
+		# Foreach empty state definition
+		#	If in definition
+		#		Process that definition
+		# Raise EmptyStateCancel
+		for statements in script.definitions[""]:
+			if self.cancel >= statements[0].line and self.cancel <= statements[len(statements)-1].line:
+				if statements[0].type == self.STAT_PROPERTYDEF:
+					print("Property")
+					self.PushFunctionScope()
+					self.PropertyBlock(statements)
+					#self.PopFunctionScope()
+					raise PropertyDefinitionCancel(statements[0].data.typeIdentifier, statements[0].data.array, self.functions)
+				elif statements[0].type == self.STAT_FUNCTIONDEF or statements[0].type == self.STAT_EVENTDEF:
+					print("Empty state function/event")
+					self.PushVariableScope()
+					self.FunctionBlock(statements)
+					#self.PopVariableScope()
+		for s in [s for s in script.definitions if s != ""]:
+			for statements in script.definitions[s]:
+				if self.cancel >= statements[0].line and self.cancel <= statements[len(statements)-1].line:
+					print("State function/event")
+					self.PushVariableScope()
+					self.FunctionBlock(statements)
+					#self.PopVariableScope()
+					#return
+		for name, statements in script.states[1].items():
+			if self.cancel >= statements[0].line and self.cancel <= statements[len(statements)-1].line:
+				print("State")
+				raise StateCancel(self.functions)
+		print("Empty state")
+		raise EmptyStateCancel(self.functions)
+		
+"""
+for statements in self.definitions[""]:
+	typ = statements[0].type
+	if typ == self.STAT_FUNCTIONDEF or typ == self.STAT_EVENTDEF:
+		self.PushVariableScope()
+		self.FunctionBlock(statements)
+		self.PopVariableScope()
+	elif typ == self.STAT_PROPERTYDEF:
+		self.PushFunctionScope()
+		self.PropertyBlock(statements)
+		self.PopFunctionScope()
+for statements in stateDefinitions:
+	self.PushFunctionScope()
+	self.StateBlock(statements)
+	self.PopFunctionScope()
+"""
