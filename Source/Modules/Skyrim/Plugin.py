@@ -692,6 +692,8 @@ class EventListener(sublime_plugin.EventListener):
 								completions.append(SublimePapyrus.MakeFunctionCompletion(stat, self.sem, False, "parent"))
 							elif stat.type == self.sem.STAT_EVENTDEF:
 								completions.append(SublimePapyrus.MakeEventCompletion(stat, self.sem, False, "parent"))
+					completions.append(self.completionDefinitionEvent)
+					completions.append(self.completionDefinitionFunction)
 					return completions
 				except Linter.FunctionDefinitionCancel as e:
 					#print("Function: %s" % e.signature.data.name)
