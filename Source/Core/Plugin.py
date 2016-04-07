@@ -208,16 +208,18 @@ class SublimePapyrusCompileScriptCommand(sublime_plugin.WindowCommand):
 			if modules:
 				moduleSettings = modules.get(module, None)
 				if moduleSettings:
-					compiler = moduleSettings["compiler"]
+					compiler = moduleSettings.get("compiler", None)
 					if not compiler or compiler == "":
 						return ShowMessage("The compiler path setting is undefined or invalid.")
-					flags = moduleSettings["flags"]
+					flags = moduleSettings.get("flags", None)
 					if not flags or flags == "":
 						return ShowMessage("The flags name setting is undefined or invalid.")
-					output = moduleSettings["output"]
+					output = moduleSettings.get("output", "")
 					if not output or output == "":
-						return ShowMessage("The output path setting is undefined or invalid.")
-					imports = moduleSettings["import"]
+						output, _ = os.path.split(filePath)
+						if output[-2:] == ":\\":
+							output = output + "\\"
+					imports = moduleSettings.get("import", None)
 					if imports:
 						if (PYTHON_VERSION[0] == 2 and isinstance(imports, list) and all(isinstance(k, basestring) for k in imports) and all(k != "" for k in imports)) or (PYTHON_VERSION[0] >= 3 and isinstance(imports, list) and all(isinstance(k, str) for k in imports) and all(k != "" for k in imports)):
 							if not batch:
@@ -232,7 +234,7 @@ class SublimePapyrusCompileScriptCommand(sublime_plugin.WindowCommand):
 							return ShowMessage("The import path(s) setting has to be a list of strings.")
 					else:
 						return ShowMessage("The import path(s) setting is undefined.")
-					arguments = moduleSettings["arguments"]
+					arguments = moduleSettings.get("arguments", None)
 					if arguments:
 						if isinstance(arguments, list) and all(isinstance(k, str) for k in arguments):
 							temp = []
