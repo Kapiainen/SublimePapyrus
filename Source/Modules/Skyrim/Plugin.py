@@ -126,6 +126,9 @@ class EventListener(sublime_plugin.EventListener):
 		self.completionKeywordSelf = ("self\tkeyword", "Self",)
 		self.completionDefinitionEvent = ("event\tevent definition", "Event ${1:EventName}(${2:Parameters})\n\t${0}\nEndEvent",)
 		self.completionDefinitionFunction = ("function\tfunction definition", "${1:Type} Function ${2:FunctionName}(${3:Parameters})\n\t${0}\nEndFunction",)
+		self.completionKeywordFalse = ("false\tkeyword", "False",)
+		self.completionKeywordNone = ("none\tkeyword", "None",)
+		self.completionKeywordTrue = ("true\tkeyword", "True",)
 
 	# Clear cache in order to force an update
 	def on_close(self, view):
@@ -305,7 +308,7 @@ class EventListener(sublime_plugin.EventListener):
 					if token.type != self.lex.NEWLINE:
 						tokens.append(token)
 			except Linter.LexicalError as e:
-				print(e.message)
+				#print(e.message)
 				return
 			tokenCount = len(tokens)
 			if tokenCount > 0:
@@ -313,7 +316,7 @@ class EventListener(sublime_plugin.EventListener):
 					try:
 						stat = self.syn.Process(tokens)
 					except Linter.ExpectedFunctionIdentifierError as e:
-						print(e.message)
+						#print(e.message)
 						try:
 							self.sem.GetContext(currentScript, line)
 						except Linter.EmptyStateCancel as f:
@@ -373,19 +376,52 @@ class EventListener(sublime_plugin.EventListener):
 						except Linter.SemanticError as f:
 							return
 						return
-		#			except ExpectedLiteralError as e:
-		#				print(e.message)
+					except Linter.ExpectedLiteralError as e:
+						if tokens[tokenCount-1].type == self.syn.OP_ASSIGN:
+							try:
+								stat = self.syn.Process(tokens[:-1])
+							except Linter.SyntacticError as g:
+								return
+							if stat.type == self.syn.STAT_PROPERTYDEF:
+								if stat.data.array:
+									completions.append(self.completionKeywordNone)
+								else:
+									if stat.data.type == self.syn.KW_BOOL:
+										completions.append(self.completionKeywordFalse)
+										completions.append(self.completionKeywordTrue)
+									elif stat.data.type != self.syn.KW_FLOAT and stat.data.type != self.syn.KW_INT and stat.data.type != self.syn.KW_STRING:
+										completions.append(self.completionKeywordNone)
+								return completions
 		#			except ExpectedOperatorError as e:
 		#				print(e.message)
-		#			except ExpectedKeywordError as e:
-		#				print(e.message)
+					except Linter.ExpectedKeywordError as e:
+						#print(e.message)
+						if self.syn.KW_AUTO in e.keywords:
+							completions.append(("auto\tkeyword", "Auto",))
+						if self.syn.KW_AUTOREADONLY in e.keywords:
+							completions.append(("autoreadonly\tkeyword", "AutoReadOnly",))
+						return completions
 					except Linter.ExpectedIdentifierError as e:
 						# SELF, PARENT, LENGTH, function/event/property/variable/parameter identifiers
 						try:
 							self.sem.GetContext(currentScript, line)
 						except Linter.EmptyStateCancel as f:
-							print("Expected identifier in empty state")
-							return
+							#print("Expected identifier in empty state")
+							if tokens[tokenCount-1].type == self.syn.OP_ASSIGN:
+								try:
+									stat = self.syn.Process(tokens[:-1])
+								except Linter.SyntacticError as g:
+									return
+								if stat.type == self.syn.STAT_VARIABLEDEF:
+									if stat.data.array:
+										completions.append(self.completionKeywordNone)
+									else:
+										if stat.data.type == self.syn.KW_BOOL:
+											completions.append(self.completionKeywordFalse)
+											completions.append(self.completionKeywordTrue)
+										elif stat.data.type != self.syn.KW_FLOAT and stat.data.type != self.syn.KW_INT and stat.data.type != self.syn.KW_STRING:
+											completions.append(self.completionKeywordNone)
+							return completions
 						except Linter.StateCancel as f:
 							print("Expected identifier in state")
 							return
@@ -552,15 +588,15 @@ class EventListener(sublime_plugin.EventListener):
 														functions.append(SublimePapyrus.MakeFunctionCompletion(obj, self.sem, True, impLower))
 												self.SetFunctionCompletions(imp, functions, True)
 												completions.extend(functions)
-							completions.append(("false\tkeyword", "False",))
-							completions.append(("none\tkeyword", "None",))
-							completions.append(("true\tkeyword", "True",))
+							completions.append(self.completionKeywordFalse)
+							completions.append(self.completionKeywordNone)
+							completions.append(self.completionKeywordTrue)
 							completions.append(self.completionKeywordAs)
 							return completions
-						except Linter.PropertyDefinitionCancel as f:
-							print("Expected identifier in a property")
-							# GET and SET
-							return
+#						except Linter.PropertyDefinitionCancel as f:
+#							print("Expected identifier in a property")
+#							# GET and SET
+#							return
 #						except Linter.UnterminatedPropertyError as f:
 #							return
 #						except Linter.UnterminatedStateError as f:
@@ -591,9 +627,9 @@ class EventListener(sublime_plugin.EventListener):
 							if not self.syn.KW_HIDDEN in stat.data.flags:
 								completions.append(self.completionKeywordHidden)
 						elif stat.type == self.syn.STAT_PROPERTYDEF:
-							if not self.syn.KW_AUTO in stat.data.flags:
+							if not self.syn.KW_AUTO in stat.data.flags and not self.syn.KW_AUTOREADONLY in stat.data.flags:
 								completions.append(self.completionKeywordAuto)
-							if not self.syn.KW_AUTOREADONLY in stat.data.flags:
+							if not self.syn.KW_AUTOREADONLY in stat.data.flags and not self.syn.KW_AUTO in stat.data.flags:
 								completions.append(self.completionKeywordAutoReadOnly)
 							if not self.syn.KW_CONDITIONAL in stat.data.flags:
 								completions.append(self.completionKeywordConditional)
@@ -617,14 +653,14 @@ class EventListener(sublime_plugin.EventListener):
 						elif stat.type == self.syn.STAT_ASSIGNMENT or stat.type == self.syn.STAT_EXPRESSION:
 							completions.append(self.completionKeywordAs)
 						else:
-							print(stat.type)
+							#print(stat.type)
+							pass
 						return completions
 			else:
 				print("No statement could be formed")
 				# Figure out context
 				try:
 					self.sem.GetContext(currentScript, line)
-					print("No exceptions")
 				except Linter.EmptyStateCancel as e:
 					completions.append(("import\timport script", "Import ",))
 					completions.append(("property\tproperty definition", "${1:Type} Property ${2:PropertyName} ${3:Auto}",))
@@ -639,9 +675,10 @@ class EventListener(sublime_plugin.EventListener):
 								completions.append(SublimePapyrus.MakeFunctionCompletion(stat, self.sem, False, "parent"))
 							elif stat.type == self.sem.STAT_EVENTDEF:
 								completions.append(SublimePapyrus.MakeEventCompletion(stat, self.sem, False, "parent"))
+					completions.extend(self.GetTypeCompletions(view, True))
 					return completions
 				except Linter.StateCancel as e:
-					print("State")
+					#print("State")
 					# Functions/events that have been inherited or defined in the empty state
 					for name, stat in e.functions[1].items():
 						if not name in e.functions[2]:
@@ -657,7 +694,7 @@ class EventListener(sublime_plugin.EventListener):
 								completions.append(SublimePapyrus.MakeEventCompletion(stat, self.sem, False, "parent"))
 					return completions
 				except Linter.FunctionDefinitionCancel as e:
-					print("Function: %s" % e.signature.data.name)
+					#print("Function: %s" % e.signature.data.name)
 					completions.append(("else\telse", "Else\n\t${0}",))
 					completions.append(("elseif\telse-if", "ElseIf ${1:$SELECTION}\n\t${0}",))
 					completions.append(("if\tif", "If ${1:$SELECTION}\n\t${0}\nEndIf",))
@@ -724,7 +761,7 @@ class EventListener(sublime_plugin.EventListener):
 									completions.extend(functions)
 					return completions
 				except Linter.PropertyDefinitionCancel as e:
-					print("Property (plugin)")
+					#print("Property (plugin)")
 					typ = None
 					if e.array:
 						typ = "%s[]" % e.type.capitalize()
