@@ -501,8 +501,9 @@ class ExpectedEventIdentifierError(SyntacticError):
 		super(ExpectedEventIdentifierError, self).__init__(line, ("%s %s" % (message, "Expected an event identifier.")).strip())
 
 class ExpectedKeywordError(SyntacticError):
-	def __init__(self, line, message):
+	def __init__(self, line, message, keywords):
 		super(ExpectedKeywordError, self).__init__(line, message)
+		self.keywords = keywords
 
 class Syntactic(SharedResources):
 	def __init__(self):
@@ -852,7 +853,7 @@ class Syntactic(SharedResources):
 					if self.Accept(self.KW_HIDDEN):
 						flags.append(self.GetPreviousType())
 			else:
-				raise ExpectedKeywordError(line, "Initializing properties requires the AUTO or AUTOREADONLY keywords.")
+				raise ExpectedKeywordError(line, "Initializing properties requires the AUTO or AUTOREADONLY keywords.", [self.KW_AUTO, self.KW_AUTOREADONLY])
 		else:
 			if self.Accept(self.KW_AUTO) or self.Accept(self.KW_AUTOREADONLY):
 				flags.append(self.GetPreviousType())
