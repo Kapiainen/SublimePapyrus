@@ -12,7 +12,6 @@ class SharedResources(object):
 		self.CMP_LESS_THAN_OR_EQUAL = "CMP_LESS_THAN_OR_EQUAL"
 		self.CMP_NOT_EQUAL = "CMP_NOT_EQUAL"
 
-		self.BOOL = "BOOL"
 		self.COMMA = "COMMA"
 		self.COMMENT_BLOCK = "COMMENT_BLOCK"
 		self.COMMENT_LINE = "COMMENT_LINE"
@@ -171,7 +170,6 @@ class Lexical(SharedResources):
 			(self.OP_DIVISION_ASSIGN, r"/="),
 			(self.OP_MODULUS_ASSIGN, r"%="),
 			(self.OP_ASSIGN, r"="),
-			(self.BOOL, r"(true|false)"),
 			(self.IDENTIFIER, r"[a-z_][0-9a-z_]*"),
 			(self.FLOAT, r"(-\d+\.\d+)|(\d+\.\d+)"),
 			(self.INT, r"((0x(\d|[a-f])+)|((\d+))(?![a-z_]))"),
@@ -607,7 +605,7 @@ class Syntactic(SharedResources):
 					raise ExpectedTypeError(self.GetPreviousLine(), False)
 
 	def AcceptLiteral(self):
-		if self.Accept(self.BOOL) or self.Accept(self.FLOAT) or self.Accept(self.INT) or self.Accept(self.STRING) or self.Accept(self.KW_NONE):
+		if self.Accept(self.KW_FALSE) or self.Accept(self.KW_TRUE) or self.Accept(self.FLOAT) or self.Accept(self.INT) or self.Accept(self.STRING) or self.Accept(self.KW_NONE):
 			return True
 		elif self.Accept(self.OP_SUBTRACTION) and (self.Accept(self.INT) or self.Accept(self.FLOAT)):
 			return True
@@ -1598,6 +1596,9 @@ class Semantic(SharedResources):
 		return None
 
 	def Process(self, statements, paths): # Return True if successful, False if failed
+		if not statements:
+			self.Abort("No statements were given to process.")
+			return
 		# Reset properties
 		self.statements = None
 		self.paths = paths
@@ -1606,7 +1607,7 @@ class Semantic(SharedResources):
 		self.functions = [{}]
 		self.states = [{}]
 		self.imports = []
-		self.header = None
+		self.header = None		
 		# Script header
 		if statements[0].type == self.STAT_SCRIPTHEADER:
 			self.header = statements.pop(0)
@@ -2141,7 +2142,7 @@ class Semantic(SharedResources):
 					self.Abort("Expected an expression that resolves to INT when accessing an array element.", self.statements[self.statementsIndex].line)
 				result = NodeResult(result.type, False, result.object)
 		elif node.type == self.NODE_CONSTANT:
-			if node.data.token.type == self.BOOL:
+			if node.data.token.type == self.KW_FALSE or node.data.token.type == self.KW_TRUE:
 				result = NodeResult(self.KW_BOOL, False, True)
 			elif node.data.token.type == self.FLOAT:
 				result = NodeResult(self.KW_FLOAT, False, True)
@@ -2464,7 +2465,7 @@ class Semantic(SharedResources):
 				if value:
 					return temp.data.token.value
 				else:
-					if temp.data.token.type == self.BOOL:
+					if temp.data.token.type == self.KW_FALSE or temp.data.token.type == self.KW_TRUE:
 						return self.KW_BOOL
 					elif temp.data.token.type == self.FLOAT:
 						return self.KW_FLOAT
