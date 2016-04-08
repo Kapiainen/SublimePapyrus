@@ -264,24 +264,25 @@ class EventListener(sublime_plugin.EventListener):
 				return Exit()
 			print("Linter: Finished lexical and syntactic in %f milliseconds..." % ((time.time()-lexSynStart)*1000.0)) #DEBUG
 			semStart = time.time() #DEBUG
-			try:
-				script = None
+			if statements:
+				try:
+					script = None
+					if view:
+						script = self.sem.Process(statements, SublimePapyrus.GetSourcePaths(view))
+					else:
+						script = self.sem.Process(statements, self.sourcePaths)
+					if script:
+						self.SetScript(self.bufferID, script)
+				except Linter.SemanticError as e:
+					if view:
+						SublimePapyrus.HighlightLinter(view, e.line)
+						SublimePapyrus.ShowMessage("Semantic error on line %d: %s" % (e.line, e.message))
+						if settings.get("linter_panel_error_messages", False):
+							view.window().show_quick_panel([[e.message, "Line %d" % e.line]], None)
+					return Exit()
+				print("Linter: Finished semantic in %f milliseconds..." % ((time.time()-semStart)*1000.0)) #DEBUG
 				if view:
-					script = self.sem.Process(statements, SublimePapyrus.GetSourcePaths(view))
-				else:
-					script = self.sem.Process(statements, self.sourcePaths)
-				if script:
-					self.SetScript(self.bufferID, script)
-			except Linter.SemanticError as e:
-				if view:
-					SublimePapyrus.HighlightLinter(view, e.line)
-					SublimePapyrus.ShowMessage("Semantic error on line %d: %s" % (e.line, e.message))
-					if settings.get("linter_panel_error_messages", False):
-						view.window().show_quick_panel([[e.message, "Line %d" % e.line]], None)
-				return Exit()
-			print("Linter: Finished semantic in %f milliseconds..." % ((time.time()-semStart)*1000.0)) #DEBUG
-			if view:
-				SublimePapyrus.ShowMessage("Linter found no issues...")
+					SublimePapyrus.ShowMessage("Linter found no issues...")
 		return Exit()
 
 	# Completions
@@ -297,7 +298,12 @@ class EventListener(sublime_plugin.EventListener):
 				start = time.time() #DEBUG
 				completions = None
 				if not view.find("scriptname", 0, sublime.IGNORECASE):
-					completions = [("scriptname\tscript header definition", "ScriptName ${0:Name}",)]
+					path = view.file_name()
+					if path:
+						_, name = os.path.split(path)
+						completions = [("scriptname\tscript header", "ScriptName %s" % name[:name.rfind(".")],)]
+					else:
+						completions = [("scriptname\tscript header", "ScriptName ",)]
 				else:					
 					completions = self.Completions(view, prefix, locations)
 				if completions:
