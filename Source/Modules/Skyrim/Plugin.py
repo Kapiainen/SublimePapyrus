@@ -212,15 +212,30 @@ class EventListener(sublime_plugin.EventListener):
 				scriptContents = view.substr(sublime.Region(0, view.size()))
 			else:
 				scriptContents = self.scriptContents
+			lineCount = scriptContents.count("\n") + 1
+			lineNumber, columnNumber = view.rowcol(view.sel()[0].begin())
+			lineNumber += 1
 			statements = []
+			lines = []
 			tokens = []
+			currentLine = None
 			try:
 				for token in self.lex.Process(scriptContents):
 					if token.type == self.lex.NEWLINE:
 						if tokens:
-							stat = self.syn.Process(tokens)
-							if stat:
-								statements.append(stat)
+							if currentLine:
+								stat = self.syn.Process(tokens)
+								if stat:
+									statements.append(stat)
+							elif token.line >= lineNumber:
+								currentLine = self.syn.Process(tokens)
+								while lines:
+									stat = self.syn.Process(lines.pop(0))
+									if stat:
+										statements.append(stat)
+								statements.append(currentLine)
+							else:
+								lines.append(tokens)
 							tokens = []
 					elif token.type != self.lex.COMMENT_LINE and token.type != self.lex.COMMENT_BLOCK:
 						tokens.append(token)
