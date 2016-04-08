@@ -229,14 +229,23 @@ class EventListener(sublime_plugin.EventListener):
 									statements.append(stat)
 							elif token.line >= lineNumber:
 								currentLine = self.syn.Process(tokens)
+								if currentLine:
+									while lines:
+										stat = self.syn.Process(lines.pop(0))
+										if stat:
+											statements.append(stat)
+									statements.append(currentLine)
+								currentLine = True
+							else:
+								lines.append(tokens)
+							tokens = []
+						else:
+							if token.line >= lineNumber:
 								while lines:
 									stat = self.syn.Process(lines.pop(0))
 									if stat:
 										statements.append(stat)
-								statements.append(currentLine)
-							else:
-								lines.append(tokens)
-							tokens = []
+								currentLine = True
 					elif token.type != self.lex.COMMENT_LINE and token.type != self.lex.COMMENT_BLOCK:
 						tokens.append(token)
 			except Linter.LexicalError as e:
