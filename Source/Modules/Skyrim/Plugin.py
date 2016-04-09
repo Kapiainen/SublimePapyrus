@@ -474,6 +474,8 @@ class EventListener(sublime_plugin.EventListener):
 									except Linter.SemanticError as g:
 										#print("5-3-1: %s" % g.message)
 										return
+									if result.type == self.syn.KW_NONE or result.type == self.syn.KW_BOOL or result.type == self.syn.KW_INT or result.type == self.syn.KW_FLOAT or result.type == self.syn.KW_STRING:
+										return completions
 									resultTypeLower = result.type.lower()
 									if result.array:
 										typ = result.type.capitalize()
@@ -645,6 +647,9 @@ class EventListener(sublime_plugin.EventListener):
 						return completions
 					except Linter.SyntacticError as e:
 						#print("7: %s" % e.message)
+						if self.syn.stack and self.syn.stack[0].type == self.syn.LEFT_PARENTHESIS and self.syn.stack[-1].type != self.syn.RIGHT_PARENTHESIS:
+							completions.append(self.completionKeywordAs)
+							return completions
 						return
 					if stat:
 						if stat.type == self.syn.STAT_SCRIPTHEADER:
