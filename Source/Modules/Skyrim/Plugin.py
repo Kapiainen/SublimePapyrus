@@ -338,9 +338,8 @@ class EventListener(sublime_plugin.EventListener):
 						tokens.append(token)
 			except Linter.LexicalError as e:
 				return
-			tokenCount = len(tokens)
-			if tokenCount > 0:
-				if tokens[tokenCount-1].type != self.lex.COMMENT_LINE and tokens[tokenCount-1].type != self.lex.COMMENT_BLOCK and tokens[tokenCount-1].type != self.lex.DOCUMENTATION_STRING:
+			if tokens:
+				if tokens[-1].type != self.lex.COMMENT_LINE and tokens[-1].type != self.lex.COMMENT_BLOCK and tokens[-1].type != self.lex.DOCUMENTATION_STRING:
 					try:
 						stat = self.syn.Process(tokens)
 					except Linter.ExpectedFunctionIdentifierError as e:
@@ -414,7 +413,7 @@ class EventListener(sublime_plugin.EventListener):
 						return
 					except Linter.ExpectedLiteralError as e:
 						#print("3: %s" % e.message)
-						if tokens[tokenCount-1].type == self.syn.OP_ASSIGN:
+						if tokens[-1].type == self.syn.OP_ASSIGN:
 							try:
 								stat = self.syn.Process(tokens[:-1])
 							except Linter.SyntacticError as f:
@@ -443,7 +442,7 @@ class EventListener(sublime_plugin.EventListener):
 							self.sem.GetContext(currentScript, line)
 						except Linter.EmptyStateCancel as f:
 							#print("5-1: %s" % f.message)
-							if tokens[tokenCount-1].type == self.syn.OP_ASSIGN:
+							if tokens[-1].type == self.syn.OP_ASSIGN:
 								try:
 									stat = self.syn.Process(tokens[:-1])
 								except Linter.SyntacticError as g:
@@ -578,7 +577,7 @@ class EventListener(sublime_plugin.EventListener):
 													self.SetFunctionCompletions(imp, functions, True)
 													completions.extend(functions)
 							else:
-								if tokens[tokenCount-1].type == self.sem.OP_ASSIGN:
+								if tokens[-1].type == self.sem.OP_ASSIGN:
 									try:
 										stat = self.syn.Process(tokens[:-1])
 									except Linter.SemanticError as g:
