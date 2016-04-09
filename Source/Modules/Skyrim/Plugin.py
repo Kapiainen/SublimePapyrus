@@ -438,6 +438,9 @@ class EventListener(sublime_plugin.EventListener):
 						return completions
 					except Linter.ExpectedIdentifierError as e:
 						#print("5: %s" % e.message)
+						if len(tokens) == 1:
+							if tokens[0].type == self.syn.KW_BOOL or tokens[0].type == self.syn.KW_FLOAT or tokens[0].type == self.syn.KW_INT or tokens[0].type == self.syn.KW_STRING or tokens[0].type == self.syn.IDENTIFIER:
+								return
 						try:
 							self.sem.GetContext(currentScript, line)
 						except Linter.EmptyStateCancel as f:
@@ -684,8 +687,20 @@ class EventListener(sublime_plugin.EventListener):
 							except Linter.SemanticError as e:
 								#print("9: %s" % e.message)
 								return
-						elif stat.type == self.syn.STAT_ASSIGNMENT or stat.type == self.syn.STAT_EXPRESSION:
-							completions.append(self.completionKeywordAs)
+						elif stat.type == self.syn.STAT_ASSIGNMENT:
+							try:
+								result = self.sem.NodeVisitor(stat.data.rightExpression)
+							except Linter.SemanticError as e:
+								return
+							if not result.array:
+								completions.append(self.completionKeywordAs)
+						elif stat.type == self.syn.STAT_EXPRESSION:
+							try:
+								result = self.sem.NodeVisitor(stat.data.expression)
+							except Linter.SemanticError as e:
+								return
+							if not result.array:
+								completions.append(self.completionKeywordAs)
 						else:
 							pass
 						return completions
@@ -906,13 +921,9 @@ class EventListener(sublime_plugin.EventListener):
 
 	def GetTypeCompletions(self, view, baseTypes = True):
 		with self.cacheLock:
-			temp = self.completionCache.get("types", None)
-			if temp:
-				return temp
-			else:
+			scripts = self.completionCache.get("types", None)
+			if not scripts:
 				scripts = []
-				if baseTypes:
-					scripts.extend([("bool\ttype", "Bool",), ("float\ttype", "Float",), ("int\ttype", "Int",), ("string\ttype", "String",)])
 				paths = SublimePapyrus.GetSourcePaths(view)
 				for path in paths:
 					if os.path.isdir(path):
@@ -921,7 +932,9 @@ class EventListener(sublime_plugin.EventListener):
 							scripts.append(("%s\tscript" % file[:-4].lower(), "%s" % file[:-4]))
 				scripts = list(set(scripts))
 				self.SetTypeCompletions(scripts)
-				return scripts
+			if baseTypes:
+				scripts.extend([("bool\ttype", "Bool",), ("float\ttype", "Float",), ("int\ttype", "Int",), ("string\ttype", "String",)])
+			return scripts
 
 	def SetTypeCompletions(self, obj):
 		with self.cacheLock:
