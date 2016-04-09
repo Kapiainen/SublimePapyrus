@@ -1153,8 +1153,12 @@ class Syntactic(SharedResources):
 			self.Shift(Node(self.NODE_ARRAYCREATION, ArrayCreationNode(typ, size)))
 			return True
 		elif self.Accept(self.LEFT_PARENTHESIS):
+			self.Shift()
 			self.Expression()
 			self.Expect(self.RIGHT_PARENTHESIS)
+			expr = self.Pop()
+			self.Pop()
+			self.Shift(expr)
 			return True
 		elif self.FuncOrId():
 			return True
@@ -2374,7 +2378,7 @@ class Semantic(SharedResources):
 				rightResult = NodeResult(node.data.rightOperand.data.token.value, False, True)
 				if leftResult.array and rightResult.type != self.KW_STRING and rightResult.type != self.KW_BOOL:
 					self.Abort("Arrays can only be cast to STRING and BOOL.", self.statements[self.statementsIndex].line)
-				if rightResult.type != self.KW_BOOL and rightResult.type != self.KW_FLOAT and rightResult.type != self.KW_INT and rightResult.type != self.KW_STRING and not self.GetCachedScript(rightResult.type):
+				if rightResult.type != self.KW_BOOL and rightResult.type != self.KW_FLOAT and rightResult.type != self.KW_INT and rightResult.type != self.KW_STRING and not self.GetCachedScript(rightResult.type, self.statements[self.statementsIndex].line):
 					self.Abort("%s is not a type that exists." % rightResult.type, self.statements[self.statementsIndex].line)
 				result = rightResult
 			elif node.data.operator.type == self.OP_DOT:
