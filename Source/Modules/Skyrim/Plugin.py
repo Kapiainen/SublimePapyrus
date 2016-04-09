@@ -348,7 +348,7 @@ class EventListener(sublime_plugin.EventListener):
 						try:
 							self.sem.GetContext(currentScript, line)
 						except Linter.EmptyStateCancel as f:
-							print(f.message)
+							#print("1-1: %s" % f.message)
 							# Inherited
 							for name, stat in f.functions[0].items():
 								if stat.type == self.sem.STAT_FUNCTIONDEF and not f.functions[1].get(name, False):
@@ -356,7 +356,7 @@ class EventListener(sublime_plugin.EventListener):
 										completions.append(SublimePapyrus.MakeFunctionCompletion(stat, self.sem, False, "parent", True))
 							return completions
 						except Linter.StateCancel as f:
-							#print("1-1: %s" % f.message)
+							#print("1-2: %s" % f.message)
 							# Inherited or defined in the empty state
 							for name, stat in f.functions[1].items():
 								if stat.type == self.sem.STAT_FUNCTIONDEF:
@@ -368,7 +368,7 @@ class EventListener(sublime_plugin.EventListener):
 										completions.append(SublimePapyrus.MakeFunctionCompletion(stat, self.sem, False, "parent", True))
 							return completions
 						except Linter.PropertyDefinitionCancel as f:
-							#print("1-2: %s" % f.message)
+							#print("1-3: %s" % f.message)
 							#TODO This part is having some issues
 							typ = None
 							if f.array:
@@ -384,7 +384,7 @@ class EventListener(sublime_plugin.EventListener):
 								#return completions
 							return completions
 						except Linter.SemanticError as f:
-							#print("1-3: %s" % f.message)
+							#print("1-4: %s" % f.message)
 							return
 						return
 					except Linter.ExpectedEventIdentifierError as e:
