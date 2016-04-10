@@ -342,6 +342,8 @@ class EventListener(sublime_plugin.EventListener):
 					completions.append(("state\tstate definition", "State ${1:StateName}\n\t${0}\nEndState",))
 					completions.append(("event\tevent definition", "Event ${1:EventName}(${2:Parameters})\n\t${0}\nEndEvent",))
 					completions.append(("function\tfunction definition", "${1:Type} Function ${2:FunctionName}(${3:Parameters})\n\t${0}\nEndFunction",))
+					# Types to facilitate variable declarations
+					completions.extend(self.GetTypeCompletions(view, True))
 					return completions
 				else:
 					tokens = []
@@ -350,6 +352,49 @@ class EventListener(sublime_plugin.EventListener):
 							if token.type != self.lex.NEWLINE:
 								tokens.append(token)
 					except Linter.LexicalError as f:
+						return
+					try:
+						stat = self.syn.Process(tokens)
+						# Optional flags
+						if stat.type == self.syn.STAT_SCRIPTHEADER:
+							if not stat.data.parent:
+								completions.append(self.completionKeywordExtends)
+							if not self.lex.KW_CONDITIONAL in stat.data.flags:
+								completions.append(self.completionKeywordConditional)
+							if not self.lex.KW_HIDDEN in stat.data.flags:
+								completions.append(self.completionKeywordHidden)
+						elif stat.type == self.syn.STAT_PROPERTYDEF:
+							if not self.lex.KW_AUTO in stat.data.flags and not self.syn.KW_AUTOREADONLY in stat.data.flags:
+								completions.append(self.completionKeywordAuto)
+							if not self.lex.KW_AUTOREADONLY in stat.data.flags and not self.syn.KW_AUTO in stat.data.flags:
+								completions.append(self.completionKeywordAutoReadOnly)
+							if not self.lex.KW_CONDITIONAL in stat.data.flags:
+								completions.append(self.completionKeywordConditional)
+							if not self.lex.KW_HIDDEN in stat.data.flags:
+								completions.append(self.completionKeywordHidden)
+						elif stat.type == self.syn.STAT_VARIABLEDEF:
+							if not self.lex.KW_CONDITIONAL in stat.data.flags:
+								completions.append(self.completionKeywordConditional)
+						elif stat.type == self.syn.STAT_FUNCTIONDEF:
+							if not self.lex.KW_NATIVE in stat.data.flags:
+								completions.append(self.completionKeywordNative)
+							if not self.lex.KW_GLOBAL in stat.data.flags:
+								completions.append(self.completionKeywordGlobal)
+						elif stat.type == self.syn.STAT_EVENTDEF:
+							if not self.lex.KW_NATIVE in stat.data.flags:
+								completions.append(self.completionKeywordNative)
+						return completions
+					except Linter.ExpectedTypeError as f:
+						completions.extend(self.GetTypeCompletions(view, f.baseTypes))
+						return completions
+					except Linter.ExpectedKeywordError as f:
+						# Mandatory property flags when initializing a property with a literal
+						if self.syn.KW_AUTO in e.keywords:
+							completions.append(("auto\tkeyword", "Auto",))
+						if self.syn.KW_AUTOREADONLY in e.keywords:
+							completions.append(("autoreadonly\tkeyword", "AutoReadOnly",))
+						return completions
+					except Linter.SyntacticError as f:
 						return
 				return
 			except Linter.StateCancel as e:
