@@ -353,49 +353,66 @@ class EventListener(sublime_plugin.EventListener):
 								tokens.append(token)
 					except Linter.LexicalError as f:
 						return
-					try:
-						stat = self.syn.Process(tokens)
-						# Optional flags
-						if stat.type == self.syn.STAT_SCRIPTHEADER:
-							if not stat.data.parent:
-								completions.append(self.completionKeywordExtends)
-							if not self.lex.KW_CONDITIONAL in stat.data.flags:
-								completions.append(self.completionKeywordConditional)
-							if not self.lex.KW_HIDDEN in stat.data.flags:
-								completions.append(self.completionKeywordHidden)
-						elif stat.type == self.syn.STAT_PROPERTYDEF:
-							if not self.lex.KW_AUTO in stat.data.flags and not self.syn.KW_AUTOREADONLY in stat.data.flags:
-								completions.append(self.completionKeywordAuto)
-							if not self.lex.KW_AUTOREADONLY in stat.data.flags and not self.syn.KW_AUTO in stat.data.flags:
-								completions.append(self.completionKeywordAutoReadOnly)
-							if not self.lex.KW_CONDITIONAL in stat.data.flags:
-								completions.append(self.completionKeywordConditional)
-							if not self.lex.KW_HIDDEN in stat.data.flags:
-								completions.append(self.completionKeywordHidden)
-						elif stat.type == self.syn.STAT_VARIABLEDEF:
-							if not self.lex.KW_CONDITIONAL in stat.data.flags:
-								completions.append(self.completionKeywordConditional)
-						elif stat.type == self.syn.STAT_FUNCTIONDEF:
-							if not self.lex.KW_NATIVE in stat.data.flags:
-								completions.append(self.completionKeywordNative)
-							if not self.lex.KW_GLOBAL in stat.data.flags:
-								completions.append(self.completionKeywordGlobal)
-						elif stat.type == self.syn.STAT_EVENTDEF:
-							if not self.lex.KW_NATIVE in stat.data.flags:
-								completions.append(self.completionKeywordNative)
-						return completions
-					except Linter.ExpectedTypeError as f:
-						completions.extend(self.GetTypeCompletions(view, f.baseTypes))
-						return completions
-					except Linter.ExpectedKeywordError as f:
-						# Mandatory property flags when initializing a property with a literal
-						if self.syn.KW_AUTO in e.keywords:
-							completions.append(("auto\tkeyword", "Auto",))
-						if self.syn.KW_AUTOREADONLY in e.keywords:
-							completions.append(("autoreadonly\tkeyword", "AutoReadOnly",))
-						return completions
-					except Linter.SyntacticError as f:
-						return
+					if tokens:
+						if tokens[-1].type != self.lex.COMMENT_LINE:
+							try:
+								stat = self.syn.Process(tokens)
+								# Optional flags
+								if stat.type == self.syn.STAT_SCRIPTHEADER:
+									if not stat.data.parent:
+										completions.append(self.completionKeywordExtends)
+									if not self.lex.KW_CONDITIONAL in stat.data.flags:
+										completions.append(self.completionKeywordConditional)
+									if not self.lex.KW_HIDDEN in stat.data.flags:
+										completions.append(self.completionKeywordHidden)
+								elif stat.type == self.syn.STAT_PROPERTYDEF:
+									if not self.lex.KW_AUTO in stat.data.flags and not self.syn.KW_AUTOREADONLY in stat.data.flags:
+										completions.append(self.completionKeywordAuto)
+									if not self.lex.KW_AUTOREADONLY in stat.data.flags and not self.syn.KW_AUTO in stat.data.flags:
+										completions.append(self.completionKeywordAutoReadOnly)
+									if not self.lex.KW_CONDITIONAL in stat.data.flags:
+										completions.append(self.completionKeywordConditional)
+									if not self.lex.KW_HIDDEN in stat.data.flags:
+										completions.append(self.completionKeywordHidden)
+								elif stat.type == self.syn.STAT_VARIABLEDEF:
+									if not self.lex.KW_CONDITIONAL in stat.data.flags:
+										completions.append(self.completionKeywordConditional)
+								elif stat.type == self.syn.STAT_FUNCTIONDEF:
+									if not self.lex.KW_NATIVE in stat.data.flags:
+										completions.append(self.completionKeywordNative)
+									if not self.lex.KW_GLOBAL in stat.data.flags:
+										completions.append(self.completionKeywordGlobal)
+								elif stat.type == self.syn.STAT_EVENTDEF:
+									if not self.lex.KW_NATIVE in stat.data.flags:
+										completions.append(self.completionKeywordNative)
+								return completions
+							except Linter.ExpectedTypeError as f:
+								completions.extend(self.GetTypeCompletions(view, f.baseTypes))
+								return completions
+							except Linter.ExpectedKeywordError as f:
+								# Mandatory property flags when initializing a property with a literal
+								if self.syn.KW_AUTO in e.keywords:
+									completions.append(("auto\tkeyword", "Auto",))
+								if self.syn.KW_AUTOREADONLY in e.keywords:
+									completions.append(("autoreadonly\tkeyword", "AutoReadOnly",))
+								return completions
+							except Linter.ExpectedLiteralError as f:
+								print(f.message)
+								# Literals when initializing a property
+								if tokens[1].type == self.lex.KW_PROPERTY:
+									if tokens[0].type == self.lex.IDENTIFIER:
+										completions.append(self.completionKeywordNone)
+									elif tokens[0].type == self.lex.KW_BOOL:
+										completions.append(self.completionKeywordTrue)
+										completions.append(self.completionKeywordFalse)
+									elif tokens[0].type == self.lex.KW_STRING:
+										completions.append(("stringliteral\tstring literal", "\"${0}\""))
+									return completions
+								elif tokens[1].type == self.lex.LEFT_BRACKET and tokens[2].type == self.lex.RIGHT_BRACKET and tokens[3].type == self.lex.KW_PROPERTY:
+									completions.append(self.completionKeywordNone)
+									return completions
+							except Linter.SyntacticError as f:
+								return
 				return
 			except Linter.StateCancel as e:
 				print("State")
@@ -422,55 +439,57 @@ class EventListener(sublime_plugin.EventListener):
 								tokens.append(token)
 					except Linter.LexicalError as f:
 						return
-					tokenCount = len(tokens)
-					# Functions without return types and events
-					if tokenCount == 1:
-						if tokens[0].type == self.lex.KW_FUNCTION:
-							# Functions/events defined in the empty state.
-							for name, stat in e.functions[1].items():
-								if stat.type == self.syn.STAT_FUNCTIONDEF and not stat.data.type and not e.functions[2].get(name, False):
-									completions.append(SublimePapyrus.MakeFunctionCompletion(stat, self.sem, False, "self", True))
-							# Inherited functions/events.
-							for name, stat in e.functions[0].items():
-								if stat.type == self.syn.STAT_FUNCTIONDEF and not stat.data.type and not e.functions[2].get(name, False) and not e.functions[1].get(name, False):
-									completions.append(SublimePapyrus.MakeFunctionCompletion(stat, self.sem, False, "parent", True))
-							return completions
-						elif tokens[0].type == self.lex.KW_EVENT:
-							# Functions/events defined in the empty state.
-							for name, stat in e.functions[1].items():
-								if stat.type == self.syn.STAT_EVENTDEF and not e.functions[2].get(name, False):
-									completions.append(SublimePapyrus.MakeEventCompletion(stat, self.sem, False, "self", True))
-							# Inherited functions/events.
-							for name, stat in e.functions[0].items():
-								if stat.type == self.syn.STAT_EVENTDEF and not e.functions[2].get(name, False) and not e.functions[1].get(name, False):
-									completions.append(SublimePapyrus.MakeEventCompletion(stat, self.sem, False, "parent", True))
-							return completions
-					# Functions with non-array return types
-					elif tokenCount == 2 and tokens[1].type == self.lex.KW_FUNCTION:
-						if tokens[0].type == self.lex.IDENTIFIER or tokens[0].type == self.lex.KW_BOOL or tokens[0].type == self.lex.KW_FLOAT or tokens[0].type == self.lex.KW_INT or tokens[0].type == self.lex.KW_STRING:
-							# Functions/events defined in the empty state.
-							funcType = tokens[0].value.upper()
-							for name, stat in e.functions[1].items():
-								if stat.type == self.syn.STAT_FUNCTIONDEF and not stat.data.array and stat.data.type == funcType and not e.functions[2].get(name, False):
-									completions.append(SublimePapyrus.MakeFunctionCompletion(stat, self.sem, False, "self", True))
-							# Inherited functions/events.
-							for name, stat in e.functions[0].items():
-								if stat.type == self.syn.STAT_FUNCTIONDEF and not stat.data.array and stat.data.type == funcType and not e.functions[2].get(name, False) and not e.functions[1].get(name, False):
-									completions.append(SublimePapyrus.MakeFunctionCompletion(stat, self.sem, False, "parent", True))
-							return completions 
-					# Functions with array return types
-					elif tokenCount == 4 and tokens[3].type == self.lex.KW_FUNCTION and tokens[1].type == self.lex.LEFT_BRACKET and tokens[2].type == self.lex.RIGHT_BRACKET:
-						if tokens[0].type == self.lex.IDENTIFIER or tokens[0].type == self.lex.KW_BOOL or tokens[0].type == self.lex.KW_FLOAT or tokens[0].type == self.lex.KW_INT or tokens[0].type == self.lex.KW_STRING:
-							# Functions/events defined in the empty state.
-							funcType = tokens[0].value.upper()
-							for name, stat in e.functions[1].items():
-								if stat.type == self.syn.STAT_FUNCTIONDEF and stat.data.array and stat.data.type == funcType and not e.functions[2].get(name, False):
-									completions.append(SublimePapyrus.MakeFunctionCompletion(stat, self.sem, False, "self", True))
-							# Inherited functions/events.
-							for name, stat in e.functions[0].items():
-								if stat.type == self.syn.STAT_FUNCTIONDEF and stat.data.array and stat.data.type == funcType and not e.functions[2].get(name, False) and not e.functions[1].get(name, False):
-									completions.append(SublimePapyrus.MakeFunctionCompletion(stat, self.sem, False, "parent", True))
-							return completions
+					if tokens:
+						if tokens[-1].type != self.lex.COMMENT_LINE:
+							tokenCount = len(tokens)
+							# Functions without return types and events
+							if tokenCount == 1:
+								if tokens[0].type == self.lex.KW_FUNCTION:
+									# Functions/events defined in the empty state.
+									for name, stat in e.functions[1].items():
+										if stat.type == self.syn.STAT_FUNCTIONDEF and not stat.data.type and not e.functions[2].get(name, False):
+											completions.append(SublimePapyrus.MakeFunctionCompletion(stat, self.sem, False, "self", True))
+									# Inherited functions/events.
+									for name, stat in e.functions[0].items():
+										if stat.type == self.syn.STAT_FUNCTIONDEF and not stat.data.type and not e.functions[2].get(name, False) and not e.functions[1].get(name, False):
+											completions.append(SublimePapyrus.MakeFunctionCompletion(stat, self.sem, False, "parent", True))
+									return completions
+								elif tokens[0].type == self.lex.KW_EVENT:
+									# Functions/events defined in the empty state.
+									for name, stat in e.functions[1].items():
+										if stat.type == self.syn.STAT_EVENTDEF and not e.functions[2].get(name, False):
+											completions.append(SublimePapyrus.MakeEventCompletion(stat, self.sem, False, "self", True))
+									# Inherited functions/events.
+									for name, stat in e.functions[0].items():
+										if stat.type == self.syn.STAT_EVENTDEF and not e.functions[2].get(name, False) and not e.functions[1].get(name, False):
+											completions.append(SublimePapyrus.MakeEventCompletion(stat, self.sem, False, "parent", True))
+									return completions
+							# Functions with non-array return types
+							elif tokenCount == 2 and tokens[1].type == self.lex.KW_FUNCTION:
+								if tokens[0].type == self.lex.IDENTIFIER or tokens[0].type == self.lex.KW_BOOL or tokens[0].type == self.lex.KW_FLOAT or tokens[0].type == self.lex.KW_INT or tokens[0].type == self.lex.KW_STRING:
+									# Functions/events defined in the empty state.
+									funcType = tokens[0].value.upper()
+									for name, stat in e.functions[1].items():
+										if stat.type == self.syn.STAT_FUNCTIONDEF and not stat.data.array and stat.data.type == funcType and not e.functions[2].get(name, False):
+											completions.append(SublimePapyrus.MakeFunctionCompletion(stat, self.sem, False, "self", True))
+									# Inherited functions/events.
+									for name, stat in e.functions[0].items():
+										if stat.type == self.syn.STAT_FUNCTIONDEF and not stat.data.array and stat.data.type == funcType and not e.functions[2].get(name, False) and not e.functions[1].get(name, False):
+											completions.append(SublimePapyrus.MakeFunctionCompletion(stat, self.sem, False, "parent", True))
+									return completions 
+							# Functions with array return types
+							elif tokenCount == 4 and tokens[3].type == self.lex.KW_FUNCTION and tokens[1].type == self.lex.LEFT_BRACKET and tokens[2].type == self.lex.RIGHT_BRACKET:
+								if tokens[0].type == self.lex.IDENTIFIER or tokens[0].type == self.lex.KW_BOOL or tokens[0].type == self.lex.KW_FLOAT or tokens[0].type == self.lex.KW_INT or tokens[0].type == self.lex.KW_STRING:
+									# Functions/events defined in the empty state.
+									funcType = tokens[0].value.upper()
+									for name, stat in e.functions[1].items():
+										if stat.type == self.syn.STAT_FUNCTIONDEF and stat.data.array and stat.data.type == funcType and not e.functions[2].get(name, False):
+											completions.append(SublimePapyrus.MakeFunctionCompletion(stat, self.sem, False, "self", True))
+									# Inherited functions/events.
+									for name, stat in e.functions[0].items():
+										if stat.type == self.syn.STAT_FUNCTIONDEF and stat.data.array and stat.data.type == funcType and not e.functions[2].get(name, False) and not e.functions[1].get(name, False):
+											completions.append(SublimePapyrus.MakeFunctionCompletion(stat, self.sem, False, "parent", True))
+									return completions
 				return
 			except Linter.FunctionDefinitionCancel as e:
 				print("Function/event")
@@ -550,6 +569,33 @@ class EventListener(sublime_plugin.EventListener):
 								tokens.append(token)
 					except Linter.LexicalError as f:
 						return
+					if tokens:
+						if tokens[-1].type != self.lex.COMMENT_LINE:
+							try:
+								stat = self.syn.Process(tokens)
+							except Linter.ExpectedTypeError as f:
+								print(f.message)
+								completions.extend(self.GetTypeCompletions(view, f.baseTypes))
+								return completions
+							except Linter.ExpectedIdentifierError as f:
+								print(f.message)
+							except Linter.ExpectedLiteralError as f:
+								print(f.message)
+							except Linter.ExpectedOperatorError as f:
+								print(f.message)
+							except Linter.ExpectedVariableIdentifierError as f:
+								print(f.message)
+							except Linter.ExpectedParameterIdentifierError as f:
+								print(f.message)
+							except Linter.ExpectedFunctionIdentifierError as f:
+								print(f.message)
+							except Linter.ExpectedEventIdentifierError as f:
+								print(f.message)
+							except Linter.ExpectedKeywordError as f:
+								print(f.message)
+							except Linter.SyntacticError as f:
+								print(f.message)
+								return
 				return
 			except Linter.PropertyDefinitionCancel as e:
 				print("Property")
@@ -572,6 +618,9 @@ class EventListener(sublime_plugin.EventListener):
 								tokens.append(token)
 					except Linter.LexicalError as f:
 						return
+					if tokens:
+						if tokens[-1].type != self.lex.COMMENT_LINE:
+							pass
 				return
 			except Linter.SemanticError as e:
 				print("Semantic error")
