@@ -660,6 +660,38 @@ class EventListener(sublime_plugin.EventListener):
 									except Linter.SemanticError as g:
 										return
 									return completions
+								else:
+									print("Not following a dot")
+									for name, obj in e.functions[0].items():
+										if obj.type == self.syn.STAT_FUNCTIONDEF:
+											completions.append(SublimePapyrus.MakeFunctionCompletion(obj, self.sem, True, "parent"))
+										elif obj.type == self.syn.STAT_EVENTDEF:
+											completions.append(SublimePapyrus.MakeEventCompletion(obj, self.sem, True, "parent"))
+									for name, obj in e.functions[1].items():
+										if obj.type == self.syn.STAT_FUNCTIONDEF:
+											completions.append(SublimePapyrus.MakeFunctionCompletion(obj, self.sem, True, "self"))
+										elif obj.type == self.syn.STAT_EVENTDEF:
+											completions.append(SublimePapyrus.MakeEventCompletion(obj, self.sem, True, "self"))
+									for name, obj in e.variables[0].items():
+										if obj.type == self.syn.STAT_PROPERTYDEF:
+											completions.append(SublimePapyrus.MakePropertyCompletion(obj, "parent"))
+									for name, obj in e.variables[1].items():
+										if obj.type == self.syn.STAT_PROPERTYDEF:
+											completions.append(SublimePapyrus.MakePropertyCompletion(obj, "self"))
+										elif obj.type == self.syn.STAT_VARIABLEDEF:
+											completions.append(SublimePapyrus.MakeVariableCompletion(obj))
+									for scope in e.variables[2:]:
+										for name, obj in scope.items():
+											if obj.type == self.syn.STAT_VARIABLEDEF:
+												completions.append(SublimePapyrus.MakeVariableCompletion(obj))
+											elif obj.type == self.syn.STAT_PARAMETER:
+												completions.append(SublimePapyrus.MakeParameterCompletion(obj))
+									completions.extend(self.GetTypeCompletions(view, False))
+									completions.append(self.completionKeywordFalse)
+									completions.append(self.completionKeywordTrue)
+									completions.append(self.completionKeywordNone)
+									completions.append(self.completionKeywordAs)
+									return completions
 #							except Linter.ExpectedOperatorError as f:
 #								print(f.message)
 #							except Linter.ExpectedVariableIdentifierError as f:
@@ -674,6 +706,9 @@ class EventListener(sublime_plugin.EventListener):
 #								print(f.message)
 							except Linter.SyntacticError as f:
 								print(f.message)
+								if self.syn.stack and self.syn.stack[-2].type == self.syn.LEFT_PARENTHESIS and self.syn.stack[-1].type != self.syn.RIGHT_PARENTHESIS:
+									completions.append(self.completionKeywordAs)
+									return completions
 								return
 				return
 			except Linter.PropertyDefinitionCancel as e:
