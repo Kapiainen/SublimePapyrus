@@ -124,8 +124,6 @@ class EventListener(sublime_plugin.EventListener):
 		self.completionKeywordNative = ("native\tkeyword", "Native",)
 		self.completionKeywordParent = ("parent\tkeyword", "Parent",)
 		self.completionKeywordSelf = ("self\tkeyword", "Self",)
-		self.completionDefinitionEvent = ("event\tevent definition", "Event ${1:EventName}(${2:Parameters})\n\t${0}\nEndEvent",)
-		self.completionDefinitionFunction = ("function\tfunction definition", "${1:Type} Function ${2:FunctionName}(${3:Parameters})\n\t${0}\nEndFunction",)
 		self.completionKeywordFalse = ("false\tkeyword", "False",)
 		self.completionKeywordNone = ("none\tkeyword", "None",)
 		self.completionKeywordTrue = ("true\tkeyword", "True",)
@@ -331,6 +329,176 @@ class EventListener(sublime_plugin.EventListener):
 			line = lineColumn[0]+1
 			column = lineColumn[1]+1
 			lineString = view.substr(sublime.Region(view.line(locations[0]).begin(), locations[0]-len(prefix))).strip()
+			try:
+				self.sem.GetContext(currentScript, line)
+			except Linter.EmptyStateCancel as e:
+				print("Empty state")
+				if not lineString:
+					# Inherited functions/events
+					completions.append(("import\timport statement", "Import ${0:$SELECTION}",))
+					completions.append(("property\tproperty definition", "${1:Type} Property ${2:PropertyName} ${3:Auto}",))
+					completions.append(("fullproperty\tfull property definition", "${1:Type} Property ${2:PropertyName}\n\t${1:Type} Function Get()\n\t\t${3}\n\tEndFunction\n\n\tFunction Set(${1:Type} Variable)\n\t\t${4}\n\tEndFunction\nEndProperty",))
+					completions.append(("autostate\tauto state definition", "Auto State ${1:StateName}\n\t${0}\nEndState",))
+					completions.append(("state\tstate definition", "State ${1:StateName}\n\t${0}\nEndState",))
+					completions.append(("event\tevent definition", "Event ${1:EventName}(${2:Parameters})\n\t${0}\nEndEvent",))
+					completions.append(("function\tfunction definition", "${1:Type} Function ${2:FunctionName}(${3:Parameters})\n\t${0}\nEndFunction",))
+					return completions
+				else:
+					tokens = []
+					try:
+						for token in self.lex.Process(lineString):
+							if token.type != self.lex.NEWLINE:
+								tokens.append(token)
+					except Linter.LexicalError as f:
+						return
+				return
+			except Linter.StateCancel as e:
+				print("State")
+				if not lineString:
+					# Functions/events that have not yet been defined in the state.
+					for name, stat in e.functions[1].items(): # Functions/events defined in the empty state.
+						if stat.type == self.sem.STAT_EVENTDEF and not e.functions[2].get(name, False):
+							completions.append(SublimePapyrus.MakeEventCompletion(stat, self.sem, False, "self"))
+						elif stat.type == self.sem.STAT_FUNCTIONDEF and not e.functions[2].get(name, False):
+							completions.append(SublimePapyrus.MakeFunctionCompletion(stat, self.sem, False, "self"))
+					for name, stat in e.functions[0].items(): # Inherited functions/events.
+						if stat.type == self.sem.STAT_EVENTDEF and not e.functions[2].get(name, False) and not e.functions[1].get(name, False):
+							completions.append(SublimePapyrus.MakeEventCompletion(stat, self.sem, False, "parent"))
+						elif stat.type == self.sem.STAT_FUNCTIONDEF and not e.functions[2].get(name, False) and not e.functions[1].get(name, False):
+							completions.append(SublimePapyrus.MakeFunctionCompletion(stat, self.sem, False, "parent"))
+					return completions
+				else:
+					tokens = []
+					try:
+						for token in self.lex.Process(lineString):
+							if token.type != self.lex.NEWLINE:
+								tokens.append(token)
+					except Linter.LexicalError as f:
+						return
+				return
+			except Linter.FunctionDefinitionCancel as e:
+				print("Function/event")
+				if not lineString:
+					# Flow control
+					completions.append(("if\tif", "If ${1:$SELECTION}\n\t${0}\nEndIf",))
+					completions.append(("elseif\telse-if", "ElseIf ${1:$SELECTION}\n\t${0}",))
+					completions.append(("else\telse", "Else\n\t${0}",))
+					completions.append(("while\twhile-loop", "While ${1:$SELECTION}\n\t${0}\nEndWhile",))
+					completions.append(("for\tpseudo for-loop", "Int ${1:iCount} = 0\nWhile ${1:iCount} < ${2:maxSize}\n\t${0}\n\t${1:iCount} += 1\nEndWhile",))
+					if e.signature.data.type:
+						completions.append(("return\tstat.", "Return ",))
+					else:
+						completions.append(("return\tstat.", "Return",))
+					# Special variables
+					if not self.sem.KW_GLOBAL in e.signature.data.flags:
+						completions.append(("self\tkeyword", "Self",))
+						completions.append(("parent\tkeyword", "Parent",))
+					# Inherited properties
+					for name, stat in e.variables[0].items():
+						if stat.type == self.syn.STAT_PROPERTYDEF:
+							completions.append(SublimePapyrus.MakePropertyCompletion(stat, "parent"))
+					# Properties and variables declared in the empty state
+					for name, stat in e.variables[1].items():
+						if stat.type == self.syn.STAT_VARIABLEDEF:
+							completions.append(SublimePapyrus.MakeVariableCompletion(stat))
+						elif stat.type == self.syn.STAT_PROPERTYDEF:
+							completions.append(SublimePapyrus.MakePropertyCompletion(stat, "self"))
+					# Function/event parameters and variables declared in the function
+					for name, stat in e.variables[2].items():
+						if stat.type == self.syn.STAT_VARIABLEDEF:
+							completions.append(SublimePapyrus.MakeVariableCompletion(stat))
+						elif stat.type == self.syn.STAT_PARAMETER:
+							completions.append(SublimePapyrus.MakeParameterCompletion(stat))
+					# Variables declared in if, elseif, else, and while scopes
+					if len(e.variables) > 3:
+						for scope in e.variables[3:]:
+							for name, stat in scope.items():
+								if stat.type == self.syn.STAT_VARIABLEDEF:
+									completions.append(SublimePapyrus.MakeVariableCompletion(stat))
+					# Inherited functions/events
+					for name, stat in e.functions[0].items():
+						if stat.type == self.syn.STAT_FUNCTIONDEF:
+							completions.append(SublimePapyrus.MakeFunctionCompletion(stat, self.sem, True, "parent"))
+						elif stat.type == self.syn.STAT_EVENTDEF:
+							completions.append(SublimePapyrus.MakeEventCompletion(stat, self.sem, True, "parent"))
+					# Functions/events defined in the empty state
+					for name, stat in e.functions[1].items():
+						if stat.type == self.syn.STAT_FUNCTIONDEF:
+							completions.append(SublimePapyrus.MakeFunctionCompletion(stat, self.sem, True, "self"))
+						elif stat.type == self.syn.STAT_EVENTDEF:
+							completions.append(SublimePapyrus.MakeEventCompletion(stat, self.sem, True, "self"))
+					# Imported global functions
+					for imp in e.imports:
+						functions = self.GetFunctionCompletions(imp, True)
+						if not functions:
+							try:
+								script = self.sem.GetCachedScript(imp)
+							except:
+								return
+							if script:
+								functions = []
+								impLower = imp.lower()
+								for name, obj in script.functions.items():
+									if self.sem.KW_GLOBAL in obj.data.flags:
+										functions.append(SublimePapyrus.MakeFunctionCompletion(obj, self.sem, True, impLower))
+								self.SetFunctionCompletions(imp, functions, True)
+						completions.extend(functions)
+					# Types to facilitate variable declarations
+					completions.extend(self.GetTypeCompletions(view, True))
+					return completions
+				else:
+					tokens = []
+					try:
+						for token in self.lex.Process(lineString):
+							if token.type != self.lex.NEWLINE:
+								tokens.append(token)
+					except Linter.LexicalError as f:
+						return
+				return
+			except Linter.PropertyDefinitionCancel as e:
+				print("Property")
+				if not lineString:
+					typ = None
+					if e.array:
+						typ = "%s[]" % e.type.capitalize()
+					else:
+						typ = "%s" % e.type.capitalize()
+					if not "GET" in e.functions:
+						completions.append(("get\t%s func." % typ, "%s Function Get()\n\t${0}\nEndFunction" % typ,))
+					if not "SET" in e.functions:
+						completions.append(("set\tfunc.", "Function Set(%s aParameter)\n\t${0}\nEndFunction" % typ,))
+					return completions
+				else:
+					tokens = []
+					try:
+						for token in self.lex.Process(lineString):
+							if token.type != self.lex.NEWLINE:
+								tokens.append(token)
+					except Linter.LexicalError as f:
+						return
+				return
+			except Linter.SemanticError as e:
+				print("Semantic error")
+				return
+
+			return
+
+			tokens = []
+			try:
+				for token in self.lex.Process(lineString):
+					if token.type != self.lex.NEWLINE:
+						tokens.append(token)
+			except Linter.LexicalError as f:
+				return
+			if tokens:
+				[print(t.type) for t in tokens]
+				if tokens[-1].type == self.lex.COMMENT_LINE or tokens[-1].type == self.lex.DOCUMENTATION_STRING:# or tokens[-1].type == self.lex.COMMENT_BLOCK or tokens[-1].type == self.lex.DOCUMENTATION_STRING:
+					return
+			else:
+				print("No tokens...")
+
+			return			
+			
 			tokens = []
 			try:
 				for token in self.lex.Process(lineString):
@@ -579,6 +747,11 @@ class EventListener(sublime_plugin.EventListener):
 															functions.append(SublimePapyrus.MakeFunctionCompletion(obj, self.sem, True, impLower))
 													self.SetFunctionCompletions(imp, functions, True)
 													completions.extend(functions)
+									completions.append(self.completionKeywordFalse)
+									completions.append(self.completionKeywordNone)
+									completions.append(self.completionKeywordTrue)
+									completions.append(self.completionKeywordAs)
+									return completions
 							else:
 								if tokens[-1].type == self.sem.OP_ASSIGN:
 									try:
@@ -634,10 +807,10 @@ class EventListener(sublime_plugin.EventListener):
 														functions.append(SublimePapyrus.MakeFunctionCompletion(obj, self.sem, True, impLower))
 												self.SetFunctionCompletions(imp, functions, True)
 												completions.extend(functions)
-							completions.append(self.completionKeywordFalse)
-							completions.append(self.completionKeywordNone)
-							completions.append(self.completionKeywordTrue)
-							completions.append(self.completionKeywordAs)
+#							completions.append(self.completionKeywordFalse)
+#							completions.append(self.completionKeywordNone)
+#							completions.append(self.completionKeywordTrue)
+#							completions.append(self.completionKeywordAs)
 							return completions
 						except Linter.SemanticError as f:
 							#print("5-4: %s" % f.message)
