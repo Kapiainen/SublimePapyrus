@@ -2517,10 +2517,19 @@ class Semantic(SharedResources):
 		for statements in script.definitions[""]:
 			if self.cancel >= statements[0].line and self.cancel <= statements[-1].line:
 				if statements[0].type == self.STAT_PROPERTYDEF:
-					#print("Property")
-					self.PushFunctionScope()
-					self.PropertyBlock(statements)
-					#self.PopFunctionScope()
+					funcStart = None
+					i = 1
+					length = len(statements) - 1 # Subtract one because the last one is 'EndProperty'.
+					while i < length:
+						if statements[i].type == self.STAT_FUNCTIONDEF:
+							funcStart = i
+						elif statements[i].type == self.STAT_KEYWORD and statements[i].data.type == self.KW_ENDFUNCTION:
+							if funcStart and self.cancel >= statements[funcStart].line and self.cancel <= statements[i].line:
+								self.PushVariableScope()
+								self.FunctionBlock(statements[funcStart:i+1])
+							else:
+								funcStart = None
+						i += 1
 					raise PropertyDefinitionCancel(statements[0].data.typeIdentifier, statements[0].data.array, self.functions)
 				elif statements[0].type == self.STAT_FUNCTIONDEF or statements[0].type == self.STAT_EVENTDEF:
 					#print("Empty state function/event")
