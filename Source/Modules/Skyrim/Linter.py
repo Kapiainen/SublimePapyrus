@@ -2517,6 +2517,7 @@ class Semantic(SharedResources):
 		for statements in script.definitions[""]:
 			if self.cancel >= statements[0].line and self.cancel <= statements[-1].line:
 				if statements[0].type == self.STAT_PROPERTYDEF:
+					functions = {}
 					funcStart = None
 					i = 1
 					length = len(statements) - 1 # Subtract one because the last one is 'EndProperty'.
@@ -2524,26 +2525,23 @@ class Semantic(SharedResources):
 						if statements[i].type == self.STAT_FUNCTIONDEF:
 							funcStart = i
 						elif statements[i].type == self.STAT_KEYWORD and statements[i].data.type == self.KW_ENDFUNCTION:
-							if funcStart and self.cancel >= statements[funcStart].line and self.cancel <= statements[i].line:
-								self.PushVariableScope()
-								self.FunctionBlock(statements[funcStart:i+1])
-							else:
-								funcStart = None
+							if funcStart:
+								functions[statements[funcStart].data.name] = (funcStart, i,)
+							funcStart = None
 						i += 1
-					raise PropertyDefinitionCancel(statements[0].data.typeIdentifier, statements[0].data.array, self.functions)
+					for name, indices in functions.items():
+						if self.cancel >= statements[indices[0]].line and self.cancel <= statements[indices[1]].line:
+							self.PushVariableScope()
+							self.FunctionBlock(statements[indices[0]:indices[1]+1])
+					raise PropertyDefinitionCancel(statements[0].data.typeIdentifier, statements[0].data.array, [f for f in functions])
 				elif statements[0].type == self.STAT_FUNCTIONDEF or statements[0].type == self.STAT_EVENTDEF:
-					#print("Empty state function/event")
 					self.PushVariableScope()
 					self.FunctionBlock(statements)
-					#self.PopVariableScope()
 		for s in [s for s in script.definitions if s != ""]:
 			for statements in script.definitions[s]:
 				if self.cancel >= statements[0].line and self.cancel <= statements[-1].line:
-					#print("State function/event")
 					self.PushVariableScope()
 					self.FunctionBlock(statements)
-					#self.PopVariableScope()
-					#return
 		for name, statements in script.states[1].items():
 			if self.cancel >= statements[0].line and self.cancel <= statements[-1].line:
 				stateFunctions = {}
@@ -2551,22 +2549,4 @@ class Semantic(SharedResources):
 					stateFunctions[func[0].data.name] = func[0]
 				self.functions.append(stateFunctions)
 				raise StateCancel(self.functions)
-		#print("Empty state")
 		raise EmptyStateCancel(self.functions)
-		
-"""
-for statements in self.definitions[""]:
-	typ = statements[0].type
-	if typ == self.STAT_FUNCTIONDEF or typ == self.STAT_EVENTDEF:
-		self.PushVariableScope()
-		self.FunctionBlock(statements)
-		self.PopVariableScope()
-	elif typ == self.STAT_PROPERTYDEF:
-		self.PushFunctionScope()
-		self.PropertyBlock(statements)
-		self.PopFunctionScope()
-for statements in stateDefinitions:
-	self.PushFunctionScope()
-	self.StateBlock(statements)
-	self.PopFunctionScope()
-"""
