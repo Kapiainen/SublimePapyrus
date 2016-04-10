@@ -2390,6 +2390,8 @@ class Semantic(SharedResources):
 		elif node.type == self.NODE_BINARYOPERATOR:
 			if node.data.operator.type == self.KW_AS:
 				leftResult = self.NodeVisitor(node.data.leftOperand, expected)
+				if leftResult.type == self.KW_NONE:
+					self.Abort("The left-hand operand of the cast operation evaluates to NONE.")
 				rightResult = NodeResult(node.data.rightOperand.data.token.value, False, True)
 				if leftResult.array and rightResult.type != self.KW_STRING and rightResult.type != self.KW_BOOL:
 					self.Abort("Arrays can only be cast to STRING and BOOL.")
