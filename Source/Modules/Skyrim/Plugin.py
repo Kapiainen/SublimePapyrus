@@ -354,17 +354,19 @@ class EventListener(sublime_plugin.EventListener):
 				return
 			except Linter.StateCancel as e:
 				print("State")
+				# Functions/events that have not yet been defined in the state.
 				if not lineString:
-					# Functions/events that have not yet been defined in the state.
-					for name, stat in e.functions[1].items(): # Functions/events defined in the empty state.
-						if stat.type == self.sem.STAT_EVENTDEF and not e.functions[2].get(name, False):
+					# Functions/events defined in the empty state.
+					for name, stat in e.functions[1].items():
+						if stat.type == self.syn.STAT_EVENTDEF and not e.functions[2].get(name, False):
 							completions.append(SublimePapyrus.MakeEventCompletion(stat, self.sem, False, "self"))
-						elif stat.type == self.sem.STAT_FUNCTIONDEF and not e.functions[2].get(name, False):
+						elif stat.type == self.syn.STAT_FUNCTIONDEF and not e.functions[2].get(name, False):
 							completions.append(SublimePapyrus.MakeFunctionCompletion(stat, self.sem, False, "self"))
-					for name, stat in e.functions[0].items(): # Inherited functions/events.
-						if stat.type == self.sem.STAT_EVENTDEF and not e.functions[2].get(name, False) and not e.functions[1].get(name, False):
+					# Inherited functions/events.
+					for name, stat in e.functions[0].items():
+						if stat.type == self.syn.STAT_EVENTDEF and not e.functions[2].get(name, False) and not e.functions[1].get(name, False):
 							completions.append(SublimePapyrus.MakeEventCompletion(stat, self.sem, False, "parent"))
-						elif stat.type == self.sem.STAT_FUNCTIONDEF and not e.functions[2].get(name, False) and not e.functions[1].get(name, False):
+						elif stat.type == self.syn.STAT_FUNCTIONDEF and not e.functions[2].get(name, False) and not e.functions[1].get(name, False):
 							completions.append(SublimePapyrus.MakeFunctionCompletion(stat, self.sem, False, "parent"))
 					return completions
 				else:
@@ -375,6 +377,55 @@ class EventListener(sublime_plugin.EventListener):
 								tokens.append(token)
 					except Linter.LexicalError as f:
 						return
+					tokenCount = len(tokens)
+					# Functions without return types and events
+					if tokenCount == 1:
+						if tokens[0].type == self.lex.KW_FUNCTION:
+							# Functions/events defined in the empty state.
+							for name, stat in e.functions[1].items():
+								if stat.type == self.syn.STAT_FUNCTIONDEF and not stat.data.type and not e.functions[2].get(name, False):
+									completions.append(SublimePapyrus.MakeFunctionCompletion(stat, self.sem, False, "self", True))
+							# Inherited functions/events.
+							for name, stat in e.functions[0].items():
+								if stat.type == self.syn.STAT_FUNCTIONDEF and not stat.data.type and not e.functions[2].get(name, False) and not e.functions[1].get(name, False):
+									completions.append(SublimePapyrus.MakeFunctionCompletion(stat, self.sem, False, "parent", True))
+							return completions
+						elif tokens[0].type == self.lex.KW_EVENT:
+							# Functions/events defined in the empty state.
+							for name, stat in e.functions[1].items():
+								if stat.type == self.syn.STAT_EVENTDEF and not e.functions[2].get(name, False):
+									completions.append(SublimePapyrus.MakeEventCompletion(stat, self.sem, False, "self", True))
+							# Inherited functions/events.
+							for name, stat in e.functions[0].items():
+								if stat.type == self.syn.STAT_EVENTDEF and not e.functions[2].get(name, False) and not e.functions[1].get(name, False):
+									completions.append(SublimePapyrus.MakeEventCompletion(stat, self.sem, False, "parent", True))
+							return completions
+					# Functions with non-array return types
+					elif tokenCount == 2 and tokens[1].type == self.lex.KW_FUNCTION:
+						if tokens[0].type == self.lex.IDENTIFIER or tokens[0].type == self.lex.KW_BOOL or tokens[0].type == self.lex.KW_FLOAT or tokens[0].type == self.lex.KW_INT or tokens[0].type == self.lex.KW_STRING:
+							# Functions/events defined in the empty state.
+							funcType = tokens[0].value.upper()
+							for name, stat in e.functions[1].items():
+								if stat.type == self.syn.STAT_FUNCTIONDEF and not stat.data.array and stat.data.type == funcType and not e.functions[2].get(name, False):
+									completions.append(SublimePapyrus.MakeFunctionCompletion(stat, self.sem, False, "self", True))
+							# Inherited functions/events.
+							for name, stat in e.functions[0].items():
+								if stat.type == self.syn.STAT_FUNCTIONDEF and not stat.data.array and stat.data.type == funcType and not e.functions[2].get(name, False) and not e.functions[1].get(name, False):
+									completions.append(SublimePapyrus.MakeFunctionCompletion(stat, self.sem, False, "parent", True))
+							return completions 
+					# Functions with array return types
+					elif tokenCount == 4 and tokens[3].type == self.lex.KW_FUNCTION and tokens[1].type == self.lex.LEFT_BRACKET and tokens[2].type == self.lex.RIGHT_BRACKET:
+						if tokens[0].type == self.lex.IDENTIFIER or tokens[0].type == self.lex.KW_BOOL or tokens[0].type == self.lex.KW_FLOAT or tokens[0].type == self.lex.KW_INT or tokens[0].type == self.lex.KW_STRING:
+							# Functions/events defined in the empty state.
+							funcType = tokens[0].value.upper()
+							for name, stat in e.functions[1].items():
+								if stat.type == self.syn.STAT_FUNCTIONDEF and stat.data.array and stat.data.type == funcType and not e.functions[2].get(name, False):
+									completions.append(SublimePapyrus.MakeFunctionCompletion(stat, self.sem, False, "self", True))
+							# Inherited functions/events.
+							for name, stat in e.functions[0].items():
+								if stat.type == self.syn.STAT_FUNCTIONDEF and stat.data.array and stat.data.type == funcType and not e.functions[2].get(name, False) and not e.functions[1].get(name, False):
+									completions.append(SublimePapyrus.MakeFunctionCompletion(stat, self.sem, False, "parent", True))
+							return completions
 				return
 			except Linter.FunctionDefinitionCancel as e:
 				print("Function/event")
