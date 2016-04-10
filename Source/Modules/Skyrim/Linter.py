@@ -2107,13 +2107,16 @@ class Semantic(SharedResources):
 				if expr:
 					if expr.array:
 						if not self.statements[self.statementsIndex].data.array:
-							self.Abort("The expression resolves to an array type, but the variable is not an array variable.")
+							self.Abort("The expression resolves to an array type, but the variable is not an array.")
 						if self.statements[self.statementsIndex].data.type != expr.type:
 							self.Abort("The expression resolves to an array type, but the variable is an array of another type.")
 					elif self.statements[self.statementsIndex].data.array:
 						val = self.GetLiteral(self.statements[self.statementsIndex].data.value)
-						if val != self.KW_NONE:
-							self.Abort("Array variables can only be initialized with NONE.")
+						if val:
+							if val != self.KW_NONE:
+								self.Abort("Array variables can only be initialized with NONE.")
+						else:
+							self.Abort("The expression does not resolve to a(n) %s array." % self.statements[self.statementsIndex].data.type)
 					elif self.statements[self.statementsIndex].data.type != expr.type:
 						if not self.CanAutoCast(expr, NodeResult(self.statements[self.statementsIndex].data.type, self.statements[self.statementsIndex].data.array, True)):
 							self.Abort("The expression resolves to the incorrect type and cannot be automatically cast to the correct type.")
