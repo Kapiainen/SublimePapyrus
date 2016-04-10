@@ -2517,7 +2517,7 @@ class Semantic(SharedResources):
 		self.states = script.states
 		self.imports = script.imports
 		for statements in script.definitions[""]:
-			if self.cancel >= statements[0].line and self.cancel <= statements[-1].line:
+			if self.cancel > statements[0].line and self.cancel <= statements[-1].line:
 				if statements[0].type == self.STAT_PROPERTYDEF:
 					functions = {}
 					funcStart = None
@@ -2541,11 +2541,11 @@ class Semantic(SharedResources):
 					self.FunctionBlock(statements)
 		for s in [s for s in script.definitions if s != ""]:
 			for statements in script.definitions[s]:
-				if self.cancel >= statements[0].line and self.cancel <= statements[-1].line:
+				if self.cancel > statements[0].line and self.cancel <= statements[-1].line:
 					self.PushVariableScope()
 					self.FunctionBlock(statements)
 		for name, statements in script.states[1].items():
-			if self.cancel >= statements[0].line and self.cancel <= statements[-1].line:
+			if self.cancel > statements[0].line and self.cancel <= statements[-1].line:
 				stateFunctions = {}
 				for func in script.definitions[name]:
 					stateFunctions[func[0].data.name] = func[0]
