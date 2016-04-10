@@ -548,16 +548,17 @@ class EventListener(sublime_plugin.EventListener):
 						if not functions:
 							try:
 								script = self.sem.GetCachedScript(imp)
+								if script:
+									functions = []
+									impLower = imp.lower()
+									for name, obj in script.functions.items():
+										if self.lex.KW_GLOBAL in obj.data.flags:
+											functions.append(SublimePapyrus.MakeFunctionCompletion(obj, self.sem, True, impLower))
+									self.SetFunctionCompletions(imp, functions, True)
 							except:
 								return
-							if script:
-								functions = []
-								impLower = imp.lower()
-								for name, obj in script.functions.items():
-									if self.sem.KW_GLOBAL in obj.data.flags:
-										functions.append(SublimePapyrus.MakeFunctionCompletion(obj, self.sem, True, impLower))
-								self.SetFunctionCompletions(imp, functions, True)
-						completions.extend(functions)
+						if functions:
+							completions.extend(functions)
 					# Types to facilitate variable declarations
 					completions.extend(self.GetTypeCompletions(view, True))
 					return completions
@@ -579,20 +580,75 @@ class EventListener(sublime_plugin.EventListener):
 								return completions
 							except Linter.ExpectedIdentifierError as f:
 								print(f.message)
-							except Linter.ExpectedLiteralError as f:
-								print(f.message)
-							except Linter.ExpectedOperatorError as f:
-								print(f.message)
-							except Linter.ExpectedVariableIdentifierError as f:
-								print(f.message)
-							except Linter.ExpectedParameterIdentifierError as f:
-								print(f.message)
-							except Linter.ExpectedFunctionIdentifierError as f:
-								print(f.message)
-							except Linter.ExpectedEventIdentifierError as f:
-								print(f.message)
-							except Linter.ExpectedKeywordError as f:
-								print(f.message)
+								if tokens[-1].type == self.lex.OP_DOT:
+									print("Accessing properties and functions")
+									try:
+										result = self.sem.NodeVisitor(self.syn.stack[-2])
+										print(result.type)
+										print(result.array)
+										print(result.object)
+										if result.array:
+											typ = result.type.capitalize()
+											completions.append(("find\tint func.", "Find(${1:%s akElement}, ${2:Int aiStartIndex = 0})" % typ,))
+											completions.append(("rfind\tint func.", "RFind(${1:%s akElement}, ${2:Int aiStartIndex = -1})" % typ,))
+											completions.append(("length\tkeyword", "Length",))
+											return completions
+										else:
+											# None and types that do not have properties nor functions/events
+											if result.type == self.lex.KW_NONE or result.type == self.lex.KW_BOOL or result.type == self.lex.KW_FLOAT or result.type == self.lex.KW_INT or result.type == self.lex.KW_STRING:
+												return
+											if not result.object:
+												print("Global %s functions" % result.type)
+												functions = self.GetFunctionCompletions(result.type, True)
+												if not functions:
+													try:
+														script = self.sem.GetCachedScript(result.type)
+														if script:
+															functions = []
+															typeLower = result.type.lower()
+															for name, obj in script.functions.items():
+																if self.lex.KW_GLOBAL in obj.data.flags:
+																	functions.append(SublimePapyrus.MakeFunctionCompletion(obj, self.sem, True, typeLower))
+															self.SetFunctionCompletions(result.type, functions, True)
+													except:
+														return
+												if functions:
+													completions.extend(functions)
+												return completions
+											else:
+												print("Non-global functions, events, and properties")
+												functions = self.GetFunctionCompletions(result.type, False)
+												if not functions:
+													try:
+														script = self.sem.GetCachedScript(result.type)
+														if script:
+															functions = []
+															typeLower = result.type.lower()
+															for name, obj in script.functions.items():
+																if self.lex.KW_GLOBAL not in obj.data.flags:
+																	functions.append(SublimePapyrus.MakeFunctionCompletion(obj, self.sem, True, typeLower))
+															self.SetFunctionCompletions(result.type, functions, False)
+													except:
+														return
+												if functions:
+													completions.extend(functions)
+												return completions
+										return
+									except Linter.SemanticError as g:
+										return
+									return completions
+#							except Linter.ExpectedOperatorError as f:
+#								print(f.message)
+#							except Linter.ExpectedVariableIdentifierError as f:
+#								print(f.message)
+#							except Linter.ExpectedParameterIdentifierError as f:
+#								print(f.message)
+#							except Linter.ExpectedFunctionIdentifierError as f:
+#								print(f.message)
+#							except Linter.ExpectedEventIdentifierError as f:
+#								print(f.message)
+#							except Linter.ExpectedKeywordError as f:
+#								print(f.message)
 							except Linter.SyntacticError as f:
 								print(f.message)
 								return
@@ -626,7 +682,7 @@ class EventListener(sublime_plugin.EventListener):
 				print("Semantic error")
 				return
 
-			return
+			return #TODO Purge everything under this
 
 			tokens = []
 			try:
@@ -642,7 +698,7 @@ class EventListener(sublime_plugin.EventListener):
 			else:
 				print("No tokens...")
 
-			return			
+			return
 			
 			tokens = []
 			try:
@@ -1209,6 +1265,8 @@ class EventListener(sublime_plugin.EventListener):
 					return functions.get("global", None)
 				else:
 					return functions.get("nonglobal", None)
+			else:
+				return None
 
 	def SetFunctionCompletions(self, script, obj, glob = False):
 		with self.cacheLock:
