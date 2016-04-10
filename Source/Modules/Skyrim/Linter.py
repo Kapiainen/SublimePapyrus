@@ -2404,6 +2404,8 @@ class Semantic(SharedResources):
 			elif node.data.operator.type == self.OP_DOT:
 				leftResult = self.NodeVisitor(node.data.leftOperand, expected)
 				expected = leftResult
+				if expected and (expected.type == self.KW_NONE or expected.type == self.KW_BOOL or expected.type == self.KW_FLOAT or expected.type == self.KW_INT or expected.type == self.KW_STRING):
+					self.Abort("%s does not have any properties, functions, nor events." % expected.type)
 				rightResult = self.NodeVisitor(node.data.rightOperand, expected)
 				result = rightResult
 			elif node.data.operator.type == self.OP_ADDITION or node.data.operator.type == self.OP_SUBTRACTION or node.data.operator.type == self.OP_MULTIPLICATION or node.data.operator.type == self.OP_DIVISION or node.data.operator.type == self.OP_MODULUS:
@@ -2435,7 +2437,7 @@ class Semantic(SharedResources):
 		if result:
 			return result
 		else:
-			return None
+			self.Abort("NodeVisitor returning NONE.")
 
 	def CanAutoCast(self, src, dest):
 		if not src or not dest:
