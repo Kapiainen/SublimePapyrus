@@ -632,6 +632,20 @@ class EventListener(sublime_plugin.EventListener):
 														return
 												if functions:
 													completions.extend(functions)
+												properties = self.GetPropertyCompletions(result.type)
+												if not properties:
+													try:
+														script = self.sem.GetCachedScript(result.type)
+														if script:
+															properties = []
+															typeLower = result.type.lower()
+															for name, obj in script.properties.items():
+																properties.append(SublimePapyrus.MakePropertyCompletion(obj, typeLower))
+															self.SetPropertyCompletions(result.type, properties)
+													except:
+														return
+												if properties:
+													completions.extend(properties)
 												return completions
 										return
 									except Linter.SemanticError as g:
