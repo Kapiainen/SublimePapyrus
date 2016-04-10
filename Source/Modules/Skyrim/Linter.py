@@ -1907,6 +1907,8 @@ class Semantic(SharedResources):
 								self.Abort("Parameters can only be initialized with literals.", start.line)
 							if param.type != value and not self.CanAutoCast(NodeResult(value, False, True), NodeResult(param.type, False, True)):
 								self.Abort("Initialization of %s parameter with %s literal." % (param.type, value), start.line)
+				if start.data.type and start.data.type != self.KW_BOOL and start.data.type != self.KW_FLOAT and start.data.type != self.KW_INT and start.data.type != self.KW_STRING and not self.GetCachedScript(start.data.type, start.line):
+					self.Abort("%s is not a valid return type." % start.data.type, start.line)
 			while self.statementsIndex < self.statementsLength:
 				if self.statements[self.statementsIndex].type == self.STAT_VARIABLEDEF:
 					self.VariableDef()
