@@ -574,6 +574,15 @@ class EventListener(sublime_plugin.EventListener):
 						if tokens[-1].type != self.lex.COMMENT_LINE:
 							try:
 								stat = self.syn.Process(tokens)
+								if stat.type == self.syn.STAT_VARIABLEDEF:
+									completions.append(self.completionKeywordAs)
+									return completions
+								elif stat.type == self.syn.STAT_ASSIGNMENT:
+									completions.append(self.completionKeywordAs)
+									return completions
+								elif stat.type == self.syn.STAT_EXPRESSION:
+									completions.append(self.completionKeywordAs)
+									return completions
 							except Linter.ExpectedTypeError as f:
 								print(f.message)
 								completions.extend(self.GetTypeCompletions(view, f.baseTypes))
