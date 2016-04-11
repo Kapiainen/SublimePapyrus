@@ -42,5 +42,9 @@
     {
         "caption": "SublimePapyrus: Generate completions (Skyrim)",
         "command": "sublime_papyrus_skyrim_generate_completions"
+    },
+	{
+        "caption": "SublimePapyrus: Clear cache (Skyrim)",
+        "command": "sublime_papyrus_skyrim_clear_cache"
     }
 ]
