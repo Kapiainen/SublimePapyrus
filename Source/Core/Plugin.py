@@ -27,7 +27,13 @@ def GetSettings():
 		return None
 
 def ShowMessage(message):
-	sublime.status_message("SublimePapyrus - %s" % message)
+		sublime.status_message("SublimePapyrus - %s" % message)
+		
+def SetStatus(view, key, value):
+	view.set_status(key, "SublimePapyrus - %s" % value)
+
+def ClearStatus(view, key):
+	view.erase_status(key)
 
 ERROR_HIGHLIGHT_KEY = "sublime_papyrus_error"
 ERROR_HIGHLIGHT_SCOPE = "invalid"
@@ -38,10 +44,10 @@ def ClearHighlights(view, key):
 def ClearLinterHighlights(view):
 	ClearHighlights(view, ERROR_HIGHLIGHT_KEY)
 
-def HighlightLinter(view, line, column = None):
-	Highlight(view, ERROR_HIGHLIGHT_KEY, ERROR_HIGHLIGHT_SCOPE, line, column)
+def HighlightLinter(view, line, column = None, center = True):
+	Highlight(view, ERROR_HIGHLIGHT_KEY, ERROR_HIGHLIGHT_SCOPE, line, column, center)
 
-def Highlight(view, key, scope, line, column = None):
+def Highlight(view, key, scope, line, column = None, center = True):
 	if view and line:
 		regions = view.get_regions(key) #[]
 		if column: # Highlight a word
@@ -54,7 +60,7 @@ def Highlight(view, key, scope, line, column = None):
 			view.add_regions(key, regions, scope)
 			settings = GetSettings()
 			if settings:
-				if settings.get("center_highlighted_line", True):
+				if center and settings.get("center_highlighted_line", True):
 					view.show_at_center(regions[0])
 
 def GetSourcePaths(view):

@@ -113,6 +113,7 @@ class EventListener(sublime_plugin.EventListener):
 		super(EventListener,self).__init__()
 		self.linterQueue = 0
 		self.linterRunning = False
+		self.linterErrors = {}
 		self.completionRunning = False
 		self.validScope = "source.papyrus.skyrim"
 		self.completionKeywordAs = ("as\tcast", "As ",)
@@ -134,6 +135,8 @@ class EventListener(sublime_plugin.EventListener):
 		if self.IsValidScope(view):
 			bufferID = view.buffer_id()
 			if bufferID:
+				if self.linterErrors.get(bufferID, None):
+					del self.linterErrors[bufferID]
 				self.ClearLinterCache(bufferID)
 
 	# Linter
@@ -207,6 +210,8 @@ class EventListener(sublime_plugin.EventListener):
 		global syn
 		global sem
 		with cacheLock:
+			if not self.linterErrors.get(self.bufferID, None):
+				self.linterErrors[self.bufferID] = {}
 			start = time.time() #DEBUG
 			settings = None
 			if view:
@@ -214,7 +219,7 @@ class EventListener(sublime_plugin.EventListener):
 			if int(sublime.version()) >= 3103 and view.is_auto_complete_visible(): # If a list of completions is visible, then cancel
 				return Exit()
 			if view:
-				SublimePapyrus.ShowMessage("Starting linter...")
+				SublimePapyrus.SetStatus(view, "sublimepapyrus-linter", "The linter is running...")
 			lexSynStart = time.time() #DEBUG
 			scriptContents = None
 			if view:
@@ -257,15 +262,25 @@ class EventListener(sublime_plugin.EventListener):
 						tokens.append(token)
 			except Linter.LexicalError as e:
 				if view:
-					SublimePapyrus.HighlightLinter(view, e.line, e.column)
-					SublimePapyrus.ShowMessage("Lexical error on line %d, column %d: %s" % (e.line, e.column, e.message))
+					error = self.linterErrors[self.bufferID].get(e.message, None)
+					if error and error.message == e.message and abs(error.line - e.line) < 3:
+						SublimePapyrus.HighlightLinter(view, e.line, e.column, False)
+					else:
+						SublimePapyrus.HighlightLinter(view, e.line, e.column)
+					self.linterErrors[self.bufferID][e.message] = e
+					SublimePapyrus.SetStatus(view, "sublimepapyrus-linter", "Lexical error on line %d, column %d: %s" % (e.line, e.column, e.message))
 					if settings.get("linter_panel_error_messages", False):
 						view.window().show_quick_panel([[e.message, "Line %d, column %d" % (e.line, e.column)]], None)
 				return Exit()
 			except Linter.SyntacticError as e:
 				if view:
-					SublimePapyrus.HighlightLinter(view, e.line)
-					SublimePapyrus.ShowMessage("Syntactic error on line %d: %s" % (e.line, e.message))
+					error = self.linterErrors[self.bufferID].get(e.message, None)
+					if error and error.message == e.message and abs(error.line - e.line) < 3:
+						SublimePapyrus.HighlightLinter(view, e.line, center=False)
+					else:
+						SublimePapyrus.HighlightLinter(view, e.line)
+					self.linterErrors[self.bufferID][e.message] = e
+					SublimePapyrus.SetStatus(view, "sublimepapyrus-linter", "Syntactic error on line %d: %s" % (e.line, e.message))
 					if settings.get("linter_panel_error_messages", False):
 						view.window().show_quick_panel([[e.message, "Line %d" % e.line]], None)
 				return Exit()
@@ -282,14 +297,21 @@ class EventListener(sublime_plugin.EventListener):
 						self.SetScript(self.bufferID, script)
 				except Linter.SemanticError as e:
 					if view:
-						SublimePapyrus.HighlightLinter(view, e.line)
-						SublimePapyrus.ShowMessage("Semantic error on line %d: %s" % (e.line, e.message))
+						error = self.linterErrors[self.bufferID].get(e.message, None)
+						if error and error.message == e.message and abs(error.line - e.line) < 3:
+							SublimePapyrus.HighlightLinter(view, e.line, center=False)
+						else:
+							SublimePapyrus.HighlightLinter(view, e.line)
+						self.linterErrors[self.bufferID][e.message] = e
+						SublimePapyrus.SetStatus(view, "sublimepapyrus-linter", "Semantic error on line %d: %s" % (e.line, e.message)) 
 						if settings.get("linter_panel_error_messages", False):
 							view.window().show_quick_panel([[e.message, "Line %d" % e.line]], None)
 					return Exit()
 				print("Linter: Finished semantic in %f milliseconds..." % ((time.time()-semStart)*1000.0)) #DEBUG
 				if view:
-					SublimePapyrus.ShowMessage("Linter found no issues...")
+					SublimePapyrus.ClearStatus(view, "sublimepapyrus-linter")
+				if self.linterErrors.get(self.bufferID, None):
+					del self.linterErrors[self.bufferID]
 		return Exit()
 
 	# Completions
@@ -606,9 +628,9 @@ class EventListener(sublime_plugin.EventListener):
 									print("Accessing properties and functions")
 									try:
 										result = sem.NodeVisitor(syn.stack[-2])
-										print(result.type)
-										print(result.array)
-										print(result.object)
+										#print(result.type)
+										#print(result.array)
+										#print(result.object)
 										if result.type == lex.KW_SELF:
 											for name, obj in e.functions[0].items():
 												if obj.type == syn.STAT_FUNCTIONDEF:
