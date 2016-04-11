@@ -152,23 +152,23 @@ class SublimePapyrusClearErrorHighlightsCommand(sublime_plugin.TextCommand):
 # Open a script based on input
 class SublimePapyrusOpenScriptCommand(sublime_plugin.WindowCommand):
 	def run(self):
-		self.window.show_input_panel("Open script:", "", self.on_done, None, None)
+		text = ""
+		view = self.window.active_view()
+		self.view = view
+		if view:
+			for region in view.sel():
+				text = view.substr(region)
+				break
+			self.window.show_input_panel("Open script:", text, self.on_done, None, None)
 
 	def on_done(self, text):
-		view = self.window.active_view()
-		if view:
-			if not text:
-				for region in view.sel():
-					text = view.substr(region)
-					break
-			if not text:
-				return
-			self.view = view
-			if PYTHON_VERSION[0] == 2:
-				self.get_matching_files(text)
-			elif PYTHON_VERSION[0] >= 3:
-				thread = threading.Thread(target=self.get_matching_files, args=(text,))
-				thread.start()
+		if not text or not self.view:
+			return
+		if PYTHON_VERSION[0] == 2:
+			self.get_matching_files(text)
+		elif PYTHON_VERSION[0] >= 3:
+			thread = threading.Thread(target=self.get_matching_files, args=(text,))
+			thread.start()
 
 	def get_matching_files(self, text):
 		paths = GetSourcePaths(self.view)
