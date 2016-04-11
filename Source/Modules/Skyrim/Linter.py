@@ -262,7 +262,7 @@ class Lexical(SharedResources):
 					column = match.end()-1
 				continue
 			elif t == self.UNMATCHED:
-				self.Abort("Encountered an unexpected '%s' character." % v, line, match.start()-column)
+				self.Abort("Encountered an unexpected character ('%s')." % v, line, match.start()-column)
 			yield Token(t, v, line, match.start()-column)
 			if t == self.NEWLINE:
 				line += 1
@@ -734,7 +734,7 @@ class Syntactic(SharedResources):
 				if nextToken and nextToken.type == self.RIGHT_BRACKET:
 					nextToken = self.Peek(3)
 					if not nextToken:
-						self.Abort("Expected FUNCTION, PROPERTY, or an identifier.")
+						self.Abort("Expected 'Function', 'Property', or an identifier.")
 					if nextToken.type == self.KW_FUNCTION:
 						self.FunctionDef()
 					elif nextToken.type == self.KW_PROPERTY:
@@ -791,7 +791,7 @@ class Syntactic(SharedResources):
 			if self.token == None: # End of script
 				return 0
 			else: # Non-consumed token
-				self.Abort("Unexpected %s symbol ('%s') on column %d." % (self.token.type, self.token.value, self.token.column))
+				self.Abort("Unexpected '%s' symbol ('%s') on column %d." % (self.token.type, self.token.value, self.token.column))
 
 	def ExpressionOrAssignment(self):
 		self.Expression()
@@ -1353,8 +1353,10 @@ class Semantic(SharedResources):
 				temp = self.GetVariable(stat.data.name)
 				if not temp:
 					self.variables[-1][stat.data.name] = stat
-					if not self.CacheScript(stat.data.type, line=stat.line):
-						self.Abort("Could not import %s." % stat.data.type, stat.line)
+					try:
+						self.CacheScript(stat.data.type, line=stat.line)
+					except SemanticError as e:
+						self.Abort("'%s' is not a known type." % stat.data.type, stat.line)
 					if self.GetPath(stat.data.name):
 						self.Abort("Variables/properties cannot have the same name as a type.", stat.line)
 					return True
@@ -1371,8 +1373,10 @@ class Semantic(SharedResources):
 						temp = self.GetVariable(param.name)
 						if not temp:
 							self.variables[-1][param.name] = Statement(self.STAT_PARAMETER, stat.line, param)
-							if not self.CacheScript(param.type, line=stat.line):
-								self.Abort("Could not import %s." % param.type, stat.line)
+							try:
+								self.CacheScript(param.type, line=stat.line)
+							except SemanticError as e:
+								self.Abort("'%s' is not a known type." % param.type, stat.line)
 							if self.GetPath(param.name):
 								self.Abort("Parameters cannot have the same name as a type.", stat.line)
 						else:
@@ -1550,7 +1554,7 @@ class Semantic(SharedResources):
 							elif token.type != self.COMMENT_LINE and token.type != self.COMMENT_BLOCK:
 								tokens.append(token)
 					except LexicalError as e:
-						self.Abort("Found a lexical error in %s script." % name)
+						self.Abort("Found a lexical error in '%s' script." % name)
 					extends = []
 					functions = {}
 					properties = {}
@@ -1562,7 +1566,7 @@ class Semantic(SharedResources):
 							if stat:
 								statements.append(stat)
 					except SyntacticError as e:
-						self.Abort("Found a syntactic error in %s script." % name)
+						self.Abort("Found a syntactic error in '%s' script." % name)
 					header = False
 					if statements[0].type == self.STAT_SCRIPTHEADER:
 						if statements[0].data.parent:
@@ -1672,9 +1676,9 @@ class Semantic(SharedResources):
 							self.Abort("Array properties can only be initialized with NONE.", stat.line)
 					else:
 						if stat.data.type != stat.data.value.type and not self.CanAutoCast(NodeResult(stat.data.value.type, False, True), NodeResult(stat.data.type, False, True)):
-							self.Abort("Initialization of %s property with a %s literal." % (stat.data.type, stat.data.value.type), stat.line)
+							self.Abort("Initialization of a(n) '%s' property with a(n) '%s' literal." % (stat.data.type, stat.data.value.type), stat.line)
 				if self.KW_CONDITIONAL in stat.data.flags and not self.KW_CONDITIONAL in self.header.data.flags:
-					self.Abort("The %s property has the CONDITIONAL flag, but the script header does not." % stat.data.name, stat.line)
+					self.Abort("The '%s' property has the 'Conditional' flag, but the script header does not." % stat.data.name, stat.line)
 				if not self.KW_AUTO in stat.data.flags and not self.KW_AUTOREADONLY in stat.data.flags:
 					prop = [stat]
 					while len(statements) > 0 and not (statements[0].type == self.STAT_KEYWORD and statements[0].data.type == self.KW_ENDPROPERTY):
@@ -1700,9 +1704,9 @@ class Semantic(SharedResources):
 						if not value:
 							self.Abort("Variables can only be initialized with literals when defined outside of functions/events.", stat.line)
 						if stat.data.type != value and not self.CanAutoCast(NodeResult(value, False, True), NodeResult(stat.data.type, False, True)):
-							self.Abort("Initialization of a %s variable with a %s literal." % (stat.data.type, value), stat.line)
+							self.Abort("Initialization of a(n) '%s' variable with a(n) '%s' literal." % (stat.data.type, value), stat.line)
 				if self.KW_CONDITIONAL in stat.data.flags and not self.KW_CONDITIONAL in self.header.data.flags:
-					self.Abort("The %s variable has the CONDITIONAL flag, but the script header does not." % stat.data.name, stat.line)
+					self.Abort("The '%s' variable has the 'Conditional' flag, but the script header does not." % stat.data.name, stat.line)
 			elif stat.type == self.STAT_FUNCTIONDEF:
 				self.AddFunction(stat)
 				if not self.KW_NATIVE in stat.data.flags:
@@ -1746,7 +1750,7 @@ class Semantic(SharedResources):
 					self.imports.append(stat.data.name)
 					self.CacheScript(stat.data.name, line=stat.line)
 				else:
-					self.Abort("%s has already been imported in this script." % stat.data.name, stat.line)
+					self.Abort("'%s' has already been imported in this script." % stat.data.name, stat.line)
 			elif stat.type == self.STAT_STATEDEF:
 				if stat.data.auto:
 					autoState = stat
@@ -1828,13 +1832,13 @@ class Semantic(SharedResources):
 						self.Abort("Functions in property definitions cannot have any flags.", stat.line)
 					if stat.data.name == "SET" or stat.data.name == "GET":
 						if functions.get(stat.data.name, None):
-							self.Abort("The %s function has already been defined in this property." % stat.data.name, stat.line)
+							self.Abort("The '%s' function has already been defined in this property." % stat.data.name, stat.line)
 						else:
 							if stat.data.name == "GET":
 								if stat.data.type != start.data.type or stat.data.array != start.data.array:
-									self.Abort("The return type of the GET function and the property type must match.", stat.line)
+									self.Abort("The return type of the 'Get' function and the property type must match.", stat.line)
 					else:
-						self.Abort("Only SET and GET functions may be defined in a property definition.", stat.line)
+						self.Abort("Only 'Set' and 'Get' functions may be defined in a property definition.", stat.line)
 					func = [stat]
 					while i < statementsLength and not (statements[i].type == self.STAT_KEYWORD and statements[i].data.type == self.KW_ENDFUNCTION):
 						func.append(statements[i])
@@ -1851,7 +1855,7 @@ class Semantic(SharedResources):
 					self.Abort("Illegal statement in a property definition.", statements[i].line)
 				i += 1
 			if len(functions) == 0:
-				self.Abort("At least a SET or a GET function has to be defined in a property definition.", start.line)
+				self.Abort("At least a 'Set' or a 'Get' function has to be defined in a property definition.", start.line)
 			for key, func in functions.items():
 				self.PushVariableScope()
 				self.FunctionBlock(func)
@@ -1900,15 +1904,15 @@ class Semantic(SharedResources):
 					if param.expression:
 						if param.array:
 							if self.GetLiteral(param.expression) != self.KW_NONE:
-								self.Abort("Array parameters can only be initialized with NONE", start.line)
+								self.Abort("Array parameters can only be initialized with 'None'.", start.line)
 						else:
 							value = self.GetLiteral(param.expression)
 							if not value:
 								self.Abort("Parameters can only be initialized with literals.", start.line)
 							if param.type != value and not self.CanAutoCast(NodeResult(value, False, True), NodeResult(param.type, False, True)):
-								self.Abort("Initialization of %s parameter with %s literal." % (param.type, value), start.line)
+								self.Abort("Initialization of a(n) '%s' parameter with a(n) '%s' literal." % (param.type, value), start.line)
 				if start.data.type and start.data.type != self.KW_BOOL and start.data.type != self.KW_FLOAT and start.data.type != self.KW_INT and start.data.type != self.KW_STRING and not self.GetCachedScript(start.data.type, start.line):
-					self.Abort("%s is not a valid return type." % start.data.type, start.line)
+					self.Abort("'%s' is not a valid return type." % start.data.type, start.line)
 			while self.statementsIndex < self.statementsLength:
 				if self.statements[self.statementsIndex].type == self.STAT_VARIABLEDEF:
 					self.VariableDef()
@@ -1946,9 +1950,9 @@ class Semantic(SharedResources):
 			if statements[0].type == self.STAT_FUNCTIONDEF:
 				exists = self.HasFunction(statements[0].data.name)
 				if exists == -1:
-					self.Abort("%s has been defined in the state already." % statements[0].data.name, statements[0].line)
+					self.Abort("'%s' has been defined in the state already." % statements[0].data.name, statements[0].line)
 				if exists == 0:
-					self.Abort("%s has not been defined in the empty state." % statements[0].data.name, statements[0].line)
+					self.Abort("'%s' has not been defined in the empty state nor inherited from a parent script." % statements[0].data.name, statements[0].line)
 				self.AddFunction(statements[0])
 				if not self.KW_NATIVE in statements[0].data.flags:
 					func = [statements.pop(0)]
@@ -1962,9 +1966,9 @@ class Semantic(SharedResources):
 			elif statements[0].type == self.STAT_EVENTDEF:
 				exists = self.HasFunction(statements[0].data.name)
 				if exists == 0:
-					self.Abort("%s has not been defined in the empty state." % statements[0].data.name, statements[0].line)
+					self.Abort("'%s' has not been defined in the empty state nor inherited from a parent script." % statements[0].data.name, statements[0].line)
 				if exists == -1:
-					self.Abort("%s has already been defined in the same state." % statements[0].data.name, statements[0].line)
+					self.Abort("'%s' has already been defined in the same state." % statements[0].data.name, statements[0].line)
 				self.AddFunction(statements[0])
 				if not self.KW_NATIVE in statements[0].data.flags:
 					event = [statements.pop(0)]
@@ -2116,7 +2120,7 @@ class Semantic(SharedResources):
 							if val != self.KW_NONE:
 								self.Abort("Array variables can only be initialized with NONE.")
 						else:
-							self.Abort("The expression does not resolve to a(n) %s array." % self.statements[self.statementsIndex].data.type)
+							self.Abort("The expression does not resolve to a(n) '%s' array." % self.statements[self.statementsIndex].data.type)
 					elif self.statements[self.statementsIndex].data.type != expr.type:
 						if not self.CanAutoCast(expr, NodeResult(self.statements[self.statementsIndex].data.type, self.statements[self.statementsIndex].data.array, True)):
 							self.Abort("The expression resolves to the incorrect type and cannot be automatically cast to the correct type.")
@@ -2153,7 +2157,7 @@ class Semantic(SharedResources):
 		if node.type == self.NODE_EXPRESSION:
 			result = self.NodeVisitor(node.data.child)
 			if node.data.child.type == self.NODE_IDENTIFIER and not result.object:
-				self.Abort("%s is not a variable." % node.data.child.data.token.value)
+				self.Abort("'%s' is not a variable that exists in this scope." % node.data.child.data.token.value)
 		elif node.type == self.NODE_ARRAYATOM or node.type == self.NODE_ARRAYFUNCORID:
 			result = self.NodeVisitor(node.data.child, expected)
 			if node.data.expression:
@@ -2191,7 +2195,7 @@ class Semantic(SharedResources):
 					else:
 						result = NodeResult(self.KW_NONE, False, True)
 				else:
-					self.Abort("This script does not have a function/event called %s." % node.data.name.value)
+					self.Abort("This script does not have a function/event called '%s'." % node.data.name.value)
 			elif expected and expected.type:
 				if expected.array:
 					script = self.GetCachedScript(expected.type)
@@ -2222,7 +2226,7 @@ class Semantic(SharedResources):
 							else:
 								result = NodeResult(self.KW_NONE, False, True)
 						else:
-							self.Abort("%s does not have a function/event called %s." % (expected.type, node.data.name.value))
+							self.Abort("'%s' does not have a function/event called '%s'." % (expected.type, node.data.name.value))
 			else:
 				func = self.GetFunction(node.data.name.value)
 				if func:
@@ -2239,7 +2243,7 @@ class Semantic(SharedResources):
 						temp = script.functions.get(node.data.name.value.upper(), None)
 						if temp:
 							if func:
-								self.Abort("Ambiguous reference to a function called %s. It is unclear which version is being referenced." % node.data.name.value)
+								self.Abort("Ambiguous reference to a function called '%s'. It is unclear which version is being referenced." % node.data.name.value)
 							func = temp
 							if self.KW_GLOBAL in func.data.flags:
 								if func.data.type:
@@ -2250,7 +2254,7 @@ class Semantic(SharedResources):
 								else:
 									result = NodeResult(self.KW_NONE, False, True)
 				if not result:
-					self.Abort("%s is not a function/event that exists in this scope." % node.data.name.value)
+					self.Abort("'%s' is not a function/event that exists in this scope." % node.data.name.value)
 			if func:
 				params = func.data.parameters[:]
 				args = [a.data for a in node.data.arguments]
@@ -2279,12 +2283,12 @@ class Semantic(SharedResources):
 									pType = paramType.type
 									if paramType.array:
 										pType = "%s[]" % pType
-									self.Abort("Parameter %s is of type %s, but the argument evaluates to %s, which cannot be auto-cast to the parameter's type." % (params[0].name, pType, aType))
+									self.Abort("Parameter '%s' is of type '%s', but the argument evaluates to '%s', which cannot be auto-cast to the parameter's type." % (params[0].name, pType, aType))
 								args.pop(i)
 								break
 							i += 1
 						if len(args) == j and not params[0].expression:
-							self.Abort("An argument was not passed to the mandatory parameter %s." % params[0].name)
+							self.Abort("An argument was not passed to the mandatory parameter '%s'." % params[0].name)
 					else:
 						if params[0].expression:
 							if len(args) > 0:
@@ -2301,7 +2305,7 @@ class Semantic(SharedResources):
 									pType = paramType.type
 									if paramType.array:
 										pType = "%s[]" % pType
-									self.Abort("Parameter %s is of type %s, but the argument evaluates to %s, which cannot be auto-cast to the parameter's type." % (params[0].name, pType, aType))
+									self.Abort("Parameter '%s' is of type '%s', but the argument evaluates to '%s', which cannot be auto-cast to the parameter's type." % (params[0].name, pType, aType))
 								args.pop(0)
 						else:
 							if len(args) > 0:
@@ -2318,10 +2322,10 @@ class Semantic(SharedResources):
 									pType = paramType.type
 									if paramType.array:
 										pType = "%s[]" % pType
-									self.Abort("Parameter %s is of type %s, but the argument evaluates to %s, which cannot be auto-cast to the parameter's type." % (params[0].name, pType, aType))
+									self.Abort("Parameter '%s' is of type '%s', but the argument evaluates to '%s', which cannot be auto-cast to the parameter's type." % (params[0].name, pType, aType))
 								args.pop(0)
 							else:
-								self.Abort("Mandatory parameter %s was not given an argument." % params[0].name)
+								self.Abort("Mandatory parameter '%s' was not given an argument." % params[0].name)
 					params.pop(0)
 				if len(args) > 0:
 					paramCount = len(func.data.parameters)
@@ -2334,13 +2338,13 @@ class Semantic(SharedResources):
 								if param.name == argName:
 									found = True
 							if not found:
-								self.Abort("%s is not a parameter that exists in %s." % (argName, func.data.name))
+								self.Abort("'%s' is not a parameter that exists in '%s'." % (argName, func.data.name))
 						self.Abort("Multiple arguments were passed to at least one parameter.")
 					elif argCount > paramCount:
 						if argCount == 1:
-							self.Abort("The %s function/event has %d parameters, but %d argument was passed to it." % (func.data.name, paramCount, argCount))
+							self.Abort("The '%s' function/event has %d parameters, but %d argument was passed to it." % (func.data.name, paramCount, argCount))
 						else:
-							self.Abort("The %s function/event has %d parameters, but %d arguments were passed to it." % (func.data.name, paramCount, argCount))
+							self.Abort("The '%s' function/event has %d parameters, but %d arguments were passed to it." % (func.data.name, paramCount, argCount))
 		elif node.type == self.NODE_IDENTIFIER:
 			if expected and expected.type: # Another script
 				if expected.type == self.KW_SELF:
@@ -2351,7 +2355,7 @@ class Semantic(SharedResources):
 						else:
 							result = NodeResult(prop.data.type, False, True)
 					else:
-						self.Abort("This script does not have a property called %s." % (node.data.token.value))
+						self.Abort("This script does not have a property called '%s'." % (node.data.token.value))
 				else:
 					if not expected.object:
 						self.Abort("Properties can only be accessed on variables, not types.")
@@ -2364,20 +2368,20 @@ class Semantic(SharedResources):
 							else:
 								result = NodeResult(prop.data.type, False, True)
 						else:
-							self.Abort("%s does not have a property called %s." % (expected.type, node.data.token.value))
+							self.Abort("'%s' does not have a property called '%s'." % (expected.type, node.data.token.value))
 					else:
 						pass
 			else: # Self or parent
 				if node.data.token.type == self.KW_PARENT:
 					if self.KW_GLOBAL in self.statements[0].data.flags:
-						self.Abort("PARENT does not exist in functions with the GLOBAL keyword.")
+						self.Abort("'Parent' does not exist in functions with the 'Global' keyword.")
 					if self.header.data.parent:
 						result = NodeResult(self.header.data.parent, False, True)
 					else:
 						self.Abort("A parent script has not been defined in this script.")
 				elif node.data.token.type == self.KW_SELF:
 					if self.KW_GLOBAL in self.statements[0].data.flags:
-						self.Abort("SELF does not exist in functions with the GLOBAL keyword.")
+						self.Abort("'Self' does not exist in functions with the 'Global' keyword.")
 					result = NodeResult(self.KW_SELF, False, True)
 				else:
 					var = self.GetVariable(node.data.token.value)
@@ -2389,7 +2393,7 @@ class Semantic(SharedResources):
 					else:
 						result = NodeResult(node.data.token.value, False, False)
 						if not self.GetCachedScript(result.type):
-							self.Abort("%s is not a script." % result.type)
+							self.Abort("'%s' is not a script." % result.type)
 		elif node.type == self.NODE_LENGTH:
 			result = NodeResult(self.KW_INT, False, True)
 		elif node.type == self.NODE_ARRAYCREATION:
@@ -2403,13 +2407,13 @@ class Semantic(SharedResources):
 				if leftResult.array and rightResult.type != self.KW_STRING and rightResult.type != self.KW_BOOL:
 					self.Abort("Arrays can only be cast to STRING and BOOL.")
 				if rightResult.type != self.KW_BOOL and rightResult.type != self.KW_FLOAT and rightResult.type != self.KW_INT and rightResult.type != self.KW_STRING and not self.GetCachedScript(rightResult.type):
-					self.Abort("%s is not a type that exists." % rightResult.type)
+					self.Abort("'%s' is not a type that exists." % rightResult.type)
 				result = rightResult
 			elif node.data.operator.type == self.OP_DOT:
 				leftResult = self.NodeVisitor(node.data.leftOperand, expected)
 				expected = leftResult
 				if expected and (expected.type == self.KW_NONE or expected.type == self.KW_BOOL or expected.type == self.KW_FLOAT or expected.type == self.KW_INT or expected.type == self.KW_STRING):
-					self.Abort("%s does not have any properties, functions, nor events." % expected.type)
+					self.Abort("'%s' does not have any properties, functions, nor events." % expected.type)
 				rightResult = self.NodeVisitor(node.data.rightOperand, expected)
 				result = rightResult
 			elif node.data.operator.type == self.OP_ADDITION or node.data.operator.type == self.OP_SUBTRACTION or node.data.operator.type == self.OP_MULTIPLICATION or node.data.operator.type == self.OP_DIVISION or node.data.operator.type == self.OP_MODULUS:
