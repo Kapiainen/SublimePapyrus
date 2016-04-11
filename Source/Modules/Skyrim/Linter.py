@@ -2152,6 +2152,8 @@ class Semantic(SharedResources):
 		#print(node)
 		if node.type == self.NODE_EXPRESSION:
 			result = self.NodeVisitor(node.data.child)
+			if node.data.child.type == self.NODE_IDENTIFIER and not result.object:
+				self.Abort("%s is not a variable." % node.data.child.data.token.value)
 		elif node.type == self.NODE_ARRAYATOM or node.type == self.NODE_ARRAYFUNCORID:
 			result = self.NodeVisitor(node.data.child, expected)
 			if node.data.expression:
@@ -2351,6 +2353,8 @@ class Semantic(SharedResources):
 					else:
 						self.Abort("This script does not have a property called %s." % (node.data.token.value))
 				else:
+					if not expected.object:
+						self.Abort("Properties can only be accessed on variables, not types.")
 					script = self.GetCachedScript(expected.type)
 					if script:
 						prop = script.properties.get(node.data.token.value.upper(), None)
