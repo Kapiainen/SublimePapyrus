@@ -150,7 +150,9 @@ class EventListener(sublime_plugin.EventListener):
 					self.ClearSemanticAnalysisCache(scriptName)
 					self.ClearCompletionCache(scriptName)
 					self.linterQueue += 1
-					self.Linter(view)
+					lineNumber, columnNumber = view.rowcol(view.sel()[0].begin())
+					lineNumber += 1
+					self.Linter(view, lineNumber)
 
 	def on_modified(self, view):
 		if self.IsValidScope(view):
@@ -170,19 +172,21 @@ class EventListener(sublime_plugin.EventListener):
 				delay = 0.050
 		self.bufferID = view.buffer_id()
 		if self.bufferID:
+			lineNumber, columnNumber = view.rowcol(view.sel()[0].begin())
+			lineNumber += 1
 			if PYTHON_VERSION[0] == 2:
 				self.scriptContents = view.substr(sublime.Region(0, view.size()))			
 				self.sourcePaths = SublimePapyrus.GetSourcePaths(view)
 				SublimePapyrus.ClearLinterHighlights(view)
-				t = threading.Timer(delay, self.Linter, kwargs={"view": None})
+				t = threading.Timer(delay, self.Linter, kwargs={"view": None, "lineNumber": lineNumber})
 				t.daemon = True
 				t.start()
 			elif PYTHON_VERSION[0] >= 3:
-				t = threading.Timer(delay, self.Linter, kwargs={"view": view})
+				t = threading.Timer(delay, self.Linter, kwargs={"view": view, "lineNumber": lineNumber})
 				t.daemon = True
 				t.start()
 
-	def Linter(self, view):
+	def Linter(self, view, lineNumber):
 		self.linterQueue -= 1 # Remove from queue
 		if self.linterQueue > 0: # If there is a queue, then cancel
 			return
@@ -216,8 +220,6 @@ class EventListener(sublime_plugin.EventListener):
 			else:
 				scriptContents = self.scriptContents
 			lineCount = scriptContents.count("\n") + 1
-			lineNumber, columnNumber = view.rowcol(view.sel()[0].begin())
-			lineNumber += 1
 			statements = []
 			lines = []
 			tokens = []
