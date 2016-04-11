@@ -263,7 +263,7 @@ class EventListener(sublime_plugin.EventListener):
 			except Linter.LexicalError as e:
 				if view:
 					error = self.linterErrors[self.bufferID].get(e.message, None)
-					if error and error.message == e.message and abs(error.line - e.line) < 3:
+					if error and error.message == e.message and abs(error.line - e.line) < settings.get("linter_error_line_threshold", 2) + 1:
 						SublimePapyrus.HighlightLinter(view, e.line, e.column, False)
 					else:
 						SublimePapyrus.HighlightLinter(view, e.line, e.column)
@@ -275,7 +275,7 @@ class EventListener(sublime_plugin.EventListener):
 			except Linter.SyntacticError as e:
 				if view:
 					error = self.linterErrors[self.bufferID].get(e.message, None)
-					if error and error.message == e.message and abs(error.line - e.line) < 3:
+					if error and error.message == e.message and abs(error.line - e.line) < settings.get("linter_error_line_threshold", 2) + 1:
 						SublimePapyrus.HighlightLinter(view, e.line, center=False)
 					else:
 						SublimePapyrus.HighlightLinter(view, e.line)
@@ -298,7 +298,7 @@ class EventListener(sublime_plugin.EventListener):
 				except Linter.SemanticError as e:
 					if view:
 						error = self.linterErrors[self.bufferID].get(e.message, None)
-						if error and error.message == e.message and abs(error.line - e.line) < 3:
+						if error and error.message == e.message and abs(error.line - e.line) < settings.get("linter_error_line_threshold", 2) + 1:
 							SublimePapyrus.HighlightLinter(view, e.line, center=False)
 						else:
 							SublimePapyrus.HighlightLinter(view, e.line)
