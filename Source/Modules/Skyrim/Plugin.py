@@ -149,10 +149,12 @@ class EventListener(sublime_plugin.EventListener):
 						return
 					self.ClearSemanticAnalysisCache(scriptName)
 					self.ClearCompletionCache(scriptName)
-					self.linterQueue += 1
-					lineNumber, columnNumber = view.rowcol(view.sel()[0].begin())
-					lineNumber += 1
-					self.Linter(view, lineNumber)
+					self.bufferID = view.buffer_id()
+					if self.bufferID:
+						self.linterQueue += 1
+						lineNumber, columnNumber = view.rowcol(view.sel()[0].begin())
+						lineNumber += 1
+						self.Linter(view, lineNumber)
 
 	def on_modified(self, view):
 		if self.IsValidScope(view):
