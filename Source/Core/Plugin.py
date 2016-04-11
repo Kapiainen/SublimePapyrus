@@ -400,16 +400,6 @@ def MakeParameterCompletion(stat):
 	content = stat.data.identifier
 	return (tabTrigger + "\t" + description.lower(), content,)
 
-"""
-Port to Python 2.6
-
-Extras
-	Support for 3rd party compilers (Caprica in the case of Fallout 4)?
-		Build system should be able to accomodate it
-		What about the linter? It may need to accomodate for additional features (for-loops, etc.)
-			A separate module?
-"""
-
 # Checks the build result for errors and, depending on the settings, highlights lines that caused errors and/or hides the build results when there are no errors.
 class ExecCommand(BUILD_SYSTEM.ExecCommand):
 	def finish(self, proc):
