@@ -51,7 +51,7 @@ def Highlight(view, key, scope, line, column = None):
 			point = view.text_point(line-1, 0)
 			regions.append(view.line(sublime.Region(point)))
 		if len(regions) > 0:
-			view.add_regions(key, regions, scope, "bookmark")
+			view.add_regions(key, regions, scope)
 			settings = GetSettings()
 			if settings:
 				if settings.get("center_highlighted_line", True):
