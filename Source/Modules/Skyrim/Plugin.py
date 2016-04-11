@@ -133,7 +133,7 @@ class EventListener(sublime_plugin.EventListener):
 		if self.IsValidScope(view):
 			bufferID = view.buffer_id()
 			if bufferID:
-				self.ClearStatementCache(bufferID)
+				self.ClearLinterCache(bufferID)
 
 	# Linter
 	def on_post_save(self, view):
@@ -713,18 +713,6 @@ class EventListener(sublime_plugin.EventListener):
 										completions.append(self.completionKeywordSelf)
 										completions.append(self.completionKeywordParent)
 									return completions
-#							except Linter.ExpectedOperatorError as f:
-#								print(f.message)
-#							except Linter.ExpectedVariableIdentifierError as f:
-#								print(f.message)
-#							except Linter.ExpectedParameterIdentifierError as f:
-#								print(f.message)
-#							except Linter.ExpectedFunctionIdentifierError as f:
-#								print(f.message)
-#							except Linter.ExpectedEventIdentifierError as f:
-#								print(f.message)
-#							except Linter.ExpectedKeywordError as f:
-#								print(f.message)
 							except Linter.SyntacticError as f:
 								print(f.message)
 								if self.syn.stack and self.syn.stack[-2].type == self.syn.LEFT_PARENTHESIS and self.syn.stack[-1].type != self.syn.RIGHT_PARENTHESIS:
@@ -776,7 +764,7 @@ class EventListener(sublime_plugin.EventListener):
 				if self.completionCache["functions"].get(script, None):
 					del self.completionCache["functions"][script]
 
-	def ClearStatementCache(self, script):
+	def ClearLinterCache(self, script):
 		with self.cacheLock:
 			if self.linterCache.get(script, None):
 				del self.linterCache[script]
