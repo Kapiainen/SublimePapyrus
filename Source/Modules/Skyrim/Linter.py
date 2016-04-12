@@ -112,11 +112,6 @@ class SharedResources(object):
 		self.NODE_BINARYOPERATOR = "NODE_BINARYOPERATOR"
 		self.NODE_UNARYOPERATOR = "NODE_UNARYOPERATOR"
 
-		self.DEFINITION_PROPERTY = "DEFINITION_PROPERTY"
-		self.DEFINITION_FUNCTION = "DEFINITION_FUNCTION"
-		self.DEFINITION_EVENT = "DEFINITION_EVENT"
-		self.DEFINITION_STATE = "DEFINITION_STATE"
-
 # Lexical analysis ################################################################################
 class Token(object):
 	__slots__ = ["type", "value", "line", "column"]
