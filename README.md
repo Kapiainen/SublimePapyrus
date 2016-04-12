@@ -153,7 +153,7 @@ Single file build system and a batch build variant.
     - Game setting names (float, integer, and string)
 
 - Clear cache
-  - Clears the caches relevant to the linter and code completion. Can be used to refresh the linter and code completion after modifying the contents of the *imports* setting (e.g. adding a new folder or changing the order of folders) or the contents of one of the folders specified in the *imports* setting (e.g. saving a new script).
+  - Clears the caches relevant to the linter and code completion. Can be used to refresh the linter and code completion after modifying the contents of the *import* setting (e.g. adding a new folder or changing the order of folders) or the contents of one of the folders specified in the *import* setting (e.g. saving a new script).
 
 #### **3rd party resources for Skyrim**
 ##### Skyrim Script Extender (SKSE)
@@ -191,7 +191,7 @@ Version 2.0.0 - 2016/04/DD:
   - Added a new setting (***linter_error_line_threshold***) that defines how many lines a linter error can move up or down by between passes before it is considered a new error that should be centered.
 
 **Skyrim**
-  - Added a command to manually clear the various caches relevant to the linter and code completion without needing to restart Sublime Text. It is useful when modifying the contents of the *imports* setting in the user settings or one of the folders specified in that setting.
+  - Added a command to manually clear the various caches relevant to the linter and code completion without needing to restart Sublime Text. It is useful when modifying the contents of the *import* setting in the user settings or one of the folders specified in that setting.
   - Linter
    - Switched from using filenames to using a view's buffer ID for identification purposes. Scripts no longer have to have been saved to a file for the linter, and subsequently the code completion, to work.
    - Changed the way that lexical and syntactic analysis are performed in an effort to catch syntactic errors earlier.
