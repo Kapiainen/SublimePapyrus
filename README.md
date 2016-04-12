@@ -193,7 +193,7 @@ Version 2.0.0 - 2016/04/DD:
 **Skyrim**
   - Added a command to manually clear the various caches relevant to the linter and code completion without needing to restart Sublime Text. It is useful when modifying the contents of the *imports* setting in the user settings or one of the folders specified in that setting.
   - Linter
-   - Switched from using filenames to the a view's buffer ID. Scripts no longer have to have been saved to a file for the linter, and subsequently the code completion, to work.
+   - Switched from using filenames to using a view's buffer ID for identification purposes. Scripts no longer have to have been saved to a file for the linter, and subsequently the code completion, to work.
    - Changed the way that lexical and syntactic analysis are performed in an effort to catch syntactic errors earlier.
    - Semantic analysis has been modified to no longer discard statements after use and instead store them in an object, which represents the script and can be used by the code completion system.
    - NodeVisitor now returns an object with *type*, *array*, and *object* fields instead of just a string.
