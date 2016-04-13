@@ -2430,7 +2430,7 @@ class Semantic(SharedResources):
 			elif node.data.operator.type == self.CMP_EQUAL or node.data.operator.type == self.CMP_NOT_EQUAL or node.data.operator.type == self.CMP_LESS_THAN or node.data.operator.type == self.CMP_GREATER_THAN or node.data.operator.type == self.CMP_LESS_THAN_OR_EQUAL or node.data.operator.type == self.CMP_GREATER_THAN_OR_EQUAL:
 				leftResult = self.NodeVisitor(node.data.leftOperand, expected)
 				rightResult = self.NodeVisitor(node.data.rightOperand, expected)
-				result = rightResult
+				result = NodeResult(self.KW_BOOL, False, True)
 		elif node.type == self.NODE_UNARYOPERATOR:
 			result = self.NodeVisitor(node.data.operand)
 		else:
