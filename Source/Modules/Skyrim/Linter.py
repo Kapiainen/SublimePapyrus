@@ -2419,11 +2419,19 @@ class Semantic(SharedResources):
 							if not targetScript:
 								self.Abort("'%s' is not a type that exists." % rightResult.type)
 							if not leftResult.type in targetScript.extends:
-								parentScript = self.GetCachedScript(leftResult.type)
-								if not parentScript:
-									self.Abort("'%s' is not a type that exists." % rightResult.type)
-								if rightResult.type not in parentScript.extends:
-									self.Abort("'%s' cannot be cast as a(n) '%s' as the two types are incompatible." % (leftResult.type, rightResult.type))
+								if leftResult.type == self.KW_SELF:
+									if rightResult.type != self.header.data.parent:
+										parentScript = self.GetCachedScript(self.header.data.parent)
+										if not parentScript:
+											self.Abort("'%s' is not a type that exists." % leftResult.type)
+										if rightResult.type not in parentScript.extends:
+											self.Abort("'%s' cannot be cast as a(n) '%s' as the two types are incompatible." % (leftResult.type, rightResult.type))
+								else:
+									parentScript = self.GetCachedScript(leftResult.type)
+									if not parentScript:
+										self.Abort("'%s' is not a type that exists." % leftResult.type)
+									if rightResult.type not in parentScript.extends:
+										self.Abort("'%s' cannot be cast as a(n) '%s' as the two types are incompatible." % (leftResult.type, rightResult.type))
 					result = rightResult
 				else:
 					rightResult = self.NodeVisitor(node.data.rightOperand, expected)
