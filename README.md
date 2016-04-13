@@ -202,16 +202,21 @@ Version 2.0.0 - 2016/04/DD:
    - Errors are no longer centered multiple times unless either the line with the error has moved up or down more than specified in the user settings (default: 2 lines) or there has been a linter pass without errors. 
    - Fixed *GetPath* so that it works in a Unix environment where many file systems are case-sensitive.
    - Fixed a bug that caused issues when using identifiers starting with 'true' and 'false'.
+   - Fixed NodeVisitor so that it returns the correct values from binary operator nodes involving comparison or logical operators.
    - Added support for distinguishing between attempts to call global and non-global functions.
    - Added more specific exceptions (e.g. when expecting a type, a literal, a keyword, or an identifier).
-   - Added a warning about non-existing types when explicitly casting an expression.
-   - Added a warning when attempting to cast an expression that does not return a value.
-   - Added a warning when a variable's, property's, or parameter's name is the same as a known type.
-   - Added warnings when attempting to use the *Self* or *Parent* variables in functions with the *Global* keyword.
-   - Added a warning when attempting to access properties, functions, or events of expressions that return a base type or nothing.
-   - Added a warning when attempting to assign a non-array value to an array.
-   - Added a warning when attempting to use a type as if it were a variable.
-   - Added a warning when attempting to access a property via a type instead of an instance of that type.
+   - Added an error about non-existing types when explicitly casting an expression.
+   - Added an error when attempting to cast an expression that does not return a value.
+   - Added an error when a variable's, property's, or parameter's name is the same as a known type.
+   - Added errors when attempting to use the *Self* or *Parent* variables in functions with the *Global* keyword.
+   - Added an error when attempting to access properties, functions, or events of expressions that return a base type or nothing.
+   - Added an error when attempting to assign a non-array value to an array.
+   - Added an error when attempting to use a type as if it were a variable.
+   - Added an error when attempting to access a property via a type instead of an instance of that type.
+   - Added errors when attempting to use arithmetic or logical operators with unsupported types.
+   - Added errors when attempting to explicitly cast outside of the chain of inheritance of the left-hand side expression.
+   - Added errors when improperly using unary operators.
+   - Added errors when using arithmetic operators with types that do not support them.
    - Added validation of function return types.
   - Code completion
    - Performance has been improved by caching the result of the linter's semantic analysis.
