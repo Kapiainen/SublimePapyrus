@@ -2155,6 +2155,8 @@ class Semantic(SharedResources):
 				self.Abort("'%s' is not a variable that exists in this scope." % node.data.child.data.token.value)
 		elif node.type == self.NODE_ARRAYATOM or node.type == self.NODE_ARRAYFUNCORID:
 			result = self.NodeVisitor(node.data.child, expected)
+			if node.data.child.type == self.NODE_IDENTIFIER and not result.object:
+				self.Abort("'%s' is not a variable that exists in this scope." % node.data.child.data.token.value)
 			if node.data.expression:
 				if result.type == self.KW_NONE:
 					self.Abort("Expected an array object instead of NONE.")
@@ -2413,26 +2415,58 @@ class Semantic(SharedResources):
 				result = rightResult
 			elif node.data.operator.type == self.OP_ADDITION or node.data.operator.type == self.OP_SUBTRACTION or node.data.operator.type == self.OP_MULTIPLICATION or node.data.operator.type == self.OP_DIVISION or node.data.operator.type == self.OP_MODULUS:
 				leftResult = self.NodeVisitor(node.data.leftOperand, expected)
+				if node.data.leftOperand.type == self.NODE_IDENTIFIER and not leftResult.object:
+					self.Abort("'%s' is not a variable that exists in this scope." % node.data.leftOperand.data.token.value)
 				rightResult = self.NodeVisitor(node.data.rightOperand, expected)
-				if leftResult.type != rightResult.type and leftResult.array != rightResult.array and leftResult.object != rightResult.object:
+				if node.data.rightOperand.type == self.NODE_IDENTIFIER and not rightResult.object:
+					self.Abort("'%s' is not a variable that exists in this scope." % node.data.rightOperand.data.token.value)
+				if not leftResult.object:
+					self.Abort("The left-hand side expression evaluates to a type instead of a value or variable.")
+				elif not rightResult.object:
+					self.Abort("The right-hand side expression evaluates to a type instead of a value or variable.")
+				elif leftResult.array:
+					self.Abort("The left-hand side expression evaluates to an array, which do not support arithmetic operators.")
+				elif rightResult.array:
+					self.Abort("The right-hand side expression evaluates to an array, which do not support arithmetic operators.")
+				elif leftResult.type != rightResult.type:
 					if self.CanAutoCast(leftResult, rightResult):
 						result = rightResult
-					elif self.CanAutoCast(rightResult, leftResult):
-						result = leftResult
 					else:
 						self.Abort("The two operands of an arithmetic operation are of different types that cannot be auto-cast to be the same.")
 				else:
 					result = rightResult
+					if result.type == self.KW_INT or result.type == self.KW_FLOAT:
+						pass
+					elif result.type == self.KW_STRING:
+						if node.data.operator.type != self.OP_ADDITION:
+							self.Abort("'String' variables and values only support the addition operator.")
+					else:
+						self.Abort("'%s' variables and values do not support arithmetic operators." % result.type.capitalize())
 			elif node.data.operator.type == self.LOG_AND or node.data.operator.type == self.LOG_OR:
 				leftResult = self.NodeVisitor(node.data.leftOperand, expected)
+				if node.data.leftOperand.type == self.NODE_IDENTIFIER and not leftResult.object:
+					self.Abort("'%s' is not a variable that exists in this scope." % node.data.leftOperand.data.token.value)
 				rightResult = self.NodeVisitor(node.data.rightOperand, expected)
+				if node.data.rightOperand.type == self.NODE_IDENTIFIER and not rightResult.object:
+					self.Abort("'%s' is not a variable that exists in this scope." % node.data.rightOperand.data.token.value)
 				result = NodeResult(self.KW_BOOL, False, True)
 			elif node.data.operator.type == self.CMP_EQUAL or node.data.operator.type == self.CMP_NOT_EQUAL or node.data.operator.type == self.CMP_LESS_THAN or node.data.operator.type == self.CMP_GREATER_THAN or node.data.operator.type == self.CMP_LESS_THAN_OR_EQUAL or node.data.operator.type == self.CMP_GREATER_THAN_OR_EQUAL:
 				leftResult = self.NodeVisitor(node.data.leftOperand, expected)
+				if node.data.leftOperand.type == self.NODE_IDENTIFIER and not leftResult.object:
+					self.Abort("'%s' is not a variable that exists in this scope." % node.data.leftOperand.data.token.value)
 				rightResult = self.NodeVisitor(node.data.rightOperand, expected)
+				if node.data.rightOperand.type == self.NODE_IDENTIFIER and not rightResult.object:
+					self.Abort("'%s' is not a variable that exists in this scope." % node.data.rightOperand.data.token.value)
 				result = NodeResult(self.KW_BOOL, False, True)
 		elif node.type == self.NODE_UNARYOPERATOR:
 			result = self.NodeVisitor(node.data.operand)
+			if node.data.operand.type == self.NODE_IDENTIFIER and not result.object:
+				self.Abort("'%s' is not a variable that exists in this scope." % node.data.operand.data.token.value)
+			if node.data.operator.type == self.OP_SUBTRACTION:
+				if result.array or not result.object or (result.type != self.KW_INT and result.type != self.KW_FLOAT):
+					self.Abort("Only numeric values can be negated.")
+			elif node.data.operator.type == self.LOG_NOT:
+				result = NodeResult(self.KW_BOOL, False, True)
 		else:
 			self.Abort("Unknown node type")
 		#print("\nExiting node: %s" % node.type)
