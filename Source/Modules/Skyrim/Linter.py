@@ -2431,6 +2431,8 @@ class Semantic(SharedResources):
 				elif leftResult.type != rightResult.type:
 					if self.CanAutoCast(leftResult, rightResult):
 						result = rightResult
+					elif self.CanAutoCast(rightResult, leftResult):
+						result = leftResult
 					else:
 						self.Abort("The two operands of an arithmetic operation are of different types that cannot be auto-cast to be the same.")
 				else:
