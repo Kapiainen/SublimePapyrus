@@ -1623,7 +1623,7 @@ class Semantic(SharedResources):
 		self.functions = [{}]
 		self.states = [{}]
 		self.imports = []
-		self.header = None		
+		self.header = None
 		# Script header
 		if statements[0].type == self.STAT_SCRIPTHEADER:
 			self.header = statements.pop(0)
@@ -2413,8 +2413,17 @@ class Semantic(SharedResources):
 					rightResult = NodeResult(node.data.rightOperand.data.token.value, False, True)
 					if leftResult.array and rightResult.type != self.KW_STRING and rightResult.type != self.KW_BOOL:
 						self.Abort("Arrays can only be cast to STRING and BOOL.")
-					if rightResult.type != self.KW_BOOL and rightResult.type != self.KW_FLOAT and rightResult.type != self.KW_INT and rightResult.type != self.KW_STRING and not self.GetCachedScript(rightResult.type):
-						self.Abort("'%s' is not a type that exists." % rightResult.type)
+					if leftResult.type != rightResult.type:
+						if rightResult.type != self.KW_BOOL and rightResult.type != self.KW_FLOAT and rightResult.type != self.KW_INT and rightResult.type != self.KW_STRING:
+							targetScript = self.GetCachedScript(rightResult.type)
+							if not targetScript:
+								self.Abort("'%s' is not a type that exists." % rightResult.type)
+							if not leftResult.type in targetScript.extends:
+								parentScript = self.GetCachedScript(leftResult.type)
+								if not parentScript:
+									self.Abort("'%s' is not a type that exists." % rightResult.type)
+								if rightResult.type not in parentScript.extends:
+									self.Abort("'%s' cannot be cast as a(n) '%s' as the two types are incompatible." % (leftResult.type, rightResult.type))
 					result = rightResult
 				else:
 					rightResult = self.NodeVisitor(node.data.rightOperand, expected)
