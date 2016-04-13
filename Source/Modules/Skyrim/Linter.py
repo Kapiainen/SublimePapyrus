@@ -2414,7 +2414,17 @@ class Semantic(SharedResources):
 					if leftResult.array and rightResult.type != self.KW_STRING and rightResult.type != self.KW_BOOL:
 						self.Abort("Arrays can only be cast to STRING and BOOL.")
 					if leftResult.type != rightResult.type:
-						if rightResult.type != self.KW_BOOL and rightResult.type != self.KW_FLOAT and rightResult.type != self.KW_INT and rightResult.type != self.KW_STRING:
+						if rightResult.type == self.KW_BOOL:
+							pass
+						elif rightResult.type == self.KW_FLOAT:
+							if leftResult.type != self.KW_BOOL and leftResult.type != self.KW_FLOAT and leftResult.type != self.KW_STRING:
+								self.Abort("'%s' cannot be cast to 'Float'." % leftResult.type)
+						elif rightResult.type == self.KW_INT:
+							if leftResult.type != self.KW_BOOL and leftResult.type != self.KW_FLOAT and leftResult.type != self.KW_STRING:
+								self.Abort("'%s' cannot be cast to 'Int'." % leftResult.type)
+						elif rightResult.type == self.KW_STRING:
+							pass
+						else:
 							targetScript = self.GetCachedScript(rightResult.type)
 							if not targetScript:
 								self.Abort("'%s' is not a type that exists." % rightResult.type)
