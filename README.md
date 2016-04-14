@@ -194,6 +194,7 @@ Version 2.0.0 - 2016/04/DD:
   - Added a command to manually clear the various caches relevant to the linter and code completion without needing to restart Sublime Text. It is useful when modifying the contents of the *import* setting in the user settings or one of the folders specified in that setting.
   - Linter
    - Switched from using filenames to using a view's buffer ID for identification purposes. Scripts no longer have to have been saved to a file for the linter, and subsequently the code completion, to work.
+   - Switched to using the unmodified lexical and syntactic analysis classes in semantic analysis when processing other scripts in order to get their properties, functions, and events.
    - Changed the way that lexical and syntactic analysis are performed in an effort to catch syntactic errors earlier.
    - Semantic analysis has been modified to no longer discard statements after use and instead store them in an object, which represents the script and can be used by the code completion system.
    - NodeVisitor now returns an object with *type*, *array*, and *object* fields instead of just a string.
@@ -204,17 +205,17 @@ Version 2.0.0 - 2016/04/DD:
    - Fixed a bug that caused issues when using identifiers starting with 'true' and 'false'.
    - Fixed NodeVisitor so that it returns the correct values from binary operator nodes involving comparison or logical operators.
    - Added support for distinguishing between attempts to call global and non-global functions.
-   - Added more specific exceptions (e.g. when expecting a type, a literal, a keyword, or an identifier).
-   - Added an error about non-existing types when explicitly casting an expression.
-   - Added an error when attempting to cast an expression that does not return a value.
-   - Added an error when a variable's, property's, or parameter's name is the same as a known type.
    - Added errors when attempting to use the *Self* or *Parent* variables in functions with the *Global* keyword.
-   - Added an error when attempting to access properties, functions, or events of expressions that return a base type or nothing.
+   - Added validation of function return types.
+   - Added more specific exceptions (e.g. when expecting a type, a literal, a keyword, or an identifier).
+   - Added an error about casting to non-existing types.
+   - Added an error when attempting to cast an expression that does not return a value.
+   - Added errors when attempting to explicitly cast outside of the chain of inheritance of the type that the left-hand side expression evaluates to.
+   - Added an error when attempting to access properties, functions, or events of expressions that evaluate to a base type or nothing.
+   - Added an error when a variable's, property's, or parameter's name is the same as a known type.
    - Added an error when attempting to assign a non-array value to an array.
    - Added an error when attempting to use a type as if it were a variable (e.g. accessing a property directly via a type).
    - Added errors when attempting to incorrectly use arithmetic or logical operators.
-   - Added errors when attempting to explicitly cast outside of the chain of inheritance of the left-hand side expression.
-   - Added validation of function return types.
   - Code completion
    - Performance has been improved by caching the result of the linter's semantic analysis.
    - More scenarios are now supported (e.g. keywords in script headers, variable declarations, property declarations, function/event declarations).
