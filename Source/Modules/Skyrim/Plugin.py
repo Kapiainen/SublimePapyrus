@@ -367,7 +367,6 @@ class EventListener(sublime_plugin.EventListener):
 			try:
 				sem.GetContext(currentScript, line)
 			except Linter.EmptyStateCancel as e:
-				print("Empty state")
 				if not lineString:
 					# Inherited functions/events
 					completions.append(("import\timport statement", "Import ${0:$SELECTION}",))
@@ -432,7 +431,6 @@ class EventListener(sublime_plugin.EventListener):
 									completions.append(("autoreadonly\tkeyword", "AutoReadOnly",))
 								return completions
 							except Linter.ExpectedLiteralError as f:
-								print(f.message)
 								# Literals when initializing a property
 								if tokens[1].type == lex.KW_PROPERTY:
 									if tokens[0].type == lex.IDENTIFIER:
@@ -450,7 +448,6 @@ class EventListener(sublime_plugin.EventListener):
 								return
 				return
 			except Linter.StateCancel as e:
-				print("State")
 				# Functions/events that have not yet been defined in the state.
 				if not lineString:
 					# Functions/events defined in the empty state.
@@ -527,7 +524,6 @@ class EventListener(sublime_plugin.EventListener):
 									return completions
 				return
 			except Linter.FunctionDefinitionCancel as e:
-				print("Function/event")
 				if not lineString:
 					# Flow control
 					completions.append(("if\tif", "If ${1:$SELECTION}\n\t${0}\nEndIf",))
@@ -619,13 +615,10 @@ class EventListener(sublime_plugin.EventListener):
 									completions.append(self.completionKeywordAs)
 									return completions
 							except Linter.ExpectedTypeError as f:
-								print(f.message)
 								completions.extend(self.GetTypeCompletions(view, f.baseTypes))
 								return completions
 							except Linter.ExpectedIdentifierError as f:
-								print(f.message)
-								if tokens[-1].type == lex.OP_DOT:
-									print("Accessing properties and functions")
+								if tokens[-1].type == lex.OP_DOT: # Accessing properties and functions
 									try:
 										result = sem.NodeVisitor(syn.stack[-2])
 										#print(result.type)
@@ -659,8 +652,7 @@ class EventListener(sublime_plugin.EventListener):
 											# None and types that do not have properties nor functions/events
 											if result.type == lex.KW_NONE or result.type == lex.KW_BOOL or result.type == lex.KW_FLOAT or result.type == lex.KW_INT or result.type == lex.KW_STRING:
 												return
-											if not result.object:
-												print("Global %s functions" % result.type)
+											if not result.object: #Global <TYPE> functions
 												functions = self.GetFunctionCompletions(result.type, True)
 												if not functions:
 													try:
@@ -677,8 +669,7 @@ class EventListener(sublime_plugin.EventListener):
 												if functions:
 													completions.extend(functions)
 												return completions
-											else:
-												print("Non-global functions, events, and properties")
+											else: # Non-global functions, events, and properties
 												functions = self.GetFunctionCompletions(result.type, False)
 												if not functions:
 													try:
@@ -713,8 +704,7 @@ class EventListener(sublime_plugin.EventListener):
 									except Linter.SemanticError as g:
 										return
 									return completions
-								else:
-									print("Not following a dot")
+								else: # Not following a dot
 									for name, obj in e.functions[0].items():
 										if obj.type == syn.STAT_FUNCTIONDEF:
 											completions.append(SublimePapyrus.MakeFunctionCompletion(obj, sem, True, "parent"))
@@ -749,14 +739,12 @@ class EventListener(sublime_plugin.EventListener):
 										completions.append(self.completionKeywordParent)
 									return completions
 							except Linter.SyntacticError as f:
-								print(f.message)
-								if syn.stack and syn.stack[-2].type == syn.LEFT_PARENTHESIS and syn.stack[-1].type != syn.RIGHT_PARENTHESIS:
+								if syn.stack and syn.stack[-2].type == syn.LEFT_PARENTHESIS and syn.stack[-1].type != syn.RIGHT_PARENTHESIS: # Expression enclosed by parentheses
 									completions.append(self.completionKeywordAs)
 									return completions
 								return
 				return
 			except Linter.PropertyDefinitionCancel as e:
-				print("Property")
 				if not lineString:
 					typ = None
 					if e.array:
@@ -781,7 +769,6 @@ class EventListener(sublime_plugin.EventListener):
 							pass
 				return
 			except Linter.SemanticError as e:
-				print("Semantic error")
 				return
 			return
 
