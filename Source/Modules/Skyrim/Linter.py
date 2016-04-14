@@ -2501,7 +2501,9 @@ class Semantic(SharedResources):
 										self.Abort("A(n) '%s' value cannot be divided by a(n) '%s' value." % (leftResult.type.capitalize(), rightResult.type.capitalize()))
 									result = leftResult
 								else:
-									if (rightResult.type == self.KW_BOOL and leftResult.type != self.KW_STRING) or (rightResult.type == self.KW_STRING and leftResult.type != self.KW_BOOL):
+									if rightResult.type == self.KW_BOOL and leftResult.type != self.KW_STRING:
+										result = rightResult
+									elif rightResult.type == self.KW_STRING and leftResult.type != self.KW_BOOL:
 										result = rightResult
 									else:
 										self.Abort("'%s' does not support the division operator." % leftResult.type.capitalize())
