@@ -211,12 +211,9 @@ Version 2.0.0 - 2016/04/DD:
    - Added errors when attempting to use the *Self* or *Parent* variables in functions with the *Global* keyword.
    - Added an error when attempting to access properties, functions, or events of expressions that return a base type or nothing.
    - Added an error when attempting to assign a non-array value to an array.
-   - Added an error when attempting to use a type as if it were a variable.
-   - Added an error when attempting to access a property via a type instead of an instance of that type.
-   - Added errors when attempting to use arithmetic or logical operators with unsupported types.
+   - Added an error when attempting to use a type as if it were a variable (e.g. accessing a property directly via a type).
+   - Added errors when attempting to incorrectly use arithmetic or logical operators.
    - Added errors when attempting to explicitly cast outside of the chain of inheritance of the left-hand side expression.
-   - Added errors when improperly using unary operators.
-   - Added errors when using arithmetic operators with types that do not support them.
    - Added validation of function return types.
   - Code completion
    - Performance has been improved by caching the result of the linter's semantic analysis.
