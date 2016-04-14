@@ -2477,7 +2477,9 @@ class Semantic(SharedResources):
 										self.Abort("A(n) '%s' value cannot be subtracted from a(n) '%s' value." % (rightResult.type.capitalize(), leftResult.type.capitalize()))
 									result = leftResult
 								else:
-									if rightResult.type == self.KW_BOOL or rightResult.type == self.KW_STRING:
+									if rightResult.type == self.KW_BOOL and leftResult.type != self.KW_STRING:
+										result = rightResult
+									elif rightResult.type == self.KW_STRING and leftResult.type != self.KW_BOOL:
 										result = rightResult
 									else:
 										self.Abort("'%s' does not support the subtraction operator." % leftResult.type.capitalize())
@@ -2487,7 +2489,9 @@ class Semantic(SharedResources):
 										self.Abort("A(n) '%s' value cannot be multiplied by a(n) '%s' value." % (leftResult.type.capitalize(), rightResult.type.capitalize()))
 									result = leftResult
 								else:
-									if rightResult.type == self.KW_BOOL or rightResult.type == self.KW_STRING:
+									if rightResult.type == self.KW_BOOL and leftResult.type != self.KW_STRING:
+										result = rightResult
+									elif rightResult.type == self.KW_STRING and leftResult.type != self.KW_BOOL:
 										result = rightResult
 									else:
 										self.Abort("'%s' does not support the multiplication operator." % leftResult.type.capitalize())
