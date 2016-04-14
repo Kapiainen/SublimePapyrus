@@ -2449,29 +2449,72 @@ class Semantic(SharedResources):
 						self.Abort("'%s' is not a variable that exists in this scope." % node.data.rightOperand.data.token.value)
 					if node.data.operator.type == self.OP_ADDITION or node.data.operator.type == self.OP_SUBTRACTION or node.data.operator.type == self.OP_MULTIPLICATION or node.data.operator.type == self.OP_DIVISION or node.data.operator.type == self.OP_MODULUS:
 						if not leftResult.object:
-							self.Abort("The left-hand side expression evaluates to a type instead of a value or variable.")
+							self.Abort("The left-hand side expression evaluates to a type instead of a value.")
 						elif not rightResult.object:
-							self.Abort("The right-hand side expression evaluates to a type instead of a value or variable.")
+							self.Abort("The right-hand side expression evaluates to a type instead of a value.")
 						elif leftResult.array:
 							self.Abort("The left-hand side expression evaluates to an array, which do not support arithmetic operators.")
 						elif rightResult.array:
 							self.Abort("The right-hand side expression evaluates to an array, which do not support arithmetic operators.")
-						elif leftResult.type != rightResult.type:
-							if self.CanAutoCast(leftResult, rightResult):
-								result = rightResult
-							elif self.CanAutoCast(rightResult, leftResult):
-								result = leftResult
-							else:
-								self.Abort("The two operands of an arithmetic operation are of different types that cannot be auto-cast to be the same.")
+						if leftResult.type != rightResult.type:
+							if node.data.operator.type == self.OP_ADDITION:
+								if leftResult.type == self.KW_STRING:
+									result = leftResult
+								elif rightResult.type == self.KW_STRING:
+									result = rightResult
+								elif leftResult.type == self.KW_INT or leftResult.type == self.KW_FLOAT:
+									if rightResult.type != self.KW_INT and rightResult.type != self.KW_FLOAT and rightResult.type != self.KW_BOOL and rightResult.type != self.KW_STRING:
+										self.Abort("A(n) '%s' value cannot be added to a(n) '%s' value." % (rightResult.type.capitalize(), leftResult.type.capitalize()))
+									result = leftResult
+								else:
+									if rightResult.type == self.KW_BOOL:
+										result = rightResult
+									else:
+										self.Abort("'%s' does not support the addition operator." % leftResult.type.capitalize())
+							elif node.data.operator.type == self.OP_SUBTRACTION:
+								if leftResult.type == self.KW_INT or leftResult.type == self.KW_FLOAT:
+									if rightResult.type != self.KW_INT and rightResult.type != self.KW_FLOAT and rightResult.type != self.KW_BOOL and rightResult.type != self.KW_STRING:
+										self.Abort("A(n) '%s' value cannot be subtracted from a(n) '%s' value." % (rightResult.type.capitalize(), leftResult.type.capitalize()))
+									result = leftResult
+								else:
+									if rightResult.type == self.KW_BOOL or rightResult.type == self.KW_STRING:
+										result = rightResult
+									else:
+										self.Abort("'%s' does not support the subtraction operator." % leftResult.type.capitalize())
+							elif node.data.operator.type == self.OP_MULTIPLICATION:
+								if leftResult.type == self.KW_INT or leftResult.type == self.KW_FLOAT:
+									if rightResult.type != self.KW_INT and rightResult.type != self.KW_FLOAT and rightResult.type != self.KW_BOOL and rightResult.type != self.KW_STRING:
+										self.Abort("A(n) '%s' value cannot be multiplied by a(n) '%s' value." % (leftResult.type.capitalize(), rightResult.type.capitalize()))
+									result = leftResult
+								else:
+									if rightResult.type == self.KW_BOOL or rightResult.type == self.KW_STRING:
+										result = rightResult
+									else:
+										self.Abort("'%s' does not support the multiplication operator." % leftResult.type.capitalize())
+							elif node.data.operator.type == self.OP_DIVISION:
+								if leftResult.type == self.KW_INT or leftResult.type == self.KW_FLOAT:
+									if rightResult.type != self.KW_INT and rightResult.type != self.KW_FLOAT and rightResult.type != self.KW_BOOL and rightResult.type != self.KW_STRING:
+										self.Abort("A(n) '%s' value cannot be divided by a(n) '%s' value." % (leftResult.type.capitalize(), rightResult.type.capitalize()))
+									result = leftResult
+								else:
+									if (rightResult.type == self.KW_BOOL and leftResult.type != self.KW_STRING) or (rightResult.type == self.KW_STRING and leftResult.type != self.KW_BOOL):
+										result = rightResult
+									else:
+										self.Abort("'%s' does not support the division operator." % leftResult.type.capitalize())
+							elif node.data.operator.type == self.OP_MODULUS:
+								self.Abort("The modulus operator requires two 'Int' operands.")
 						else:
 							result = rightResult
-							if result.type == self.KW_INT or result.type == self.KW_FLOAT:
+							if result.type == self.KW_INT:
 								pass
+							elif result.type == self.KW_FLOAT:
+								if node.data.operator.type == self.OP_MODULUS:
+									self.Abort("The modulus operator requires two 'Int' operands.")
 							elif result.type == self.KW_STRING:
 								if node.data.operator.type != self.OP_ADDITION:
-									self.Abort("'String' variables and values only support the addition operator.")
+									self.Abort("'String' only supports the addition operator.")
 							else:
-								self.Abort("'%s' variables and values do not support arithmetic operators." % result.type.capitalize())
+								self.Abort("'%s' does not support arithmetic operators." % result.type.capitalize())
 					elif node.data.operator.type == self.LOG_AND or node.data.operator.type == self.LOG_OR:
 						result = NodeResult(self.KW_BOOL, False, True)
 					elif node.data.operator.type == self.CMP_EQUAL or node.data.operator.type == self.CMP_NOT_EQUAL or node.data.operator.type == self.CMP_LESS_THAN or node.data.operator.type == self.CMP_GREATER_THAN or node.data.operator.type == self.CMP_LESS_THAN_OR_EQUAL or node.data.operator.type == self.CMP_GREATER_THAN_OR_EQUAL:
