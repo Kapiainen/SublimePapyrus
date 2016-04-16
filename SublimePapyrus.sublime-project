@@ -1,0 +1,30 @@
+{
+	"folders":
+	[
+		{
+			"path": "."
+		}
+	],
+	"settings":
+	{
+	},
+	"build_systems":
+	[
+		{
+			"name": "Build packages",
+			"cmd":
+			[
+				"python",
+				".\\BuildPackages.py"
+			]
+		},
+		{
+			"name": "Build release",
+			"cmd":
+			[
+				"python",
+				".\\BuildReleases.py"
+			]
+		}
+	]
+}
