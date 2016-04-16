@@ -15,7 +15,8 @@
 			"cmd":
 			[
 				"python",
-				"$project_path\\BuildPackages.py"
+				"$project_path\\BuildPackages.py",
+				"$project_path"
 			]
 		},
 		{
@@ -23,7 +24,8 @@
 			"cmd":
 			[
 				"python",
-				"$project_path\\BuildReleases.py"
+				"$project_path\\BuildReleases.py",
+				"$project_path"
 			]
 		}
 	]
