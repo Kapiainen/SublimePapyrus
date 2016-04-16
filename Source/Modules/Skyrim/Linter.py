@@ -1355,7 +1355,11 @@ class Semantic(SharedResources):
 					if self.GetPath(stat.data.name):
 						self.Abort("Variables/properties cannot have the same name as a type.", stat.line)
 					return True
-				self.Abort("A variable or property has already been defined with the same name on line %d." % temp.line, stat.line)
+				else:
+					if self.variables[0].get(stat.data.name):
+						self.Abort("A property has already been defined with the same name in a parent script.", stat.line)
+					else:
+						self.Abort("A variable or property has already been defined with the same name on line %d." % temp.line, stat.line)
 		elif stat.type == self.STAT_FUNCTIONDEF or stat.type == self.STAT_EVENTDEF:
 			if self.cancel:
 				if stat.data.parameters:
@@ -1375,7 +1379,10 @@ class Semantic(SharedResources):
 							if self.GetPath(param.name):
 								self.Abort("Parameters cannot have the same name as a type.", stat.line)
 						else:
-							self.Abort("A variable or property has already been defined with the same name on line %d." % temp.line, stat.line)
+							if self.variables[0].get(stat.data.name):
+								self.Abort("A property has already been defined with the same name in a parent script.", stat.line)
+							else:
+								self.Abort("A variable or property has already been defined with the same name on line %d." % temp.line, stat.line)
 				return True
 		self.Abort("Expected a variable declaration, a property declaration, or a function/event signature.", stat.line)
 
