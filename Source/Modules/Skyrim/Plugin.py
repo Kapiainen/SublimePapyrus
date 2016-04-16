@@ -200,9 +200,9 @@ class EventListener(sublime_plugin.EventListener):
 		self.linterRunning = True # Block further attempts to run the linter until this instance has finished
 		if view:
 			SublimePapyrus.ClearLinterHighlights(view)
-		start = None #DEBUG
+		#start = None #DEBUG
 		def Exit():
-			print("Linter: Finished in %f milliseconds and releasing lock..." % ((time.time()-start)*1000.0)) #DEBUG
+			#print("Linter: Finished in %f milliseconds and releasing lock..." % ((time.time()-start)*1000.0)) #DEBUG
 			self.linterRunning = False
 			return False
 		global cacheLock
@@ -212,7 +212,7 @@ class EventListener(sublime_plugin.EventListener):
 		with cacheLock:
 			if not self.linterErrors.get(self.bufferID, None):
 				self.linterErrors[self.bufferID] = {}
-			start = time.time() #DEBUG
+			#start = time.time() #DEBUG
 			settings = None
 			if view:
 				settings = SublimePapyrus.GetSettings()
@@ -220,7 +220,7 @@ class EventListener(sublime_plugin.EventListener):
 				return Exit()
 			if view:
 				SublimePapyrus.SetStatus(view, "sublimepapyrus-linter", "The linter is running...")
-			lexSynStart = time.time() #DEBUG
+			#lexSynStart = time.time() #DEBUG
 			scriptContents = None
 			if view:
 				scriptContents = view.substr(sublime.Region(0, view.size()))
@@ -284,8 +284,8 @@ class EventListener(sublime_plugin.EventListener):
 					if settings.get("linter_panel_error_messages", False):
 						view.window().show_quick_panel([[e.message, "Line %d" % e.line]], None)
 				return Exit()
-			print("Linter: Finished lexical and syntactic in %f milliseconds..." % ((time.time()-lexSynStart)*1000.0)) #DEBUG
-			semStart = time.time() #DEBUG
+			#print("Linter: Finished lexical and syntactic in %f milliseconds..." % ((time.time()-lexSynStart)*1000.0)) #DEBUG
+			#semStart = time.time() #DEBUG
 			if statements:
 				try:
 					script = None
@@ -307,7 +307,7 @@ class EventListener(sublime_plugin.EventListener):
 						if settings.get("linter_panel_error_messages", False):
 							view.window().show_quick_panel([[e.message, "Line %d" % e.line]], None)
 					return Exit()
-				print("Linter: Finished semantic in %f milliseconds..." % ((time.time()-semStart)*1000.0)) #DEBUG
+				#print("Linter: Finished semantic in %f milliseconds..." % ((time.time()-semStart)*1000.0)) #DEBUG
 				if view:
 					SublimePapyrus.ClearStatus(view, "sublimepapyrus-linter")
 				if self.linterErrors.get(self.bufferID, None):
@@ -324,7 +324,7 @@ class EventListener(sublime_plugin.EventListener):
 				elif self.linterRunning:
 					return
 				self.completionRunning = True
-				start = time.time() #DEBUG
+				#start = time.time() #DEBUG
 				completions = None
 				if not view.find("scriptname", 0, sublime.IGNORECASE):
 					path = view.file_name()
@@ -340,7 +340,7 @@ class EventListener(sublime_plugin.EventListener):
 				elif completions == None:
 					completions = []
 				completions = (completions, sublime.INHIBIT_WORD_COMPLETIONS|sublime.INHIBIT_EXPLICIT_COMPLETIONS,)
-				print("Completions: Finished in %f milliseconds and releasing lock..." % ((time.time()-start)*1000.0)) #DEBUG
+				#print("Completions: Finished in %f milliseconds and releasing lock..." % ((time.time()-start)*1000.0)) #DEBUG
 				self.completionRunning = False
 				return completions
 
