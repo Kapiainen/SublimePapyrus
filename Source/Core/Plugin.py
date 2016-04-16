@@ -27,10 +27,10 @@ def GetSettings():
 		return None
 
 def ShowMessage(message):
-		sublime.status_message("SublimePapyrus - %s" % message)
+	sublime.status_message("SublimePapyrus - %s" % message)
 		
 def SetStatus(view, key, value):
-	view.set_status(key, "SublimePapyrus - %s" % value)
+	view.set_status(key, value)
 
 def ClearStatus(view, key):
 	view.erase_status(key)

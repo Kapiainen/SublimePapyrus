@@ -69,7 +69,7 @@ class SublimePapyrusSkyrimGenerateCompletionsCommand(sublime_plugin.WindowComman
 						if PYTHON_VERSION[0] == 2:
 							print("SublimePapyrus - Lexical error on line %d, column %d in '%s': %s" % (e.line, e.column, path, e.message))
 						elif PYTHON_VERSION[0] >= 3:
-							SublimePapyrus.ShowMessage("Lexical error on line %d, column %d in '%s': %s" % (e.line, e.column, path, e.message))
+							SublimePapyrus.ShowMessage("Error on line %d, column %d in '%s': %s" % (e.line, e.column, path, e.message))
 						return
 					if lines:
 						statements = []
@@ -82,7 +82,7 @@ class SublimePapyrusSkyrimGenerateCompletionsCommand(sublime_plugin.WindowComman
 								if PYTHON_VERSION[0] == 2:
 									print("SublimePapyrus - Syntactic error on line %d in '%s': %s" % (e.line, path, e.message))
 								elif PYTHON_VERSION[0] >= 3:
-									SublimePapyrus.ShowMessage("Syntactic error on line %d in '%s': %s" % (e.line, path, e.message))
+									SublimePapyrus.ShowMessage("Error on line %d in '%s': %s" % (e.line, path, e.message))
 								return
 						scriptNameLower = scriptName.lower()
 						completions = [{"trigger": "%s\t%s" % (scriptNameLower, "script"), "contents": scriptName}]
@@ -268,7 +268,7 @@ class EventListener(sublime_plugin.EventListener):
 					else:
 						SublimePapyrus.HighlightLinter(view, e.line, e.column)
 					self.linterErrors[self.bufferID][e.message] = e
-					SublimePapyrus.SetStatus(view, "sublimepapyrus-linter", "Lexical error on line %d, column %d: %s" % (e.line, e.column, e.message))
+					SublimePapyrus.SetStatus(view, "sublimepapyrus-linter", "Error on line %d, column %d: %s" % (e.line, e.column, e.message))
 					if settings.get("linter_panel_error_messages", False):
 						view.window().show_quick_panel([[e.message, "Line %d, column %d" % (e.line, e.column)]], None)
 				return Exit()
@@ -280,7 +280,7 @@ class EventListener(sublime_plugin.EventListener):
 					else:
 						SublimePapyrus.HighlightLinter(view, e.line)
 					self.linterErrors[self.bufferID][e.message] = e
-					SublimePapyrus.SetStatus(view, "sublimepapyrus-linter", "Syntactic error on line %d: %s" % (e.line, e.message))
+					SublimePapyrus.SetStatus(view, "sublimepapyrus-linter", "Error on line %d: %s" % (e.line, e.message))
 					if settings.get("linter_panel_error_messages", False):
 						view.window().show_quick_panel([[e.message, "Line %d" % e.line]], None)
 				return Exit()
@@ -303,7 +303,7 @@ class EventListener(sublime_plugin.EventListener):
 						else:
 							SublimePapyrus.HighlightLinter(view, e.line)
 						self.linterErrors[self.bufferID][e.message] = e
-						SublimePapyrus.SetStatus(view, "sublimepapyrus-linter", "Semantic error on line %d: %s" % (e.line, e.message)) 
+						SublimePapyrus.SetStatus(view, "sublimepapyrus-linter", "Error on line %d: %s" % (e.line, e.message)) 
 						if settings.get("linter_panel_error_messages", False):
 							view.window().show_quick_panel([[e.message, "Line %d" % e.line]], None)
 					return Exit()
