@@ -4,6 +4,7 @@
 	"linter_on_modified": true,
 	"linter_delay": 500,
 	"linter_panel_error_messages": false,
+	"linter_error_line_threshold": 2,
 	"intelligent_code_completion": true,
 	"center_highlighted_line": true,
 	"highlight_build_errors": true,

@@ -17,8 +17,8 @@ SublimePapyrus is a package that aims to provide a development environment for a
 - Download a [release](https://github.com/Kapiainen/SublimePapyrus/releases).
 - Start Sublime Text.
 - Click on the *Browse Packages...* option in the *Preferences* section of Sublime Text's toolbar.
-- The *\Data\Packages* folder should now be open. Browse to *\Data\Installed Packages*.
-- Open the release archive that was downloaded and extract the *.sublime-package* files to *\Data\Installed Packages*.
+- The *"\Data\Packages"* folder should now be open. Browse to *"\Data\Installed Packages"*.
+- Open the release archive that was downloaded and extract the *.sublime-package* files to *"\Data\Installed Packages"*.
 - Restart Sublime Text.
 
 ## **Core features**
@@ -34,14 +34,14 @@ SublimePapyrus is a package that aims to provide a development environment for a
 - Settings
 
 #### Build system framework
-The core of this package contains a flexible build system framework that should be able to handle most situations. The build system supports both single file and batch building, multiple import folders, and additional arguments. Lines in the source code that cause build errors can also be highlighted and brought to the center of the screen. Attempts to batch build one of the folders defined in the import folders setting will show a warning prompt.
+The core of this package contains a flexible build system framework that should be able to handle most situations. The build system supports both single file and batch building, multiple import folders, and additional arguments. Lines in the source code that cause build errors can also be highlighted and brought to the center of the screen. Attempts to batch build one of the folders defined in the import folders setting will show a warning prompt. If no output folder is specified in the user settings, then the compiled script will be placed one level above the script source (e.g. *"\Scripts\Source\Example.psc"* is compiled to *"\Scripts\Example.pex"*).
 
 #### Valid key insertion framework
 Certain functions have a limited pool of valid values that can be used as the argument and some functions return specific values based on e.g. the object that the function was called on. ***Insert **** commands open a panel that lists either the description and the value, or just the value that will be inserted when chosen.
 
 #### Commands
 - Open script
-  - This command brings up an input panel and uses the input string to find matching files in the import folders that have been defined in the settings. The syntax highlighting that is active is used to figure out which module's import folders setting to use.
+  - This command brings up an input panel and uses the input string to find matching files in the import folders that have been defined in the settings. The syntax highlighting that is active is used to figure out which module's import folders setting to use. Any text that is selected when running this command is used as the initial text to search for. 
 
 - Clear error highlights
   - This command just clears all error highlights (build errors, linter errors, etc.) that have been applied by this package.
@@ -57,6 +57,8 @@ Settings are located in *Preferences* > *Package Settings* > *SublimePapyrus*.
   - ***linter_delay***: The delay in milliseconds between the last modification of a script and the linter being triggered. Default: 500
 
   - ***linter_panel_error_messages***: Another method of showing error messages in addition to the messages that are shown in the status bar that is located at the bottom of Sublime Text's windows. If one wishes to see error messages in Sublime Text 2, then it is recommended that one enables this setting as messages regarding a script being saved override the linter's error messages. Default: False
+  
+  - ***linter_error_line_threshold***: The number of lines that an error can be moved up or down before it is considered to be a new error that should be brought to the center of the view. Default: 2
 
   - ***intelligent_code_completion***: Enables the code completion system that uses cached results from the linter to provide context-aware completions. Default: True
 
@@ -97,6 +99,7 @@ Settings are located in *Preferences* > *Package Settings* > *SublimePapyrus*.
     - Tracked statistic
     - Animation variables
     - Game settings
+ - Clear cache
 
 #### Syntax highlighting
 Syntax highlighting for the version of Papyrus that is used in ***The Elder Scrolls V: Skyrim***.
@@ -104,7 +107,6 @@ Syntax highlighting for the version of Papyrus that is used in ***The Elder Scro
 #### Linter
 Requirements:
 - The linter has to be enabled in the settings.
-- The script that is being edited to have been saved as a file.
 
 The linter performs lexical, syntactic, and semantic analysis on the source code of scripts as they are being edited. Lines that cause errors are highlighted and the error messages are shown as status messages (bottom left corner of Sublime Text).
 
@@ -150,6 +152,9 @@ Single file build system and a batch build variant.
     - Animation variable names (boolean, float, and integer)
     - Game setting names (float, integer, and string)
 
+- Clear cache
+  - Clears the caches relevant to the linter and code completion. Can be used to refresh the linter and code completion after modifying the contents of the *import* setting (e.g. adding a new folder or changing the order of folders) or the contents of one of the folders specified in the *import* setting (e.g. saving a new script).
+
 #### **3rd party resources for Skyrim**
 ##### Skyrim Script Extender (SKSE)
 - Commands
@@ -177,6 +182,50 @@ Single file build system and a batch build variant.
     - SKSE mod event names
 
 ## **Changelog**
+Version 2.0.0 - 2016/04/DD:
+
+**Core**
+  - The build system now places the compiled script one folder above the script's source file (*"\Scripts\Source\Example.psc"* is compiled to *"\Scripts\Example.pex"*) if no output folder has been specified in the user settings.
+  - Updated function, event, and property completions to always include the source (i.e. the script) that the completions are from.
+  - The *Open script* command automatically uses the first selection, if a piece of text has been selected, as the initial value.
+  - Added a new setting (***linter_error_line_threshold***) that defines how many lines a linter error can move up or down by between passes before it is considered a new error that should be centered.
+
+**Skyrim**
+  - Added a command to manually clear the various caches relevant to the linter and code completion without needing to restart Sublime Text. It is useful when modifying the contents of the *import* setting in the user settings or one of the folders specified in that setting.
+  - Linter
+   - Switched from using filenames to using a view's buffer ID for identification purposes. Scripts no longer have to have been saved to a file for the linter, and subsequently the code completion, to work.
+   - Switched to using the unmodified lexical and syntactic analysis classes in semantic analysis when processing other scripts in order to get their properties, functions, and events.
+   - Changed the way that lexical and syntactic analysis are performed in an effort to catch syntactic errors earlier.
+   - Semantic analysis has been modified to no longer discard statements after use and instead store them in an object, which represents the script and can be used by the code completion system.
+   - NodeVisitor now returns an object with *type*, *array*, and *object* fields instead of just a string.
+   - Error messages in the status bar are now persistent until they have been resolved.
+   - Removed gutter icon from highlighted lines.
+   - Errors are no longer centered multiple times unless either the line with the error has moved up or down more than specified in the user settings (default: 2 lines) or there has been a linter pass without errors. 
+   - Modified error messages.
+   - Fixed *GetPath* so that it works in a Unix environment where many file systems are case-sensitive.
+   - Fixed a bug that caused issues when using identifiers starting with 'true' and 'false'.
+   - Fixed NodeVisitor so that it returns the correct values from binary operator nodes involving comparison or logical operators.
+   - Fixed a bug that caused non-global functions from imported scripts to be taken into account when checking for ambiguous function calls.
+   - Fixed a bug that stopped casting 'self' to a type that extends the current script.
+   - Fixed a bug that prevented the use of 'self' as an argument in function calls when the parameter type is the same as the current script.
+   - Added specific warnings when declaring a variable/property with an identifier that is already in use in a property declaration in a parent script.
+   - Added support for distinguishing between attempts to call global and non-global functions.
+   - Added errors when attempting to use the *Self* or *Parent* variables in functions with the *Global* keyword.
+   - Added validation of function return types.
+   - Added more specific exceptions (e.g. when expecting a type, a literal, a keyword, or an identifier).
+   - Added an error about casting to non-existing types.
+   - Added an error when attempting to cast an expression that does not return a value.
+   - Added errors when attempting to explicitly cast outside of the chain of inheritance of the type that the left-hand side expression evaluates to.
+   - Added an error when attempting to access properties, functions, or events of expressions that evaluate to a base type or nothing.
+   - Added an error when a variable's, property's, or parameter's name is the same as a known type.
+   - Added an error when attempting to assign a non-array value to an array.
+   - Added an error when attempting to use a type as if it were a variable (e.g. accessing a property directly via a type).
+   - Added errors when attempting to incorrectly use arithmetic or logical operators.
+  - Code completion
+   - Performance has been improved by caching the result of the linter's semantic analysis.
+   - More scenarios are now supported (e.g. keywords in script headers, variable declarations, property declarations, function/event declarations).
+   - The source (the current script, the parent script, or another script) of the completion is specified.
+
 Version 1.0.7 - 2016/03/10:
   - Fixed a bug in the 'Generate completions' command.
   - Linter optimizations.

@@ -1,3 +1,5 @@
 *.stackdump
 Packages/
 Releases/
+.vscode/
+SublimePapyrus.sublime-workspace

@@ -28,6 +28,12 @@ def GetSettings():
 
 def ShowMessage(message):
 	sublime.status_message("SublimePapyrus - %s" % message)
+		
+def SetStatus(view, key, value):
+	view.set_status(key, value)
+
+def ClearStatus(view, key):
+	view.erase_status(key)
 
 ERROR_HIGHLIGHT_KEY = "sublime_papyrus_error"
 ERROR_HIGHLIGHT_SCOPE = "invalid"
@@ -38,10 +44,10 @@ def ClearHighlights(view, key):
 def ClearLinterHighlights(view):
 	ClearHighlights(view, ERROR_HIGHLIGHT_KEY)
 
-def HighlightLinter(view, line, column = None):
-	Highlight(view, ERROR_HIGHLIGHT_KEY, ERROR_HIGHLIGHT_SCOPE, line, column)
+def HighlightLinter(view, line, column = None, center = True):
+	Highlight(view, ERROR_HIGHLIGHT_KEY, ERROR_HIGHLIGHT_SCOPE, line, column, center)
 
-def Highlight(view, key, scope, line, column = None):
+def Highlight(view, key, scope, line, column = None, center = True):
 	if view and line:
 		regions = view.get_regions(key) #[]
 		if column: # Highlight a word
@@ -51,10 +57,10 @@ def Highlight(view, key, scope, line, column = None):
 			point = view.text_point(line-1, 0)
 			regions.append(view.line(sublime.Region(point)))
 		if len(regions) > 0:
-			view.add_regions(key, regions, scope, "bookmark")
+			view.add_regions(key, regions, scope)
 			settings = GetSettings()
 			if settings:
-				if settings.get("center_highlighted_line", True):
+				if center and settings.get("center_highlighted_line", True):
 					view.show_at_center(regions[0])
 
 def GetSourcePaths(view):
@@ -152,23 +158,23 @@ class SublimePapyrusClearErrorHighlightsCommand(sublime_plugin.TextCommand):
 # Open a script based on input
 class SublimePapyrusOpenScriptCommand(sublime_plugin.WindowCommand):
 	def run(self):
-		self.window.show_input_panel("Open script:", "", self.on_done, None, None)
+		text = ""
+		view = self.window.active_view()
+		self.view = view
+		if view:
+			for region in view.sel():
+				text = view.substr(region)
+				break
+			self.window.show_input_panel("Open script:", text, self.on_done, None, None)
 
 	def on_done(self, text):
-		view = self.window.active_view()
-		if view:
-			if not text:
-				for region in view.sel():
-					text = view.substr(region)
-					break
-			if not text:
-				return
-			self.view = view
-			if PYTHON_VERSION[0] == 2:
-				self.get_matching_files(text)
-			elif PYTHON_VERSION[0] >= 3:
-				thread = threading.Thread(target=self.get_matching_files, args=(text,))
-				thread.start()
+		if not text or not self.view:
+			return
+		if PYTHON_VERSION[0] == 2:
+			self.get_matching_files(text)
+		elif PYTHON_VERSION[0] >= 3:
+			thread = threading.Thread(target=self.get_matching_files, args=(text,))
+			thread.start()
 
 	def get_matching_files(self, text):
 		paths = GetSourcePaths(self.view)
@@ -208,16 +214,18 @@ class SublimePapyrusCompileScriptCommand(sublime_plugin.WindowCommand):
 			if modules:
 				moduleSettings = modules.get(module, None)
 				if moduleSettings:
-					compiler = moduleSettings["compiler"]
+					compiler = moduleSettings.get("compiler", None)
 					if not compiler or compiler == "":
 						return ShowMessage("The compiler path setting is undefined or invalid.")
-					flags = moduleSettings["flags"]
+					flags = moduleSettings.get("flags", None)
 					if not flags or flags == "":
 						return ShowMessage("The flags name setting is undefined or invalid.")
-					output = moduleSettings["output"]
+					output = moduleSettings.get("output", "")
 					if not output or output == "":
-						return ShowMessage("The output path setting is undefined or invalid.")
-					imports = moduleSettings["import"]
+						output, _ = os.path.split(filePath)
+						if output[-2:] == ":\\":
+							output = output + "\\"
+					imports = moduleSettings.get("import", None)
 					if imports:
 						if (PYTHON_VERSION[0] == 2 and isinstance(imports, list) and all(isinstance(k, basestring) for k in imports) and all(k != "" for k in imports)) or (PYTHON_VERSION[0] >= 3 and isinstance(imports, list) and all(isinstance(k, str) for k in imports) and all(k != "" for k in imports)):
 							if not batch:
@@ -232,7 +240,7 @@ class SublimePapyrusCompileScriptCommand(sublime_plugin.WindowCommand):
 							return ShowMessage("The import path(s) setting has to be a list of strings.")
 					else:
 						return ShowMessage("The import path(s) setting is undefined.")
-					arguments = moduleSettings["arguments"]
+					arguments = moduleSettings.get("arguments", None)
 					if arguments:
 						if isinstance(arguments, list) and all(isinstance(k, str) for k in arguments):
 							temp = []
@@ -255,7 +263,7 @@ class SublimePapyrusCompileScriptCommand(sublime_plugin.WindowCommand):
 					self.window.run_command("exec", args)
 
 # Make completions
-def MakeFunctionCompletion(stat, sem, calling = True, script = ""):
+def MakeFunctionCompletion(stat, sem, calling = True, script = "", precededByKeyword = False):
 	tabTrigger = stat.data.name.lower()
 	if script:
 		script = " (%s)" % script
@@ -305,26 +313,23 @@ def MakeFunctionCompletion(stat, sem, calling = True, script = ""):
 				i += 1
 		if len(content) > 0:
 			content = content[:-2]
-		typ = ""
-		if stat.data.type:
-			if stat.data.array:
-				typ = "%s[] " % stat.data.typeIdentifier
-			else:
-				typ = "%s " % stat.data.typeIdentifier
-		flags = ""
-		if stat.data.flags:
-			flags = " %s" % " ".join([f.capitalize() for f in stat.data.flags])
-		if sem.KW_NATIVE.capitalize() in flags:
-			content = "%sFunction %s(%s)%s" % (typ, stat.data.identifier, content, flags)
+		if precededByKeyword:
+			content = "%s(%s)\n\t${0}\nEndFunction" % (stat.data.identifier, content)
 		else:
-			content = "%sFunction %s(%s)%s\n\t${0}\nEndFunction" % (typ, stat.data.identifier, content, flags)
+			typ = ""
+			if stat.data.type:
+				if stat.data.array:
+					typ = "%s[] " % stat.data.typeIdentifier
+				else:
+					typ = "%s " % stat.data.typeIdentifier
+			content = "%sFunction %s(%s)\n\t${0}\nEndFunction" % (typ, stat.data.identifier, content)
 		return (tabTrigger + "\t" + description.lower(), content,)
 
-def MakeEventCompletion(stat, sem, calling = True, script = ""):
+def MakeEventCompletion(stat, sem, calling = True, script = "", precededByKeyword = False):
 	tabTrigger = stat.data.name.lower()
 	if script:
 		script = " (%s)" % script
-	description = "Event%s" % script
+	description = "event%s" % script
 	if calling:
 		content = ""
 		if stat.data.parameters:
@@ -363,22 +368,21 @@ def MakeEventCompletion(stat, sem, calling = True, script = ""):
 				i += 1
 		if len(content) > 0:
 			content = content[:-2]
-		flags = ""
-		if stat.data.flags:
-			flags = " %s" % " ".join([f.capitalize() for f in stat.data.flags])
-		if sem.KW_NATIVE.capitalize() in flags:
-			content = "Event %s(%s)%s" % (stat.data.identifier, content, flags)
+		if precededByKeyword:
+			content = "%s(%s)\n\t${0}\nEndEvent" % (stat.data.identifier, content)
 		else:
-			content = "Event %s(%s)%s\n\t${0}\nEndEvent" % (stat.data.identifier, content, flags)
+			content = "Event %s(%s)\n\t${0}\nEndEvent" % (stat.data.identifier, content)
 		return (tabTrigger + "\t" + description.lower(), content,)
 
-def MakePropertyCompletion(stat):
+def MakePropertyCompletion(stat, script = ""):
 	tabTrigger = stat.data.name.lower()
 	description = ""
+	if script:
+		script = " (%s)" % script
 	if stat.data.array:
-		description = "%s[] prop." % (stat.data.typeIdentifier)
+		description = "%s[] prop.%s" % (stat.data.typeIdentifier, script)
 	else:
-		description = "%s prop." % (stat.data.typeIdentifier)
+		description = "%s prop.%s" % (stat.data.typeIdentifier, script)
 	content = stat.data.identifier
 	return (tabTrigger + "\t" + description.lower(), content,)
 
@@ -401,16 +405,6 @@ def MakeParameterCompletion(stat):
 		description = "%s param." % (stat.data.typeIdentifier)
 	content = stat.data.identifier
 	return (tabTrigger + "\t" + description.lower(), content,)
-
-"""
-Port to Python 2.6
-
-Extras
-	Support for 3rd party compilers (Caprica in the case of Fallout 4)?
-		Build system should be able to accomodate it
-		What about the linter? It may need to accomodate for additional features (for-loops, etc.)
-			A separate module?
-"""
 
 # Checks the build result for errors and, depending on the settings, highlights lines that caused errors and/or hides the build results when there are no errors.
 class ExecCommand(BUILD_SYSTEM.ExecCommand):

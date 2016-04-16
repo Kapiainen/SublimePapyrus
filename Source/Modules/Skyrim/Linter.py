@@ -1,5 +1,7 @@
 import os, re, sys, collections
 
+PLATFORM_WINDOWS = os.name == "nt"
+
 # General #########################################################################################
 class SharedResources(object):
 	def __init__(self):
@@ -10,7 +12,6 @@ class SharedResources(object):
 		self.CMP_LESS_THAN_OR_EQUAL = "CMP_LESS_THAN_OR_EQUAL"
 		self.CMP_NOT_EQUAL = "CMP_NOT_EQUAL"
 
-		self.BOOL = "BOOL"
 		self.COMMA = "COMMA"
 		self.COMMENT_BLOCK = "COMMENT_BLOCK"
 		self.COMMENT_LINE = "COMMENT_LINE"
@@ -111,11 +112,6 @@ class SharedResources(object):
 		self.NODE_BINARYOPERATOR = "NODE_BINARYOPERATOR"
 		self.NODE_UNARYOPERATOR = "NODE_UNARYOPERATOR"
 
-		self.DEFINITION_PROPERTY = "DEFINITION_PROPERTY"
-		self.DEFINITION_FUNCTION = "DEFINITION_FUNCTION"
-		self.DEFINITION_EVENT = "DEFINITION_EVENT"
-		self.DEFINITION_STATE = "DEFINITION_STATE"
-
 # Lexical analysis ################################################################################
 class Token(object):
 	__slots__ = ["type", "value", "line", "column"]
@@ -169,7 +165,6 @@ class Lexical(SharedResources):
 			(self.OP_DIVISION_ASSIGN, r"/="),
 			(self.OP_MODULUS_ASSIGN, r"%="),
 			(self.OP_ASSIGN, r"="),
-			(self.BOOL, r"(true|false)"),
 			(self.IDENTIFIER, r"[a-z_][0-9a-z_]*"),
 			(self.FLOAT, r"(-\d+\.\d+)|(\d+\.\d+)"),
 			(self.INT, r"((0x(\d|[a-f])+)|((\d+))(?![a-z_]))"),
@@ -226,50 +221,48 @@ class Lexical(SharedResources):
 
 	def Process(self, asString): # Takes a string and yields tokens.
 		if not self.regex: # If total regex pattern has not been compiled yet, then do so now.
-		    temp = "|".join("(?P<%s>%s)" % pair for pair in self.token_specs)
-		    self.regex = re.compile(temp, re.IGNORECASE)
+			temp = "|".join("(?P<%s>%s)" % pair for pair in self.token_specs)
+			self.regex = re.compile(temp, re.IGNORECASE)
 		tokens = []
 		line = 1
 		column = -1
-		skip = [False, ""]
-		multiline = 0
 		for match in self.regex.finditer(asString):
 			t = match.lastgroup
 			v = match.group(t)
 			if t == self.WHITESPACE:
 				continue
 			elif t == self.COMMENT_LINE:
+				yield Token(self.COMMENT_LINE, None, line, match.start()-column)
 				continue
 			elif t == self.COMMENT_BLOCK:
 				i = v.count("\n")
-				line += i
-				column = match.end()-1
+				if i > 0:
+					line += i
+					column = match.end()-1
+				yield Token(self.COMMENT_BLOCK, None, line, match.start()-column)
 				continue
 			elif t == self.MULTILINE:
-				multiline += 1
+				line += 1
+				column = match.end()-1
 				continue
 			if t == self.IDENTIFIER:
 				temp = v.upper()
 				if temp in self.keywords:
 					t = temp
-			elif t == self.DOCUMENTATION_STRING:
+			elif t == self.DOCUMENTATION_STRING or t == self.STRING:
+				yield Token(t, v[1:-1], line, match.start()-column)
 				i = v.count("\n")
-				line += i
-				v = v[1:-1]
-				column = match.end()-1
+				if i > 0:
+					line += i
+					column = match.end()-1
+				continue
 			elif t == self.UNMATCHED:
-				self.Abort("Encountered an unexpected '%s' character." % v, line, match.start()-column)
+				self.Abort("Encountered an unexpected character ('%s')." % v, line, match.start()-column)
 			yield Token(t, v, line, match.start()-column)
-			line += multiline
-			multiline = 0
 			if t == self.NEWLINE:
 				line += 1
 				column = match.end()-1
 		yield Token(self.NEWLINE, "\n", line, 1)
-
-class LimitedLexical(Lexical):
-	def Abort(self, value, line, column):
-		pass
 
 # Syntactic analysis ##############################################################################
 class Statement(object):
@@ -459,11 +452,55 @@ class ArrayCreationNode(object):
 		self.typeToken = aTypeToken
 		self.sizeToken = aSizeToken
 
+# Exceptions
 class SyntacticError(Exception):
-	def __init__(self, message, line):
+	def __init__(self, line, message):
 		super(SyntacticError, self).__init__(message)
 		self.message = message
 		self.line = line
+		
+class ExpectedTypeError(SyntacticError):
+	def __init__(self, line, baseTypes, message = ""):
+		if baseTypes:
+			super(ExpectedTypeError, self).__init__(line, ("%s %s" % (message, "Expected a type identifier.")).strip())
+		else:
+			super(ExpectedTypeError, self).__init__(line, ("%s %s" % (message, "Expected a non-base type identifier.")).strip())
+		self.baseTypes = baseTypes
+
+class ExpectedIdentifierError(SyntacticError):
+	def __init__(self, line, message = ""):
+		super(ExpectedIdentifierError, self).__init__(line, ("%s %s" % (message, "Expected an identifier.")).strip())
+
+class ExpectedLiteralError(SyntacticError):
+	def __init__(self, line, message = ""):
+		super(ExpectedLiteralError, self).__init__(line, ("%s %s" % (message, "Expected a literal.")).strip())
+
+class ExpectedOperatorError(SyntacticError):
+	def __init__(self, line, message):
+		super(ExpectedOperatorError, self).__init__(line, message)
+
+class ExpectedVariableIdentifierError(SyntacticError):
+	def __init__(self, line, message = ""):
+		super(ExpectedVariableIdentifierError, self).__init__(line, ("%s %s" % (message, "Expected a variable identifier.")).strip())
+
+class ExpectedParameterIdentifierError(SyntacticError):
+	def __init__(self, line, message = ""):
+		super(ExpectedParameterIdentifierError, self).__init__(line, ("%s %s" % (message, "Expected a parameter identifier.")).strip())
+
+class ExpectedFunctionIdentifierError(SyntacticError):
+	def __init__(self, line, message = "", typ = None, array = False):
+		super(ExpectedFunctionIdentifierError, self).__init__(line, ("%s %s" % (message, "Expected a function identifier.")).strip())
+		self.type = typ
+		self.array = array
+
+class ExpectedEventIdentifierError(SyntacticError):
+	def __init__(self, line, message = ""):
+		super(ExpectedEventIdentifierError, self).__init__(line, ("%s %s" % (message, "Expected an event identifier.")).strip())
+
+class ExpectedKeywordError(SyntacticError):
+	def __init__(self, line, message, keywords):
+		super(ExpectedKeywordError, self).__init__(line, message)
+		self.keywords = keywords
 
 class Syntactic(SharedResources):
 	def __init__(self):
@@ -471,9 +508,9 @@ class Syntactic(SharedResources):
 
 	def Abort(self, message = None):
 		if self.token:
-			raise SyntacticError(message, self.token.line)
+			raise SyntacticError(self.token.line, message)
 		else:
-			raise SyntacticError(message, self.GetPreviousLine())
+			raise SyntacticError(self.GetPreviousLine(), message)
 
 	def Process(self, tokens):
 		if tokens:
@@ -505,7 +542,7 @@ class Syntactic(SharedResources):
 			return False
 
 	def Peek(self, amount = 1):
-		if self.token_index < self.token_count-amount:
+		if self.token_index+amount < self.token_count:
 			return self.tokens[self.token_index+amount]
 		else:
 			return None
@@ -515,15 +552,12 @@ class Syntactic(SharedResources):
 			return True
 		else:
 			if self.token != None:
-				self.Abort("Unexpected symbol '%s' ('%s') on column %d. Expected '%s'." % (self.token.type, self.token.value, self.token.column, asType))
+				raise SyntacticError(self.token.line, "Unexpected symbol '%s' ('%s') on column %d. Expected '%s'." % (self.token.type, self.token.value, self.token.column, asType))
 			else:
-				self.Abort("Expected symbol '%s'." % (asType))
+				raise SyntacticError(self.GetPreviousLine(), "Expected symbol '%s'." % (asType))
 
 	def TokensRemaining(self):
 		return self.token_index < self.token_count
-
-	def GetIndex(self):
-		return self.token_index
 
 	def GetPreviousToken(self):
 		if self.token_index > 0:
@@ -545,46 +579,32 @@ class Syntactic(SharedResources):
 		if self.token_index > 0:
 			return self.tokens[self.token_index-1].column
 
-	def GoTo(self, aiIndex):
-		self.token_index = aiIndex - 1
-		if self.token_index < -1:
-			self.token = None
-		else:
-			self.Consume()
-
-	def Attempt(self, func, args = None):
-		start = self.GetIndex()
-		if args:
-			if func(args):
-				return True
-			else:
-				self.GoTo(start)
-				return False
-		else:
-			if func():
-				return True
-			else:
-				self.GoTo(start)
-				return False
-
-	def AcceptType(self):
-		if self.Accept(self.IDENTIFIER) or self.Accept(self.KW_BOOL) or self.Accept(self.KW_FLOAT) or self.Accept(self.KW_INT) or self.Accept(self.KW_STRING):
+	def AcceptType(self, baseTypes):
+		if self.Accept(self.IDENTIFIER):
+			return True
+		elif baseTypes and (self.Accept(self.KW_BOOL) or self.Accept(self.KW_FLOAT) or self.Accept(self.KW_INT) or self.Accept(self.KW_STRING)):
 			return True
 		else:
 			return False
 
-	def ExpectType(self):
-		if self.AcceptType():
+	def ExpectType(self, baseTypes):
+		if self.AcceptType(baseTypes):
 			return True
 		else:
 			if self.token != None:
-				self.Abort("Unexpected symbol '%s' ('%s') on column %d. Expected a type identifier." % (self.token.type, self.token.value, self.token.column))
+				message = "Unexpected symbol '%s' ('%s') on column %d." % (self.token.type, self.token.value, self.token.column)
+				if baseTypes:
+					raise ExpectedTypeError(self.GetPreviousLine(), True, message)
+				else:
+					raise ExpectedTypeError(self.GetPreviousLine(), False, message)
 			else:
-				self.Abort("Expected a type identifier.")
-			return False
+				if baseTypes:
+					raise ExpectedTypeError(self.GetPreviousLine(), True)
+				else:
+					raise ExpectedTypeError(self.GetPreviousLine(), False)
 
 	def AcceptLiteral(self):
-		if self.Accept(self.BOOL) or self.Accept(self.FLOAT) or self.Accept(self.INT) or self.Accept(self.STRING) or self.Accept(self.KW_NONE):
+		if self.Accept(self.KW_FALSE) or self.Accept(self.KW_TRUE) or self.Accept(self.FLOAT) or self.Accept(self.INT) or self.Accept(self.STRING) or self.Accept(self.KW_NONE):
 			return True
 		elif self.Accept(self.OP_SUBTRACTION) and (self.Accept(self.INT) or self.Accept(self.FLOAT)):
 			return True
@@ -596,10 +616,9 @@ class Syntactic(SharedResources):
 			return True
 		else:
 			if self.token != None:
-				self.Abort("Unexpected symbol '%s' ('%s') on column %d. Expected a literal." % (self.token.type, self.token.value, self.token.column))
+				raise ExpectedLiteralError(self.token.line, "Unexpected symbol '%s' ('%s') on column %d." % (self.token.type, self.token.value, self.token.column))
 			else:
-				self.Abort("Expected a literal.")
-			return False
+				raise ExpectedLiteralError(self.GetPreviousLine())
 
 	def AcceptComparison(self):
 		if self.Accept(self.CMP_EQUAL) or self.Accept(self.CMP_NOT_EQUAL) or self.Accept(self.CMP_GREATER_THAN_OR_EQUAL) or self.Accept(self.CMP_LESS_THAN_OR_EQUAL) or self.Accept(self.CMP_GREATER_THAN) or self.Accept(self.CMP_LESS_THAN):
@@ -612,10 +631,9 @@ class Syntactic(SharedResources):
 			return True
 		else:
 			if self.token != None:
-				self.Abort("Unexpected symbol '%s' ('%s') on column %d. Expected a comparison operator." % (self.token.type, self.token.value, self.token.column))
+				raise ExpectedOperatorError(self.token.line, "Unexpected symbol '%s' ('%s') on column %d. Expected a comparison operator." % (self.token.type, self.token.value, self.token.column))
 			else:
-				self.Abort("Expected a comparison operator.")
-			return False
+				raise ExpectedOperatorError(self.GetPreviousLine(), "Expected a comparison operator.")
 
 	def AcceptAssignment(self):
 		if self.Accept(self.OP_ASSIGN) or self.Accept(self.OP_ADDITION_ASSIGN) or self.Accept(self.OP_SUBTRACTION_ASSIGN) or self.Accept(self.OP_MULTIPLICATION_ASSIGN) or self.Accept(self.OP_DIVISION_ASSIGN) or self.Accept(self.OP_MODULUS_ASSIGN):
@@ -628,13 +646,12 @@ class Syntactic(SharedResources):
 			return True
 		else:
 			if self.token != None:
-				self.Abort("Unexpected symbol '%s' ('%s') on column %d. Expected an assignment operator." % (self.token.type, self.token.value, self.token.column))
+				raise ExpectedOperatorError(self.token.line, "Unexpected symbol '%s' ('%s') on column %d. Expected an assignment operator." % (self.token.type, self.token.value, self.token.column))
 			else:
-				self.Abort("Expected an assignment operator.")
-			return False
+				raise ExpectedOperatorError(self.GetPreviousLine(), "Expected an assignment operator.")
 
 	def AcceptIdentifier(self):
-		if self.Accept(self.IDENTIFIER) or self.Accept(self.KW_BOOL) or self.Accept(self.KW_FLOAT) or self.Accept(self.KW_INT) or self.Accept(self.KW_STRING) or self.Accept(self.KW_SELF) or self.Accept(self.KW_PARENT):
+		if self.Accept(self.IDENTIFIER) or self.Accept(self.KW_SELF) or self.Accept(self.KW_PARENT):
 			return True
 		else:
 			return False
@@ -644,10 +661,47 @@ class Syntactic(SharedResources):
 			return True
 		else:
 			if self.token != None:
-				self.Abort("Unexpected symbol '%s' ('%s') on column %d. Expected an identifier." % (self.token.type, self.token.value, self.token.column))
+				raise ExpectedIdentifierError(self.token.line, "Unexpected symbol '%s' ('%s') on column %d." % (self.token.type, self.token.value, self.token.column))
 			else:
-				self.Abort("Expected an identifier.")
-			return False
+				raise ExpectedIdentifierError(self.GetPreviousLine())
+	
+	def ExpectVariableIdentifier(self):
+		if self.Accept(self.IDENTIFIER):
+			return True
+		else:
+			if self.token != None:
+				raise ExpectedVariableIdentifierError(self.token.line, "Unexpected symbol '%s' ('%s') on column %d." % (self.token.type, self.token.value, self.token.column))
+			else:
+				raise ExpectedVariableIdentifierError(self.GetPreviousLine())
+
+	def ExpectParameterIdentifier(self):
+		if self.Accept(self.IDENTIFIER):
+			return True
+		else:
+			if self.token != None:
+				raise ExpectedParameterIdentifierError(self.token.line, "Unexpected symbol '%s' ('%s') on column %d." % (self.token.type, self.token.value, self.token.column))
+			else:
+				raise ExpectedParameterIdentifierError(self.GetPreviousLine())
+
+	def ExpectFunctionIdentifier(self, typ, array):
+		if self.Accept(self.IDENTIFIER):
+			return True
+		else:
+			if typ:
+				typ = typ.upper()
+			if self.token != None:
+				raise ExpectedFunctionIdentifierError(self.token.line, "Unexpected symbol '%s' ('%s') on column %d." % (self.token.type, self.token.value, self.token.column), typ, array)
+			else:
+				raise ExpectedFunctionIdentifierError(self.GetPreviousLine(), "", typ, array)
+
+	def ExpectEventIdentifier(self):
+		if self.Accept(self.IDENTIFIER):
+			return True
+		else:
+			if self.token != None:
+				raise ExpectedEventIdentifierError(self.token.line, "Unexpected symbol '%s' ('%s') on column %d." % (self.token.type, self.token.value, self.token.column))
+			else:
+				raise ExpectedEventIdentifierError(self.GetPreviousLine())
 
 	def Statement(self):
 		line = -1
@@ -675,7 +729,7 @@ class Syntactic(SharedResources):
 				if nextToken and nextToken.type == self.RIGHT_BRACKET:
 					nextToken = self.Peek(3)
 					if not nextToken:
-						self.Abort("Expected FUNCTION, PROPERTY, or an identifier.", self.token.line)
+						self.Abort("Expected 'Function', 'Property', or an identifier.")
 					if nextToken.type == self.KW_FUNCTION:
 						self.FunctionDef()
 					elif nextToken.type == self.KW_PROPERTY:
@@ -732,335 +786,259 @@ class Syntactic(SharedResources):
 			if self.token == None: # End of script
 				return 0
 			else: # Non-consumed token
-				self.Abort("Unexpected %s symbol ('%s') on column %d." % (self.token.type, self.token.value, self.token.column))
-				return -1
+				self.Abort("Unexpected '%s' symbol ('%s') on column %d." % (self.token.type, self.token.value, self.token.column))
 
 	def ExpressionOrAssignment(self):
-		if self.Expression():
-			left = self.Pop()
-			if self.AcceptAssignment():
-				operator = self.GetPreviousToken()
-				if self.Expression():
-					right = self.Pop()
-					self.stat = Statement(self.STAT_ASSIGNMENT, self.GetPreviousLine(), Assignment(operator, left, right))
-					return True
-			elif self.token == None:
-				self.stat = Statement(self.STAT_EXPRESSION, self.GetPreviousLine(), Expression(left))
-				return True
-		return False
+		self.Expression()
+		left = self.Pop()
+		if self.AcceptAssignment():
+			operator = self.GetPreviousToken()
+			self.Expression()
+			right = self.Pop()
+			self.stat = Statement(self.STAT_ASSIGNMENT, self.GetPreviousLine(), Assignment(operator, left, right))
+			return True
+		elif self.token == None:
+			self.stat = Statement(self.STAT_EXPRESSION, self.GetPreviousLine(), Expression(left))
+			return True
 
 	def State(self):
 		if self.Accept(self.KW_AUTO):
-			if self.Accept(self.KW_STATE):
-				if self.Expect(self.IDENTIFIER):
-					self.stat = Statement(self.STAT_STATEDEF, self.GetPreviousLine(), StateDef(self.GetPreviousValue(), True))
-					return True
-				else:
-					return False
+			self.Expect(self.KW_STATE)
+			self.Expect(self.IDENTIFIER)
+			self.stat = Statement(self.STAT_STATEDEF, self.GetPreviousLine(), StateDef(self.GetPreviousValue(), True))
+			return True
 		elif self.Accept(self.KW_STATE):
-			if self.Expect(self.IDENTIFIER):
-				self.stat = Statement(self.STAT_STATEDEF, self.GetPreviousLine(), StateDef(self.GetPreviousValue(), False))
-				return True
-			else:
-				return False
-		else:
-			return False
+			self.Expect(self.IDENTIFIER)
+			self.stat = Statement(self.STAT_STATEDEF, self.GetPreviousLine(), StateDef(self.GetPreviousValue(), False))
+			return True
 
 	def While(self):
 		if self.Accept(self.KW_WHILE):
-			if not self.Expression():
-				self.Abort("Expected Expression")
-				return False
+			self.Expression()
 			self.stat = Statement(self.STAT_WHILE, self.GetPreviousLine(), While(self.Pop()))
 			return True
-		else:
-			return False
-
-	def Assign(self):
-		if self.Expression():
-			if self.AcceptAssignment():
-				operator = self.GetPreviousToken()
-				line = self.GetPreviousLine()
-				if self.Expression():
-					right = self.Pop()
-					self.stat = Statement(self.STAT_ASSIGNMENT, line, Assignment(operator, self.Pop(), right))
-					return True
-		self.stack = []
-		return False
 
 	def PropertyDef(self):
-		if self.AcceptType():
-			line = self.GetPreviousLine()
-			typ = None
-			if self.GetPreviousType() == self.IDENTIFIER:
-				typ = self.GetPreviousValue()
+		self.ExpectType(True)
+		line = self.GetPreviousLine()
+		typ = None
+		if self.GetPreviousType() == self.IDENTIFIER:
+			typ = self.GetPreviousValue()
+		else:
+			typ = self.GetPreviousType()
+		array = False
+		if self.Accept(self.LEFT_BRACKET):
+			self.Expect(self.RIGHT_BRACKET)
+			array = True
+		self.Expect(self.KW_PROPERTY)
+		self.ExpectVariableIdentifier()
+		name = self.GetPreviousValue()
+		value = None
+		flags = []
+		if self.Accept(self.OP_ASSIGN):
+			self.ExpectLiteral()
+			value = self.GetPreviousToken()
+			if self.Accept(self.KW_AUTO):
+				flags.append(self.GetPreviousType())
+				if self.Accept(self.KW_HIDDEN):
+					flags.append(self.GetPreviousType())
+					if self.Accept(self.KW_CONDITIONAL):
+						flags.append(self.GetPreviousType())
+				elif self.Accept(self.KW_CONDITIONAL):
+					flags.append(self.GetPreviousType())
+					if self.Accept(self.KW_HIDDEN):
+						flags.append(self.GetPreviousType())
+			elif self.Accept(self.KW_AUTOREADONLY):
+				flags.append(self.GetPreviousType())
+				if self.Accept(self.KW_HIDDEN):
+					flags.append(self.GetPreviousType())
+					if self.Accept(self.KW_CONDITIONAL):
+						flags.append(self.GetPreviousType())
+				elif self.Accept(self.KW_CONDITIONAL):
+					flags.append(self.GetPreviousType())
+					if self.Accept(self.KW_HIDDEN):
+						flags.append(self.GetPreviousType())
 			else:
-				typ = self.GetPreviousType()
-			array = False
-			if self.Accept(self.LEFT_BRACKET):
-				if not self.Accept(self.RIGHT_BRACKET):
-					return False
-				array = True
-			if self.Accept(self.KW_PROPERTY):
-				if not self.Expect(self.IDENTIFIER):
-					return False
-				name = self.GetPreviousValue()
-				value = None
-				flags = []
-				if self.Accept(self.OP_ASSIGN):
-					if not self.ExpectLiteral():
-						return False
-					value = self.GetPreviousToken()
-					if self.Accept(self.KW_AUTO):
+				raise ExpectedKeywordError(line, "Initializing properties requires the AUTO or AUTOREADONLY keywords.", [self.KW_AUTO, self.KW_AUTOREADONLY])
+		else:
+			if self.Accept(self.KW_AUTO) or self.Accept(self.KW_AUTOREADONLY):
+				flags.append(self.GetPreviousType())
+				if self.Accept(self.KW_HIDDEN):
+					flags.append(self.GetPreviousType())
+					if self.Accept(self.KW_CONDITIONAL):
 						flags.append(self.GetPreviousType())
-						if self.Accept(self.KW_HIDDEN):
-							flags.append(self.GetPreviousType())
-							if self.Accept(self.KW_CONDITIONAL):
-								flags.append(self.GetPreviousType())
-						elif self.Accept(self.KW_CONDITIONAL):
-							flags.append(self.GetPreviousType())
-							if self.Accept(self.KW_HIDDEN):
-								flags.append(self.GetPreviousType())
-					else:
-						if self.Expect(self.KW_AUTOREADONLY):
-							flags.append(self.GetPreviousType())
-							if self.Accept(self.KW_HIDDEN):
-								flags.append(self.GetPreviousType())
-								if self.Accept(self.KW_CONDITIONAL):
-									flags.append(self.GetPreviousType())
-							elif self.Accept(self.KW_CONDITIONAL):
-								flags.append(self.GetPreviousType())
-								if self.Accept(self.KW_HIDDEN):
-									flags.append(self.GetPreviousType())
-						else:
-							return False
-				else:
-					if self.Accept(self.KW_AUTO):
+				elif self.Accept(self.KW_CONDITIONAL):
+					flags.append(self.GetPreviousType())
+					if self.Accept(self.KW_HIDDEN):
 						flags.append(self.GetPreviousType())
-						if self.Accept(self.KW_HIDDEN):
-							flags.append(self.GetPreviousType())
-							if self.Accept(self.KW_CONDITIONAL):
-								flags.append(self.GetPreviousType())
-						elif self.Accept(self.KW_CONDITIONAL):
-							flags.append(self.GetPreviousType())
-							if self.Accept(self.KW_HIDDEN):
-								flags.append(self.GetPreviousType())
-					else:
-						if self.Accept(self.KW_HIDDEN):
-							flags.append(self.GetPreviousType())
-							if self.Accept(self.KW_CONDITIONAL):
-								flags.append(self.GetPreviousType())
-						elif self.Accept(self.KW_CONDITIONAL):
-							flags.append(self.GetPreviousType())
-							if self.Accept(self.KW_HIDDEN):
-								flags.append(self.GetPreviousType())
-				self.stat = Statement(self.STAT_PROPERTYDEF, line, PropertyDef(typ.upper(), typ, array, name.upper(), name, value, flags))
-				return True
-		return False
+			else:
+				if self.Accept(self.KW_HIDDEN):
+					flags.append(self.GetPreviousType())
+		self.stat = Statement(self.STAT_PROPERTYDEF, line, PropertyDef(typ.upper(), typ, array, name.upper(), name, value, flags))
+		return True
 
 	def Return(self):
 		if self.Accept(self.KW_RETURN):
 			if self.TokensRemaining():
-				if self.Expression():
-					self.stat = Statement(self.STAT_RETURN, self.GetPreviousLine(), Return(self.Pop()))
-				else:
-					while self.Consume():
-						pass
-					return False
+				self.Expression()
+				self.stat = Statement(self.STAT_RETURN, self.GetPreviousLine(), Return(self.Pop()))
+				return True
 			else:
 				self.stat = Statement(self.STAT_RETURN, self.GetPreviousLine(), Return(None))
-			return True
-		else:
-			return False
+				return True
 
 	def VariableDef(self):
-		if self.AcceptType():
-			line = self.GetPreviousLine()
-			typ = None
-			if self.GetPreviousType() == self.IDENTIFIER:
-				typ = self.GetPreviousValue()
-			else:
-				typ = self.GetPreviousType()
-			array = False
-			if self.Accept(self.LEFT_BRACKET):
-				if not self.Accept(self.RIGHT_BRACKET):
-					return False
-				array = True
-			if self.Accept(self.IDENTIFIER):
-				name = self.GetPreviousValue()
-				value = None
-				if self.Accept(self.OP_ASSIGN):
-					if not self.Expression():
-						self.Abort("Expected an expression on line %d." % line)
-						return False
-					value = self.Pop()
-				flags = []
-				if self.Accept(self.KW_CONDITIONAL):
-					flags.append(self.GetPreviousType())
-				self.stat = Statement(self.STAT_VARIABLEDEF, line, VariableDef(typ.upper(), typ, array, name.upper(), name, value, flags))
-				return True
-		return False
+		self.ExpectType(True)
+		line = self.GetPreviousLine()
+		typ = None
+		if self.GetPreviousType() == self.IDENTIFIER:
+			typ = self.GetPreviousValue()
+		else:
+			typ = self.GetPreviousType()
+		array = False
+		if self.Accept(self.LEFT_BRACKET):
+			self.Expect(self.RIGHT_BRACKET)
+			array = True
+		self.ExpectVariableIdentifier()
+		name = self.GetPreviousValue()
+		value = None
+		if self.Accept(self.OP_ASSIGN):
+			self.Expression()
+			value = self.Pop()
+		flags = []
+		if self.Accept(self.KW_CONDITIONAL):
+			flags.append(self.GetPreviousType())
+		self.stat = Statement(self.STAT_VARIABLEDEF, line, VariableDef(typ.upper(), typ, array, name.upper(), name, value, flags))
+		return True
 
 	def ScriptHeader(self):
-		if self.Accept(self.KW_SCRIPTNAME):
-			line = self.GetPreviousLine()
-			if not self.Expect(self.IDENTIFIER):
-				return False
-			name = self.GetPreviousValue()
-			parent = None
-			if self.Accept(self.KW_EXTENDS):
-				if not self.Expect(self.IDENTIFIER):
-					return False
-				parent = self.GetPreviousValue()
-			flags = []
+		self.Expect(self.KW_SCRIPTNAME)
+		line = self.GetPreviousLine()
+		self.Expect(self.IDENTIFIER)
+		name = self.GetPreviousValue()
+		parent = None
+		if self.Accept(self.KW_EXTENDS):
+			self.ExpectType(False)
+			parent = self.GetPreviousValue()
+		flags = []
+		if self.Accept(self.KW_CONDITIONAL):
+			flags.append(self.GetPreviousType())
+			if self.Accept(self.KW_HIDDEN):
+				flags.append(self.GetPreviousType())
+		elif self.Accept(self.KW_HIDDEN):
+			flags.append(self.GetPreviousType())
 			if self.Accept(self.KW_CONDITIONAL):
 				flags.append(self.GetPreviousType())
-				if self.Accept(self.KW_HIDDEN):
-					flags.append(self.GetPreviousType())
-			elif self.Accept(self.KW_HIDDEN):
-				flags.append(self.GetPreviousType())
-				if self.Accept(self.KW_CONDITIONAL):
-					flags.append(self.GetPreviousType())
-			if parent:
-				self.stat = Statement(self.STAT_SCRIPTHEADER, line, Scriptheader(name.upper(), parent.upper(), flags))
-			else:
-				self.stat = Statement(self.STAT_SCRIPTHEADER, line, Scriptheader(name.upper(), None, flags))
-			return True
+		if parent:
+			self.stat = Statement(self.STAT_SCRIPTHEADER, line, Scriptheader(name.upper(), parent.upper(), flags))
 		else:
-			return False
+			self.stat = Statement(self.STAT_SCRIPTHEADER, line, Scriptheader(name.upper(), None, flags))
+		return True
 
 	def FunctionDef(self):
 		params = []
 
 		def Parameter():
-			if self.AcceptType():
-				typ = self.GetPreviousValue()
-				array = False
-				if self.Accept(self.LEFT_BRACKET):
-					if not self.Expect(self.RIGHT_BRACKET):
-						return False
-					array = True
-				if not self.Expect(self.IDENTIFIER):
-					return False
-				name = self.GetPreviousValue()
-				value = None
-				if self.Accept(self.OP_ASSIGN):
-					defaultValues = True
-					if not self.Expression():
-						self.Abort("Expected an expression.")
-						return False
-					value = self.Pop()
-				params.append(ParameterDef(typ.upper(), typ, array, name.upper(), name, value))
-				return True
-			else:
-				return False
+			self.ExpectType(True)
+			typ = self.GetPreviousValue()
+			array = False
+			if self.Accept(self.LEFT_BRACKET):
+				self.Expect(self.RIGHT_BRACKET)
+				array = True
+			self.Expect(self.IDENTIFIER)
+			name = self.GetPreviousValue()
+			value = None
+			if self.Accept(self.OP_ASSIGN):
+				defaultValues = True
+				if not self.Expression():
+					self.Abort("Expected an expression.")
+				value = self.Pop()
+			params.append(ParameterDef(typ.upper(), typ, array, name.upper(), name, value))
+			return True
+
 		typ = None
 		array = False
-		if self.AcceptType():
+		if self.AcceptType(True):
 			typ = self.GetPreviousValue()
 			if self.Accept(self.LEFT_BRACKET):
-				if not self.Accept(self.RIGHT_BRACKET):
-					return False
+				self.Expect(self.RIGHT_BRACKET)
 				array = True
-		if self.Accept(self.KW_FUNCTION):
-			line = self.GetPreviousLine()
-			if not self.Expect(self.IDENTIFIER):
-				return False
-			name = self.GetPreviousValue()
-			if not self.Expect(self.LEFT_PARENTHESIS):
-				return False
-			if Parameter():
-				while self.Accept(self.COMMA):
-					if not Parameter():
-						return False
-			if not self.Expect(self.RIGHT_PARENTHESIS):
-				return False
-			flags = []
-			if self.Accept(self.KW_GLOBAL):
-				flags.append(self.GetPreviousType())
-				if self.Accept(self.KW_NATIVE):
-					flags.append(self.GetPreviousType())
-			elif self.Accept(self.KW_NATIVE):
-				flags.append(self.GetPreviousType())
-				if self.Accept(self.KW_GLOBAL):
-					flags.append(self.GetPreviousType())
-			if typ:
-				self.stat = Statement(self.STAT_FUNCTIONDEF, line, FunctionDef(typ.upper(), typ, array, name.upper(), name, params, flags))
-			else:
-				self.stat = Statement(self.STAT_FUNCTIONDEF, line, FunctionDef(None, None, False, name.upper(), name, params, flags))
-			return True
-		else:
-			return False
-
-	def EventDef(self):
-		if self.Accept(self.KW_EVENT):
-			line = self.GetPreviousLine()
-			params = []
-
-			def Parameter():
-				if self.AcceptType():
-					typ = self.GetPreviousValue()
-					array = False
-					if self.Accept(self.LEFT_BRACKET):
-						if not self.Expect(self.RIGHT_BRACKET):
-							return False
-						array = True
-					if not self.Expect(self.IDENTIFIER):
-						return False
-					name = self.GetPreviousValue()
-					params.append(ParameterDef(typ.upper(), typ, array, name.upper(), name, None))
-					return True
-				else:
-					return False
-
-			if not self.Expect(self.IDENTIFIER):
-				return False
-			name = self.GetPreviousValue()
-			if not self.Expect(self.LEFT_PARENTHESIS):
-				return False
-			if Parameter():
-				while self.Accept(self.COMMA):
-					if not Parameter():
-						return False
-			if not self.Expect(self.RIGHT_PARENTHESIS):
-				return False
-			flags = []
+		self.Expect(self.KW_FUNCTION)
+		line = self.GetPreviousLine()
+		self.ExpectFunctionIdentifier(typ, array)
+		name = self.GetPreviousValue()
+		nextToken = self.Peek()
+		self.Expect(self.LEFT_PARENTHESIS)
+		if nextToken and nextToken.type != self.RIGHT_PARENTHESIS:			
+			Parameter()
+			while self.Accept(self.COMMA):
+				Parameter()
+		self.Expect(self.RIGHT_PARENTHESIS)	
+		flags = []
+		if self.Accept(self.KW_GLOBAL):
+			flags.append(self.GetPreviousType())
 			if self.Accept(self.KW_NATIVE):
 				flags.append(self.GetPreviousType())
-			self.stat = Statement(self.STAT_EVENTDEF, line, EventDef(None, name.upper(), name, params, flags))
-			return True
+		elif self.Accept(self.KW_NATIVE):
+			flags.append(self.GetPreviousType())
+			if self.Accept(self.KW_GLOBAL):
+				flags.append(self.GetPreviousType())
+		if typ:
+			self.stat = Statement(self.STAT_FUNCTIONDEF, line, FunctionDef(typ.upper(), typ, array, name.upper(), name, params, flags))
 		else:
-			return False
+			self.stat = Statement(self.STAT_FUNCTIONDEF, line, FunctionDef(None, None, False, name.upper(), name, params, flags))
+		return True
+
+	def EventDef(self):
+		self.Expect(self.KW_EVENT)
+		line = self.GetPreviousLine()
+		params = []
+
+		def Parameter():
+			self.ExpectType(True)
+			typ = self.GetPreviousValue()
+			array = False
+			if self.Accept(self.LEFT_BRACKET):
+				self.Expect(self.RIGHT_BRACKET)
+				array = True
+			self.Expect(self.IDENTIFIER)
+			name = self.GetPreviousValue()
+			params.append(ParameterDef(typ.upper(), typ, array, name.upper(), name, None))
+			return True
+
+		self.ExpectEventIdentifier()
+		name = self.GetPreviousValue()
+		nextToken = self.Peek()
+		self.Expect(self.LEFT_PARENTHESIS)
+		if nextToken and nextToken.type != self.RIGHT_PARENTHESIS:
+			Parameter()
+			while self.Accept(self.COMMA):
+				Parameter()
+		self.Expect(self.RIGHT_PARENTHESIS)
+		flags = []
+		if self.Accept(self.KW_NATIVE):
+			flags.append(self.GetPreviousType())
+		self.stat = Statement(self.STAT_EVENTDEF, line, EventDef(None, name.upper(), name, params, flags))
+		return True
 
 	def Import(self):
-		if self.Accept(self.KW_IMPORT):
-			if not self.Expect(self.IDENTIFIER):
-				return False
-			name = self.GetPreviousValue()
-			self.stat = Statement(self.STAT_IMPORT, self.GetPreviousLine(), Import(name.upper()))
-			return True
-		else:
-			return False
+		self.Expect(self.KW_IMPORT)
+		self.ExpectType(False)
+		name = self.GetPreviousValue()
+		self.stat = Statement(self.STAT_IMPORT, self.GetPreviousLine(), Import(name.upper()))
+		return True
 
 	def If(self):
-		if self.Accept(self.KW_IF):
-			if not self.Expression():
-				self.Abort("Expected an expression.")
-				return False
-			self.stat = Statement(self.STAT_IF, self.GetPreviousLine(), If(self.Pop()))
-			return True
-		else:
-			return False
+		self.Expect(self.KW_IF)
+		self.Expression()
+		self.stat = Statement(self.STAT_IF, self.GetPreviousLine(), If(self.Pop()))
+		return True
 
 	def ElseIf(self):
-		if self.Accept(self.KW_ELSEIF):
-			if not self.Expression():
-				self.Abort("Expected an expression.")
-				return False
-			self.stat = Statement(self.STAT_ELSEIF, self.GetPreviousLine(), ElseIf(self.Pop()))
-			return True
-		else:
-			return False
+		self.Expect(self.KW_ELSEIF)
+		self.Expression()
+		self.stat = Statement(self.STAT_ELSEIF, self.GetPreviousLine(), ElseIf(self.Pop()))
+		return True
 
 	def Shift(self, item = None):
 		if item:
@@ -1089,93 +1067,64 @@ class Syntactic(SharedResources):
 		def Reduce():
 			self.Shift(Node(self.NODE_EXPRESSION, ExpressionNode(self.Pop())))
 
-		if self.AndExpression():
-			while self.Accept(self.LOG_OR):
-				self.Shift()
-				if not self.AndExpression():
-					self.Abort("Expected an AndExpression.")
-					return False
-				self.ReduceBinaryOperator()
-			Reduce()
-			return True
-		else:
-			return False
+		self.AndExpression()
+		while self.Accept(self.LOG_OR):
+			self.Shift()
+			self.AndExpression()
+			self.ReduceBinaryOperator()
+		Reduce()
+		return True
 
 	def AndExpression(self):
-		if self.BoolExpression():
-			while self.Accept(self.LOG_AND):
-				self.Shift()
-				if not self.BoolExpression():
-					self.Abort("Expected a BoolExpression.")
-					return False
-				self.ReduceBinaryOperator()
-			return True
-		else:
-			return False
+		self.BoolExpression()
+		while self.Accept(self.LOG_AND):
+			self.Shift()
+			self.BoolExpression()
+			self.ReduceBinaryOperator()
+		return True
 
 	def BoolExpression(self):
-		if self.AddExpression():
-			while self.AcceptComparison():
-				self.Shift()
-				if not self.AddExpression():
-					self.Abort("Expected an AddExpression.")
-					return False
-				self.ReduceBinaryOperator()
-			return True
-		else:
-			return False
+		self.AddExpression()
+		while self.AcceptComparison():
+			self.Shift()
+			self.AddExpression()
+			self.ReduceBinaryOperator()
+		return True
 
 	def AddExpression(self):
-		if self.MultExpression():
-			while self.Accept(self.OP_ADDITION) or self.Accept(self.OP_SUBTRACTION):
-				self.Shift()
-				if not self.MultExpression():
-					self.Abort("Expected a MultExpression.")
-					return False
-				self.ReduceBinaryOperator()
-			return True
-		else:
-			return False
+		self.MultExpression()
+		while self.Accept(self.OP_ADDITION) or self.Accept(self.OP_SUBTRACTION):
+			self.Shift()
+			self.MultExpression()
+			self.ReduceBinaryOperator()
+		return True
 
 	def MultExpression(self):
-		if self.UnaryExpression():
-			while self.Accept(self.OP_MULTIPLICATION) or self.Accept(self.OP_DIVISION) or self.Accept(self.OP_MODULUS):
-				self.Shift()
-				if not self.UnaryExpression():
-					self.Abort("Expected a UnaryExpression.")
-					return False
-				self.ReduceBinaryOperator()
-			return True
-		else:
-			return False
+		self.UnaryExpression()
+		while self.Accept(self.OP_MULTIPLICATION) or self.Accept(self.OP_DIVISION) or self.Accept(self.OP_MODULUS):
+			self.Shift()
+			self.UnaryExpression()
+			self.ReduceBinaryOperator()
+		return True
 
 	def UnaryExpression(self):
 		unaryOp = False
-		s = self.GetIndex()
 		if self.Accept(self.OP_SUBTRACTION) or self.Accept(self.LOG_NOT):
 			self.Shift()
 			unaryOp = True
-			pass
-		if self.CastAtom():
-			if unaryOp:
-				self.ReduceUnaryOperator()
-			return True
-		else:
-			if unaryOp:
-				self.GoTo(s)
-			return False
+		self.CastAtom()
+		if unaryOp:
+			self.ReduceUnaryOperator()
+		return True
 
 	def CastAtom(self):
-		if self.DotAtom():
-			if self.Accept(self.KW_AS):
-				self.Shift()
-				if not self.ExpectType():
-					return False
-				self.Shift(Node(self.NODE_IDENTIFIER, IdentifierNode(self.GetPreviousToken())))
-				self.ReduceBinaryOperator()
-			return True
-		else:
-			return False
+		self.DotAtom()
+		if self.Accept(self.KW_AS):
+			self.Shift()
+			self.ExpectType(True)
+			self.Shift(Node(self.NODE_IDENTIFIER, IdentifierNode(self.GetPreviousToken())))
+			self.ReduceBinaryOperator()
+		return True
 
 	def DotAtom(self):
 		if self.AcceptLiteral():
@@ -1184,87 +1133,67 @@ class Syntactic(SharedResources):
 		elif self.ArrayAtom():
 			while self.Accept(self.OP_DOT):
 				self.Shift()
-				if not self.ArrayFuncOrId():
-					self.Abort("Expected a function call or an identifier.")
-					return False
+				self.ArrayFuncOrId()
 				self.ReduceBinaryOperator()
 			return True
-		else:
-			return False
 
 	def ArrayAtom(self):
 		def Reduce():
 			temp = self.Pop()
 			self.Shift(Node(self.NODE_ARRAYATOM, ArrayAtomNode(self.Pop(), temp)))
 
-		if self.Atom():
-			if self.Accept(self.LEFT_BRACKET):
-				if not self.Expression():
-					self.Abort("Expected an expression when accessing an array element.")
-					return False
-				if not self.Expect(self.RIGHT_BRACKET):
-					return False
-				Reduce()
-			return True
-		else:
-			return False
+		self.Atom()
+		if self.Accept(self.LEFT_BRACKET):
+			self.Expression()
+			self.Expect(self.RIGHT_BRACKET)
+			Reduce()
+		return True
 
 	def Atom(self):
 		if self.Accept(self.KW_NEW):
-			if not self.ExpectType():
-				return False
+			self.ExpectType(True)
 			typ = self.GetPreviousToken()
-			if not self.Expect(self.LEFT_BRACKET):
-				return False
-			if not self.Expect(self.INT):
+			self.Expect(self.LEFT_BRACKET)
+			if not self.Accept(self.INT):
 				self.Abort("Expected an int literal.")
-				return False
 			size = self.GetPreviousToken()
-			if not self.Expect(self.RIGHT_BRACKET):
-				return False
+			self.Expect(self.RIGHT_BRACKET)
 			self.Shift(Node(self.NODE_ARRAYCREATION, ArrayCreationNode(typ, size)))
 			return True
 		elif self.Accept(self.LEFT_PARENTHESIS):
-			if not self.Expression():
-				return False
-			if not self.Expect(self.RIGHT_PARENTHESIS):
-				return False
+			self.Shift()
+			self.Expression()
+			self.Expect(self.RIGHT_PARENTHESIS)
+			expr = self.Pop()
+			self.Pop()
+			self.Shift(expr)
 			return True
 		elif self.FuncOrId():
 			return True
-		else:
-			return False
 
 	def ArrayFuncOrId(self):
 		def Reduce():
 			temp = self.Pop()
 			self.Shift(Node(self.NODE_ARRAYFUNCORID, ArrayFuncOrIdNode(self.Pop(), temp)))
 
-		if self.FuncOrId():
-			if self.Accept(self.LEFT_BRACKET):
-				if not self.Expression():
-					return False
-				if not self.Expect(self.RIGHT_BRACKET):
-					return False
-				Reduce()
-			return True
-		else:
-			return False
+		self.FuncOrId()
+		if self.Accept(self.LEFT_BRACKET):
+			self.Expression()
+			self.Expect(self.RIGHT_BRACKET)
+			Reduce()
+		return True
 
 	def FuncOrId(self):
-		if self.Accept(self.KW_LENGTH):
+		nextToken = self.Peek()
+		if nextToken and nextToken.type == self.LEFT_PARENTHESIS:
+			self.FunctionCall()
+			return True
+		elif self.Accept(self.KW_LENGTH):
 			self.Shift(Node(self.NODE_LENGTH, LengthNode()))
 			return True
-		elif self.AcceptIdentifier():
-			ident = self.GetPreviousToken()
-			s = self.GetIndex()-1
-			if not self.Accept(self.LEFT_PARENTHESIS):
-				self.Shift(Node(self.NODE_IDENTIFIER, IdentifierNode(ident)))
-				return True
-			self.GoTo(s)
-		if self.Attempt(self.FunctionCall):
+		elif self.ExpectIdentifier():
+			self.Shift(Node(self.NODE_IDENTIFIER, IdentifierNode(self.GetPreviousToken())))
 			return True
-		return False
 
 	def FunctionCall(self):
 		def Reduce():
@@ -1277,69 +1206,33 @@ class Syntactic(SharedResources):
 			self.Shift(Node(self.NODE_FUNCTIONCALL, FunctionCallNode(self.Pop(), arguments)))
 
 		def Argument():
-			s = self.GetIndex()
 			ident = None
-			if self.Accept(self.IDENTIFIER):
+			nextToken = self.Peek()
+			if nextToken and nextToken.type == self.OP_ASSIGN:
+				self.ExpectParameterIdentifier()
 				ident = self.GetPreviousToken()
-				if not self.Accept(self.OP_ASSIGN):
-					ident = None
-					self.GoTo(s)
-			if self.Expression():
-				expr = self.Pop()
-				self.Shift(Node(self.NODE_FUNCTIONCALLARGUMENT, FunctionCallArgument(ident, expr)))
-				return True
-			else:
-				self.Abort("Expected an expression.")
-				return False
+				self.Expect(self.OP_ASSIGN)
+			self.Expression()
+			expr = self.Pop()
+			self.Shift(Node(self.NODE_FUNCTIONCALLARGUMENT, FunctionCallArgument(ident, expr)))
+			return True
 
-		if self.Accept(self.IDENTIFIER):
+		self.ExpectFunctionIdentifier(None, None)
+		self.Shift()
+		self.Expect(self.LEFT_PARENTHESIS)
+		self.Shift()
+		if self.Accept(self.RIGHT_PARENTHESIS):
 			self.Shift()
-			if self.Accept(self.LEFT_PARENTHESIS):
-				self.Shift()
-				if self.Accept(self.RIGHT_PARENTHESIS):
-					self.Shift()
-					Reduce()
-					return True
-				else:
-					if Argument():
-						while self.Accept(self.COMMA):
-							if not Argument():
-								return False
-					if not self.Expect(self.RIGHT_PARENTHESIS):
-						return False
-					self.Shift()
-					Reduce()
-					return True
-			self.Pop()
-		return False
-
-class LimitedSyntactic(Syntactic):
-	def Abort(self, asMessage = None):
-		pass
-
-	def Statement(self):
-		# Only interested in specific types of statements.
-		if self.ScriptHeader():
-			pass
-		elif self.EventDef():
-			pass
-		elif self.Accept(self.KW_ENDEVENT):
-			self.stat = self.keywordstat(self.GetPreviousLine())
-		elif self.Accept(self.KW_ENDFUNCTION):
-			self.stat = self.keywordstat(self.GetPreviousLine())
-		elif self.Accept(self.KW_ENDPROPERTY):
-			self.stat = self.keywordstat(self.GetPreviousLine())
-		elif self.Attempt(self.State):
-			pass
-		elif self.Accept(self.KW_ENDSTATE):
-			self.stat = self.keywordstat(self.GetPreviousLine())
-		elif self.Attempt(self.PropertyDef):
-			pass
-		elif self.Attempt(self.FunctionDef):
-			pass
+			Reduce()
+			return True
 		else:
-			return -1
-		return 0
+			Argument()
+			while self.Accept(self.COMMA):
+				Argument()
+			self.Expect(self.RIGHT_PARENTHESIS)
+			self.Shift()
+			Reduce()
+			return True
 
 # Semantic analysis ###############################################################################
 class CachedScript(object):
@@ -1350,11 +1243,14 @@ class CachedScript(object):
 		self.functions = aFunctions
 		self.states = aStates
 
-class SemanticError(Exception):
-	def __init__(self, message, line):
-		super(SemanticError, self).__init__(message)
-		self.message = message
-		self.line = line
+class Script(object):
+	__slots__ = ["functions", "variables", "states", "imports", "definitions"]
+	def __init__(self, aFunctions, aVariables, aStates, aImports, aDefinitions):
+		self.functions = aFunctions
+		self.variables = aVariables
+		self.states = aStates
+		self.imports = aImports
+		self.definitions = aDefinitions
 
 class NodeResult(object):
 	__slots__ = ["type", "array", "object"]
@@ -1363,36 +1259,75 @@ class NodeResult(object):
 		self.array = aArray
 		self.object = aObject
 
-class Cancel(Exception):
-	def __init__(self, line, variables, functions, states, imports):
-		super(Cancel, self).__init__()
+class SemanticError(Exception):
+	def __init__(self, message, line):
+		super(SemanticError, self).__init__(message)
+		self.message = message
 		self.line = line
-		self.variables = variables
-		self.functions = functions
-		self.states = states
-		self.imports = imports
+
+class UnterminatedPropertyError(SemanticError):
+	def __init__(self, line):
+		super(UnterminatedPropertyError, self).__init__("Unterminated property definition.", line)
+
+class UnterminatedStateError(SemanticError):
+	def __init__(self, line):
+		super(UnterminatedStateError, self).__init__("Unterminated state definition.", line)
+
+class UnterminatedFunctionError(SemanticError):
+	def __init__(self, line):
+		super(UnterminatedFunctionError, self).__init__("Unterminated function definition.", line)
+
+class UnterminatedEventError(SemanticError):
+	def __init__(self, line):
+		super(UnterminatedEventError, self).__init__("Unterminated event definition.", line)
+
+class UnterminatedIfError(SemanticError):
+	def __init__(self, line):
+		super(UnterminatedIfError, self).__init__("Unterminated if-block.", line)
+
+class UnterminatedWhileError(SemanticError):
+	def __init__(self, line):
+		super(UnterminatedWhileError, self).__init__("Unterminated while-loop.", line)
+
+class EmptyStateCancel(SemanticError):
+	def __init__(self, aFunctions):
+		super(EmptyStateCancel, self).__init__(None, None)
+		self.functions = aFunctions
+
+class StateCancel(SemanticError):
+	def __init__(self, aFunctions):
+		super(StateCancel, self).__init__(None, None)
+		self.functions = aFunctions
+
+class FunctionDefinitionCancel(SemanticError):
+	def __init__(self, aSignature, aFunctions, aVariables, aImports):
+		super(FunctionDefinitionCancel, self).__init__(None, None)
+		self.signature = aSignature
+		self.functions = aFunctions
+		self.variables = aVariables
+		self.imports = aImports
+
+class PropertyDefinitionCancel(SemanticError):
+	def __init__(self, aType, aArray, aFunctions):
+		super(PropertyDefinitionCancel, self).__init__(None, None)
+		self.type = aType
+		self.array = aArray
+		self.functions = aFunctions
 
 class Semantic(SharedResources):
 	def __init__(self):
 		super(Semantic, self).__init__()
 		self.cache = {}
-		self.lex = LimitedLexical()
-		self.syn = LimitedSyntactic()
+		self.lex = Lexical()
+		self.syn = Syntactic()
 
 	def Abort(self, message = None, line = None):
 		if not line:
-			if self.statements and self.statements[0]:
-				line = self.statements[0].line
+			if self.statements and self.statementsIndex < len(self.statements):
+				line = self.statements[self.statementsIndex].line
+		if not line:
+			line = 1
 		raise SemanticError(message, line)
-
-	def GetCachedKeys(self):
-		result = []
-		for key, items in self.cache.items():
-			result.append(key)
-		if result:
-			return result
-		else:
-			return None
 
 	# Variables and properties
 	def PushVariableScope(self):
@@ -1406,29 +1341,50 @@ class Semantic(SharedResources):
 
 	def AddVariable(self, stat):
 		if stat.type == self.STAT_VARIABLEDEF or stat.type == self.STAT_PROPERTYDEF:
-			temp = self.GetVariable(stat.data.name)
-			if not temp:
-				self.variables[len(self.variables)-1][stat.data.name] = stat
-				if not self.CacheScript(stat.data.type, line=stat.line):
-					self.Abort("Could not import %s." % stat.data.type, stat.line)
-					return False
+			if self.cancel:
+				self.variables[-1][stat.data.name] = stat
 				return True
-			self.Abort("A variable or property has already been defined with the same name on line %d." % temp.line, stat.line)
-			return False
-		elif stat.type == self.STAT_FUNCTIONDEF or stat.type == self.STAT_EVENTDEF:
-			if stat.data.parameters:
-				for param in stat.data.parameters:
-					temp = self.GetVariable(param.name)
-					if not temp:
-						self.variables[len(self.variables)-1][param.name] = Statement(self.STAT_PARAMETER, stat.line, param)
-						if not self.CacheScript(param.type, line=stat.line):
-							self.Abort("Could not import %s." % param.type, stat.line)
-							return False
+			else:
+				temp = self.GetVariable(stat.data.name)
+				if not temp:
+					self.variables[-1][stat.data.name] = stat
+					try:
+						self.CacheScript(stat.data.type, line=stat.line)
+					except SemanticError as e:
+						self.Abort("'%s' is not a known type." % stat.data.type, stat.line)
+					if self.GetPath(stat.data.name):
+						self.Abort("Variables/properties cannot have the same name as a type.", stat.line)
+					return True
+				else:
+					if self.variables[0].get(stat.data.name):
+						self.Abort("A property has already been defined with the same name in a parent script.", stat.line)
 					else:
 						self.Abort("A variable or property has already been defined with the same name on line %d." % temp.line, stat.line)
-						return False
-			return True
-		return False
+		elif stat.type == self.STAT_FUNCTIONDEF or stat.type == self.STAT_EVENTDEF:
+			if self.cancel:
+				if stat.data.parameters:
+					for param in stat.data.parameters:
+						self.variables[-1][param.name] = Statement(self.STAT_PARAMETER, stat.line, param)
+				return True
+			else:
+				if stat.data.parameters:
+					for param in stat.data.parameters:
+						temp = self.GetVariable(param.name)
+						if not temp:
+							self.variables[-1][param.name] = Statement(self.STAT_PARAMETER, stat.line, param)
+							try:
+								self.CacheScript(param.type, line=stat.line)
+							except SemanticError as e:
+								self.Abort("'%s' is not a known type." % param.type, stat.line)
+							if self.GetPath(param.name):
+								self.Abort("Parameters cannot have the same name as a type.", stat.line)
+						else:
+							if self.variables[0].get(stat.data.name):
+								self.Abort("A property has already been defined with the same name in a parent script.", stat.line)
+							else:
+								self.Abort("A variable or property has already been defined with the same name on line %d." % temp.line, stat.line)
+				return True
+		self.Abort("Expected a variable declaration, a property declaration, or a function/event signature.", stat.line)
 
 	def GetVariable(self, name):
 		name = name.upper()
@@ -1453,31 +1409,31 @@ class Semantic(SharedResources):
 
 	def AddFunction(self, stat):
 		if stat.type == self.STAT_FUNCTIONDEF or stat.type == self.STAT_EVENTDEF:
-			exists = self.HasFunction(stat.data.name)
-			if exists == 0:
-				self.functions[len(self.functions)-1][stat.data.name] = stat
-				return True
-			elif exists == 1:
-				old = self.GetFunction(stat.data.name)
-				if stat.data.type != old.data.type:
-					self.Abort("Return type does not match the return type of the overridden function.", stat.line)
-					return False
-				if len(stat.data.parameters) != len(old.data.parameters):
-					self.Abort("Different number of parameters than in the overridden function.", stat.line)
-					return False
-				i = 0
-				while i < len(stat.data.parameters):
-					if stat.data.parameters[i].type != old.data.parameters[i].type:
-						self.Abort("Parameter at index %d is of a different type than the corresponding parameter in the overridden function." % i, stat.line)
-						return False
-					i += 1
-				self.functions[len(self.functions)-1][stat.data.name] = stat
+			if self.cancel:
+				self.functions[-1][stat.data.name] = stat
 				return True
 			else:
-				old = self.GetFunction(stat.data.name)
-				self.Abort("A function or event has already been defined with the same name on line %d." % old.line, stat.line)
+				exists = self.HasFunction(stat.data.name)
+				if exists == 0:
+					self.functions[-1][stat.data.name] = stat
+					return True
+				elif exists == 1:
+					old = self.GetFunction(stat.data.name)
+					if stat.data.type != old.data.type:
+						self.Abort("Return type does not match the return type of the overridden function.", stat.line)
+					if len(stat.data.parameters) != len(old.data.parameters):
+						self.Abort("Different number of parameters than in the overridden function.", stat.line)
+					i = 0
+					while i < len(stat.data.parameters):
+						if stat.data.parameters[i].type != old.data.parameters[i].type:
+							self.Abort("Parameter at index %d is of a different type than the corresponding parameter in the overridden function." % i, stat.line)
+						i += 1
+					self.functions[-1][stat.data.name] = stat
+					return True
+				else:
+					old = self.GetFunction(stat.data.name)
+					self.Abort("A function or event has already been defined with the same name on line %d." % old.line, stat.line)
 		self.Abort("Expected a function or event definition.", stat.line)
-		return False
 
 	def HasFunction(self, name):
 		name = name.upper()
@@ -1502,23 +1458,25 @@ class Semantic(SharedResources):
 		return None
 
 	# States
-	def AddState(self, stat):
+	def AddState(self, stat, end):
 		if stat.type == self.STAT_STATEDEF:
-			name = stat.data.name.upper()
-			exists = self.HasState(name)
-			if exists >= 0:
-				if stat.data.auto:
-					for key, state in self.states[len(self.states)-1].items():
-						if state.data.auto:
-							self.Abort("An auto state has already been defined on line %d." % state.line, stat.line)
-							return False
-				self.states[len(self.states)-1][name] = stat
+			if self.cancel:
+				self.states[-1][name] = [stat, end]
 				return True
 			else:
-				state = self.GetState(name)
-				self.Abort("A state by the same name already exists in this script on line %d." % state.line, stat.line)
-				return False
-		return False
+				name = stat.data.name.upper()
+				exists = self.HasState(name)
+				if exists >= 0:
+					if stat.data.auto:
+						for key, state in self.states[-1].items():
+							if state[0].data.auto:
+								self.Abort("An auto state has already been defined on line %d." % state[0].line, stat.line)
+					self.states[-1][name] = [stat, end]
+					return True
+				else:
+					state = self.GetState(name)
+					self.Abort("A state by the same name already exists in this script on line %d." % state[0].line, stat.line)
+		self.Abort("Expected a state definition.", stat.line)
 
 	def HasState(self, name):
 		name = name.upper()
@@ -1549,10 +1507,10 @@ class Semantic(SharedResources):
 		if not script: # Script has not been cached yet
 			fullPath = self.GetPath(name)
 			if fullPath:
-				self.CacheScript(name, fullPath)
+				if not self.CacheScript(name, fullPath):
+					return None
 			else:
 				self.Abort("Could not find parent script among source folders.")
-				return None
 		parentExtends = self.cache[name].extends
 		extends = [name]
 		if parentExtends:
@@ -1560,11 +1518,21 @@ class Semantic(SharedResources):
 		return extends
 
 	def GetPath(self, name):
-		for path in self.paths:
-			fullPath = os.path.join(path, name + ".psc")
-			if os.path.isfile(fullPath):
-				return fullPath
-		return None
+		global PLATFORM_WINDOWS
+		if PLATFORM_WINDOWS:
+			name = name + ".psc"
+			for path in self.paths:
+				fullPath = os.path.join(path, name)
+				if os.path.isfile(fullPath):
+					return fullPath
+			return None
+		else:
+			name = (name + ".psc").upper()
+			for path in self.paths:
+				for f in os.listdir(path):
+					if name == f.upper():
+						return os.path.join(path, f)
+			return None
 
 	def CacheScript(self, name, path = None, line = None):
 		name = name.upper()
@@ -1574,27 +1542,21 @@ class Semantic(SharedResources):
 				if not fullPath:
 					fullPath = self.GetPath(name)
 					if not fullPath:
-						self.Abort("Could not find script ('%s')." % name, line)
-						return False
+						self.Abort("Could not find the '%s' script." % name, line)
 				with open(fullPath) as f:
 					scriptContents = f.read()
 					lines = []
 					tokens = []
-					skip = False
 					try:
 						for token in self.lex.Process(scriptContents):
 							if token.type == self.lex.NEWLINE:
-								if not skip:
-									if tokens:
-										lines.append(tokens)
-								skip = False
+								if tokens:
+									lines.append(tokens)
 								tokens = []
-							elif token.type == self.lex.UNMATCHED:
-								skip = True
-							else:
+							elif token.type != self.COMMENT_LINE and token.type != self.COMMENT_BLOCK:
 								tokens.append(token)
 					except LexicalError as e:
-						return False
+						self.Abort("Found a lexical error in the '%s' script." % name)
 					extends = []
 					functions = {}
 					properties = {}
@@ -1606,7 +1568,7 @@ class Semantic(SharedResources):
 							if stat:
 								statements.append(stat)
 					except SyntacticError as e:
-						return False
+						self.Abort("Found a syntactic error in the '%s' script." % name)
 					header = False
 					if statements[0].type == self.STAT_SCRIPTHEADER:
 						if statements[0].data.parent:
@@ -1652,15 +1614,18 @@ class Semantic(SharedResources):
 		if temp:
 			return temp
 		else:
-			if self.CacheScript(name, line):
+			if self.CacheScript(name, None, line):
 				return self.cache.get(name, None)
 		return None
 
-	def Process(self, statements, paths, cancel = None): # Return True if successful, False if failed
+	def Process(self, statements, paths): # Return True if successful, False if failed
+		if not statements:
+			self.Abort("No statements were given to process.")
+			return
 		# Reset properties
 		self.statements = None
 		self.paths = paths
-		self.cancel = cancel # This is != None only when called by the code completion system
+		self.cancel = None # This is != None only when called by the code completion system
 		self.variables = [{}]
 		self.functions = [{}]
 		self.states = [{}]
@@ -1678,54 +1643,60 @@ class Semantic(SharedResources):
 					self.functions[0].update(parentScript.functions)
 					self.states[0].update(parentScript.states)
 				else:
-					self.Abort(None, self.header.line)
-					return False
+					self.Abort("Failed to process the parent script.", self.header.line)
 			# Doc string
 			docString = None
 			if len(statements) > 0:
 				if statements[0].type == self.STAT_DOCUMENTATION:
 					docString = statements.pop(0)
 		else:
-			self.Abort("First line has to be the scriptheader.", statements[0].line)
-			return False
+			self.Abort("The first line has to be a script header.", statements[0].line)
+		if not self.functions[0].get("GOTOSTATE", None):
+			self.functions[0]["GOTOSTATE"] = Statement(self.STAT_FUNCTIONDEF, 0, FunctionDef(None, None, False, "GOTOSTATE", "GoToState", [ParameterDef(self.KW_STRING, "String", False, "ASNEWSTATE", "asNewState", None)], []))
+		if not self.functions[0].get("GETSTATE", None):
+			self.functions[0]["GETSTATE"] = Statement(self.STAT_FUNCTIONDEF, 0, FunctionDef(self.KW_STRING, "String", False, "GETSTATE", "GetState", [], []))
+		if not self.functions[0].get("ONINIT", None):
+			self.functions[0]["ONINIT"] = Statement(self.STAT_EVENTDEF, 0, EventDef(None, "ONINIT", "OnInit", [], []))
+		if not self.functions[0].get("ONBEGINSTATE", None):
+			self.functions[0]["ONBEGINSTATE"] = Statement(self.STAT_EVENTDEF, 0, EventDef(None, "ONBEGINSTATE", "OnBeginState", [], []))
+		if not self.functions[0].get("ONENDSTATE", None):
+			self.functions[0]["ONENDSTATE"] = Statement(self.STAT_EVENTDEF, 0, EventDef(None, "ONENDSTATE", "OnEndState", [], []))
 		# Properties, functions, events, states, and scriptwide variables
 		self.variables.append({})
 		self.functions.append({})
 		self.states.append({})
-		definitions = []
+		self.definitions = {"": []}
+		stateDefinitions = []
 		autoState = None
 		while len(statements) > 0:
 			stat = statements.pop(0)
 			if stat.type == self.STAT_PROPERTYDEF:
-				if not self.AddVariable(stat):
-					return False
+				self.AddVariable(stat)
 				if stat.data.value:
 					if stat.data.array:
 						if stat.data.value.type != self.KW_NONE:
 							self.Abort("Array properties can only be initialized with NONE.", stat.line)
 					else:
 						if stat.data.type != stat.data.value.type and not self.CanAutoCast(NodeResult(stat.data.value.type, False, True), NodeResult(stat.data.type, False, True)):
-							self.Abort("Initialization of %s property with a %s literal." % (stat.data.type, stat.data.value.type), stat.line)
+							self.Abort("Initialization of a(n) '%s' property with a(n) '%s' literal." % (stat.data.type, stat.data.value.type), stat.line)
 				if self.KW_CONDITIONAL in stat.data.flags and not self.KW_CONDITIONAL in self.header.data.flags:
-					self.Abort("The %s property has the CONDITIONAL flag, but the script header does not." % stat.data.name, stat.line)
+					self.Abort("The '%s' property has the 'Conditional' flag, but the script header does not." % stat.data.name, stat.line)
 				if not self.KW_AUTO in stat.data.flags and not self.KW_AUTOREADONLY in stat.data.flags:
 					prop = [stat]
 					while len(statements) > 0 and not (statements[0].type == self.STAT_KEYWORD and statements[0].data.type == self.KW_ENDPROPERTY):
 						prop.append(statements.pop(0))
 					if len(statements) > 0:
 						prop.append(statements.pop(0))
-						definitions.append({self.DEFINITION_PROPERTY:prop})
+						self.definitions[""].append(prop)
 					else:
-						self.Abort("Unterminated property definition.", prop[0].line)
-						return False
+						raise UnterminatedPropertyError(prop[0].line)
 				else:
 					docString = None
 					if len(statements) > 0:
 						if statements[0].type == self.STAT_DOCUMENTATION:
 							docString = statements.pop(0)
 			elif stat.type == self.STAT_VARIABLEDEF:
-				if not self.AddVariable(stat):
-					return False
+				self.AddVariable(stat)
 				if stat.data.value:
 					if stat.data.array:
 						if self.GetLiteral(stat.data.value) != self.KW_NONE:
@@ -1735,41 +1706,43 @@ class Semantic(SharedResources):
 						if not value:
 							self.Abort("Variables can only be initialized with literals when defined outside of functions/events.", stat.line)
 						if stat.data.type != value and not self.CanAutoCast(NodeResult(value, False, True), NodeResult(stat.data.type, False, True)):
-							self.Abort("Initialization of a %s variable with a %s literal." % (stat.data.type, value), stat.line)
+							self.Abort("Initialization of a(n) '%s' variable with a(n) '%s' literal." % (stat.data.type, value), stat.line)
 				if self.KW_CONDITIONAL in stat.data.flags and not self.KW_CONDITIONAL in self.header.data.flags:
-					self.Abort("The %s variable has the CONDITIONAL flag, but the script header does not." % stat.data.name, stat.line)
+					self.Abort("The '%s' variable has the 'Conditional' flag, but the script header does not." % stat.data.name, stat.line)
 			elif stat.type == self.STAT_FUNCTIONDEF:
-				if not self.AddFunction(stat):
-					return False
+				self.AddFunction(stat)
 				if not self.KW_NATIVE in stat.data.flags:
 					func = [stat]
 					while len(statements) > 0 and not (statements[0].type == self.STAT_KEYWORD and statements[0].data.type == self.KW_ENDFUNCTION):
 						func.append(statements.pop(0))
 					if len(statements) > 0:
 						func.append(statements.pop(0))
-						definitions.append({self.DEFINITION_FUNCTION:func})
+						self.definitions[""].append(func)
 					else:
-						self.Abort("Unterminated function definition.", func[0].line)
-						return False
+						raise UnterminatedFunctionError(func[0].line)
 				else:
+					self.PushVariableScope()
+					self.AddVariable(stat)
+					self.PopVariableScope()
 					docString = None
 					if len(statements) > 0:
 						if statements[0].type == self.STAT_DOCUMENTATION:
 							docString = statements.pop(0)
 			elif stat.type == self.STAT_EVENTDEF:
-				if not self.AddFunction(stat):
-					return False
+				self.AddFunction(stat)
 				if not self.KW_NATIVE in stat.data.flags:
 					event = [stat]
 					while len(statements) > 0 and not (statements[0].type == self.STAT_KEYWORD and statements[0].data.type == self.KW_ENDEVENT):
 						event.append(statements.pop(0))
 					if len(statements) > 0:
 						event.append(statements.pop(0))
-						definitions.append({self.DEFINITION_EVENT:event})
+						self.definitions[""].append(event)
 					else:
-						self.Abort("Unterminated event definition.", event[0].line)
-						return False
+						raise UnterminatedEventError(event[0].line)
 				else:
+					self.PushVariableScope()
+					self.AddVariable(stat)
+					self.PopVariableScope()
 					docString = None
 					if len(statements) > 0:
 						if statements[0].type == self.STAT_DOCUMENTATION:
@@ -1777,11 +1750,9 @@ class Semantic(SharedResources):
 			elif stat.type == self.STAT_IMPORT:
 				if not stat.data.name in self.imports:
 					self.imports.append(stat.data.name)
-					if not self.CacheScript(stat.data.name, line=stat.line):
-						return False
+					self.CacheScript(stat.data.name, line=stat.line)
 				else:
-					self.Abort("%s has already been imported in this script." % stat.data.name, stat.line)
-					return False
+					self.Abort("'%s' has already been imported in this script." % stat.data.name, stat.line)
 			elif stat.type == self.STAT_STATEDEF:
 				if stat.data.auto:
 					autoState = stat
@@ -1790,365 +1761,394 @@ class Semantic(SharedResources):
 					state.append(statements.pop(0))
 				if len(statements) > 0:
 					state.append(statements.pop(0))
-					definitions.append({self.DEFINITION_STATE:state})
+					stateDefinitions.append(state)
 				else:
-					self.Abort("Unterminated state definition.", state[0].line)
-					return False
+					raise UnterminatedStateError(state[0].line)
 			else:
 				if stat.type == self.STAT_SCRIPTHEADER and self.header:
 					self.Abort("Only one script header is allowed per script.", stat.line)
 				else:
 					self.Abort("Illegal statement in this scope.", stat.line)
-				return False
-		for obj in definitions:
-			for typ, statements in obj.items():
-				if typ == self.DEFINITION_FUNCTION or typ == self.DEFINITION_EVENT:
-					self.PushVariableScope()
-					self.FunctionBlock(statements)
-					self.PopVariableScope()
-				elif typ == self.DEFINITION_PROPERTY:
-					self.PushFunctionScope()
-					self.PropertyBlock(statements)
-					self.PopFunctionScope()
-				elif typ == self.DEFINITION_STATE:
-					self.PushFunctionScope()
-					self.StateBlock(statements)
-					self.PopFunctionScope()
-		return True
+		for statements in self.definitions[""]:
+			typ = statements[0].type
+			if typ == self.STAT_FUNCTIONDEF or typ == self.STAT_EVENTDEF:
+				self.PushVariableScope()
+				self.FunctionBlock(statements)
+				self.PopVariableScope()
+			elif typ == self.STAT_PROPERTYDEF:
+				self.PushFunctionScope()
+				self.PropertyBlock(statements)
+				self.PopFunctionScope()
+		for statements in stateDefinitions:
+			self.PushFunctionScope()
+			self.StateBlock(statements)
+			self.PopFunctionScope()
+		return Script(self.functions[0:2], self.variables[0:2], self.states[0:2], self.imports, self.definitions)
 
 	def PropertyBlock(self, statements):
-		start = statements.pop(0)
 		if self.cancel:
-			if start.line >= self.cancel:
-				self.PopFunctionScope()
-				raise Cancel(start.line, self.variables, self.functions, self.states, self.imports)
-		end = statements.pop()
-		docString = None
-		if len(statements) > 0:
-			if statements[0].type == self.STAT_DOCUMENTATION:
-				docString = statements.pop(0)
-		functions = {}
-		while len(statements) > 0:
-			if statements[0].type == self.STAT_FUNCTIONDEF:
-				stat = statements.pop(0)
-				if stat.data.flags:
-					self.Abort("Functions in property definitions cannot have any flags.", stat.line)
-					return False
-				if stat.data.name == "SET" or stat.data.name == "GET":
-					if functions.get(stat.data.name, None):
-						self.Abort("The %s function has already been defined in this property." % stat.data.name, stat.line)
-						return False
+			statementsLength = len(statements)
+			i = 0
+			start = statements[i]
+			i += 1
+			functions = {}
+			while i < statementsLength:
+				if statements[i].type == self.STAT_FUNCTIONDEF:
+					stat = statements[i]
+					i += 1
+					func = [stat]
+					while i < statementsLength and not (statements[i].type == self.STAT_KEYWORD and statements[i].data.type == self.KW_ENDFUNCTION):
+						func.append(statements[i])
+						i += 1
+					if i < statementsLength:
+						func.append(statements[i])
+						functions[stat.data.name] = func
 					else:
-						if stat.data.name == "GET":
-							if stat.data.type != start.data.type:
-								self.Abort("The return type of the GET function and the property type must match.", stat.line)
-								return False
+						raise UnterminatedFunctionError(stat.line)
+				elif statements[i].type == self.STAT_KEYWORD and statements[i].data.type == self.KW_ENDPROPERTY:
+					i += 1
+					break
+				i += 1
+			for key, func in functions.items():
+				if self.cancel >= func[0].line and self.cancel <= func[-1].line:
+					self.PushVariableScope()
+					self.FunctionBlock(func)
+					self.PopVariableScope()
+			return True
+		else:
+			statementsLength = len(statements)
+			i = 0
+			start = statements[i]
+			i += 1
+			docString = None
+			if i < statementsLength:
+				if statements[i].type == self.STAT_DOCUMENTATION:
+					docString = statements[i]
+					i += 1
+			functions = {}
+			while i < statementsLength:
+				if statements[i].type == self.STAT_FUNCTIONDEF:
+					stat = statements[i]
+					i += 1
+					if stat.data.flags:
+						self.Abort("Functions in property definitions cannot have any flags.", stat.line)
+					if stat.data.name == "SET" or stat.data.name == "GET":
+						if functions.get(stat.data.name, None):
+							self.Abort("The '%s' function has already been defined in this property." % stat.data.name, stat.line)
+						else:
+							if stat.data.name == "GET":
+								if stat.data.type != start.data.type or stat.data.array != start.data.array:
+									self.Abort("The return type of the 'Get' function and the property type must match.", stat.line)
+					else:
+						self.Abort("Only 'Set' and 'Get' functions may be defined in a property definition.", stat.line)
+					func = [stat]
+					while i < statementsLength and not (statements[i].type == self.STAT_KEYWORD and statements[i].data.type == self.KW_ENDFUNCTION):
+						func.append(statements[i])
+						i += 1
+					if i < statementsLength:
+						func.append(statements[i])
+						functions[stat.data.name] = func
+					else:
+						raise UnterminatedFunctionError(stat.line)
+				elif statements[i].type == self.STAT_KEYWORD and statements[i].data.type == self.KW_ENDPROPERTY:
+					i += 1
+					break
 				else:
-					self.Abort("Only SET and GET functions may be defined in a property definition.", stat.line)
-					return False
-				func = [stat]
-				while len(statements) > 0 and not (statements[0].type == self.STAT_KEYWORD and statements[0].data.type == self.KW_ENDFUNCTION):
-					func.append(statements.pop(0))
-				if len(statements) > 0:
-					func.append(statements.pop(0))
-					functions[stat.data.name] = func
-				else:
-					self.Abort("Unterminated function definition.", stat.line)
-					return False
-			else:
-				self.Abort("Illegal statement in a property definition.", statements[0].line)
-		if len(functions) == 0:
-			self.Abort("At least a SET or a GET function has to be defined in a property definition.", start.line)
-			return False
-		for key, func in functions.items():
-			self.PushVariableScope()
-			if not self.FunctionBlock(func):
-				return False
-			self.PopVariableScope()
-		if self.cancel:
-			if end.line >= self.cancel:
-				raise Cancel(end.line, self.variables, self.functions, self.states, self.imports)
-		return True
+					self.Abort("Illegal statement in a property definition.", statements[i].line)
+				i += 1
+			if len(functions) == 0:
+				self.Abort("At least a 'Set' or a 'Get' function has to be defined in a property definition.", start.line)
+			for key, func in functions.items():
+				self.PushVariableScope()
+				self.FunctionBlock(func)
+				self.PopVariableScope()
+			return True
 
 	def FunctionBlock(self, statements):
-		start = statements.pop(0)
 		if self.cancel:
-			if start.line >= self.cancel:
-				self.PopVariableScope()
-				raise Cancel(start.line, self.variables, self.functions, self.states, self.imports)
-		end = statements.pop()
-		typ = None
-		if start.data.type:
-			if start.data.array:
-				typ = NodeResult(start.data.type, True, True)
-			else:
-				typ = NodeResult(start.data.type, False, True)
-		docString = None
-		if len(statements) > 0:
-			if statements[0].type == self.STAT_DOCUMENTATION:
-				docString = statements.pop(0)
-		if not self.AddVariable(start):
-			return False
-		if start.type == self.STAT_FUNCTIONDEF:
-			for param in start.data.parameters:
-				if param.expression:
-					if param.array:
-						if self.GetLiteral(param.expression) != self.KW_NONE:
-							self.Abort("Array parameters can only be initialized with NONE", start.line)
-					else:
-						value = self.GetLiteral(param.expression)
-						if not value:
-							self.Abort("Parameters can only be initialized with literals.", start.line)
-						if param.type != value and not self.CanAutoCast(NodeResult(value, False, True), NodeResult(param.type, False, True)):
-							self.Abort("Initialization of %s parameter with %s literal." % (param.type, value), start.line)
-		self.statements = statements
-		while len(self.statements) > 0:
-			if self.cancel:
-				if self.statements[0].line >= self.cancel:
-					raise Cancel(self.statements[0].line, self.variables, self.functions, self.states, self.imports)
-			if self.statements[0].type == self.STAT_VARIABLEDEF:
-				if not self.VariableDef():
-					return False
-			elif self.statements[0].type == self.STAT_ASSIGNMENT:
-				if not self.Assignment():
-					return False
-			elif self.statements[0].type == self.STAT_EXPRESSION:
-				if not self.Expression():
-					return False
-			elif self.statements[0].type == self.STAT_IF:
-				self.PushVariableScope()
-				if not self.IfBlock(typ):
-					return False
-				self.PopVariableScope()
-			elif self.statements[0].type == self.STAT_WHILE:
-				self.PushVariableScope()
-				if not self.WhileBlock(typ):
-					return False
-				self.PopVariableScope()
-			elif self.statements[0].type == self.STAT_RETURN:
-				if not self.Return(typ):
-					return False
-			else:
-				self.Abort("Illegal statement in a function definition.", self.statements[0].line)
-				return False
-		if self.cancel:
-			if end.line >= self.cancel:
-				raise Cancel(end.line, self.variables, self.functions, self.states, self.imports)
-		return True
+			self.statements = statements
+			self.statementsLength = len(statements)
+			self.statementsIndex = 1
+			start = self.statements[0]
+			self.AddVariable(start)
+			while self.statementsIndex < self.statementsLength:
+				if self.statements[self.statementsIndex].line >= self.cancel:
+					raise FunctionDefinitionCancel(start, self.functions, self.variables, self.imports)
+				if self.statements[self.statementsIndex].type == self.STAT_VARIABLEDEF:
+					self.VariableDef()
+				elif self.statements[self.statementsIndex].type == self.STAT_IF:
+					self.PushVariableScope()
+					self.IfBlock()
+					self.PopVariableScope()
+				elif self.statements[self.statementsIndex].type == self.STAT_WHILE:
+					self.PushVariableScope()
+					self.WhileBlock()
+					self.PopVariableScope()
+				elif self.statements[self.statementsIndex].type == self.STAT_KEYWORD and ((self.statements[self.statementsIndex].data.type == self.KW_ENDFUNCTION and self.statements[0].type == self.STAT_FUNCTIONDEF) or (self.statements[self.statementsIndex].data.type == self.KW_ENDEVENT and self.statements[0].type == self.STAT_EVENTDEF)):
+					break
+				self.statementsIndex += 1
+			if self.statements[-1].line >= self.cancel:
+				raise FunctionDefinitionCancel(start, self.functions, self.variables, self.imports)
+			return True
+		else:
+			self.statements = statements
+			self.statementsLength = len(statements)
+			self.statementsIndex = 1
+			start = self.statements[0]
+			docString = None
+			if self.statementsIndex < self.statementsLength:
+				if self.statements[self.statementsIndex].type == self.STAT_DOCUMENTATION:
+					docString = statements[self.statementsIndex]
+					self.statementsIndex += 1
+			self.AddVariable(start)
+			if start.type == self.STAT_FUNCTIONDEF:
+				for param in start.data.parameters:
+					if param.expression:
+						if param.array:
+							if self.GetLiteral(param.expression) != self.KW_NONE:
+								self.Abort("Array parameters can only be initialized with 'None'.", start.line)
+						else:
+							value = self.GetLiteral(param.expression)
+							if not value:
+								self.Abort("Parameters can only be initialized with literals.", start.line)
+							if param.type != value and not self.CanAutoCast(NodeResult(value, False, True), NodeResult(param.type, False, True)):
+								self.Abort("Initialization of a(n) '%s' parameter with a(n) '%s' literal." % (param.type, value), start.line)
+				if start.data.type and start.data.type != self.KW_BOOL and start.data.type != self.KW_FLOAT and start.data.type != self.KW_INT and start.data.type != self.KW_STRING and not self.GetCachedScript(start.data.type, start.line):
+					self.Abort("'%s' is not a valid return type." % start.data.type, start.line)
+			while self.statementsIndex < self.statementsLength:
+				if self.statements[self.statementsIndex].type == self.STAT_VARIABLEDEF:
+					self.VariableDef()
+				elif self.statements[self.statementsIndex].type == self.STAT_ASSIGNMENT:
+					self.Assignment()
+				elif self.statements[self.statementsIndex].type == self.STAT_EXPRESSION:
+					self.Expression()
+				elif self.statements[self.statementsIndex].type == self.STAT_IF:
+					self.PushVariableScope()
+					self.IfBlock()
+					self.PopVariableScope()
+				elif self.statements[self.statementsIndex].type == self.STAT_WHILE:
+					self.PushVariableScope()
+					self.WhileBlock()
+					self.PopVariableScope()
+				elif self.statements[self.statementsIndex].type == self.STAT_RETURN:
+					self.Return()
+				elif self.statements[self.statementsIndex].type == self.STAT_KEYWORD and ((self.statements[self.statementsIndex].data.type == self.KW_ENDFUNCTION and self.statements[0].type == self.STAT_FUNCTIONDEF) or (self.statements[self.statementsIndex].data.type == self.KW_ENDEVENT and self.statements[0].type == self.STAT_EVENTDEF)):
+					break
+				else:
+					if self.statements[0].type == self.STAT_FUNCTIONDEF:
+						self.Abort("Illegal statement in a function definition.")
+					elif self.statements[0].type == self.STAT_EVENTDEF:
+						self.Abort("Illegal statement in an event definition.")
+				self.statementsIndex += 1
+			return True
 
 	def StateBlock(self, statements):
 		start = statements.pop(0)
-		if self.cancel:
-			if start.line >= self.cancel:
-				self.PopFunctionScope()
-				raise Cancel(start.line, self.variables, self.functions, self.states, self.imports)
 		end = statements.pop()
-		if not self.AddState(start):
-			return False
-		definitions = []
+		self.AddState(start, end)
+		stateName = start.data.name.upper()
+		self.definitions[stateName] = []
 		while len(statements) > 0:
 			if statements[0].type == self.STAT_FUNCTIONDEF:
 				exists = self.HasFunction(statements[0].data.name)
 				if exists == -1:
-					self.Abort("%s has been defined in the state already." % statements[0].data.name, statements[0].line)
-					return False
+					self.Abort("'%s' has been defined in the state already." % statements[0].data.name, statements[0].line)
 				if exists == 0:
-					self.Abort("%s has not been defined in the empty state." % statements[0].data.name, statements[0].line)
-					return False
-				if not self.AddFunction(statements[0]):
-					return False
+					self.Abort("'%s' has not been defined in the empty state nor has it been inherited from a parent script." % statements[0].data.name, statements[0].line)
+				self.AddFunction(statements[0])
 				if not self.KW_NATIVE in statements[0].data.flags:
 					func = [statements.pop(0)]
 					while len(statements) > 0 and not (statements[0].type == self.STAT_KEYWORD and statements[0].data.type == self.KW_ENDFUNCTION):
 						func.append(statements.pop(0))
 					if len(statements) > 0:
 						func.append(statements.pop(0))
-						definitions.append({self.DEFINITION_FUNCTION:func})
+						self.definitions[stateName].append(func)
 					else:
-						self.Abort("Unterminated function definition.", func[0].line)
-						return False
+						raise UnterminatedFunctionError(func[0].line)
 			elif statements[0].type == self.STAT_EVENTDEF:
 				exists = self.HasFunction(statements[0].data.name)
 				if exists == 0:
-					self.Abort("%s has not been defined in the empty state." % statements[0].data.name, statements[0].line)
-					return False
+					self.Abort("'%s' has not been defined in the empty state nor has it been inherited from a parent script." % statements[0].data.name, statements[0].line)
 				if exists == -1:
-					self.Abort("%s has already been defined in the same state." % statements[0].data.name, statements[0].line)
-					return False
-				if not self.AddFunction(statements[0]):
-					return False
+					self.Abort("'%s' has already been defined in the same state." % statements[0].data.name, statements[0].line)
+				self.AddFunction(statements[0])
 				if not self.KW_NATIVE in statements[0].data.flags:
 					event = [statements.pop(0)]
 					while len(statements) > 0 and not (statements[0].type == self.STAT_KEYWORD and statements[0].data.type == self.KW_ENDEVENT):
 						event.append(statements.pop(0))
 					if len(statements) > 0:
 						event.append(statements.pop(0))
-						definitions.append({self.DEFINITION_EVENT:event})
+						self.definitions[stateName].append(event)
 					else:
-						self.Abort("Unterminated event definition.", event[0].line)
-						return False
+						raise UnterminatedEventError(event[0].line)
 			else:
 				self.Abort("Illegal statement in a state definition.", statements[0].line)
-				return False
-		for obj in definitions:
-			for typ, statements in obj.items():
-				if typ == self.DEFINITION_FUNCTION or typ == self.DEFINITION_EVENT:
-					self.PushVariableScope()
-					if not self.FunctionBlock(statements):
-						return False
-					self.PopVariableScope()
+		for statements in self.definitions[stateName]:
+			self.PushVariableScope()
+			self.FunctionBlock(statements)
+			self.PopVariableScope()
+		return True
+
+	def IfBlock(self):
 		if self.cancel:
-			if end.line >= self.cancel:
-				raise Cancel(end.line, self.variables, self.functions, self.states, self.imports)
-		return True
-
-	def IfBlock(self, typ):
-		if not self.cancel:
-			expr = self.NodeVisitor(self.statements[0].data.expression)
-		start = self.statements.pop(0)
-		while len(self.statements) > 0 and not (self.statements[0].type == self.STAT_KEYWORD and self.statements[0].data.type == self.KW_ENDIF):
-			if self.cancel:
-				if self.statements[0].line >= self.cancel:
-					raise Cancel(self.statements[0].line, self.variables, self.functions, self.states, self.imports)
-			if self.statements[0].type == self.STAT_VARIABLEDEF:
-				if not self.VariableDef():
-					return False
-			elif self.statements[0].type == self.STAT_ASSIGNMENT:
-				if not self.Assignment():
-					return False
-			elif self.statements[0].type == self.STAT_EXPRESSION:
-				if not self.Expression():
-					return False
-			elif self.statements[0].type == self.STAT_IF:
-				self.PushVariableScope()
-				if not self.IfBlock(typ):
-					return False
-				self.PopVariableScope()
-			elif self.statements[0].type == self.STAT_ELSEIF:
-				self.PopVariableScope()
-				self.PushVariableScope()
-				if not self.cancel:
-					expr = self.NodeVisitor(self.statements[0].data.expression)
-				self.statements.pop(0)
-			elif self.statements[0].type == self.STAT_KEYWORD and self.statements[0].data.type == self.KW_ELSE:
-				self.PopVariableScope()
-				self.PushVariableScope()
-				self.statements.pop(0)
-			elif self.statements[0].type == self.STAT_WHILE:
-				self.PushVariableScope()
-				if not self.WhileBlock(typ):
-					return False
-				self.PopVariableScope()
-			elif self.statements[0].type == self.STAT_RETURN:
-				if not self.Return(typ):
-					return False
-			else:
-				self.Abort("Illegal statement in an if-block.", self.statements[0].line)
-				return False
-		if len(self.statements) > 0:
-			self.statements.pop(0) # Pop EndIf statement
+			self.statementsIndex += 1
+			while self.statementsIndex < self.statementsLength:
+				if self.statements[self.statementsIndex].line >= self.cancel:
+					raise FunctionDefinitionCancel(self.statements[0], self.functions, self.variables, self.imports)
+				if self.statements[self.statementsIndex].type == self.STAT_VARIABLEDEF:
+					self.VariableDef()
+				elif self.statements[self.statementsIndex].type == self.STAT_IF:
+					self.PushVariableScope()
+					self.IfBlock()
+					self.PopVariableScope()
+				elif self.statements[self.statementsIndex].type == self.STAT_ELSEIF:
+					self.PopVariableScope()
+					self.PushVariableScope()
+				elif self.statements[self.statementsIndex].type == self.STAT_KEYWORD and self.statements[self.statementsIndex].data.type == self.KW_ELSE:
+					self.PopVariableScope()
+					self.PushVariableScope()
+				elif self.statements[self.statementsIndex].type == self.STAT_WHILE:
+					self.PushVariableScope()
+					self.WhileBlock()
+					self.PopVariableScope()
+				elif self.statements[self.statementsIndex].type == self.STAT_KEYWORD and self.statements[self.statementsIndex].data.type == self.KW_ENDIF:
+					break
+				self.statementsIndex += 1
+			return True
 		else:
-			self.Abort("Unterminated if-block.", start.line)
-			return False
-		return True
+			expr = self.NodeVisitor(self.statements[self.statementsIndex].data.expression)
+			start = self.statements[self.statementsIndex]
+			self.statementsIndex += 1
+			while self.statementsIndex < self.statementsLength:
+				if self.statements[self.statementsIndex].type == self.STAT_VARIABLEDEF:
+					self.VariableDef()
+				elif self.statements[self.statementsIndex].type == self.STAT_ASSIGNMENT:
+					self.Assignment()
+				elif self.statements[self.statementsIndex].type == self.STAT_EXPRESSION:
+					self.Expression()
+				elif self.statements[self.statementsIndex].type == self.STAT_IF:
+					self.PushVariableScope()
+					self.IfBlock()
+					self.PopVariableScope()
+				elif self.statements[self.statementsIndex].type == self.STAT_ELSEIF:
+					self.PopVariableScope()
+					self.PushVariableScope()
+					expr = self.NodeVisitor(self.statements[self.statementsIndex].data.expression)
+				elif self.statements[self.statementsIndex].type == self.STAT_KEYWORD and self.statements[self.statementsIndex].data.type == self.KW_ELSE:
+					self.PopVariableScope()
+					self.PushVariableScope()
+				elif self.statements[self.statementsIndex].type == self.STAT_WHILE:
+					self.PushVariableScope()
+					self.WhileBlock()
+					self.PopVariableScope()
+				elif self.statements[self.statementsIndex].type == self.STAT_RETURN:
+					self.Return()
+				elif self.statements[self.statementsIndex].type == self.STAT_KEYWORD and self.statements[self.statementsIndex].data.type == self.KW_ENDIF:
+					break
+				else:
+					self.Abort("Illegal statement in an if-block.")
+				self.statementsIndex += 1
+			if self.statementsIndex >= self.statementsLength:
+				raise UnterminatedIfError(start.line)
+			return True
 
-	def WhileBlock(self, typ):
-		if not self.cancel:
-			expr = self.NodeVisitor(self.statements[0].data.expression)
-		self.statements.pop(0)
-		while len(self.statements) > 0 and not (self.statements[0].type == self.STAT_KEYWORD and self.statements[0].data.type == self.KW_ENDWHILE):
-			if self.cancel:
-				if self.statements[0].line >= self.cancel:
-					raise Cancel(self.statements[0].line, self.variables, self.functions, self.states, self.imports)
-			if self.statements[0].type == self.STAT_VARIABLEDEF:
-				if not self.VariableDef():
-					return False
-			elif self.statements[0].type == self.STAT_ASSIGNMENT:
-				if not self.Assignment():
-					return False
-			elif self.statements[0].type == self.STAT_EXPRESSION:
-				if not self.Expression():
-					return False
-			elif self.statements[0].type == self.STAT_IF:
-				self.PushVariableScope()
-				if not self.IfBlock(typ):
-					return False
-				self.PopVariableScope()
-			elif self.statements[0].type == self.STAT_WHILE:
-				self.PushVariableScope()
-				if not self.WhileBlock(typ):
-					return False
-				self.PopVariableScope()
-			elif self.statements[0].type == self.STAT_RETURN:
-				if not self.Return(typ):
-					return False
-			else:
-				self.Abort("Illegal statement in a while-loop.", self.statements[0].line)
-				return False
-		if len(self.statements) > 0:
-			self.statements.pop(0) # Pop EndWhile statement
+	def WhileBlock(self):
+		if self.cancel:
+			self.statementsIndex += 1
+			while self.statementsIndex < self.statementsLength:
+				if self.statements[self.statementsIndex].line >= self.cancel:
+					raise FunctionDefinitionCancel(self.statements[0], self.functions, self.variables, self.imports)
+				if self.statements[self.statementsIndex].type == self.STAT_VARIABLEDEF:
+					self.VariableDef()
+				elif self.statements[self.statementsIndex].type == self.STAT_IF:
+					self.PushVariableScope()
+					self.IfBlock()
+					self.PopVariableScope()
+				elif self.statements[self.statementsIndex].type == self.STAT_WHILE:
+					self.PushVariableScope()
+					self.WhileBlock()
+					self.PopVariableScope()
+				elif self.statements[self.statementsIndex].type == self.STAT_KEYWORD and self.statements[self.statementsIndex].data.type == self.KW_ENDWHILE:
+					break
+				self.statementsIndex += 1
+			return True
 		else:
-			self.Abort("Unterminated while-loop.", start.line)
-			return False
-		return True
+			expr = self.NodeVisitor(self.statements[self.statementsIndex].data.expression)
+			start = self.statements[self.statementsIndex]
+			self.statementsIndex += 1
+			while self.statementsIndex < self.statementsLength:
+				if self.statements[self.statementsIndex].type == self.STAT_VARIABLEDEF:
+					self.VariableDef()
+				elif self.statements[self.statementsIndex].type == self.STAT_ASSIGNMENT:
+					self.Assignment()
+				elif self.statements[self.statementsIndex].type == self.STAT_EXPRESSION:
+					self.Expression()
+				elif self.statements[self.statementsIndex].type == self.STAT_IF:
+					self.PushVariableScope()
+					self.IfBlock()
+					self.PopVariableScope()
+				elif self.statements[self.statementsIndex].type == self.STAT_WHILE:
+					self.PushVariableScope()
+					self.WhileBlock()
+					self.PopVariableScope()
+				elif self.statements[self.statementsIndex].type == self.STAT_RETURN:
+					self.Return()
+				elif self.statements[self.statementsIndex].type == self.STAT_KEYWORD and self.statements[self.statementsIndex].data.type == self.KW_ENDWHILE:
+					break
+				else:
+					self.Abort("Illegal statement in a while-loop.")
+				self.statementsIndex += 1
+			if self.statementsIndex >= self.statementsLength:
+				raise UnterminatedWhileError(start.line)
+			return True
 
 	def VariableDef(self):
-		if not self.AddVariable(self.statements[0]):
-			return False
-		if self.statements[0].data.value:
-			if not self.cancel:
-				expr = self.NodeVisitor(self.statements[0].data.value)
+		if self.cancel:
+			self.AddVariable(self.statements[self.statementsIndex])
+			return True
+		else:
+			self.AddVariable(self.statements[self.statementsIndex])
+			if self.statements[self.statementsIndex].data.value:
+				expr = self.NodeVisitor(self.statements[self.statementsIndex].data.value)
 				if expr:
 					if expr.array:
-						if not self.statements[0].data.array:
-							self.Abort("The expression resolves to an array type, but the variable is not an array variable.")
-							return False
-						if self.statements[0].data.type != expr.type:
+						if not self.statements[self.statementsIndex].data.array:
+							self.Abort("The expression resolves to an array type, but the variable is not an array.")
+						if self.statements[self.statementsIndex].data.type != expr.type:
 							self.Abort("The expression resolves to an array type, but the variable is an array of another type.")
-							return False
-					elif self.statements[0].data.array:
-						val = self.GetLiteral(self.statements[0].data.value)
-						if val != self.KW_NONE:
-							self.Abort("Array variables can only be initialized with NONE.")
-							return False
-					elif self.statements[0].data.type != expr.type:
-						if not self.CanAutoCast(expr, NodeResult(self.statements[0].data.type, self.statements[0].data.array, True)):
+					elif self.statements[self.statementsIndex].data.array:
+						val = self.GetLiteral(self.statements[self.statementsIndex].data.value)
+						if val:
+							if val != self.KW_NONE:
+								self.Abort("Array variables can only be initialized with NONE.")
+						else:
+							self.Abort("The expression does not resolve to a(n) '%s' array." % self.statements[self.statementsIndex].data.type)
+					elif self.statements[self.statementsIndex].data.type != expr.type:
+						if not self.CanAutoCast(expr, NodeResult(self.statements[self.statementsIndex].data.type, self.statements[self.statementsIndex].data.array, True)):
 							self.Abort("The expression resolves to the incorrect type and cannot be automatically cast to the correct type.")
-							return False
 				else:
 					self.Abort(None)
-					return False
-		self.statements.pop(0)
-		return True
+			return True
 
 	def Assignment(self):
-		if not self.cancel:
-			left = self.NodeVisitor(self.statements[0].data.leftExpression)
-			if left == self.KW_NONE:
-				self.Abort("The left-hand side expression resolves to NONE.")
-				return False
-			right = self.NodeVisitor(self.statements[0].data.rightExpression)
-			if left.type != right.type and left.array != right.array and left.object != right.object and not self.CanAutoCast(right, left):
-				self.Abort("The right-hand side expression does not resolve to the same type as the left-hand side expression and cannot be auto-cast.")
-				return False
-		self.statements.pop(0)
+		left = self.NodeVisitor(self.statements[self.statementsIndex].data.leftExpression)
+		if left == self.KW_NONE:
+			self.Abort("The left-hand side expression resolves to NONE.")
+		right = self.NodeVisitor(self.statements[self.statementsIndex].data.rightExpression)
+		if left.type != right.type and left.array != right.array and left.object != right.object and not self.CanAutoCast(right, left):
+			self.Abort("The right-hand side expression does not resolve to the same type as the left-hand side expression and cannot be auto-cast.")
 		return True
 
 	def Expression(self):
-		if not self.cancel:
-			expr = self.NodeVisitor(self.statements[0].data.expression)
-		self.statements.pop(0)
+		expr = self.NodeVisitor(self.statements[self.statementsIndex].data.expression)
 		return True
 
-	def Return(self, typ):
-		if self.statements[0].data.expression:
-			if not self.cancel:
-				expr = self.NodeVisitor(self.statements[0].data.expression)
-				if typ:
-					if expr.type != typ.type and expr.array != typ.array and not self.CanAutoCast(expr, typ):
-						self.Abort("The returned value's type does not match the function's return type.")
-						return False
-		self.statements.pop(0)
+	def Return(self):
+		if self.statements[self.statementsIndex].data.expression:
+			expr = self.NodeVisitor(self.statements[self.statementsIndex].data.expression)
+			if self.statements[0].data.type:
+				if expr.type != self.statements[0].data.type and expr.array != self.statements[0].data.array and not self.CanAutoCast(expr, self.statements[0].data):
+					self.Abort("The returned value's type does not match the function's return type.")
 		return True
 
 	def NodeVisitor(self, node, expected = None):
@@ -2158,8 +2158,12 @@ class Semantic(SharedResources):
 		#print(node)
 		if node.type == self.NODE_EXPRESSION:
 			result = self.NodeVisitor(node.data.child)
+			if node.data.child.type == self.NODE_IDENTIFIER and not result.object:
+				self.Abort("'%s' is not a variable that exists in this scope." % node.data.child.data.token.value)
 		elif node.type == self.NODE_ARRAYATOM or node.type == self.NODE_ARRAYFUNCORID:
 			result = self.NodeVisitor(node.data.child, expected)
+			if node.data.child.type == self.NODE_IDENTIFIER and not result.object:
+				self.Abort("'%s' is not a variable that exists in this scope." % node.data.child.data.token.value)
 			if node.data.expression:
 				if result.type == self.KW_NONE:
 					self.Abort("Expected an array object instead of NONE.")
@@ -2170,7 +2174,7 @@ class Semantic(SharedResources):
 					self.Abort("Expected an expression that resolves to INT when accessing an array element.")
 				result = NodeResult(result.type, False, result.object)
 		elif node.type == self.NODE_CONSTANT:
-			if node.data.token.type == self.BOOL:
+			if node.data.token.type == self.KW_FALSE or node.data.token.type == self.KW_TRUE:
 				result = NodeResult(self.KW_BOOL, False, True)
 			elif node.data.token.type == self.FLOAT:
 				result = NodeResult(self.KW_FLOAT, False, True)
@@ -2195,7 +2199,7 @@ class Semantic(SharedResources):
 					else:
 						result = NodeResult(self.KW_NONE, False, True)
 				else:
-					self.Abort("This script does not have a function/event called %s." % node.data.name.value)
+					self.Abort("This script does not have a function/event called '%s'." % node.data.name.value)
 			elif expected and expected.type:
 				if expected.array:
 					script = self.GetCachedScript(expected.type)
@@ -2226,7 +2230,7 @@ class Semantic(SharedResources):
 							else:
 								result = NodeResult(self.KW_NONE, False, True)
 						else:
-							self.Abort("%s does not have a function/event called %s." % (expected.type, node.data.name.value))
+							self.Abort("'%s' does not have a function/event called '%s'." % (expected.type, node.data.name.value))
 			else:
 				func = self.GetFunction(node.data.name.value)
 				if func:
@@ -2237,24 +2241,24 @@ class Semantic(SharedResources):
 							result = NodeResult(func.data.type, False, True)
 					else:
 						result = NodeResult(self.KW_NONE, False, True)
+				funcName = node.data.name.value.upper()
 				for imp in self.imports:
 					script = self.GetCachedScript(imp)
 					if script:
-						temp = script.functions.get(node.data.name.value.upper(), None)
-						if temp:
+						temp = script.functions.get(funcName, None)
+						if temp and self.KW_GLOBAL in temp.data.flags:
 							if func:
-								self.Abort("Ambiguous reference to a function called %s. It is unclear which version is being referenced." % node.data.name.value)
+								self.Abort("Ambiguous reference to a function called '%s'. It is unclear which version is being referenced." % node.data.name.value)
 							func = temp
-							if self.KW_GLOBAL in func.data.flags:
-								if func.data.type:
-									if func.data.array:
-										result = NodeResult(func.data.type, True, True)
-									else:
-										result = NodeResult(func.data.type, False, True)
+							if func.data.type:
+								if func.data.array:
+									result = NodeResult(func.data.type, True, True)
 								else:
-									result = NodeResult(self.KW_NONE, False, True)
+									result = NodeResult(func.data.type, False, True)
+							else:
+								result = NodeResult(self.KW_NONE, False, True)
 				if not result:
-					self.Abort("%s is not a function/event that exists in this scope." % node.data.name.value)
+					self.Abort("'%s' is not a function/event that exists in this scope." % node.data.name.value)
 			if func:
 				params = func.data.parameters[:]
 				args = [a.data for a in node.data.arguments]
@@ -2276,13 +2280,19 @@ class Semantic(SharedResources):
 									paramType = NodeResult(params[0].type, True, True)
 								else:
 									paramType = NodeResult(params[0].type, False, True)
-								if argExpr.type != paramType.type and argExpr.array != paramType.array and argExpr.object != paramType.object and not self.CanAutoCast(argExpr, paramType):
-									self.Abort("Parameter %s is of type %s, but the argument evaluates to %s, which cannot be auto-cast to the parameter's type." % (params[0].name, paramType.type, argExpr.type)) # Array?
+								if (argExpr.type != paramType.type or argExpr.array != paramType.array or argExpr.object != paramType.object) and not self.CanAutoCast(argExpr, paramType):
+									aType = argExpr.type
+									if argExpr.array:
+										aType = "%s[]" % aType
+									pType = paramType.type
+									if paramType.array:
+										pType = "%s[]" % pType
+									self.Abort("Parameter '%s' is of type '%s', but the argument evaluates to '%s', which cannot be auto-cast to the parameter's type." % (params[0].name, pType, aType))
 								args.pop(i)
 								break
 							i += 1
 						if len(args) == j and not params[0].expression:
-							self.Abort("An argument was not passed to the mandatory parameter %s." % params[0].name)
+							self.Abort("An argument was not passed to the mandatory parameter '%s'." % params[0].name)
 					else:
 						if params[0].expression:
 							if len(args) > 0:
@@ -2292,8 +2302,14 @@ class Semantic(SharedResources):
 									paramType = NodeResult(params[0].type, True, True)
 								else:
 									paramType = NodeResult(params[0].type, False, True)
-								if argExpr.type != paramType.type and argExpr.array != paramType.array and argExpr.object != paramType.object and not self.CanAutoCast(argExpr, paramType):
-									self.Abort("Parameter %s is of type %s, but the argument evaluates to %s, which cannot be auto-cast to the parameter's type." % (params[0].name, paramType.type, argExpr.type)) # Array?
+								if (argExpr.type != paramType.type or argExpr.array != paramType.array or argExpr.object != paramType.object) and not self.CanAutoCast(argExpr, paramType):
+									aType = argExpr.type
+									if argExpr.array:
+										aType = "%s[]" % aType
+									pType = paramType.type
+									if paramType.array:
+										pType = "%s[]" % pType
+									self.Abort("Parameter '%s' is of type '%s', but the argument evaluates to '%s', which cannot be auto-cast to the parameter's type." % (params[0].name, pType, aType))
 								args.pop(0)
 						else:
 							if len(args) > 0:
@@ -2303,11 +2319,17 @@ class Semantic(SharedResources):
 									paramType = NodeResult(params[0].type, True, True)
 								else:
 									paramType = NodeResult(params[0].type, False, True)
-								if argExpr.type != paramType.type and argExpr.array != paramType.array and argExpr.object != paramType.object and not self.CanAutoCast(argExpr, paramType):
-									self.Abort("Parameter %s is of type %s, but the argument evaluates to %s, which cannot be auto-cast to the parameter's type." % (params[0].name, paramType.type, argExpr.type)) # Array?
+								if (argExpr.type != paramType.type or argExpr.array != paramType.array or argExpr.object != paramType.object) and not self.CanAutoCast(argExpr, paramType):
+									aType = argExpr.type
+									if argExpr.array:
+										aType = "%s[]" % aType
+									pType = paramType.type
+									if paramType.array:
+										pType = "%s[]" % pType
+									self.Abort("Parameter '%s' is of type '%s', but the argument evaluates to '%s', which cannot be auto-cast to the parameter's type." % (params[0].name, pType, aType))
 								args.pop(0)
 							else:
-								self.Abort("Mandatory parameter %s was not given an argument." % params[0].name)
+								self.Abort("Mandatory parameter '%s' was not given an argument." % params[0].name)
 					params.pop(0)
 				if len(args) > 0:
 					paramCount = len(func.data.parameters)
@@ -2320,13 +2342,13 @@ class Semantic(SharedResources):
 								if param.name == argName:
 									found = True
 							if not found:
-								self.Abort("%s is not a parameter that exists in %s." % (argName, func.data.name))
+								self.Abort("'%s' is not a parameter that exists in '%s'." % (argName, func.data.name))
 						self.Abort("Multiple arguments were passed to at least one parameter.")
 					elif argCount > paramCount:
 						if argCount == 1:
-							self.Abort("The %s function/event has %d parameters, but %d argument was passed to it." % (func.data.name, paramCount, argCount))
+							self.Abort("The '%s' function/event has %d parameters, but %d argument was passed to it." % (func.data.name, paramCount, argCount))
 						else:
-							self.Abort("The %s function/event has %d parameters, but %d arguments were passed to it." % (func.data.name, paramCount, argCount))
+							self.Abort("The '%s' function/event has %d parameters, but %d arguments were passed to it." % (func.data.name, paramCount, argCount))
 		elif node.type == self.NODE_IDENTIFIER:
 			if expected and expected.type: # Another script
 				if expected.type == self.KW_SELF:
@@ -2337,8 +2359,10 @@ class Semantic(SharedResources):
 						else:
 							result = NodeResult(prop.data.type, False, True)
 					else:
-						self.Abort("This script does not have a property called %s." % (node.data.token.value))
+						self.Abort("This script does not have a property called '%s'." % (node.data.token.value))
 				else:
+					if not expected.object:
+						self.Abort("Properties can only be accessed on variables, not types.")
 					script = self.GetCachedScript(expected.type)
 					if script:
 						prop = script.properties.get(node.data.token.value.upper(), None)
@@ -2348,16 +2372,20 @@ class Semantic(SharedResources):
 							else:
 								result = NodeResult(prop.data.type, False, True)
 						else:
-							self.Abort("%s does not have a property called %s." % (expected.type, node.data.token.value))
+							self.Abort("'%s' does not have a property called '%s'." % (expected.type, node.data.token.value))
 					else:
 						pass
 			else: # Self or parent
 				if node.data.token.type == self.KW_PARENT:
+					if self.KW_GLOBAL in self.statements[0].data.flags:
+						self.Abort("'Parent' does not exist in functions with the 'Global' keyword.")
 					if self.header.data.parent:
 						result = NodeResult(self.header.data.parent, False, True)
 					else:
 						self.Abort("A parent script has not been defined in this script.")
 				elif node.data.token.type == self.KW_SELF:
+					if self.KW_GLOBAL in self.statements[0].data.flags:
+						self.Abort("'Self' does not exist in functions with the 'Global' keyword.")
 					result = NodeResult(self.KW_SELF, False, True)
 				else:
 					var = self.GetVariable(node.data.token.value)
@@ -2368,57 +2396,165 @@ class Semantic(SharedResources):
 							result = NodeResult(var.data.type, False, True)
 					else:
 						result = NodeResult(node.data.token.value, False, False)
-						if not self.GetCachedScript(result.type):
-							self.Abort("%s is not a script." % result.type)
+						try:
+							self.GetCachedScript(result.type)
+						except SemanticError as e:
+							self.Abort("'%s' is neither a type nor a variable." % result.type)
 		elif node.type == self.NODE_LENGTH:
 			result = NodeResult(self.KW_INT, False, True)
 		elif node.type == self.NODE_ARRAYCREATION:
 			result = NodeResult(node.data.typeToken.value, True, True)
 		elif node.type == self.NODE_BINARYOPERATOR:
-			if node.data.operator.type == self.KW_AS:
-				leftResult = self.NodeVisitor(node.data.leftOperand, expected)
-				rightResult = NodeResult(node.data.rightOperand.data.token.value, False, True)
-				if leftResult.array and rightResult.type != self.KW_STRING and rightResult.type != self.KW_BOOL:
-					self.Abort("Arrays can only be cast to STRING and BOOL.")
-				if rightResult.type != self.KW_BOOL and rightResult.type != self.KW_FLOAT and rightResult.type != self.KW_INT and rightResult.type != self.KW_STRING and not self.GetCachedScript(rightResult.type):
-					self.Abort("%s is not a type that exists." % rightResult.type)
-				result = rightResult
-			elif node.data.operator.type == self.OP_DOT:
+			if node.data.operator.type == self.OP_DOT:
 				leftResult = self.NodeVisitor(node.data.leftOperand, expected)
 				expected = leftResult
+				if expected and (expected.type == self.KW_NONE or expected.type == self.KW_BOOL or expected.type == self.KW_FLOAT or expected.type == self.KW_INT or expected.type == self.KW_STRING):
+					self.Abort("'%s' does not have any properties, functions, nor events." % expected.type)
 				rightResult = self.NodeVisitor(node.data.rightOperand, expected)
 				result = rightResult
-			elif node.data.operator.type == self.OP_ADDITION or node.data.operator.type == self.OP_SUBTRACTION or node.data.operator.type == self.OP_MULTIPLICATION or node.data.operator.type == self.OP_DIVISION or node.data.operator.type == self.OP_MODULUS:
+			else:
 				leftResult = self.NodeVisitor(node.data.leftOperand, expected)
-				rightResult = self.NodeVisitor(node.data.rightOperand, expected)
-				if leftResult.type != rightResult.type and leftResult.array != rightResult.array and leftResult.object != rightResult.object:
-					if self.CanAutoCast(leftResult, rightResult):
-						result = rightResult
-					elif self.CanAutoCast(rightResult, leftResult):
-						result = leftResult
-					else:
-						self.Abort("The two operands of an arithmetic operation are of different types that cannot be auto-cast to be the same.")
-				else:
+				if node.data.leftOperand.type == self.NODE_IDENTIFIER and not leftResult.object:
+					self.Abort("'%s' is not a variable that exists in this scope." % node.data.leftOperand.data.token.value)
+				if node.data.operator.type == self.KW_AS:
+					if leftResult.type == self.KW_NONE:
+						self.Abort("The left-hand operand of the cast operation does not return a value.")
+					rightResult = NodeResult(node.data.rightOperand.data.token.value, False, True)
+					if leftResult.array and rightResult.type != self.KW_STRING and rightResult.type != self.KW_BOOL:
+						self.Abort("Arrays can only be cast to STRING and BOOL.")
+					if leftResult.type != rightResult.type:
+						if rightResult.type == self.KW_BOOL:
+							pass
+						elif rightResult.type == self.KW_FLOAT:
+							if leftResult.type != self.KW_BOOL and leftResult.type != self.KW_FLOAT and leftResult.type != self.KW_STRING:
+								self.Abort("'%s' cannot be cast to 'Float'." % leftResult.type)
+						elif rightResult.type == self.KW_INT:
+							if leftResult.type != self.KW_BOOL and leftResult.type != self.KW_FLOAT and leftResult.type != self.KW_STRING:
+								self.Abort("'%s' cannot be cast to 'Int'." % leftResult.type)
+						elif rightResult.type == self.KW_STRING:
+							pass
+						else:
+							try:
+								targetScript = self.GetCachedScript(rightResult.type)
+							except SemanticError as e:
+								self.Abort("'%s' is not a type that exists." % rightResult.type)
+							if leftResult.type == self.KW_SELF:	
+								if not self.header.data.name in targetScript.extends:
+									if rightResult.type != self.header.data.parent:
+										try:
+											parentScript = self.GetCachedScript(self.header.data.parent)
+										except SemanticError as e:
+											self.Abort("'%s' is not a type that exists." % leftResult.type)
+										if rightResult.type not in parentScript.extends:
+											self.Abort("'%s' cannot be cast as a(n) '%s' as the two types are incompatible." % (leftResult.type, rightResult.type))
+							else:
+								if not leftResult.type in targetScript.extends:
+									try:
+										parentScript = self.GetCachedScript(leftResult.type)
+									except SemanticError as e:
+										self.Abort("'%s' is not a type that exists." % leftResult.type)
+									if rightResult.type not in parentScript.extends:
+										self.Abort("'%s' cannot be cast as a(n) '%s' as the two types are incompatible." % (leftResult.type, rightResult.type))
 					result = rightResult
-			elif node.data.operator.type == self.LOG_AND or node.data.operator.type == self.LOG_OR:
-				leftResult = self.NodeVisitor(node.data.leftOperand, expected)
-				rightResult = self.NodeVisitor(node.data.rightOperand, expected)
-				result = rightResult
-			elif node.data.operator.type == self.CMP_EQUAL or node.data.operator.type == self.CMP_NOT_EQUAL or node.data.operator.type == self.CMP_LESS_THAN or node.data.operator.type == self.CMP_GREATER_THAN or node.data.operator.type == self.CMP_LESS_THAN_OR_EQUAL or node.data.operator.type == self.CMP_GREATER_THAN_OR_EQUAL:
-				leftResult = self.NodeVisitor(node.data.leftOperand, expected)
-				rightResult = self.NodeVisitor(node.data.rightOperand, expected)
-				result = rightResult
+				else:
+					rightResult = self.NodeVisitor(node.data.rightOperand, expected)
+					if node.data.rightOperand.type == self.NODE_IDENTIFIER and not rightResult.object:
+						self.Abort("'%s' is not a variable that exists in this scope." % node.data.rightOperand.data.token.value)
+					if node.data.operator.type == self.OP_ADDITION or node.data.operator.type == self.OP_SUBTRACTION or node.data.operator.type == self.OP_MULTIPLICATION or node.data.operator.type == self.OP_DIVISION or node.data.operator.type == self.OP_MODULUS:
+						if not leftResult.object:
+							self.Abort("The left-hand side expression evaluates to a type instead of a value.")
+						elif not rightResult.object:
+							self.Abort("The right-hand side expression evaluates to a type instead of a value.")
+						elif leftResult.array:
+							self.Abort("The left-hand side expression evaluates to an array, which do not support arithmetic operators.")
+						elif rightResult.array:
+							self.Abort("The right-hand side expression evaluates to an array, which do not support arithmetic operators.")
+						if leftResult.type != rightResult.type:
+							if node.data.operator.type == self.OP_ADDITION:
+								if leftResult.type == self.KW_STRING:
+									result = leftResult
+								elif rightResult.type == self.KW_STRING:
+									result = rightResult
+								elif leftResult.type == self.KW_INT or leftResult.type == self.KW_FLOAT:
+									if rightResult.type != self.KW_INT and rightResult.type != self.KW_FLOAT and rightResult.type != self.KW_BOOL and rightResult.type != self.KW_STRING:
+										self.Abort("A(n) '%s' value cannot be added to a(n) '%s' value." % (rightResult.type.capitalize(), leftResult.type.capitalize()))
+									result = leftResult
+								else:
+									if rightResult.type == self.KW_BOOL:
+										result = rightResult
+									else:
+										self.Abort("'%s' does not support the addition operator." % leftResult.type.capitalize())
+							elif node.data.operator.type == self.OP_SUBTRACTION:
+								if leftResult.type == self.KW_INT or leftResult.type == self.KW_FLOAT:
+									if rightResult.type != self.KW_INT and rightResult.type != self.KW_FLOAT and rightResult.type != self.KW_BOOL and rightResult.type != self.KW_STRING:
+										self.Abort("A(n) '%s' value cannot be subtracted from a(n) '%s' value." % (rightResult.type.capitalize(), leftResult.type.capitalize()))
+									result = leftResult
+								else:
+									if rightResult.type == self.KW_BOOL and leftResult.type != self.KW_STRING:
+										result = rightResult
+									elif rightResult.type == self.KW_STRING and leftResult.type != self.KW_BOOL:
+										result = rightResult
+									else:
+										self.Abort("'%s' does not support the subtraction operator." % leftResult.type.capitalize())
+							elif node.data.operator.type == self.OP_MULTIPLICATION:
+								if leftResult.type == self.KW_INT or leftResult.type == self.KW_FLOAT:
+									if rightResult.type != self.KW_INT and rightResult.type != self.KW_FLOAT and rightResult.type != self.KW_BOOL and rightResult.type != self.KW_STRING:
+										self.Abort("A(n) '%s' value cannot be multiplied by a(n) '%s' value." % (leftResult.type.capitalize(), rightResult.type.capitalize()))
+									result = leftResult
+								else:
+									if rightResult.type == self.KW_BOOL and leftResult.type != self.KW_STRING:
+										result = rightResult
+									elif rightResult.type == self.KW_STRING and leftResult.type != self.KW_BOOL:
+										result = rightResult
+									else:
+										self.Abort("'%s' does not support the multiplication operator." % leftResult.type.capitalize())
+							elif node.data.operator.type == self.OP_DIVISION:
+								if leftResult.type == self.KW_INT or leftResult.type == self.KW_FLOAT:
+									if rightResult.type != self.KW_INT and rightResult.type != self.KW_FLOAT and rightResult.type != self.KW_BOOL and rightResult.type != self.KW_STRING:
+										self.Abort("A(n) '%s' value cannot be divided by a(n) '%s' value." % (leftResult.type.capitalize(), rightResult.type.capitalize()))
+									result = leftResult
+								else:
+									if rightResult.type == self.KW_BOOL and leftResult.type != self.KW_STRING:
+										result = rightResult
+									elif rightResult.type == self.KW_STRING and leftResult.type != self.KW_BOOL:
+										result = rightResult
+									else:
+										self.Abort("'%s' does not support the division operator." % leftResult.type.capitalize())
+							elif node.data.operator.type == self.OP_MODULUS:
+								self.Abort("The modulus operator requires two 'Int' operands.")
+						else:
+							result = rightResult
+							if result.type == self.KW_INT:
+								pass
+							elif result.type == self.KW_FLOAT:
+								if node.data.operator.type == self.OP_MODULUS:
+									self.Abort("The modulus operator requires two 'Int' operands.")
+							elif result.type == self.KW_STRING:
+								if node.data.operator.type != self.OP_ADDITION:
+									self.Abort("'String' only supports the addition operator.")
+							else:
+								self.Abort("'%s' does not support arithmetic operators." % result.type.capitalize())
+					elif node.data.operator.type == self.LOG_AND or node.data.operator.type == self.LOG_OR:
+						result = NodeResult(self.KW_BOOL, False, True)
+					elif node.data.operator.type == self.CMP_EQUAL or node.data.operator.type == self.CMP_NOT_EQUAL or node.data.operator.type == self.CMP_LESS_THAN or node.data.operator.type == self.CMP_GREATER_THAN or node.data.operator.type == self.CMP_LESS_THAN_OR_EQUAL or node.data.operator.type == self.CMP_GREATER_THAN_OR_EQUAL:
+						result = NodeResult(self.KW_BOOL, False, True)
 		elif node.type == self.NODE_UNARYOPERATOR:
 			result = self.NodeVisitor(node.data.operand)
+			if node.data.operand.type == self.NODE_IDENTIFIER and not result.object:
+				self.Abort("'%s' is not a variable that exists in this scope." % node.data.operand.data.token.value)
+			if node.data.operator.type == self.OP_SUBTRACTION:
+				if result.array or not result.object or (result.type != self.KW_INT and result.type != self.KW_FLOAT):
+					self.Abort("Only numeric values can be negated.")
+			elif node.data.operator.type == self.LOG_NOT:
+				result = NodeResult(self.KW_BOOL, False, True)
 		else:
 			self.Abort("Unknown node type")
-			return None
 		#print("\nExiting node: %s" % node.type)
 		#print("Returning type: %s" % result)
 		if result:
 			return result
 		else:
-			return None
+			self.Abort("NodeVisitor returning NONE.")
 
 	def CanAutoCast(self, src, dest):
 		if not src or not dest:
@@ -2443,7 +2579,9 @@ class Semantic(SharedResources):
 				return True
 			else:
 				if src.type == self.KW_SELF:
-					if self.header.data.parent:
+					if self.header.data.name == dest.type:
+						return True
+					elif self.header.data.parent:
 						if dest.type == self.header.data.parent:
 							return True
 						else:
@@ -2472,7 +2610,7 @@ class Semantic(SharedResources):
 				if value:
 					return temp.data.token.value
 				else:
-					if temp.data.token.type == self.BOOL:
+					if temp.data.token.type == self.KW_FALSE or temp.data.token.type == self.KW_TRUE:
 						return self.KW_BOOL
 					elif temp.data.token.type == self.FLOAT:
 						return self.KW_FLOAT
@@ -2497,3 +2635,46 @@ class Semantic(SharedResources):
 							else:
 								return None
 		return None
+		
+	def GetContext(self, script, line):
+		self.cancel = line
+		self.variables = script.variables
+		self.functions = script.functions
+		self.states = script.states
+		self.imports = script.imports
+		for statements in script.definitions[""]:
+			if self.cancel > statements[0].line and self.cancel <= statements[-1].line:
+				if statements[0].type == self.STAT_PROPERTYDEF:
+					functions = {}
+					funcStart = None
+					i = 1
+					length = len(statements) - 1 # Subtract one because the last one is 'EndProperty'.
+					while i < length:
+						if statements[i].type == self.STAT_FUNCTIONDEF:
+							funcStart = i
+						elif statements[i].type == self.STAT_KEYWORD and statements[i].data.type == self.KW_ENDFUNCTION:
+							if funcStart:
+								functions[statements[funcStart].data.name] = (funcStart, i,)
+							funcStart = None
+						i += 1
+					for name, indices in functions.items():
+						if self.cancel >= statements[indices[0]].line and self.cancel <= statements[indices[1]].line:
+							self.PushVariableScope()
+							self.FunctionBlock(statements[indices[0]:indices[1]+1])
+					raise PropertyDefinitionCancel(statements[0].data.typeIdentifier, statements[0].data.array, [f for f in functions])
+				elif statements[0].type == self.STAT_FUNCTIONDEF or statements[0].type == self.STAT_EVENTDEF:
+					self.PushVariableScope()
+					self.FunctionBlock(statements)
+		for s in [s for s in script.definitions if s != ""]:
+			for statements in script.definitions[s]:
+				if self.cancel > statements[0].line and self.cancel <= statements[-1].line:
+					self.PushVariableScope()
+					self.FunctionBlock(statements)
+		for name, statements in script.states[1].items():
+			if self.cancel > statements[0].line and self.cancel <= statements[-1].line:
+				stateFunctions = {}
+				for func in script.definitions[name]:
+					stateFunctions[func[0].data.name] = func[0]
+				self.functions.append(stateFunctions)
+				raise StateCancel(self.functions)
+		raise EmptyStateCancel(self.functions)
