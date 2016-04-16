@@ -207,6 +207,7 @@ Version 2.0.0 - 2016/04/DD:
    - Fixed a bug that caused non-global functions from imported scripts to be taken into account when checking for ambiguous function calls.
    - Fixed a bug that stopped casting 'self' to a type that extends the current script.
    - Fixed a bug that prevented the use of 'self' as an argument in function calls when the parameter type is the same as the current script.
+   - Added specific warnings when declaring a variable/property with an identifier that is already in use in a property declaration in a parent script.
    - Added support for distinguishing between attempts to call global and non-global functions.
    - Added errors when attempting to use the *Self* or *Parent* variables in functions with the *Global* keyword.
    - Added validation of function return types.
