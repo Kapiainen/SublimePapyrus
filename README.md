@@ -201,6 +201,7 @@ Version 2.0.0 - 2016/04/DD:
    - Error messages in the status bar are now persistent until they have been resolved.
    - Removed gutter icon from highlighted lines.
    - Errors are no longer centered multiple times unless either the line with the error has moved up or down more than specified in the user settings (default: 2 lines) or there has been a linter pass without errors. 
+   - Modified error messages.
    - Fixed *GetPath* so that it works in a Unix environment where many file systems are case-sensitive.
    - Fixed a bug that caused issues when using identifiers starting with 'true' and 'false'.
    - Fixed NodeVisitor so that it returns the correct values from binary operator nodes involving comparison or logical operators.
