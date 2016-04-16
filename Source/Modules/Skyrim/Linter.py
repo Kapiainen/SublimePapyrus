@@ -2234,22 +2234,22 @@ class Semantic(SharedResources):
 							result = NodeResult(func.data.type, False, True)
 					else:
 						result = NodeResult(self.KW_NONE, False, True)
+				funcName = node.data.name.value.upper()
 				for imp in self.imports:
 					script = self.GetCachedScript(imp)
 					if script:
-						temp = script.functions.get(node.data.name.value.upper(), None)
-						if temp:
+						temp = script.functions.get(funcName, None)
+						if temp and self.KW_GLOBAL in temp.data.flags:
 							if func:
 								self.Abort("Ambiguous reference to a function called '%s'. It is unclear which version is being referenced." % node.data.name.value)
 							func = temp
-							if self.KW_GLOBAL in func.data.flags:
-								if func.data.type:
-									if func.data.array:
-										result = NodeResult(func.data.type, True, True)
-									else:
-										result = NodeResult(func.data.type, False, True)
+							if func.data.type:
+								if func.data.array:
+									result = NodeResult(func.data.type, True, True)
 								else:
-									result = NodeResult(self.KW_NONE, False, True)
+									result = NodeResult(func.data.type, False, True)
+							else:
+								result = NodeResult(self.KW_NONE, False, True)
 				if not result:
 					self.Abort("'%s' is not a function/event that exists in this scope." % node.data.name.value)
 			if func:
@@ -2425,18 +2425,20 @@ class Semantic(SharedResources):
 						elif rightResult.type == self.KW_STRING:
 							pass
 						else:
-							targetScript = self.GetCachedScript(rightResult.type)
-							if not targetScript:
+							try:
+								targetScript = self.GetCachedScript(rightResult.type)
+							except SemanticError as e:
 								self.Abort("'%s' is not a type that exists." % rightResult.type)
-							if not leftResult.type in targetScript.extends:
-								if leftResult.type == self.KW_SELF:
+							if leftResult.type == self.KW_SELF:	
+								if not self.header.data.name in targetScript.extends:
 									if rightResult.type != self.header.data.parent:
 										parentScript = self.GetCachedScript(self.header.data.parent)
 										if not parentScript:
 											self.Abort("'%s' is not a type that exists." % leftResult.type)
 										if rightResult.type not in parentScript.extends:
 											self.Abort("'%s' cannot be cast as a(n) '%s' as the two types are incompatible." % (leftResult.type, rightResult.type))
-								else:
+							else:
+								if not leftResult.type in targetScript.extends:
 									parentScript = self.GetCachedScript(leftResult.type)
 									if not parentScript:
 										self.Abort("'%s' is not a type that exists." % leftResult.type)
@@ -2566,7 +2568,9 @@ class Semantic(SharedResources):
 				return True
 			else:
 				if src.type == self.KW_SELF:
-					if self.header.data.parent:
+					if self.header.data.name == dest.type:
+						return True
+					elif self.header.data.parent:
 						if dest.type == self.header.data.parent:
 							return True
 						else:
