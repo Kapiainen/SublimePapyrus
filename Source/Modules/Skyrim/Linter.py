@@ -1542,7 +1542,7 @@ class Semantic(SharedResources):
 				if not fullPath:
 					fullPath = self.GetPath(name)
 					if not fullPath:
-						self.Abort("Could not find script ('%s')." % name, line)
+						self.Abort("Could not find the '%s' script." % name, line)
 				with open(fullPath) as f:
 					scriptContents = f.read()
 					lines = []
@@ -1556,7 +1556,7 @@ class Semantic(SharedResources):
 							elif token.type != self.COMMENT_LINE and token.type != self.COMMENT_BLOCK:
 								tokens.append(token)
 					except LexicalError as e:
-						self.Abort("Found a lexical error in '%s' script." % name)
+						self.Abort("Found a lexical error in the '%s' script." % name)
 					extends = []
 					functions = {}
 					properties = {}
@@ -1568,7 +1568,7 @@ class Semantic(SharedResources):
 							if stat:
 								statements.append(stat)
 					except SyntacticError as e:
-						self.Abort("Found a syntactic error in '%s' script." % name)
+						self.Abort("Found a syntactic error in the '%s' script." % name)
 					header = False
 					if statements[0].type == self.STAT_SCRIPTHEADER:
 						if statements[0].data.parent:
@@ -1650,7 +1650,7 @@ class Semantic(SharedResources):
 				if statements[0].type == self.STAT_DOCUMENTATION:
 					docString = statements.pop(0)
 		else:
-			self.Abort("First line has to be the scriptheader.", statements[0].line)
+			self.Abort("The first line has to be a script header.", statements[0].line)
 		if not self.functions[0].get("GOTOSTATE", None):
 			self.functions[0]["GOTOSTATE"] = Statement(self.STAT_FUNCTIONDEF, 0, FunctionDef(None, None, False, "GOTOSTATE", "GoToState", [ParameterDef(self.KW_STRING, "String", False, "ASNEWSTATE", "asNewState", None)], []))
 		if not self.functions[0].get("GETSTATE", None):
@@ -1954,7 +1954,7 @@ class Semantic(SharedResources):
 				if exists == -1:
 					self.Abort("'%s' has been defined in the state already." % statements[0].data.name, statements[0].line)
 				if exists == 0:
-					self.Abort("'%s' has not been defined in the empty state nor inherited from a parent script." % statements[0].data.name, statements[0].line)
+					self.Abort("'%s' has not been defined in the empty state nor has it been inherited from a parent script." % statements[0].data.name, statements[0].line)
 				self.AddFunction(statements[0])
 				if not self.KW_NATIVE in statements[0].data.flags:
 					func = [statements.pop(0)]
@@ -1968,7 +1968,7 @@ class Semantic(SharedResources):
 			elif statements[0].type == self.STAT_EVENTDEF:
 				exists = self.HasFunction(statements[0].data.name)
 				if exists == 0:
-					self.Abort("'%s' has not been defined in the empty state nor inherited from a parent script." % statements[0].data.name, statements[0].line)
+					self.Abort("'%s' has not been defined in the empty state nor has it been inherited from a parent script." % statements[0].data.name, statements[0].line)
 				if exists == -1:
 					self.Abort("'%s' has already been defined in the same state." % statements[0].data.name, statements[0].line)
 				self.AddFunction(statements[0])
@@ -2396,8 +2396,10 @@ class Semantic(SharedResources):
 							result = NodeResult(var.data.type, False, True)
 					else:
 						result = NodeResult(node.data.token.value, False, False)
-						if not self.GetCachedScript(result.type):
-							self.Abort("'%s' is not a script." % result.type)
+						try:
+							self.GetCachedScript(result.type)
+						except SemanticError as e:
+							self.Abort("'%s' is neither a type nor a variable." % result.type)
 		elif node.type == self.NODE_LENGTH:
 			result = NodeResult(self.KW_INT, False, True)
 		elif node.type == self.NODE_ARRAYCREATION:
@@ -2439,15 +2441,17 @@ class Semantic(SharedResources):
 							if leftResult.type == self.KW_SELF:	
 								if not self.header.data.name in targetScript.extends:
 									if rightResult.type != self.header.data.parent:
-										parentScript = self.GetCachedScript(self.header.data.parent)
-										if not parentScript:
+										try:
+											parentScript = self.GetCachedScript(self.header.data.parent)
+										except SemanticError as e:
 											self.Abort("'%s' is not a type that exists." % leftResult.type)
 										if rightResult.type not in parentScript.extends:
 											self.Abort("'%s' cannot be cast as a(n) '%s' as the two types are incompatible." % (leftResult.type, rightResult.type))
 							else:
 								if not leftResult.type in targetScript.extends:
-									parentScript = self.GetCachedScript(leftResult.type)
-									if not parentScript:
+									try:
+										parentScript = self.GetCachedScript(leftResult.type)
+									except SemanticError as e:
 										self.Abort("'%s' is not a type that exists." % leftResult.type)
 									if rightResult.type not in parentScript.extends:
 										self.Abort("'%s' cannot be cast as a(n) '%s' as the two types are incompatible." % (leftResult.type, rightResult.type))
