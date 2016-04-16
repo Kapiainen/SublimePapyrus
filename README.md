@@ -182,7 +182,7 @@ Single file build system and a batch build variant.
     - SKSE mod event names
 
 ## **Changelog**
-Version 2.0.0 - 2016/04/DD:
+Version 2.0.0 - 2016/04/16:
 
 **Core**
   - The build system now places the compiled script one folder above the script's source file (*"\Scripts\Source\Example.psc"* is compiled to *"\Scripts\Example.pex"*) if no output folder has been specified in the user settings.
