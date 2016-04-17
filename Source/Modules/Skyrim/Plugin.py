@@ -1,7 +1,9 @@
 # API for accessing the core plugin of SublimePapyrus
 import sublime, sublime_plugin, sys, os, json, threading, time
 PYTHON_VERSION = sys.version_info
+SUBLIME_VERSION = None
 if PYTHON_VERSION[0] == 2:
+	SUBLIME_VERSION = int(sublime.version())
 	import imp
 	root, module = os.path.split(os.getcwd())
 	coreModule = "SublimePapyrus"
@@ -24,6 +26,10 @@ elif PYTHON_VERSION[0] >= 3:
 	from . import Linter
 
 VALID_SCOPE = "source.papyrus.skyrim"
+
+def plugin_loaded():
+	global SUBLIME_VERSION
+	SUBLIME_VERSION = int(sublime.version())
 
 # Completion generation
 class SublimePapyrusSkyrimGenerateCompletionsCommand(sublime_plugin.WindowCommand):
@@ -165,140 +171,148 @@ class EventListener(sublime_plugin.EventListener):
 			if settings and settings.get("linter_on_modified", True):
 				self.QueueLinter(view)
 
-#			global cacheLock
-#			global lex
-#			global syn
-#			global sem
-#			with cacheLock:
-#				bufferID = view.buffer_id()
-#				if not bufferID:
-#					return
-#				currentScript = self.GetScript(bufferID)
-#				if not currentScript:
-#					SublimePapyrus.ShowMessage("Run the linter once...")
-#					return
-#				locations = [view.sel()[0].begin()]
-#				prefix = view.word(locations[0])
-#				lineColumn = view.rowcol(locations[0])
-#				line = lineColumn[0]+1
-#				column = lineColumn[1]+1
-#				lineString = view.substr(sublime.Region(view.line(locations[0]).begin(), locations[0]-len(prefix))).strip()
-#				try:
-#					sem.GetContext(currentScript, line)
-#				except Linter.FunctionDefinitionCancel as e:
-#					tokens = []
-#					try:
-#						for token in lex.Process(lineString):
-#							if token.type != lex.NEWLINE:
-#								tokens.append(token)
-#					except Linter.LexicalError as f:
-#						return
-#					if tokens:
-#						if tokens[-1].type != lex.COMMENT_LINE:
-#							try:
-#								stat = syn.Process(tokens)
-#								if stat.type == syn.STAT_VARIABLEDEF:
-#									return
-#								elif stat.type == syn.STAT_ASSIGNMENT:
-#									return
-#								elif stat.type == syn.STAT_EXPRESSION:
-#									return
-#							except Linter.ExpectedIdentifierError as f:
-#								if tokens[-1].type != lex.OP_DOT:
-#									stack = syn.stack[:]
-#									arguments = []
-#									for node in reversed(stack):
-#										if node.type == syn.NODE_FUNCTIONCALLARGUMENT:
-#											arguments.insert(0, stack.pop())
-#									print("Prefix: %s" % prefix)
-#									print("Tokens[-1]: %s" % tokens[-1].type)
-#									print("Tokens[-2]: %s" % tokens[-2].type)
-#									print("Stack:")
-#									[print(n.type) for n in reversed(stack)]
-#									print("%d arguments:" % len(arguments))
-#									[print(a.data.name.value) for a in reversed(arguments) if a.type == syn.NODE_FUNCTIONCALLARGUMENT and a.data.name]
-#									func = None
-#									if len(stack) > 3 and stack[-1].type == lex.LEFT_PARENTHESIS and stack[-2].type == lex.IDENTIFIER and stack[-3].type == lex.OP_DOT: #TODO Handle if complex expression -> SELF
-#										print("Complex expression")
-#										try:
-#											result = sem.NodeVisitor(stack[-4])
-#										except Linter.SemanticError as g:
-#											return
-#										print("%s.%s" % (result.type, stack[-2].value.upper()))
-#										try:
-#											script = sem.GetCachedScript(result.type)
-#										except Linter.SemanticError as g:
-#											return
-#										func = script.functions.get(stack[-2].value.upper(), None)
-#									elif len(stack) == 2 and stack[-1].type == lex.LEFT_PARENTHESIS and stack[-2].type == lex.IDENTIFIER:
-#										print("Local or parent function")
-#										for scope in reversed(e.functions):
-#											func = scope.get(stack[-2].value.upper(), None)
-#											if func:
-#												break
-#									if func and func.data.parameters:
-#										funcName = func.data.identifier
-#										#funcType = func.data.typeIdentifier
-#										#if func.data.array:
-#										#	funcType = "%s[]" % funcType
-#										currentParameter = None
-#										if len(tokens) > 2 and tokens[-1].type == lex.OP_ASSIGN and tokens[-2].type == lex.IDENTIFIER:
-#											currentParameter = tokens[-2].value.upper()
-#										print("Current parameter: %s" % currentParameter)
-#										paramIndex = 0
-#										argCount = len(arguments)
-#										funcParameters = []
-#										for param in func.data.parameters:
-#											paramName = param.identifier
-#											paramType = param.typeIdentifier
-#											if param.array:
-#												paramType = "%s[]" % paramType
-#											paramContent = None
-#											if param.expression:
-#												paramDefaultValue = sem.GetLiteral(param.expression, True)
-#												paramContent = "%s %s = %s" % (paramType, paramName, paramDefaultValue)
-#											else:
-#												paramContent = "%s %s" % (paramType, paramName)
-#											if currentParameter:
-#												if currentParameter == paramName.upper():
-#													paramContent = "<b>%s</b>" % paramContent
-#											else:
-#												if paramIndex == argCount:
-#													paramContent = "<b>%s</b>" % paramContent
-#												paramIndex += 1
-#											funcParameters.append(paramContent)
-#										css = """<style>
-#html {
-#	background-color: #393939;
-#    color: #CCCCCC;
-#}
-#
-#body {
-#    font-size: 12px;
-#    color: #747369;
-#}
-#
-#b {
-#    color: #ffffff;
-#}
-#
-#h1 {
-#	
-#    color: #bfbfbf;
-#    font-size: 14px;
-#}
-#</style>"""
-#										content = "%s<h1>%s</h1>%s" % (css, funcName, "<br>".join(funcParameters))
-#										view.show_popup(content, flags=sublime.COOPERATE_WITH_AUTO_COMPLETE, max_width=600, max_height=300)
-#
-#									return
-#							except Linter.SyntacticError as f:
-#								return
-#					return
-#				except Linter.SemanticError as e:
-#					return
-#				return
-#
+			global SUBLIME_VERSION
+			if SUBLIME_VERSION >= 3070 and True: #TODO Implement setting
+				global cacheLock
+				global lex
+				global syn
+				global sem
+				with cacheLock:
+					locations = [view.sel()[0].begin()]
+					prefix = view.word(locations[0])
+					line, column = view.rowcol(locations[0])
+					line += 1
+					lineString = view.substr(sublime.Region(view.line(locations[0]).begin(), locations[0]-len(prefix))).strip()
+					bufferID = view.buffer_id()
+					if bufferID:
+						currentScript = self.GetScript(bufferID)
+						if currentScript:
+							try:
+								sem.GetContext(currentScript, line)
+							except Linter.FunctionDefinitionCancel as e:
+								tokens = []
+								try:
+									for token in lex.Process(lineString):
+										if token.type != lex.NEWLINE:
+											tokens.append(token)
+									if tokens and tokens[-1].type != lex.COMMENT_LINE:
+										try:
+											syn.Process(tokens)
+										except Linter.ExpectedIdentifierError as f:
+											if tokens[-1].type != lex.OP_DOT:
+												print("\nOnModified")
+												self.ShowFunctionInfo(view, tokens, syn.stack, e)
+										except Linter.SyntacticError as f:
+											pass
+								except Linter.LexicalError as f:
+									pass
+							except Linter.SemanticError as e:
+								pass
+
+	def ShowFunctionInfo(self, view, tokens, stack, context):
+		global sem
+		print("Tokens:")
+		[print(t.type) for t in reversed(tokens)]
+		print("\nStack before:")
+		[print(n.type) for n in reversed(stack)]
+
+		arguments = []
+		for item in reversed(stack):
+			if item.type == sem.NODE_FUNCTIONCALLARGUMENT:
+				arguments.insert(0, stack.pop())
+			elif item.type == sem.LEFT_PARENTHESIS:
+				break
+		argumentCount = len(arguments)
+		print("%d arguments" % argumentCount)
+
+		print("\nStack after:")
+		[print(n.type) for n in reversed(stack)]
+
+		stackLength = len(stack)
+		func = None
+		if stackLength >= 2 and stack[-1].type == sem.LEFT_PARENTHESIS and stack[-2].type == sem.IDENTIFIER:			
+			name = stack[-2].value.upper()
+			if stackLength >= 4 and stack[-3].type == sem.OP_DOT:
+				print("\nComplex expression before function call")
+				try:
+					result = sem.NodeVisitor(stack[-4])
+					print("%s.%s" % (result.type, name))
+					try:
+						script = sem.GetCachedScript(result.type)
+					except Linter.SemanticError as e:
+						return
+					if result.type != sem.KW_SELF:
+						func = script.functions.get(name, None)
+					else:
+						for scope in reversed(context.functions):
+							func = scope.get(name, None)
+							if func:
+								break
+				except Linter.SemanticError as e:
+					return
+			elif stackLength == 2:
+				print("\nFunction call")
+				for scope in reversed(context.functions):
+					func = scope.get(name, None)
+					if func:
+						break
+		print("\nFunction:")
+		print(func)
+		if func and func.data.parameters:
+			funcName = func.data.identifier
+			currentParameter = None
+			if len(tokens) > 2 and tokens[-1].type == lex.OP_ASSIGN and tokens[-2].type == lex.IDENTIFIER:
+				currentParameter = tokens[-2].value.upper()
+			print("Current parameter: %s" % currentParameter)
+			paramIndex = 0
+			argCount = len(arguments)
+			funcParameters = []
+			for param in func.data.parameters:
+				paramName = param.identifier
+				paramType = param.typeIdentifier
+				if param.array:
+					paramType = "%s[]" % paramType
+				paramContent = None
+				if param.expression:
+					paramDefaultValue = sem.GetLiteral(param.expression, True)
+					paramContent = "%s %s = %s" % (paramType, paramName, paramDefaultValue)
+				else:
+					paramContent = "%s %s" % (paramType, paramName)
+				if currentParameter:
+					if currentParameter == paramName.upper():
+						paramContent = "<b>%s</b>" % paramContent
+				else:
+					if paramIndex == argCount:
+						paramContent = "<b>%s</b>" % paramContent
+					paramIndex += 1
+				funcParameters.append(paramContent)
+			css = """<style>
+html {
+	background-color: #393939;
+    color: #CCCCCC;
+}
+
+body {
+    font-size: 12px;
+    color: #747369;
+}
+
+b {
+    color: #ffffff;
+}
+
+h1 {
+	
+    color: #bfbfbf;
+    font-size: 14px;
+}
+</style>"""
+			content = "%s<h1>%s</h1>%s" % (css, funcName, "<br>".join(funcParameters))
+			if view.is_popup_visible():
+				view.update_popup(content)
+			else:
+				view.show_popup(content, flags=sublime.COOPERATE_WITH_AUTO_COMPLETE, max_width=600, max_height=300)
+
 	def QueueLinter(self, view):
 		if self.linterRunning: # If an instance of the linter is running, then cancel
 			return
@@ -343,6 +357,7 @@ class EventListener(sublime_plugin.EventListener):
 		global lex
 		global syn
 		global sem
+		global SUBLIME_VERSION
 		with cacheLock:
 			if not self.linterErrors.get(self.bufferID, None):
 				self.linterErrors[self.bufferID] = {}
@@ -350,7 +365,7 @@ class EventListener(sublime_plugin.EventListener):
 			settings = None
 			if view:
 				settings = SublimePapyrus.GetSettings()
-			if int(sublime.version()) >= 3103 and view.is_auto_complete_visible(): # If a list of completions is visible, then cancel
+			if SUBLIME_VERSION >= 3103 and view.is_auto_complete_visible(): # If a list of completions is visible, then cancel
 				return Exit()
 			if view:
 				SublimePapyrus.SetStatus(view, "sublimepapyrus-linter", "The linter is running...")
@@ -494,9 +509,8 @@ class EventListener(sublime_plugin.EventListener):
 			if not currentScript:
 				SublimePapyrus.ShowMessage("Run the linter once...")
 				return
-			lineColumn = view.rowcol(locations[0])
-			line = lineColumn[0]+1
-			column = lineColumn[1]+1
+			line, column = view.rowcol(locations[0])
+			line += 1
 			lineString = view.substr(sublime.Region(view.line(locations[0]).begin(), locations[0]-len(prefix))).strip()
 			try:
 				sem.GetContext(currentScript, line)
@@ -872,95 +886,10 @@ class EventListener(sublime_plugin.EventListener):
 										completions.append(self.completionKeywordSelf)
 										completions.append(self.completionKeywordParent)
 
-									stack = syn.stack[:]
-									arguments = []
-									for node in reversed(stack):
-										if node.type == syn.NODE_FUNCTIONCALLARGUMENT:
-											arguments.insert(0, stack.pop())
-									print("Prefix: %s" % prefix)
-									print("Tokens[-1]: %s" % tokens[-1].type)
-									print("Tokens[-2]: %s" % tokens[-2].type)
-									print("Stack:")
-									[print(n.type) for n in reversed(stack)]
-									print("%d arguments:" % len(arguments))
-									[print(a.data.name.value) for a in reversed(arguments) if a.type == syn.NODE_FUNCTIONCALLARGUMENT and a.data.name]
-									func = None
-									if len(stack) > 3 and stack[-1].type == lex.LEFT_PARENTHESIS and stack[-2].type == lex.IDENTIFIER and stack[-3].type == lex.OP_DOT: #TODO Handle if complex expression -> SELF
-										print("Complex expression")
-										try:
-											result = sem.NodeVisitor(stack[-4])
-										except Linter.SemanticError as g:
-											return
-										print("%s.%s" % (result.type, stack[-2].value.upper()))
-										try:
-											script = sem.GetCachedScript(result.type)
-										except Linter.SemanticError as g:
-											return
-										func = script.functions.get(stack[-2].value.upper(), None)
-									elif len(stack) == 2 and stack[-1].type == lex.LEFT_PARENTHESIS and stack[-2].type == lex.IDENTIFIER:
-										print("Local or parent function")
-										for scope in reversed(e.functions):
-											func = scope.get(stack[-2].value.upper(), None)
-											if func:
-												break
-									if func and func.data.parameters:
-										funcName = func.data.identifier
-										#funcType = func.data.typeIdentifier
-										#if func.data.array:
-										#	funcType = "%s[]" % funcType
-										currentParameter = None
-										if len(tokens) > 2 and tokens[-1].type == lex.OP_ASSIGN and tokens[-2].type == lex.IDENTIFIER:
-											currentParameter = tokens[-2].value.upper()
-										print("Current parameter: %s" % currentParameter)
-										paramIndex = 0
-										argCount = len(arguments)
-										funcParameters = []
-										for param in func.data.parameters:
-											paramName = param.identifier
-											paramType = param.typeIdentifier
-											if param.array:
-												paramType = "%s[]" % paramType
-											paramContent = None
-											if param.expression:
-												paramDefaultValue = sem.GetLiteral(param.expression, True)
-												paramContent = "%s %s = %s" % (paramType, paramName, paramDefaultValue)
-											else:
-												paramContent = "%s %s" % (paramType, paramName)
-											if currentParameter:
-												if currentParameter == paramName.upper():
-													paramContent = "<b>%s</b>" % paramContent
-											else:
-												if paramIndex == argCount:
-													paramContent = "<b>%s</b>" % paramContent
-												paramIndex += 1
-											funcParameters.append(paramContent)
-										css = """<style>
-html {
-	background-color: #393939;
-    color: #CCCCCC;
-}
-
-body {
-    font-size: 12px;
-    color: #747369;
-}
-
-b {
-    color: #ffffff;
-}
-
-h1 {
-	
-    color: #bfbfbf;
-    font-size: 14px;
-}
-</style>
-										"""
-##header {
-#	background-color: #6a3d71;
-#}
-										content = "%s<h1>%s</h1>%s" % (css, funcName, "<br>".join(funcParameters))
-										view.show_popup(content, flags=sublime.COOPERATE_WITH_AUTO_COMPLETE, max_width=600, max_height=300)
+									global SUBLIME_VERSION
+									if SUBLIME_VERSION >= 3070 and prefix == "" and True: #TODO Implement setting
+										print("\nOnCompletion")
+										self.ShowFunctionInfo(view, tokens, syn.stack, e)
 
 									return completions
 							except Linter.SyntacticError as f:
