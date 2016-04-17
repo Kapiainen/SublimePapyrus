@@ -172,7 +172,7 @@ class EventListener(sublime_plugin.EventListener):
 				self.QueueLinter(view)
 
 			global SUBLIME_VERSION
-			if SUBLIME_VERSION >= 3070 and True: #TODO Implement setting
+			if SUBLIME_VERSION >= 3070 and settings.get("tooltip_function_parameters", True):
 				global cacheLock
 				global lex
 				global syn
@@ -289,7 +289,7 @@ h1 {
     color: #bfbfbf;
     font-size: 14px;
 }
-</style>"""
+</style>""" #TODO Implement color settings
 			content = "%s<h1>%s</h1>%s" % (css, funcName, "<br>".join(funcParameters))
 			if view.is_popup_visible():
 				view.update_popup(content)
@@ -495,6 +495,8 @@ h1 {
 			line, column = view.rowcol(locations[0])
 			line += 1
 			lineString = view.substr(sublime.Region(view.line(locations[0]).begin(), locations[0]-len(prefix))).strip()
+			settings = SublimePapyrus.GetSettings()
+			settingFunctionEventParameters = settings.get("intelligent_code_completion_function_event_parameters", True)
 			try:
 				sem.GetContext(currentScript, line)
 			except Linter.EmptyStateCancel as e:
@@ -584,15 +586,15 @@ h1 {
 					# Functions/events defined in the empty state.
 					for name, stat in e.functions[1].items():
 						if stat.type == syn.STAT_EVENTDEF and not e.functions[2].get(name, False):
-							completions.append(SublimePapyrus.MakeEventCompletion(stat, sem, False, "self"))
+							completions.append(SublimePapyrus.MakeEventCompletion(stat, sem, False, "self", parameters=settingFunctionEventParameters))
 						elif stat.type == syn.STAT_FUNCTIONDEF and not e.functions[2].get(name, False):
-							completions.append(SublimePapyrus.MakeFunctionCompletion(stat, sem, False, "self"))
+							completions.append(SublimePapyrus.MakeFunctionCompletion(stat, sem, False, "self", parameters=settingFunctionEventParameters))
 					# Inherited functions/events.
 					for name, stat in e.functions[0].items():
 						if stat.type == syn.STAT_EVENTDEF and not e.functions[2].get(name, False) and not e.functions[1].get(name, False):
-							completions.append(SublimePapyrus.MakeEventCompletion(stat, sem, False, "parent"))
+							completions.append(SublimePapyrus.MakeEventCompletion(stat, sem, False, "parent", parameters=settingFunctionEventParameters))
 						elif stat.type == syn.STAT_FUNCTIONDEF and not e.functions[2].get(name, False) and not e.functions[1].get(name, False):
-							completions.append(SublimePapyrus.MakeFunctionCompletion(stat, sem, False, "parent"))
+							completions.append(SublimePapyrus.MakeFunctionCompletion(stat, sem, False, "parent", parameters=settingFunctionEventParameters))
 					return completions
 				else:
 					tokens = []
@@ -611,21 +613,21 @@ h1 {
 									# Functions/events defined in the empty state.
 									for name, stat in e.functions[1].items():
 										if stat.type == syn.STAT_FUNCTIONDEF and not stat.data.type and not e.functions[2].get(name, False):
-											completions.append(SublimePapyrus.MakeFunctionCompletion(stat, sem, False, "self", True))
+											completions.append(SublimePapyrus.MakeFunctionCompletion(stat, sem, False, "self", True, parameters=settingFunctionEventParameters))
 									# Inherited functions/events.
 									for name, stat in e.functions[0].items():
 										if stat.type == syn.STAT_FUNCTIONDEF and not stat.data.type and not e.functions[2].get(name, False) and not e.functions[1].get(name, False):
-											completions.append(SublimePapyrus.MakeFunctionCompletion(stat, sem, False, "parent", True))
+											completions.append(SublimePapyrus.MakeFunctionCompletion(stat, sem, False, "parent", True, parameters=settingFunctionEventParameters))
 									return completions
 								elif tokens[0].type == lex.KW_EVENT:
 									# Functions/events defined in the empty state.
 									for name, stat in e.functions[1].items():
 										if stat.type == syn.STAT_EVENTDEF and not e.functions[2].get(name, False):
-											completions.append(SublimePapyrus.MakeEventCompletion(stat, sem, False, "self", True))
+											completions.append(SublimePapyrus.MakeEventCompletion(stat, sem, False, "self", True, parameters=settingFunctionEventParameters))
 									# Inherited functions/events.
 									for name, stat in e.functions[0].items():
 										if stat.type == syn.STAT_EVENTDEF and not e.functions[2].get(name, False) and not e.functions[1].get(name, False):
-											completions.append(SublimePapyrus.MakeEventCompletion(stat, sem, False, "parent", True))
+											completions.append(SublimePapyrus.MakeEventCompletion(stat, sem, False, "parent", True, parameters=settingFunctionEventParameters))
 									return completions
 							# Functions with non-array return types
 							elif tokenCount == 2 and tokens[1].type == lex.KW_FUNCTION:
@@ -634,11 +636,11 @@ h1 {
 									funcType = tokens[0].value.upper()
 									for name, stat in e.functions[1].items():
 										if stat.type == syn.STAT_FUNCTIONDEF and not stat.data.array and stat.data.type == funcType and not e.functions[2].get(name, False):
-											completions.append(SublimePapyrus.MakeFunctionCompletion(stat, sem, False, "self", True))
+											completions.append(SublimePapyrus.MakeFunctionCompletion(stat, sem, False, "self", True, parameters=settingFunctionEventParameters))
 									# Inherited functions/events.
 									for name, stat in e.functions[0].items():
 										if stat.type == syn.STAT_FUNCTIONDEF and not stat.data.array and stat.data.type == funcType and not e.functions[2].get(name, False) and not e.functions[1].get(name, False):
-											completions.append(SublimePapyrus.MakeFunctionCompletion(stat, sem, False, "parent", True))
+											completions.append(SublimePapyrus.MakeFunctionCompletion(stat, sem, False, "parent", True, parameters=settingFunctionEventParameters))
 									return completions 
 							# Functions with array return types
 							elif tokenCount == 4 and tokens[3].type == lex.KW_FUNCTION and tokens[1].type == lex.LEFT_BRACKET and tokens[2].type == lex.RIGHT_BRACKET:
@@ -647,11 +649,11 @@ h1 {
 									funcType = tokens[0].value.upper()
 									for name, stat in e.functions[1].items():
 										if stat.type == syn.STAT_FUNCTIONDEF and stat.data.array and stat.data.type == funcType and not e.functions[2].get(name, False):
-											completions.append(SublimePapyrus.MakeFunctionCompletion(stat, sem, False, "self", True))
+											completions.append(SublimePapyrus.MakeFunctionCompletion(stat, sem, False, "self", True, parameters=settingFunctionEventParameters))
 									# Inherited functions/events.
 									for name, stat in e.functions[0].items():
 										if stat.type == syn.STAT_FUNCTIONDEF and stat.data.array and stat.data.type == funcType and not e.functions[2].get(name, False) and not e.functions[1].get(name, False):
-											completions.append(SublimePapyrus.MakeFunctionCompletion(stat, sem, False, "parent", True))
+											completions.append(SublimePapyrus.MakeFunctionCompletion(stat, sem, False, "parent", True, parameters=settingFunctionEventParameters))
 									return completions
 				return
 			except Linter.FunctionDefinitionCancel as e:
@@ -695,15 +697,15 @@ h1 {
 					# Inherited functions/events
 					for name, stat in e.functions[0].items():
 						if stat.type == syn.STAT_FUNCTIONDEF:
-							completions.append(SublimePapyrus.MakeFunctionCompletion(stat, sem, True, "parent"))
+							completions.append(SublimePapyrus.MakeFunctionCompletion(stat, sem, True, "parent", parameters=settingFunctionEventParameters))
 						elif stat.type == syn.STAT_EVENTDEF:
-							completions.append(SublimePapyrus.MakeEventCompletion(stat, sem, True, "parent"))
+							completions.append(SublimePapyrus.MakeEventCompletion(stat, sem, True, "parent", parameters=settingFunctionEventParameters))
 					# Functions/events defined in the empty state
 					for name, stat in e.functions[1].items():
 						if stat.type == syn.STAT_FUNCTIONDEF:
-							completions.append(SublimePapyrus.MakeFunctionCompletion(stat, sem, True, "self"))
+							completions.append(SublimePapyrus.MakeFunctionCompletion(stat, sem, True, "self", parameters=settingFunctionEventParameters))
 						elif stat.type == syn.STAT_EVENTDEF:
-							completions.append(SublimePapyrus.MakeEventCompletion(stat, sem, True, "self"))
+							completions.append(SublimePapyrus.MakeEventCompletion(stat, sem, True, "self", parameters=settingFunctionEventParameters))
 					# Imported global functions
 					for imp in e.imports:
 						functions = self.GetFunctionCompletions(imp, True)
@@ -715,7 +717,7 @@ h1 {
 									impLower = imp.lower()
 									for name, obj in script.functions.items():
 										if lex.KW_GLOBAL in obj.data.flags:
-											functions.append(SublimePapyrus.MakeFunctionCompletion(obj, sem, True, impLower))
+											functions.append(SublimePapyrus.MakeFunctionCompletion(obj, sem, True, impLower, parameters=settingFunctionEventParameters))
 									self.SetFunctionCompletions(imp, functions, True)
 							except:
 								return
@@ -758,14 +760,14 @@ h1 {
 										if result.type == lex.KW_SELF:
 											for name, obj in e.functions[0].items():
 												if obj.type == syn.STAT_FUNCTIONDEF:
-													completions.append(SublimePapyrus.MakeFunctionCompletion(obj, sem, True, "parent"))
+													completions.append(SublimePapyrus.MakeFunctionCompletion(obj, sem, True, "parent", parameters=settingFunctionEventParameters))
 												elif obj.type == syn.STAT_EVENTDEF:
-													completions.append(SublimePapyrus.MakeEventCompletion(obj, sem, True, "parent"))
+													completions.append(SublimePapyrus.MakeEventCompletion(obj, sem, True, "parent", parameters=settingFunctionEventParameters))
 											for name, obj in e.functions[1].items():
 												if obj.type == syn.STAT_FUNCTIONDEF:
-													completions.append(SublimePapyrus.MakeFunctionCompletion(obj, sem, True, "self"))
+													completions.append(SublimePapyrus.MakeFunctionCompletion(obj, sem, True, "self", parameters=settingFunctionEventParameters))
 												elif obj.type == syn.STAT_EVENTDEF:
-													completions.append(SublimePapyrus.MakeEventCompletion(obj, sem, True, "self"))
+													completions.append(SublimePapyrus.MakeEventCompletion(obj, sem, True, "self", parameters=settingFunctionEventParameters))
 											for name, obj in e.variables[0].items():
 												if obj.type == syn.STAT_PROPERTYDEF:
 													completions.append(SublimePapyrus.MakePropertyCompletion(obj, "parent"))
@@ -793,7 +795,7 @@ h1 {
 															typeLower = result.type.lower()
 															for name, obj in script.functions.items():
 																if lex.KW_GLOBAL in obj.data.flags:
-																	functions.append(SublimePapyrus.MakeFunctionCompletion(obj, sem, True, typeLower))
+																	functions.append(SublimePapyrus.MakeFunctionCompletion(obj, sem, True, typeLower, parameters=settingFunctionEventParameters))
 															self.SetFunctionCompletions(result.type, functions, True)
 													except:
 														return
@@ -810,7 +812,7 @@ h1 {
 															typeLower = result.type.lower()
 															for name, obj in script.functions.items():
 																if lex.KW_GLOBAL not in obj.data.flags:
-																	functions.append(SublimePapyrus.MakeFunctionCompletion(obj, sem, True, typeLower))
+																	functions.append(SublimePapyrus.MakeFunctionCompletion(obj, sem, True, typeLower, parameters=settingFunctionEventParameters))
 															self.SetFunctionCompletions(result.type, functions, False)
 													except:
 														return
@@ -838,14 +840,14 @@ h1 {
 								else: # Not following a dot
 									for name, obj in e.functions[0].items():
 										if obj.type == syn.STAT_FUNCTIONDEF:
-											completions.append(SublimePapyrus.MakeFunctionCompletion(obj, sem, True, "parent"))
+											completions.append(SublimePapyrus.MakeFunctionCompletion(obj, sem, True, "parent", parameters=settingFunctionEventParameters))
 										elif obj.type == syn.STAT_EVENTDEF:
-											completions.append(SublimePapyrus.MakeEventCompletion(obj, sem, True, "parent"))
+											completions.append(SublimePapyrus.MakeEventCompletion(obj, sem, True, "parent", parameters=settingFunctionEventParameters))
 									for name, obj in e.functions[1].items():
 										if obj.type == syn.STAT_FUNCTIONDEF:
-											completions.append(SublimePapyrus.MakeFunctionCompletion(obj, sem, True, "self"))
+											completions.append(SublimePapyrus.MakeFunctionCompletion(obj, sem, True, "self", parameters=settingFunctionEventParameters))
 										elif obj.type == syn.STAT_EVENTDEF:
-											completions.append(SublimePapyrus.MakeEventCompletion(obj, sem, True, "self"))
+											completions.append(SublimePapyrus.MakeEventCompletion(obj, sem, True, "self", parameters=settingFunctionEventParameters))
 									for name, obj in e.variables[0].items():
 										if obj.type == syn.STAT_PROPERTYDEF:
 											completions.append(SublimePapyrus.MakePropertyCompletion(obj, "parent"))
@@ -869,8 +871,7 @@ h1 {
 										completions.append(self.completionKeywordSelf)
 										completions.append(self.completionKeywordParent)
 
-									global SUBLIME_VERSION
-									if SUBLIME_VERSION >= 3070 and True: #TODO Implement setting
+									if tokens[-1].type != lex.OP_ASSIGN:
 										stack = syn.stack[:]
 										for item in reversed(stack):
 											if item.type == sem.NODE_FUNCTIONCALLARGUMENT:
@@ -906,6 +907,8 @@ h1 {
 											for param in func.data.parameters:
 												completions.append(SublimePapyrus.MakeParameterCompletion(Linter.Statement(sem.STAT_PARAMETER, 0, param)))
 
+									global SUBLIME_VERSION
+									if SUBLIME_VERSION >= 3070 and prefix == "" and settings.get("tooltip_function_parameters", True): #TODO Implement setting
 										if not view.is_popup_visible():
 											self.ShowFunctionInfo(view, tokens, syn.stack, e)
 
