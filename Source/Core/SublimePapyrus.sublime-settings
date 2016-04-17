@@ -6,6 +6,8 @@
 	"linter_panel_error_messages": false,
 	"linter_error_line_threshold": 2,
 	"intelligent_code_completion": true,
+	"intelligent_code_completion_function_event_parameters": true,
+	"tooltip_function_parameters": true,
 	"center_highlighted_line": true,
 	"highlight_build_errors": true,
 	"hide_successful_build_results": false,
