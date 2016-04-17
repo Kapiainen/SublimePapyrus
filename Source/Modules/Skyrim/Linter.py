@@ -1621,7 +1621,8 @@ class Semantic(SharedResources):
 	def Process(self, statements, paths): # Return True if successful, False if failed
 		if not statements:
 			self.Abort("No statements were given to process.")
-			return
+		if not paths:
+			self.Abort("No paths were given to process.")
 		# Reset properties
 		self.statements = None
 		self.paths = paths
