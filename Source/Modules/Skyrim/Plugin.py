@@ -200,7 +200,6 @@ class EventListener(sublime_plugin.EventListener):
 											syn.Process(tokens)
 										except Linter.ExpectedIdentifierError as f:
 											if tokens[-1].type != lex.OP_DOT:
-												print("\nOnModified")
 												self.ShowFunctionInfo(view, tokens, syn.stack, e)
 										except Linter.SyntacticError as f:
 											pass
@@ -211,11 +210,6 @@ class EventListener(sublime_plugin.EventListener):
 
 	def ShowFunctionInfo(self, view, tokens, stack, context):
 		global sem
-		print("Tokens:")
-		[print(t.type) for t in reversed(tokens)]
-		print("\nStack before:")
-		[print(n.type) for n in reversed(stack)]
-
 		arguments = []
 		for item in reversed(stack):
 			if item.type == sem.NODE_FUNCTIONCALLARGUMENT:
@@ -223,20 +217,13 @@ class EventListener(sublime_plugin.EventListener):
 			elif item.type == sem.LEFT_PARENTHESIS:
 				break
 		argumentCount = len(arguments)
-		print("%d arguments" % argumentCount)
-
-		print("\nStack after:")
-		[print(n.type) for n in reversed(stack)]
-
 		stackLength = len(stack)
 		func = None
 		if stackLength >= 2 and stack[-1].type == sem.LEFT_PARENTHESIS and stack[-2].type == sem.IDENTIFIER:			
 			name = stack[-2].value.upper()
 			if stackLength >= 4 and stack[-3].type == sem.OP_DOT:
-				print("\nComplex expression before function call")
 				try:
 					result = sem.NodeVisitor(stack[-4])
-					print("%s.%s" % (result.type, name))
 					if result.type != sem.KW_SELF:
 						try:
 							script = sem.GetCachedScript(result.type)
@@ -251,19 +238,15 @@ class EventListener(sublime_plugin.EventListener):
 				except Linter.SemanticError as e:
 					return
 			elif stackLength == 2:
-				print("\nFunction call")
 				for scope in reversed(context.functions):
 					func = scope.get(name, None)
 					if func:
 						break
-		print("\nFunction:")
-		print(func)
 		if func and func.data.parameters:
 			funcName = func.data.identifier
 			currentParameter = None
 			if len(tokens) > 2 and tokens[-1].type == lex.OP_ASSIGN and tokens[-2].type == lex.IDENTIFIER:
 				currentParameter = tokens[-2].value.upper()
-			print("Current parameter: %s" % currentParameter)
 			paramIndex = 0
 			argCount = len(arguments)
 			funcParameters = []
@@ -924,7 +907,6 @@ h1 {
 												completions.append(SublimePapyrus.MakeParameterCompletion(Linter.Statement(sem.STAT_PARAMETER, 0, param)))
 
 										if not view.is_popup_visible():
-											print("\nOnCompletion")
 											self.ShowFunctionInfo(view, tokens, syn.stack, e)
 
 									return completions
