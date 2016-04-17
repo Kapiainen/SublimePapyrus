@@ -168,11 +168,13 @@ class EventListener(sublime_plugin.EventListener):
 	def on_modified(self, view):
 		if self.IsValidScope(view):
 			settings = SublimePapyrus.GetSettings()
-			if settings and settings.get("linter_on_modified", True):
-				self.QueueLinter(view)
 
 			global SUBLIME_VERSION
 			if SUBLIME_VERSION >= 3070 and settings.get("tooltip_function_parameters", True):
+				if self.linterRunning:
+					return
+				elif self.completionRunning:
+					return
 				global cacheLock
 				global lex
 				global syn
@@ -207,6 +209,9 @@ class EventListener(sublime_plugin.EventListener):
 									pass
 							except Linter.SemanticError as e:
 								pass
+
+			if settings and settings.get("linter_on_modified", True):
+				self.QueueLinter(view)
 
 	def ShowFunctionInfo(self, view, tokens, stack, context):
 		global sem
