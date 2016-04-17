@@ -237,12 +237,12 @@ class EventListener(sublime_plugin.EventListener):
 				try:
 					result = sem.NodeVisitor(stack[-4])
 					print("%s.%s" % (result.type, name))
-					try:
-						script = sem.GetCachedScript(result.type)
-					except Linter.SemanticError as e:
-						return
 					if result.type != sem.KW_SELF:
-						func = script.functions.get(name, None)
+						try:
+							script = sem.GetCachedScript(result.type)
+							func = script.functions.get(name, None)
+						except Linter.SemanticError as e:
+							return
 					else:
 						for scope in reversed(context.functions):
 							func = scope.get(name, None)
@@ -887,9 +887,45 @@ h1 {
 										completions.append(self.completionKeywordParent)
 
 									global SUBLIME_VERSION
-									if SUBLIME_VERSION >= 3070 and prefix == "" and True: #TODO Implement setting
-										print("\nOnCompletion")
-										self.ShowFunctionInfo(view, tokens, syn.stack, e)
+									if SUBLIME_VERSION >= 3070 and True: #TODO Implement setting
+										stack = syn.stack[:]
+										for item in reversed(stack):
+											if item.type == sem.NODE_FUNCTIONCALLARGUMENT:
+												stack.pop()
+											elif item.type == sem.LEFT_PARENTHESIS:
+												break
+										stackLength = len(stack)
+										func = None
+										if stackLength >= 2 and stack[-1].type == sem.LEFT_PARENTHESIS and stack[-2].type == sem.IDENTIFIER:
+											name = stack[-2].value.upper()
+											if stackLength >= 4 and stack[-3].type == sem.OP_DOT:
+												try:
+													result = sem.NodeVisitor(stack[-4])
+													if result.type != sem.KW_SELF:
+														try:
+															script = sem.GetCachedScript(result.type)
+															func = script.functions.get(name, None)
+														except Linter.SemanticError as e:
+															return
+													else:
+														for scope in reversed(e.functions):
+															func = scope.get(name, None)
+															if func:
+																break
+												except Linter.SemanticError as e:
+													return
+											elif stackLength == 2:
+												for scope in reversed(e.functions):
+													func = scope.get(name, None)
+													if func:
+														break
+										if func and func.data.parameters:
+											for param in func.data.parameters:
+												completions.append(SublimePapyrus.MakeParameterCompletion(Linter.Statement(sem.STAT_PARAMETER, 0, param)))
+
+										if not view.is_popup_visible():
+											print("\nOnCompletion")
+											self.ShowFunctionInfo(view, tokens, syn.stack, e)
 
 									return completions
 							except Linter.SyntacticError as f:
