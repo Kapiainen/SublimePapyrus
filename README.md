@@ -21,6 +21,8 @@ SublimePapyrus is a package that aims to provide a development environment for a
 - Open the release archive that was downloaded and extract the *.sublime-package* files to *"\Data\Installed Packages"*.
 - Restart Sublime Text.
 
+Enabling Sublime Text's ***auto_complete_with_fields*** setting is highly recommended in order to get the best experience.
+
 ## **Core features**
 - Build system framework
  - Single file build
@@ -153,7 +155,7 @@ Single file build system and a batch build variant.
     - Game setting names (float, integer, and string)
 
 - Clear cache
-  - Clears the caches relevant to the linter and code completion. Can be used to refresh the linter and code completion after modifying the contents of the *import* setting (e.g. adding a new folder or changing the order of folders) or the contents of one of the folders specified in the *import* setting (e.g. saving a new script).
+  - Clears the caches relevant to the linter and code completion. Can be used to refresh the linter and code completion after modifying the contents of the ***import*** setting (e.g. adding a new folder or changing the order of folders) or the contents of one of the folders specified in the ***import*** setting (e.g. saving a new script).
 
 #### **3rd party resources for Skyrim**
 ##### Skyrim Script Extender (SKSE)
