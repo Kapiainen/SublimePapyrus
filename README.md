@@ -219,6 +219,8 @@ Version 2.x.x - 2016/MM/DD:
   - Linter
     - Fixed validation of explicit casting.
     - Fixed argument validation in function calls.
+    - Updated completions for functions/events in states.
+    - Added completions for inherited functions/events when in the empty state.
     - Added restrictions imposed on functions by the 'Global' keyword to the semantic analysis.
     - Added a warning when no import paths are passed to the semantic analysis. 
   - Code completion
