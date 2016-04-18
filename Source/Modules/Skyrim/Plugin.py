@@ -304,7 +304,7 @@ h1 {
 			if view.is_popup_visible():
 				view.update_popup(content)
 			else:
-				view.show_popup(content, flags=sublime.COOPERATE_WITH_AUTO_COMPLETE, max_width=600, max_height=300)
+				view.show_popup(content, flags=sublime.COOPERATE_WITH_AUTO_COMPLETE, max_width=int(settings.get("tooltip_max_width", 600)), max_height=int(settings.get("tooltip_max_height", 300)))
 
 	def QueueLinter(self, view):
 		if self.linterRunning: # If an instance of the linter is running, then cancel

@@ -66,19 +66,23 @@ Settings are located in *Preferences* > *Package Settings* > *SublimePapyrus*.
 
   - ***intelligent_code_completion_function_event_parameters***: Determines if function/event parameters should be included in completions for function/event calls. Default: True
 
-  - ***tooltip_function_parameters***: Determines if a tooltip shows up with information about parameters of a function/event that is being called. Default: True
+  - ***tooltip_function_parameters***: Determines if a tooltip shows up with information about the parameters of a function/event call that is being edited. Default: True
     
-  - ***tooltip_background_color***: Hex color code that determines the color of a tooltip's background. Default: #393939
+  - ***tooltip_background_color***: Hex color code of a tooltip's background. Default: #393939
     
-  - ***tooltip_body_text_color***: Hex color code that determines the color a tooltip's text. Default: #747369
+  - ***tooltip_body_text_color***: Hex color code of a tooltip's text. Default: #747369
     
   - ***tooltip_font_size***: The size (in pixels) of a tooltip's text. Default: 12
     
-  - ***tooltip_bold_text_color***: Hex color code that determines the color of a tooltip's bold text. Default: #ffffff
+  - ***tooltip_bold_text_color***: Hex color code of a tooltip's bold text. Default: #ffffff
     
-  - ***tooltip_heading_text_color***: Hex color code that determines the color of a tooltip's heading. Default: #bfbfbf
+  - ***tooltip_heading_text_color***: Hex color code of a tooltip's heading. Default: #bfbfbf
     
   - ***tooltip_heading_font_size***: The size (in pixels) of text in a tooltip's heading. Default: 14
+
+  - ***tooltip_max_width***: The maximum width (in pixels) of the tooltip. Default: 600
+  
+  - ***tooltip_max_height***: The maximum height (in pixels) of the tooltip. Default: 300
 
   - ***center_highlighted_line***: Automatically scrolls the view so that a highlighted line is in the center of the view. Default: True
 
@@ -108,6 +112,7 @@ Settings are located in *Preferences* > *Package Settings* > *SublimePapyrus*.
 - Syntax highlighting
 - Linter
 - Intelligent code completion
+- Tooltips
 - Build system
 - Commands
  - Generate completions
@@ -154,6 +159,9 @@ The intelligent code completion system utilizes the linter to produce suggestion
 Caching is used by the intelligent code completion system in order to improve performance. Saving a script invalidates the portions of the cache that would be affected by modifications to that script.
 
 There is a [setting](#settings) to turn this feature off. If this feature is disabled, then one can generate completions with the ***Generate completions*** command, but these completions will show up as suggested completions regardless of the context.
+
+#### Tooltips
+Shows information about the function call that is being edited. The displayed information includes the name of the function/event, the parameters and their default values, and which parameter the current argument corresponds to. This feature can be toggled and the appearance of the tooltip popup can be customized (e.g. font size, color, maximum dimensions) via the settings.
 
 #### Build system
 Single file build system and a batch build variant.
@@ -211,6 +219,7 @@ Version 2.x.x - 2016/MM/DD:
   - Linter
     - Fixed validation of explicit casting.
     - Fixed argument validation in function calls.
+    - Added restrictions imposed on functions by the 'Global' keyword to the semantic analysis.
     - Added a warning when no import paths are passed to the semantic analysis. 
   - Code completion
     - Added completions for parameters of the function/event that is being called.
