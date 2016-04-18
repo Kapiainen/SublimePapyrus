@@ -274,27 +274,32 @@ class EventListener(sublime_plugin.EventListener):
 						paramContent = "<b>%s</b>" % paramContent
 					paramIndex += 1
 				funcParameters.append(paramContent)
+			settings = SublimePapyrus.GetSettings()
+			backgroundColor = settings.get("tooltip_background_color", "#393939")
+			bodyTextColor = settings.get("tooltip_body_text_color", "#747369")
+			bodyFontSize = settings.get("tooltip_font_size", "12")
+			boldTextColor = settings.get("tooltip_bold_text_color", "#ffffff")
+			headingTextColor = settings.get("tooltip_heading_text_color", "#bfbfbf")
+			headingFontSize = settings.get("tooltip_heading_font_size", "14")
 			css = """<style>
 html {
-	background-color: #393939;
-    color: #CCCCCC;
+	background-color: %s;
 }
 
 body {
-    font-size: 12px;
-    color: #747369;
+    font-size: %spx;
+    color: %s;
 }
 
 b {
-    color: #ffffff;
+    color: %s;
 }
 
 h1 {
-	
-    color: #bfbfbf;
-    font-size: 14px;
+    color: %s;
+    font-size: %spx;
 }
-</style>""" #TODO Implement color settings
+</style>""" % (backgroundColor, bodyFontSize, bodyTextColor, boldTextColor, headingTextColor, headingFontSize)
 			content = "%s<h1>%s</h1>%s" % (css, funcName, "<br>".join(funcParameters))
 			if view.is_popup_visible():
 				view.update_popup(content)
@@ -913,7 +918,7 @@ h1 {
 												completions.append(SublimePapyrus.MakeParameterCompletion(Linter.Statement(sem.STAT_PARAMETER, 0, param)))
 
 									global SUBLIME_VERSION
-									if SUBLIME_VERSION >= 3070 and prefix == "" and settings.get("tooltip_function_parameters", True): #TODO Implement setting
+									if SUBLIME_VERSION >= 3070 and prefix == "" and settings.get("tooltip_function_parameters", True):
 										if not view.is_popup_visible():
 											self.ShowFunctionInfo(view, tokens, syn.stack, e)
 
