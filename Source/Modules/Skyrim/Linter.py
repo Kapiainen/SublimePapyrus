@@ -2658,10 +2658,16 @@ class Semantic(SharedResources):
 					self.PushVariableScope()
 					self.FunctionBlock(statements)
 		for s in [s for s in script.definitions if s != ""]:
+			stateFunctions = {}
+			targetDefinition = None
 			for statements in script.definitions[s]:
+				stateFunctions[statements[0].data.name] = statements[0]
 				if self.cancel > statements[0].line and self.cancel <= statements[-1].line:
+					targetDefinition = statements
+				if targetDefinition:
+					self.functions.append(stateFunctions)
 					self.PushVariableScope()
-					self.FunctionBlock(statements)
+					self.FunctionBlock(targetDefinition)
 		for name, statements in script.states[1].items():
 			if self.cancel > statements[0].line and self.cancel <= statements[-1].line:
 				stateFunctions = {}
