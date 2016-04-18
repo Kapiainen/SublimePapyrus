@@ -2261,9 +2261,6 @@ class Semantic(SharedResources):
 				if not result:
 					self.Abort("'%s' is not a function/event that exists in this scope." % node.data.name.value)
 			if func:
-				params = func.data.parameters[:]
-				args = [a.data for a in node.data.arguments]
-				outOfOrder = False
 				def ValidateArgument(arg, param, paramName):
 					if arg.type == param.type:
 						if arg.array == param.array:
@@ -2287,71 +2284,47 @@ class Semantic(SharedResources):
 									self.Abort("Parameter '%s' is an array but the argument passed to it is not an array." % paramName)
 							else:
 								self.Abort("Parameter '%s' is not an array but the argument passed to it is an array." % paramName)
-				while len(params) > 0:
-					if not outOfOrder and len(args) > 0:
-						if args[0].name:
-							outOfOrder = True
-					if outOfOrder:
+				params = func.data.parameters[:]
+				args = [a.data for a in node.data.arguments]
+				if len(params) < len(args):
+					self.Abort("'%s' has %d parameters, but %d arguments were given." % (func.data.identifier, len(params), len(args)))
+				outOfOrder = False
+				while args:
+					argResult = self.NodeVisitor(args[0].expression)
+					if not outOfOrder and args[0].name:
+						outOfOrder = True
+					if not outOfOrder:
+						paramResult = None
+						if params[0].array:
+							paramResult = NodeResult(params[0].type, True, True)
+						else:
+							paramResult = NodeResult(params[0].type, False, True)
+						ValidateArgument(argResult, paramResult, params[0].name)
+						params.pop(0)
+					else:
 						i = 0
-						j = len(args)
-						while i < j:
-							if not args[i].name:
-								self.Abort("Arguments are being passed out of order, but at least one argument does not specify which parameter it is passing a value to.")
-							if args[i].name.value.upper() == params[0].name:
-								argExpr = self.NodeVisitor(args[0].expression)
-								paramType = None
-								if params[0].array:
-									paramType = NodeResult(params[0].type, True, True)
-								else:
-									paramType = NodeResult(params[0].type, False, True)
-								ValidateArgument(argExpr, paramType, params[0].name)
-								args.pop(i)
+						paramLength = len(params)
+						if not args[0].name:
+							self.Abort("Arguments are being passed out of order, but one argument does not specify the parameter name.")
+						argName = args[0].name.value.upper()
+						while i < paramLength:
+							if params[i].name == argName:
 								break
 							i += 1
-						if len(args) == j and not params[0].expression:
-							self.Abort("An argument was not passed to the mandatory parameter '%s'." % params[0].name)
-					else:
-						if params[0].expression:
-							if len(args) > 0:
-								argExpr = self.NodeVisitor(args[0].expression)
-								paramType = None
-								if params[0].array:
-									paramType = NodeResult(params[0].type, True, True)
-								else:
-									paramType = NodeResult(params[0].type, False, True)
-								ValidateArgument(argExpr, paramType, params[0].name)
-								args.pop(0)
+						if i >= paramLength:
+							self.Abort("'%s' does not have a parameter called '%s'." % (func.data.identifier, argName))
+						paramResult = None
+						if params[i].array:
+							paramResult = NodeResult(params[i].type, True, True)
 						else:
-							if len(args) > 0:
-								argExpr = self.NodeVisitor(args[0].expression)
-								paramType = None
-								if params[0].array:
-									paramType = NodeResult(params[0].type, True, True)
-								else:
-									paramType = NodeResult(params[0].type, False, True)
-								ValidateArgument(argExpr, paramType, params[0].name)
-								args.pop(0)
-							else:
-								self.Abort("Mandatory parameter '%s' was not given an argument." % params[0].name)
+							paramResult = NodeResult(params[i].type, False, True)
+						ValidateArgument(argResult, paramResult, params[i].name)
+						params.pop(i)
+					args.pop(0)
+				while params:
+					if not params[0].expression:
+						self.Abort("Mandatory parameter '%s' was not given an argument." % params[0].name)
 					params.pop(0)
-				if len(args) > 0:
-					paramCount = len(func.data.parameters)
-					argCount = len(node.data.arguments)
-					if argCount == paramCount:
-						for arg in args:
-							found = False
-							argName = arg.name.value.upper()
-							for param in func.data.parameters:
-								if param.name == argName:
-									found = True
-							if not found:
-								self.Abort("'%s' is not a parameter that exists in '%s'." % (argName, func.data.name))
-						self.Abort("Multiple arguments were passed to at least one parameter.")
-					elif argCount > paramCount:
-						if argCount == 1:
-							self.Abort("The '%s' function/event has %d parameters, but %d argument was passed to it." % (func.data.name, paramCount, argCount))
-						else:
-							self.Abort("The '%s' function/event has %d parameters, but %d arguments were passed to it." % (func.data.name, paramCount, argCount))
 		elif node.type == self.NODE_IDENTIFIER:
 			if expected and expected.type: # Another script
 				if expected.type == self.KW_SELF:
