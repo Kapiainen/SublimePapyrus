@@ -2188,6 +2188,7 @@ class Semantic(SharedResources):
 			else:
 				self.Abort("Unknown literal type.")
 		elif node.type == self.NODE_FUNCTIONCALL:
+			globalFunction = self.KW_GLOBAL in self.statements[0].data.flags
 			func = None
 			if expected and expected.type == self.KW_SELF:
 				func = self.GetFunction(node.data.name.value.upper())
@@ -2235,6 +2236,8 @@ class Semantic(SharedResources):
 			else:
 				func = self.GetFunction(node.data.name.value)
 				if func:
+					if globalFunction and self.KW_GLOBAL not in func.data.flags:
+						self.Abort("Cannot call member functions from the same script inside of a global function.")
 					if func.data.type:
 						if func.data.array:
 							result = NodeResult(func.data.type, True, True)
@@ -2248,6 +2251,8 @@ class Semantic(SharedResources):
 					if script:
 						temp = script.functions.get(funcName, None)
 						if temp and self.KW_GLOBAL in temp.data.flags:
+							if globalFunction:
+								self.Abort("Cannot call imported global functions from other scripts without directly referencing the script.")
 							if func:
 								self.Abort("Ambiguous reference to a function called '%s'. It is unclear which version is being referenced." % node.data.name.value)
 							func = temp
@@ -2352,6 +2357,7 @@ class Semantic(SharedResources):
 					else:
 						pass
 			else: # Self or parent
+				globalFunction = self.KW_GLOBAL in self.statements[0].data.flags
 				if node.data.token.type == self.KW_PARENT:
 					if self.KW_GLOBAL in self.statements[0].data.flags:
 						self.Abort("'Parent' does not exist in functions with the 'Global' keyword.")
@@ -2364,6 +2370,11 @@ class Semantic(SharedResources):
 						self.Abort("'Self' does not exist in functions with the 'Global' keyword.")
 					result = NodeResult(self.KW_SELF, False, True)
 				else:
+					scriptwideVariables = None
+					if globalFunction:
+						scriptwideVariables = [self.variables.pop(0), self.variables.pop(0)]
+						self.variables.insert(0, {})
+						self.variables.insert(0, {})
 					var = self.GetVariable(node.data.token.value)
 					if var:
 						if var.data.array:
@@ -2376,6 +2387,11 @@ class Semantic(SharedResources):
 							self.GetCachedScript(result.type)
 						except SemanticError as e:
 							self.Abort("'%s' is neither a type nor a variable." % result.type)
+					if globalFunction:
+						self.variables.pop(0)
+						self.variables.pop(0)
+						self.variables.insert(0, scriptwideVariables.pop())
+						self.variables.insert(0, scriptwideVariables.pop())
 		elif node.type == self.NODE_LENGTH:
 			result = NodeResult(self.KW_INT, False, True)
 		elif node.type == self.NODE_ARRAYCREATION:
