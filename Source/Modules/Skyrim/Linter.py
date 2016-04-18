@@ -2425,36 +2425,36 @@ class Semantic(SharedResources):
 						self.Abort("Arrays can only be cast to STRING and BOOL.")
 					if leftResult.type != rightResult.type:
 						if rightResult.type == self.KW_BOOL:
-							pass
+							pass #Anything can be cast to bool
 						elif rightResult.type == self.KW_FLOAT:
-							if leftResult.type != self.KW_BOOL and leftResult.type != self.KW_FLOAT and leftResult.type != self.KW_STRING:
+							if leftResult.type != self.KW_BOOL and leftResult.type != self.KW_INT and leftResult.type != self.KW_STRING:
 								self.Abort("'%s' cannot be cast to 'Float'." % leftResult.type)
 						elif rightResult.type == self.KW_INT:
 							if leftResult.type != self.KW_BOOL and leftResult.type != self.KW_FLOAT and leftResult.type != self.KW_STRING:
 								self.Abort("'%s' cannot be cast to 'Int'." % leftResult.type)
 						elif rightResult.type == self.KW_STRING:
-							pass
-						else:
+							pass #Anything can be cast to string
+						elif leftResult.type != rightResult.type:
 							try:
 								targetScript = self.GetCachedScript(rightResult.type)
 							except SemanticError as e:
 								self.Abort("'%s' is not a type that exists." % rightResult.type)
-							if leftResult.type == self.KW_SELF:	
-								if not self.header.data.name in targetScript.extends:
-									if rightResult.type != self.header.data.parent:
+							if leftResult.type == self.KW_SELF:
+								if self.header.data.name not in targetScript.extends: # The left-side type is not one of the right-side type's parent types
+									if self.header.data.parent != rightResult.type: # The right-side type is not the parent type of self
 										try:
 											parentScript = self.GetCachedScript(self.header.data.parent)
 										except SemanticError as e:
-											self.Abort("'%s' is not a type that exists." % leftResult.type)
+											self.Abort("'%s' is not a type that exists." % rightResult.type)
 										if rightResult.type not in parentScript.extends:
-											self.Abort("'%s' cannot be cast as a(n) '%s' as the two types are incompatible." % (leftResult.type, rightResult.type))
+											self.Abort("'%s' cannot be cast as a(n) '%s' as the two types are incompatible." % (self.header.data.name, rightResult.type))
 							else:
-								if not leftResult.type in targetScript.extends:
+								if leftResult.type not in targetScript.extends: # The left-side type is not one of the right-side type's parent types
 									try:
-										parentScript = self.GetCachedScript(leftResult.type)
+										sourceScript = self.GetCachedScript(leftResult.type)
 									except SemanticError as e:
-										self.Abort("'%s' is not a type that exists." % leftResult.type)
-									if rightResult.type not in parentScript.extends:
+										self.Abort("'%s' is not a type that exists." % rightResult.type)
+									if not sourceScript or rightResult.type not in sourceScript.extends: # The right-side type is not one of the left-side type's parent types
 										self.Abort("'%s' cannot be cast as a(n) '%s' as the two types are incompatible." % (leftResult.type, rightResult.type))
 					result = rightResult
 				else:
