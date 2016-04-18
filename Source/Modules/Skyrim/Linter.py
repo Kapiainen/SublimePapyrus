@@ -2264,6 +2264,29 @@ class Semantic(SharedResources):
 				params = func.data.parameters[:]
 				args = [a.data for a in node.data.arguments]
 				outOfOrder = False
+				def ValidateArgument(arg, param, paramName):
+					if arg.type == param.type:
+						if arg.array == param.array:
+							if not arg.object:
+								self.Abort("The argument passed to parameter '%s' is a type instead of a value." % paramName)
+						else:
+							if param.array:
+								if arg.type != self.KW_NONE:
+									self.Abort("Parameter '%s' is an array but the argument passed to it is not an array." % paramName)
+							else:
+								self.Abort("Parameter '%s' is not an array but the argument passed to it is an array." % paramName)
+					else:
+						if arg.array == param.array:
+							if arg.array:
+								self.Abort("Parameter '%s' and the argument passed to it are different types of arrays." % paramName)
+							elif not self.CanAutoCast(arg, param):
+								self.Abort("Parameter '%s' and the argument passed to it are incompatible types." % paramName)
+						else:
+							if param.array:
+								if arg.type != self.KW_NONE:
+									self.Abort("Parameter '%s' is an array but the argument passed to it is not an array." % paramName)
+							else:
+								self.Abort("Parameter '%s' is not an array but the argument passed to it is an array." % paramName)
 				while len(params) > 0:
 					if not outOfOrder and len(args) > 0:
 						if args[0].name:
@@ -2281,14 +2304,7 @@ class Semantic(SharedResources):
 									paramType = NodeResult(params[0].type, True, True)
 								else:
 									paramType = NodeResult(params[0].type, False, True)
-								if (argExpr.type != paramType.type or argExpr.array != paramType.array or argExpr.object != paramType.object) and not self.CanAutoCast(argExpr, paramType):
-									aType = argExpr.type
-									if argExpr.array:
-										aType = "%s[]" % aType
-									pType = paramType.type
-									if paramType.array:
-										pType = "%s[]" % pType
-									self.Abort("Parameter '%s' is of type '%s', but the argument evaluates to '%s', which cannot be auto-cast to the parameter's type." % (params[0].name, pType, aType))
+								ValidateArgument(argExpr, paramType, params[0].name)
 								args.pop(i)
 								break
 							i += 1
@@ -2303,14 +2319,7 @@ class Semantic(SharedResources):
 									paramType = NodeResult(params[0].type, True, True)
 								else:
 									paramType = NodeResult(params[0].type, False, True)
-								if (argExpr.type != paramType.type or argExpr.array != paramType.array or argExpr.object != paramType.object) and not self.CanAutoCast(argExpr, paramType):
-									aType = argExpr.type
-									if argExpr.array:
-										aType = "%s[]" % aType
-									pType = paramType.type
-									if paramType.array:
-										pType = "%s[]" % pType
-									self.Abort("Parameter '%s' is of type '%s', but the argument evaluates to '%s', which cannot be auto-cast to the parameter's type." % (params[0].name, pType, aType))
+								ValidateArgument(argExpr, paramType, params[0].name)
 								args.pop(0)
 						else:
 							if len(args) > 0:
@@ -2320,14 +2329,7 @@ class Semantic(SharedResources):
 									paramType = NodeResult(params[0].type, True, True)
 								else:
 									paramType = NodeResult(params[0].type, False, True)
-								if (argExpr.type != paramType.type or argExpr.array != paramType.array or argExpr.object != paramType.object) and not self.CanAutoCast(argExpr, paramType):
-									aType = argExpr.type
-									if argExpr.array:
-										aType = "%s[]" % aType
-									pType = paramType.type
-									if paramType.array:
-										pType = "%s[]" % pType
-									self.Abort("Parameter '%s' is of type '%s', but the argument evaluates to '%s', which cannot be auto-cast to the parameter's type." % (params[0].name, pType, aType))
+								ValidateArgument(argExpr, paramType, params[0].name)
 								args.pop(0)
 							else:
 								self.Abort("Mandatory parameter '%s' was not given an argument." % params[0].name)
