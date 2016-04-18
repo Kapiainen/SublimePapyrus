@@ -64,6 +64,22 @@ Settings are located in *Preferences* > *Package Settings* > *SublimePapyrus*.
 
   - ***intelligent_code_completion***: Enables the code completion system that uses cached results from the linter to provide context-aware completions. Default: True
 
+  - ***intelligent_code_completion_function_event_parameters***: Determines if function/event parameters should be included in completions for function/event calls. Default: True
+
+  - ***tooltip_function_parameters***: Determines if a tooltip shows up with information about parameters of a function/event that is being called. Default: True
+    
+  - ***tooltip_background_color***: Hex color code that determines the color of a tooltip's background. Default: #393939
+    
+  - ***tooltip_body_text_color***: Hex color code that determines the color a tooltip's text. Default: #747369
+    
+  - ***tooltip_font_size***: The size (in pixels) of a tooltip's text. Default: 12
+    
+  - ***tooltip_bold_text_color***: Hex color code that determines the color of a tooltip's bold text. Default: #ffffff
+    
+  - ***tooltip_heading_text_color***: Hex color code that determines the color of a tooltip's heading. Default: #bfbfbf
+    
+  - ***tooltip_heading_font_size***: The size (in pixels) of text in a tooltip's heading. Default: 14
+
   - ***center_highlighted_line***: Automatically scrolls the view so that a highlighted line is in the center of the view. Default: True
 
   - ***highlight_build_errors***: Highlights lines that cause attempts to compile scripts to fail. Default: True
@@ -184,6 +200,21 @@ Single file build system and a batch build variant.
     - SKSE mod event names
 
 ## **Changelog**
+Version 2.x.x - 2016/MM/DD:
+
+**Core**
+  - Added new settings relevant to toggling and customizing the looks of tooltips.
+  - Added a setting to toggle function/event parameters in function/event completions.
+
+**Skyrim**
+  - Added an optional tooltip that shows the name of the function/event and its parameters when typing inside of a function/event call.
+  - Linter
+    - Fixed validation of explicit casting.
+    - Fixed argument validation in function calls.
+    - Added a warning when no import paths are passed to the semantic analysis. 
+  - Code completion
+    - Added completions for parameters of the function/event that is being called.
+
 Version 2.0.0 - 2016/04/16:
 
 **Core**
@@ -195,38 +226,38 @@ Version 2.0.0 - 2016/04/16:
 **Skyrim**
   - Added a command to manually clear the various caches relevant to the linter and code completion without needing to restart Sublime Text. It is useful when modifying the contents of the *import* setting in the user settings or one of the folders specified in that setting.
   - Linter
-   - Switched from using filenames to using a view's buffer ID for identification purposes. Scripts no longer have to have been saved to a file for the linter, and subsequently the code completion, to work.
-   - Switched to using the unmodified lexical and syntactic analysis classes in semantic analysis when processing other scripts in order to get their properties, functions, and events.
-   - Changed the way that lexical and syntactic analysis are performed in an effort to catch syntactic errors earlier.
-   - Semantic analysis has been modified to no longer discard statements after use and instead store them in an object, which represents the script and can be used by the code completion system.
-   - NodeVisitor now returns an object with *type*, *array*, and *object* fields instead of just a string.
-   - Error messages in the status bar are now persistent until they have been resolved.
-   - Removed gutter icon from highlighted lines.
-   - Errors are no longer centered multiple times unless either the line with the error has moved up or down more than specified in the user settings (default: 2 lines) or there has been a linter pass without errors. 
-   - Modified error messages.
-   - Fixed *GetPath* so that it works in a Unix environment where many file systems are case-sensitive.
-   - Fixed a bug that caused issues when using identifiers starting with 'true' and 'false'.
-   - Fixed NodeVisitor so that it returns the correct values from binary operator nodes involving comparison or logical operators.
-   - Fixed a bug that caused non-global functions from imported scripts to be taken into account when checking for ambiguous function calls.
-   - Fixed a bug that stopped casting 'self' to a type that extends the current script.
-   - Fixed a bug that prevented the use of 'self' as an argument in function calls when the parameter type is the same as the current script.
-   - Added specific warnings when declaring a variable/property with an identifier that is already in use in a property declaration in a parent script.
-   - Added support for distinguishing between attempts to call global and non-global functions.
-   - Added errors when attempting to use the *Self* or *Parent* variables in functions with the *Global* keyword.
-   - Added validation of function return types.
-   - Added more specific exceptions (e.g. when expecting a type, a literal, a keyword, or an identifier).
-   - Added an error about casting to non-existing types.
-   - Added an error when attempting to cast an expression that does not return a value.
-   - Added errors when attempting to explicitly cast outside of the chain of inheritance of the type that the left-hand side expression evaluates to.
-   - Added an error when attempting to access properties, functions, or events of expressions that evaluate to a base type or nothing.
-   - Added an error when a variable's, property's, or parameter's name is the same as a known type.
-   - Added an error when attempting to assign a non-array value to an array.
-   - Added an error when attempting to use a type as if it were a variable (e.g. accessing a property directly via a type).
-   - Added errors when attempting to incorrectly use arithmetic or logical operators.
+    - Switched from using filenames to using a view's buffer ID for identification purposes. Scripts no longer have to have been saved to a file for the linter, and subsequently the code completion, to work.
+    - Switched to using the unmodified lexical and syntactic analysis classes in semantic analysis when processing other scripts in order to get their properties, functions, and events.
+    - Changed the way that lexical and syntactic analysis are performed in an effort to catch syntactic errors earlier.
+    - Semantic analysis has been modified to no longer discard statements after use and instead store them in an object, which represents the script and can be used by the code completion system.
+    - NodeVisitor now returns an object with *type*, *array*, and *object* fields instead of just a string.
+    - Error messages in the status bar are now persistent until they have been resolved.
+    - Removed gutter icon from highlighted lines.
+    - Errors are no longer centered multiple times unless either the line with the error has moved up or down more than specified in the user settings (default: 2 lines) or there has been a linter pass without errors. 
+    - Modified error messages.
+    - Fixed *GetPath* so that it works in a Unix environment where many file systems are case-sensitive.
+    - Fixed a bug that caused issues when using identifiers starting with 'true' and 'false'.
+    - Fixed NodeVisitor so that it returns the correct values from binary operator nodes involving comparison or logical operators.
+    - Fixed a bug that caused non-global functions from imported scripts to be taken into account when checking for ambiguous function calls.
+    - Fixed a bug that stopped casting 'self' to a type that extends the current script.
+    - Fixed a bug that prevented the use of 'self' as an argument in function calls when the parameter type is the same as the current script.
+    - Added specific warnings when declaring a variable/property with an identifier that is already in use in a property declaration in a parent script.
+    - Added support for distinguishing between attempts to call global and non-global functions.
+    - Added errors when attempting to use the *Self* or *Parent* variables in functions with the *Global* keyword.
+    - Added validation of function return types.
+    - Added more specific exceptions (e.g. when expecting a type, a literal, a keyword, or an identifier).
+    - Added an error about casting to non-existing types.
+    - Added an error when attempting to cast an expression that does not return a value.
+    - Added errors when attempting to explicitly cast outside of the chain of inheritance of the type that the left-hand side expression evaluates to.
+    - Added an error when attempting to access properties, functions, or events of expressions that evaluate to a base type or nothing.
+    - Added an error when a variable's, property's, or parameter's name is the same as a known type.
+    - Added an error when attempting to assign a non-array value to an array.
+    - Added an error when attempting to use a type as if it were a variable (e.g. accessing a property directly via a type).
+    - Added errors when attempting to incorrectly use arithmetic or logical operators.
   - Code completion
-   - Performance has been improved by caching the result of the linter's semantic analysis.
-   - More scenarios are now supported (e.g. keywords in script headers, variable declarations, property declarations, function/event declarations).
-   - The source (the current script, the parent script, or another script) of the completion is specified.
+    - Performance has been improved by caching the result of the linter's semantic analysis.
+    - More scenarios are now supported (e.g. keywords in script headers, variable declarations, property declarations, function/event declarations).
+    - The source (the current script, the parent script, or another script) of the completion is specified.
 
 Version 1.0.7 - 2016/03/10:
   - Fixed a bug in the 'Generate completions' command.
