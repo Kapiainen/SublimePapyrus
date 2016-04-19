@@ -28,16 +28,16 @@ The example above shows the syntax highlighting, code completion, and tooltips i
 Enabling Sublime Text's ***auto_complete_with_fields*** setting is highly recommended in order to get the best experience.
 
 ## **Core features**
-- Build system framework
+- [Build system framework](#build-system-framework)
  - Single file build
  - Batch build
  - Hide successful build results
  - Highlight build errors
-- Valid key insertion framework
-- Commands
+- [Valid key insertion framework](#valid-key-insertion-framework)
+- [Commands](#commands)
  - Open script
  - Clear error highlights
-- Settings
+- [Settings](#settings)
 
 #### Build system framework
 The core of this package contains a flexible build system framework that should be able to handle most situations. The build system supports both single file and batch building, multiple import folders, and additional arguments. Lines in the source code that cause build errors can also be highlighted and brought to the center of the screen. Attempts to batch build one of the folders defined in the import folders setting will show a warning prompt. If no output folder is specified in the user settings, then the compiled script will be placed one level above the script source (e.g. *"\Scripts\Source\Example.psc"* is compiled to *"\Scripts\Example.pex"*).
@@ -113,12 +113,12 @@ Settings are located in *Preferences* > *Package Settings* > *SublimePapyrus*.
  - [Immersive First Person View](#immersive-first-person-view-ifpv)
 
 ### **The Elder Scrolls V: Skyrim**
-- Syntax highlighting
-- Linter
-- Intelligent code completion
-- Tooltips
-- Build system
-- Commands
+- [Syntax highlighting](#syntax-highlighting)
+- [Linter](#linter)
+- [Intelligent code completion](#intelligent-code-completion)
+- [Tooltips](#tooltips)
+- [Build system](#build-system)
+- [Commands](#commands-1)
  - Generate completions
  - Valid key insertion
     - Actor value
