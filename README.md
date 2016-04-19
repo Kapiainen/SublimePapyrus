@@ -236,7 +236,7 @@ Version 2.x.x - 2016/MM/DD:
   - Code completion
     - Updated completions for functions/events in states.
     - Added completions for parameters of the function/event that is being called.
-    - Added completions for inherited functions/events when in the empty state.
+    - Added back completions for inherited functions/events that had been missing since the previous version.
 
 Version 2.0.0 - 2016/04/16:
 
