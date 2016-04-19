@@ -223,16 +223,16 @@ Single file build system and a batch build variant.
 Version 2.x.x - 2016/MM/DD:
 
 **Core**
-  - Added new settings relevant to toggling and customizing the looks of tooltips.
-  - Added a setting to toggle function/event parameters in function/event completions.
+  - Added new settings for toggling tooltips and customizing the looks of tooltips.
+  - Added a setting to toggle function/event parameters in function/event call completions.
 
 **Skyrim**
-  - Added an optional tooltip that shows the name of the function/event and its parameters when typing inside of a function/event call.
+  - Added an optional tooltip that shows the name of the function/event and its parameters when typing inside of a function/event call (Sublime Text 3 build 3070 or newer only).
   - Linter
     - Fixed validation of explicit casting.
     - Fixed argument validation in function calls.
     - Added restrictions imposed on functions by the 'Global' keyword to the semantic analysis.
-    - Added a warning when no import paths are passed to the semantic analysis. 
+    - Added a warning when no import paths are passed to the semantic analysis (e.g. if no paths have been defined in the settings).
   - Code completion
     - Updated completions for functions/events in states.
     - Added completions for parameters of the function/event that is being called.
