@@ -13,6 +13,10 @@ A Sublime Text 2 and 3 package for the Papyrus scripting language.
 ## **Description**
 SublimePapyrus is a package that aims to provide a development environment for a scripting language called [Papyrus](http://www.creationkit.com/Category:Papyrus) within [Sublime Text](https://www.sublimetext.com/). The package is split into a core package and additional packages for specific games and/or resources. The core package is always required, but the other packages usually depend upon the core package or one of the other packages.
 
+![Example](Docs/example.gif)
+
+The example above shows the syntax highlighting, code completion, and tooltips in action ([*Moka Dark* theme](https://github.com/aldomann/sublime-moka) is used in the example).
+
 ## **How to install**
 - Download a [release](https://github.com/Kapiainen/SublimePapyrus/releases).
 - Start Sublime Text.
@@ -131,11 +135,11 @@ Syntax highlighting for the version of Papyrus that is used in ***The Elder Scro
 Requirements:
 - The linter has to be enabled in the settings.
 
-The linter performs lexical, syntactic, and semantic analysis on the source code of scripts as they are being edited. Lines that cause errors are highlighted and the error messages are shown as status messages (bottom left corner of Sublime Text).
+The linter performs lexical, syntactic, and semantic analysis on the source code of scripts as they are being edited and/or when they are saved. Lines that cause errors are highlighted and the error messages are shown as status messages (bottom left corner of Sublime Text).
 
 Caching is used by the linter in order to improve performance and cache invalidation only occurs in a few scenarios. Modifications to the import folders setting (e.g. changing the order of paths) requires a restart of Sublime Text in order to clear the cache and ensure that the right scripts are being used.
 
-The linter does work in Sublime Text 2, but error messages and highlighting is not possible due to technical limitations, which do not apply to Sublime Text 3, regarding the API in Sublime Text 2 when the linter is triggered by editing a script. Error messages and highlighting is possible in Sublime Text 2 when the linter is triggered by saving a script.
+The linter does work in Sublime Text 2, but error messages and highlighting is not possible when the linter is triggered by editing a script due to technical limitations in the API of Sublime Text 2. Error messages and highlighting is possible in Sublime Text 2 when the linter is triggered by saving a script.
 
 Information about settings relevant to the linter can be found **[here](#settings)**.
 
@@ -152,9 +156,9 @@ The intelligent code completion system utilizes the linter to produce suggestion
 
 - Return completions for all scripts that exist within the import folders that have been defined in the package settings.
 
-- Return keyword completions are also returned on the basis of the context of the line that is being edited.
+- Return keyword completions based on the context of the line that is being edited (e.g. applicable function/event/property flags).
 
-- Provide information about the object behind the completion (e.g. a function's return type, a variable's type, whether a variable is a function/event parameter).
+- Provide information about the object behind the completion (e.g. a function's return type, a variable's type, whether a variable is a function/event parameter, the origin of the completion).
 
 Caching is used by the intelligent code completion system in order to improve performance. Saving a script invalidates the portions of the cache that would be affected by modifications to that script.
 
