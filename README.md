@@ -161,7 +161,15 @@ Caching is used by the intelligent code completion system in order to improve pe
 There is a [setting](#settings) to turn this feature off. If this feature is disabled, then one can generate completions with the ***Generate completions*** command, but these completions will show up as suggested completions regardless of the context.
 
 #### Tooltips
-Shows information about the function call that is being edited. The displayed information includes the name of the function/event, the parameters and their default values, and which parameter the current argument corresponds to. This feature can be toggled and the appearance of the tooltip popup can be customized (e.g. font size, color, maximum dimensions) via the settings.
+Requirements:
+- The feature has to be enabled in the settings.
+- The same requirements as in the case of the linter.
+- Sublime Text 3 build 3070 or newer.
+
+Shows additional information. The appearance of tooltips can be customized (e.g. font size, color, maximum dimensions) via the settings.
+
+Currently supported tooltips:
+- Show information about the function/event call that is being edited. The displayed information includes the name of the function/event, the parameters and their default values, and which parameter corresponds to the argument that is being edited. This feature can be toggled in the settings.
 
 #### Build system
 Single file build system and a batch build variant.
