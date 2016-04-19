@@ -220,7 +220,7 @@ Single file build system and a batch build variant.
     - SKSE mod event names
 
 ## **Changelog**
-Version 2.x.x - 2016/MM/DD:
+Version 2.1.0 - 2016/04/19:
 
 **Core**
   - Added new settings for toggling tooltips and customizing the looks of tooltips.
