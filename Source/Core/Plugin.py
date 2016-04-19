@@ -263,7 +263,7 @@ class SublimePapyrusCompileScriptCommand(sublime_plugin.WindowCommand):
 					self.window.run_command("exec", args)
 
 # Make completions
-def MakeFunctionCompletion(stat, sem, calling = True, script = "", precededByKeyword = False):
+def MakeFunctionCompletion(stat, sem, calling = True, script = "", precededByKeyword = False, parameters = True):
 	tabTrigger = stat.data.name.lower()
 	if script:
 		script = " (%s)" % script
@@ -278,20 +278,23 @@ def MakeFunctionCompletion(stat, sem, calling = True, script = "", precededByKey
 	if calling:
 		content = ""
 		if stat.data.parameters:
-			i = 1
-			for param in stat.data.parameters:
-				if param.array:
-					if param.expression:
-						content = content + "${%d:%s[] %s = %s}, " % (i, param.type, param.identifier, sem.GetLiteral(param.expression, True))
+			if parameters:
+				i = 1
+				for param in stat.data.parameters:
+					if param.array:
+						if param.expression:
+							content = content + "${%d:%s[] %s = %s}, " % (i, param.type, param.identifier, sem.GetLiteral(param.expression, True))
+						else:
+							content = content + "${%d:%s[] %s}, " % (i, param.typeIdentifier, param.identifier)
 					else:
-						content = content + "${%d:%s[] %s}, " % (i, param.typeIdentifier, param.identifier)
-				else:
-					if param.expression:
-						content = content + "${%d:%s %s = %s}, " % (i, param.typeIdentifier, param.identifier, sem.GetLiteral(param.expression, True))
-					else:
-						content = content + "${%d:%s %s}, " % (i, param.typeIdentifier, param.identifier)
-				i += 1
-			content = "%s(%s)" % (stat.data.identifier, content[:-2])
+						if param.expression:
+							content = content + "${%d:%s %s = %s}, " % (i, param.typeIdentifier, param.identifier, sem.GetLiteral(param.expression, True))
+						else:
+							content = content + "${%d:%s %s}, " % (i, param.typeIdentifier, param.identifier)
+					i += 1
+				content = "%s(%s)" % (stat.data.identifier, content[:-2])
+			else:
+				content = "%s(${1})" % stat.data.identifier
 		else:
 			content = "%s()" % stat.data.identifier
 		return (tabTrigger + "\t" + description.lower(), content,)
@@ -325,7 +328,7 @@ def MakeFunctionCompletion(stat, sem, calling = True, script = "", precededByKey
 			content = "%sFunction %s(%s)\n\t${0}\nEndFunction" % (typ, stat.data.identifier, content)
 		return (tabTrigger + "\t" + description.lower(), content,)
 
-def MakeEventCompletion(stat, sem, calling = True, script = "", precededByKeyword = False):
+def MakeEventCompletion(stat, sem, calling = True, script = "", precededByKeyword = False, parameters = True):
 	tabTrigger = stat.data.name.lower()
 	if script:
 		script = " (%s)" % script
@@ -333,20 +336,23 @@ def MakeEventCompletion(stat, sem, calling = True, script = "", precededByKeywor
 	if calling:
 		content = ""
 		if stat.data.parameters:
-			i = 1
-			for param in stat.data.parameters:
-				if param.array:
-					if param.expression:
-						content = content + "${%d:%s[] %s = %s}, " % (i, param.typeIdentifier, param.identifier, sem.GetLiteral(param.expression, True))
+			if parameters:
+				i = 1
+				for param in stat.data.parameters:
+					if param.array:
+						if param.expression:
+							content = content + "${%d:%s[] %s = %s}, " % (i, param.typeIdentifier, param.identifier, sem.GetLiteral(param.expression, True))
+						else:
+							content = content + "${%d:%s[] %s}, " % (i, param.typeIdentifier, param.identifier)
 					else:
-						content = content + "${%d:%s[] %s}, " % (i, param.typeIdentifier, param.identifier)
-				else:
-					if param.expression:
-						content = content + "${%d:%s %s = %s}, " % (i, param.typeIdentifier, param.identifier, sem.GetLiteral(param.expression, True))
-					else:
-						content = content + "${%d:%s %s}, " % (i, param.typeIdentifier, param.identifier)
-				i += 1
-			content = "%s(%s)" % (stat.data.identifier, content[:-2])
+						if param.expression:
+							content = content + "${%d:%s %s = %s}, " % (i, param.typeIdentifier, param.identifier, sem.GetLiteral(param.expression, True))
+						else:
+							content = content + "${%d:%s %s}, " % (i, param.typeIdentifier, param.identifier)
+					i += 1
+				content = "%s(%s)" % (stat.data.identifier, content[:-2])
+			else:
+				content = "%s(${1})" % stat.data.identifier
 		else:
 			content = "%s()" % stat.data.identifier
 		return (tabTrigger + "\t" + description.lower(), content,)

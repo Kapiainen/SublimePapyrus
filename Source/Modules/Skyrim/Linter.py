@@ -1621,7 +1621,8 @@ class Semantic(SharedResources):
 	def Process(self, statements, paths): # Return True if successful, False if failed
 		if not statements:
 			self.Abort("No statements were given to process.")
-			return
+		if not paths:
+			self.Abort("No paths were given to process.")
 		# Reset properties
 		self.statements = None
 		self.paths = paths
@@ -2187,6 +2188,7 @@ class Semantic(SharedResources):
 			else:
 				self.Abort("Unknown literal type.")
 		elif node.type == self.NODE_FUNCTIONCALL:
+			globalFunction = self.KW_GLOBAL in self.statements[0].data.flags
 			func = None
 			if expected and expected.type == self.KW_SELF:
 				func = self.GetFunction(node.data.name.value.upper())
@@ -2234,6 +2236,8 @@ class Semantic(SharedResources):
 			else:
 				func = self.GetFunction(node.data.name.value)
 				if func:
+					if globalFunction and self.KW_GLOBAL not in func.data.flags:
+						self.Abort("Cannot call member functions from the same script inside of a global function.")
 					if func.data.type:
 						if func.data.array:
 							result = NodeResult(func.data.type, True, True)
@@ -2247,6 +2251,8 @@ class Semantic(SharedResources):
 					if script:
 						temp = script.functions.get(funcName, None)
 						if temp and self.KW_GLOBAL in temp.data.flags:
+							if globalFunction:
+								self.Abort("Cannot call imported global functions from other scripts without directly referencing the script.")
 							if func:
 								self.Abort("Ambiguous reference to a function called '%s'. It is unclear which version is being referenced." % node.data.name.value)
 							func = temp
@@ -2260,95 +2266,70 @@ class Semantic(SharedResources):
 				if not result:
 					self.Abort("'%s' is not a function/event that exists in this scope." % node.data.name.value)
 			if func:
+				def ValidateArgument(arg, param, paramName):
+					if arg.type == param.type:
+						if arg.array == param.array:
+							if not arg.object:
+								self.Abort("The argument passed to parameter '%s' is a type instead of a value." % paramName)
+						else:
+							if param.array:
+								if arg.type != self.KW_NONE:
+									self.Abort("Parameter '%s' is an array but the argument passed to it is not an array." % paramName)
+							else:
+								self.Abort("Parameter '%s' is not an array but the argument passed to it is an array." % paramName)
+					else:
+						if arg.array == param.array:
+							if arg.array:
+								self.Abort("Parameter '%s' and the argument passed to it are different types of arrays." % paramName)
+							elif not self.CanAutoCast(arg, param):
+								self.Abort("Parameter '%s' and the argument passed to it are incompatible types." % paramName)
+						else:
+							if param.array:
+								if arg.type != self.KW_NONE:
+									self.Abort("Parameter '%s' is an array but the argument passed to it is not an array." % paramName)
+							else:
+								self.Abort("Parameter '%s' is not an array but the argument passed to it is an array." % paramName)
 				params = func.data.parameters[:]
 				args = [a.data for a in node.data.arguments]
+				if len(params) < len(args):
+					self.Abort("'%s' has %d parameters, but %d arguments were given." % (func.data.identifier, len(params), len(args)))
 				outOfOrder = False
-				while len(params) > 0:
-					if not outOfOrder and len(args) > 0:
-						if args[0].name:
-							outOfOrder = True
-					if outOfOrder:
+				while args:
+					argResult = self.NodeVisitor(args[0].expression)
+					if not outOfOrder and args[0].name:
+						outOfOrder = True
+					if not outOfOrder:
+						paramResult = None
+						if params[0].array:
+							paramResult = NodeResult(params[0].type, True, True)
+						else:
+							paramResult = NodeResult(params[0].type, False, True)
+						ValidateArgument(argResult, paramResult, params[0].name)
+						params.pop(0)
+					else:
 						i = 0
-						j = len(args)
-						while i < j:
-							if not args[i].name:
-								self.Abort("Arguments are being passed out of order, but at least one argument does not specify which parameter it is passing a value to.")
-							if args[i].name.value.upper() == params[0].name:
-								argExpr = self.NodeVisitor(args[0].expression)
-								paramType = None
-								if params[0].array:
-									paramType = NodeResult(params[0].type, True, True)
-								else:
-									paramType = NodeResult(params[0].type, False, True)
-								if (argExpr.type != paramType.type or argExpr.array != paramType.array or argExpr.object != paramType.object) and not self.CanAutoCast(argExpr, paramType):
-									aType = argExpr.type
-									if argExpr.array:
-										aType = "%s[]" % aType
-									pType = paramType.type
-									if paramType.array:
-										pType = "%s[]" % pType
-									self.Abort("Parameter '%s' is of type '%s', but the argument evaluates to '%s', which cannot be auto-cast to the parameter's type." % (params[0].name, pType, aType))
-								args.pop(i)
+						paramLength = len(params)
+						if not args[0].name:
+							self.Abort("Arguments are being passed out of order, but one argument does not specify the parameter name.")
+						argName = args[0].name.value.upper()
+						while i < paramLength:
+							if params[i].name == argName:
 								break
 							i += 1
-						if len(args) == j and not params[0].expression:
-							self.Abort("An argument was not passed to the mandatory parameter '%s'." % params[0].name)
-					else:
-						if params[0].expression:
-							if len(args) > 0:
-								argExpr = self.NodeVisitor(args[0].expression)
-								paramType = None
-								if params[0].array:
-									paramType = NodeResult(params[0].type, True, True)
-								else:
-									paramType = NodeResult(params[0].type, False, True)
-								if (argExpr.type != paramType.type or argExpr.array != paramType.array or argExpr.object != paramType.object) and not self.CanAutoCast(argExpr, paramType):
-									aType = argExpr.type
-									if argExpr.array:
-										aType = "%s[]" % aType
-									pType = paramType.type
-									if paramType.array:
-										pType = "%s[]" % pType
-									self.Abort("Parameter '%s' is of type '%s', but the argument evaluates to '%s', which cannot be auto-cast to the parameter's type." % (params[0].name, pType, aType))
-								args.pop(0)
+						if i >= paramLength:
+							self.Abort("'%s' does not have a parameter called '%s'." % (func.data.identifier, argName))
+						paramResult = None
+						if params[i].array:
+							paramResult = NodeResult(params[i].type, True, True)
 						else:
-							if len(args) > 0:
-								argExpr = self.NodeVisitor(args[0].expression)
-								paramType = None
-								if params[0].array:
-									paramType = NodeResult(params[0].type, True, True)
-								else:
-									paramType = NodeResult(params[0].type, False, True)
-								if (argExpr.type != paramType.type or argExpr.array != paramType.array or argExpr.object != paramType.object) and not self.CanAutoCast(argExpr, paramType):
-									aType = argExpr.type
-									if argExpr.array:
-										aType = "%s[]" % aType
-									pType = paramType.type
-									if paramType.array:
-										pType = "%s[]" % pType
-									self.Abort("Parameter '%s' is of type '%s', but the argument evaluates to '%s', which cannot be auto-cast to the parameter's type." % (params[0].name, pType, aType))
-								args.pop(0)
-							else:
-								self.Abort("Mandatory parameter '%s' was not given an argument." % params[0].name)
+							paramResult = NodeResult(params[i].type, False, True)
+						ValidateArgument(argResult, paramResult, params[i].name)
+						params.pop(i)
+					args.pop(0)
+				while params:
+					if not params[0].expression:
+						self.Abort("Mandatory parameter '%s' was not given an argument." % params[0].name)
 					params.pop(0)
-				if len(args) > 0:
-					paramCount = len(func.data.parameters)
-					argCount = len(node.data.arguments)
-					if argCount == paramCount:
-						for arg in args:
-							found = False
-							argName = arg.name.value.upper()
-							for param in func.data.parameters:
-								if param.name == argName:
-									found = True
-							if not found:
-								self.Abort("'%s' is not a parameter that exists in '%s'." % (argName, func.data.name))
-						self.Abort("Multiple arguments were passed to at least one parameter.")
-					elif argCount > paramCount:
-						if argCount == 1:
-							self.Abort("The '%s' function/event has %d parameters, but %d argument was passed to it." % (func.data.name, paramCount, argCount))
-						else:
-							self.Abort("The '%s' function/event has %d parameters, but %d arguments were passed to it." % (func.data.name, paramCount, argCount))
 		elif node.type == self.NODE_IDENTIFIER:
 			if expected and expected.type: # Another script
 				if expected.type == self.KW_SELF:
@@ -2376,6 +2357,7 @@ class Semantic(SharedResources):
 					else:
 						pass
 			else: # Self or parent
+				globalFunction = self.KW_GLOBAL in self.statements[0].data.flags
 				if node.data.token.type == self.KW_PARENT:
 					if self.KW_GLOBAL in self.statements[0].data.flags:
 						self.Abort("'Parent' does not exist in functions with the 'Global' keyword.")
@@ -2388,6 +2370,11 @@ class Semantic(SharedResources):
 						self.Abort("'Self' does not exist in functions with the 'Global' keyword.")
 					result = NodeResult(self.KW_SELF, False, True)
 				else:
+					scriptwideVariables = None
+					if globalFunction:
+						scriptwideVariables = [self.variables.pop(0), self.variables.pop(0)]
+						self.variables.insert(0, {})
+						self.variables.insert(0, {})
 					var = self.GetVariable(node.data.token.value)
 					if var:
 						if var.data.array:
@@ -2400,6 +2387,11 @@ class Semantic(SharedResources):
 							self.GetCachedScript(result.type)
 						except SemanticError as e:
 							self.Abort("'%s' is neither a type nor a variable." % result.type)
+					if globalFunction:
+						self.variables.pop(0)
+						self.variables.pop(0)
+						self.variables.insert(0, scriptwideVariables.pop())
+						self.variables.insert(0, scriptwideVariables.pop())
 		elif node.type == self.NODE_LENGTH:
 			result = NodeResult(self.KW_INT, False, True)
 		elif node.type == self.NODE_ARRAYCREATION:
@@ -2424,36 +2416,36 @@ class Semantic(SharedResources):
 						self.Abort("Arrays can only be cast to STRING and BOOL.")
 					if leftResult.type != rightResult.type:
 						if rightResult.type == self.KW_BOOL:
-							pass
+							pass #Anything can be cast to bool
 						elif rightResult.type == self.KW_FLOAT:
-							if leftResult.type != self.KW_BOOL and leftResult.type != self.KW_FLOAT and leftResult.type != self.KW_STRING:
+							if leftResult.type != self.KW_BOOL and leftResult.type != self.KW_INT and leftResult.type != self.KW_STRING:
 								self.Abort("'%s' cannot be cast to 'Float'." % leftResult.type)
 						elif rightResult.type == self.KW_INT:
 							if leftResult.type != self.KW_BOOL and leftResult.type != self.KW_FLOAT and leftResult.type != self.KW_STRING:
 								self.Abort("'%s' cannot be cast to 'Int'." % leftResult.type)
 						elif rightResult.type == self.KW_STRING:
-							pass
-						else:
+							pass #Anything can be cast to string
+						elif leftResult.type != rightResult.type:
 							try:
 								targetScript = self.GetCachedScript(rightResult.type)
 							except SemanticError as e:
 								self.Abort("'%s' is not a type that exists." % rightResult.type)
-							if leftResult.type == self.KW_SELF:	
-								if not self.header.data.name in targetScript.extends:
-									if rightResult.type != self.header.data.parent:
+							if leftResult.type == self.KW_SELF:
+								if self.header.data.name not in targetScript.extends: # The left-side type is not one of the right-side type's parent types
+									if self.header.data.parent != rightResult.type: # The right-side type is not the parent type of self
 										try:
 											parentScript = self.GetCachedScript(self.header.data.parent)
 										except SemanticError as e:
-											self.Abort("'%s' is not a type that exists." % leftResult.type)
+											self.Abort("'%s' is not a type that exists." % rightResult.type)
 										if rightResult.type not in parentScript.extends:
-											self.Abort("'%s' cannot be cast as a(n) '%s' as the two types are incompatible." % (leftResult.type, rightResult.type))
+											self.Abort("'%s' cannot be cast as a(n) '%s' as the two types are incompatible." % (self.header.data.name, rightResult.type))
 							else:
-								if not leftResult.type in targetScript.extends:
+								if leftResult.type not in targetScript.extends: # The left-side type is not one of the right-side type's parent types
 									try:
-										parentScript = self.GetCachedScript(leftResult.type)
+										sourceScript = self.GetCachedScript(leftResult.type)
 									except SemanticError as e:
-										self.Abort("'%s' is not a type that exists." % leftResult.type)
-									if rightResult.type not in parentScript.extends:
+										self.Abort("'%s' is not a type that exists." % rightResult.type)
+									if not sourceScript or rightResult.type not in sourceScript.extends: # The right-side type is not one of the left-side type's parent types
 										self.Abort("'%s' cannot be cast as a(n) '%s' as the two types are incompatible." % (leftResult.type, rightResult.type))
 					result = rightResult
 				else:
@@ -2666,10 +2658,16 @@ class Semantic(SharedResources):
 					self.PushVariableScope()
 					self.FunctionBlock(statements)
 		for s in [s for s in script.definitions if s != ""]:
+			stateFunctions = {}
+			targetDefinition = None
 			for statements in script.definitions[s]:
+				stateFunctions[statements[0].data.name] = statements[0]
 				if self.cancel > statements[0].line and self.cancel <= statements[-1].line:
+					targetDefinition = statements
+				if targetDefinition:
+					self.functions.append(stateFunctions)
 					self.PushVariableScope()
-					self.FunctionBlock(statements)
+					self.FunctionBlock(targetDefinition)
 		for name, statements in script.states[1].items():
 			if self.cancel > statements[0].line and self.cancel <= statements[-1].line:
 				stateFunctions = {}

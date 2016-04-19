@@ -13,6 +13,10 @@ A Sublime Text 2 and 3 package for the Papyrus scripting language.
 ## **Description**
 SublimePapyrus is a package that aims to provide a development environment for a scripting language called [Papyrus](http://www.creationkit.com/Category:Papyrus) within [Sublime Text](https://www.sublimetext.com/). The package is split into a core package and additional packages for specific games and/or resources. The core package is always required, but the other packages usually depend upon the core package or one of the other packages.
 
+![Example](Docs/example.gif)
+
+The example above shows the syntax highlighting, code completion, and tooltips in action ([*Moka Dark* theme](https://github.com/aldomann/sublime-moka) is used in the example).
+
 ## **How to install**
 - Download a [release](https://github.com/Kapiainen/SublimePapyrus/releases).
 - Start Sublime Text.
@@ -21,17 +25,19 @@ SublimePapyrus is a package that aims to provide a development environment for a
 - Open the release archive that was downloaded and extract the *.sublime-package* files to *"\Data\Installed Packages"*.
 - Restart Sublime Text.
 
+Enabling Sublime Text's ***auto_complete_with_fields*** setting is highly recommended in order to get the best experience.
+
 ## **Core features**
-- Build system framework
+- [Build system framework](#build-system-framework)
  - Single file build
  - Batch build
  - Hide successful build results
  - Highlight build errors
-- Valid key insertion framework
-- Commands
+- [Valid key insertion framework](#valid-key-insertion-framework)
+- [Commands](#commands)
  - Open script
  - Clear error highlights
-- Settings
+- [Settings](#settings)
 
 #### Build system framework
 The core of this package contains a flexible build system framework that should be able to handle most situations. The build system supports both single file and batch building, multiple import folders, and additional arguments. Lines in the source code that cause build errors can also be highlighted and brought to the center of the screen. Attempts to batch build one of the folders defined in the import folders setting will show a warning prompt. If no output folder is specified in the user settings, then the compiled script will be placed one level above the script source (e.g. *"\Scripts\Source\Example.psc"* is compiled to *"\Scripts\Example.pex"*).
@@ -62,6 +68,26 @@ Settings are located in *Preferences* > *Package Settings* > *SublimePapyrus*.
 
   - ***intelligent_code_completion***: Enables the code completion system that uses cached results from the linter to provide context-aware completions. Default: True
 
+  - ***intelligent_code_completion_function_event_parameters***: Determines if function/event parameters should be included in completions for function/event calls. Default: True
+
+  - ***tooltip_function_parameters***: Determines if a tooltip shows up with information about the parameters of a function/event call that is being edited. Default: True
+    
+  - ***tooltip_background_color***: Hex color code of a tooltip's background. Default: #393939
+    
+  - ***tooltip_body_text_color***: Hex color code of a tooltip's text. Default: #747369
+    
+  - ***tooltip_font_size***: The size (in pixels) of a tooltip's text. Default: 12
+    
+  - ***tooltip_bold_text_color***: Hex color code of a tooltip's bold text. Default: #ffffff
+    
+  - ***tooltip_heading_text_color***: Hex color code of a tooltip's heading. Default: #bfbfbf
+    
+  - ***tooltip_heading_font_size***: The size (in pixels) of text in a tooltip's heading. Default: 14
+
+  - ***tooltip_max_width***: The maximum width (in pixels) of the tooltip. Default: 600
+  
+  - ***tooltip_max_height***: The maximum height (in pixels) of the tooltip. Default: 300
+
   - ***center_highlighted_line***: Automatically scrolls the view so that a highlighted line is in the center of the view. Default: True
 
   - ***highlight_build_errors***: Highlights lines that cause attempts to compile scripts to fail. Default: True
@@ -87,11 +113,12 @@ Settings are located in *Preferences* > *Package Settings* > *SublimePapyrus*.
  - [Immersive First Person View](#immersive-first-person-view-ifpv)
 
 ### **The Elder Scrolls V: Skyrim**
-- Syntax highlighting
-- Linter
-- Intelligent code completion
-- Build system
-- Commands
+- [Syntax highlighting](#syntax-highlighting)
+- [Linter](#linter)
+- [Intelligent code completion](#intelligent-code-completion)
+- [Tooltips](#tooltips)
+- [Build system](#build-system)
+- [Commands](#commands-1)
  - Generate completions
  - Valid key insertion
     - Actor value
@@ -108,11 +135,11 @@ Syntax highlighting for the version of Papyrus that is used in ***The Elder Scro
 Requirements:
 - The linter has to be enabled in the settings.
 
-The linter performs lexical, syntactic, and semantic analysis on the source code of scripts as they are being edited. Lines that cause errors are highlighted and the error messages are shown as status messages (bottom left corner of Sublime Text).
+The linter performs lexical, syntactic, and semantic analysis on the source code of scripts as they are being edited and/or when they are saved. Lines that cause errors are highlighted and the error messages are shown as status messages (bottom left corner of Sublime Text).
 
 Caching is used by the linter in order to improve performance and cache invalidation only occurs in a few scenarios. Modifications to the import folders setting (e.g. changing the order of paths) requires a restart of Sublime Text in order to clear the cache and ensure that the right scripts are being used.
 
-The linter does work in Sublime Text 2, but error messages and highlighting is not possible due to technical limitations, which do not apply to Sublime Text 3, regarding the API in Sublime Text 2 when the linter is triggered by editing a script. Error messages and highlighting is possible in Sublime Text 2 when the linter is triggered by saving a script.
+The linter does work in Sublime Text 2, but error messages and highlighting is not possible when the linter is triggered by editing a script due to technical limitations in the API of Sublime Text 2. Error messages and highlighting is possible in Sublime Text 2 when the linter is triggered by saving a script.
 
 Information about settings relevant to the linter can be found **[here](#settings)**.
 
@@ -129,13 +156,24 @@ The intelligent code completion system utilizes the linter to produce suggestion
 
 - Return completions for all scripts that exist within the import folders that have been defined in the package settings.
 
-- Return keyword completions are also returned on the basis of the context of the line that is being edited.
+- Return keyword completions based on the context of the line that is being edited (e.g. applicable function/event/property flags).
 
-- Provide information about the object behind the completion (e.g. a function's return type, a variable's type, whether a variable is a function/event parameter).
+- Provide information about the object behind the completion (e.g. a function's return type, a variable's type, whether a variable is a function/event parameter, the origin of the completion).
 
 Caching is used by the intelligent code completion system in order to improve performance. Saving a script invalidates the portions of the cache that would be affected by modifications to that script.
 
 There is a [setting](#settings) to turn this feature off. If this feature is disabled, then one can generate completions with the ***Generate completions*** command, but these completions will show up as suggested completions regardless of the context.
+
+#### Tooltips
+Requirements:
+- The feature has to be enabled in the settings.
+- The same requirements as in the case of the linter.
+- Sublime Text 3 build 3070 or newer.
+
+Shows additional information. The appearance of tooltips can be customized (e.g. font size, color, maximum dimensions) via the settings.
+
+Currently supported tooltips:
+- Show information about the function/event call that is being edited. The displayed information includes the name of the function/event, the parameters and their default values, and which parameter corresponds to the argument that is being edited. This feature can be toggled in the settings.
 
 #### Build system
 Single file build system and a batch build variant.
@@ -153,7 +191,7 @@ Single file build system and a batch build variant.
     - Game setting names (float, integer, and string)
 
 - Clear cache
-  - Clears the caches relevant to the linter and code completion. Can be used to refresh the linter and code completion after modifying the contents of the *import* setting (e.g. adding a new folder or changing the order of folders) or the contents of one of the folders specified in the *import* setting (e.g. saving a new script).
+  - Clears the caches relevant to the linter and code completion. Can be used to refresh the linter and code completion after modifying the contents of the ***import*** setting (e.g. adding a new folder or changing the order of folders) or the contents of one of the folders specified in the ***import*** setting (e.g. saving a new script).
 
 #### **3rd party resources for Skyrim**
 ##### Skyrim Script Extender (SKSE)
@@ -182,6 +220,24 @@ Single file build system and a batch build variant.
     - SKSE mod event names
 
 ## **Changelog**
+Version 2.x.x - 2016/MM/DD:
+
+**Core**
+  - Added new settings for toggling tooltips and customizing the looks of tooltips.
+  - Added a setting to toggle function/event parameters in function/event call completions.
+
+**Skyrim**
+  - Added an optional tooltip that shows the name of the function/event and its parameters when typing inside of a function/event call (Sublime Text 3 build 3070 or newer only).
+  - Linter
+    - Fixed validation of explicit casting.
+    - Fixed argument validation in function calls.
+    - Added restrictions imposed on functions by the 'Global' keyword to the semantic analysis.
+    - Added a warning when no import paths are passed to the semantic analysis (e.g. if no paths have been defined in the settings).
+  - Code completion
+    - Updated completions for functions/events in states.
+    - Added completions for parameters of the function/event that is being called.
+    - Added back completions for inherited functions/events that had been missing since the previous version.
+
 Version 2.0.0 - 2016/04/16:
 
 **Core**
@@ -193,38 +249,38 @@ Version 2.0.0 - 2016/04/16:
 **Skyrim**
   - Added a command to manually clear the various caches relevant to the linter and code completion without needing to restart Sublime Text. It is useful when modifying the contents of the *import* setting in the user settings or one of the folders specified in that setting.
   - Linter
-   - Switched from using filenames to using a view's buffer ID for identification purposes. Scripts no longer have to have been saved to a file for the linter, and subsequently the code completion, to work.
-   - Switched to using the unmodified lexical and syntactic analysis classes in semantic analysis when processing other scripts in order to get their properties, functions, and events.
-   - Changed the way that lexical and syntactic analysis are performed in an effort to catch syntactic errors earlier.
-   - Semantic analysis has been modified to no longer discard statements after use and instead store them in an object, which represents the script and can be used by the code completion system.
-   - NodeVisitor now returns an object with *type*, *array*, and *object* fields instead of just a string.
-   - Error messages in the status bar are now persistent until they have been resolved.
-   - Removed gutter icon from highlighted lines.
-   - Errors are no longer centered multiple times unless either the line with the error has moved up or down more than specified in the user settings (default: 2 lines) or there has been a linter pass without errors. 
-   - Modified error messages.
-   - Fixed *GetPath* so that it works in a Unix environment where many file systems are case-sensitive.
-   - Fixed a bug that caused issues when using identifiers starting with 'true' and 'false'.
-   - Fixed NodeVisitor so that it returns the correct values from binary operator nodes involving comparison or logical operators.
-   - Fixed a bug that caused non-global functions from imported scripts to be taken into account when checking for ambiguous function calls.
-   - Fixed a bug that stopped casting 'self' to a type that extends the current script.
-   - Fixed a bug that prevented the use of 'self' as an argument in function calls when the parameter type is the same as the current script.
-   - Added specific warnings when declaring a variable/property with an identifier that is already in use in a property declaration in a parent script.
-   - Added support for distinguishing between attempts to call global and non-global functions.
-   - Added errors when attempting to use the *Self* or *Parent* variables in functions with the *Global* keyword.
-   - Added validation of function return types.
-   - Added more specific exceptions (e.g. when expecting a type, a literal, a keyword, or an identifier).
-   - Added an error about casting to non-existing types.
-   - Added an error when attempting to cast an expression that does not return a value.
-   - Added errors when attempting to explicitly cast outside of the chain of inheritance of the type that the left-hand side expression evaluates to.
-   - Added an error when attempting to access properties, functions, or events of expressions that evaluate to a base type or nothing.
-   - Added an error when a variable's, property's, or parameter's name is the same as a known type.
-   - Added an error when attempting to assign a non-array value to an array.
-   - Added an error when attempting to use a type as if it were a variable (e.g. accessing a property directly via a type).
-   - Added errors when attempting to incorrectly use arithmetic or logical operators.
+    - Switched from using filenames to using a view's buffer ID for identification purposes. Scripts no longer have to have been saved to a file for the linter, and subsequently the code completion, to work.
+    - Switched to using the unmodified lexical and syntactic analysis classes in semantic analysis when processing other scripts in order to get their properties, functions, and events.
+    - Changed the way that lexical and syntactic analysis are performed in an effort to catch syntactic errors earlier.
+    - Semantic analysis has been modified to no longer discard statements after use and instead store them in an object, which represents the script and can be used by the code completion system.
+    - NodeVisitor now returns an object with *type*, *array*, and *object* fields instead of just a string.
+    - Error messages in the status bar are now persistent until they have been resolved.
+    - Removed gutter icon from highlighted lines.
+    - Errors are no longer centered multiple times unless either the line with the error has moved up or down more than specified in the user settings (default: 2 lines) or there has been a linter pass without errors. 
+    - Modified error messages.
+    - Fixed *GetPath* so that it works in a Unix environment where many file systems are case-sensitive.
+    - Fixed a bug that caused issues when using identifiers starting with 'true' and 'false'.
+    - Fixed NodeVisitor so that it returns the correct values from binary operator nodes involving comparison or logical operators.
+    - Fixed a bug that caused non-global functions from imported scripts to be taken into account when checking for ambiguous function calls.
+    - Fixed a bug that stopped casting 'self' to a type that extends the current script.
+    - Fixed a bug that prevented the use of 'self' as an argument in function calls when the parameter type is the same as the current script.
+    - Added specific warnings when declaring a variable/property with an identifier that is already in use in a property declaration in a parent script.
+    - Added support for distinguishing between attempts to call global and non-global functions.
+    - Added errors when attempting to use the *Self* or *Parent* variables in functions with the *Global* keyword.
+    - Added validation of function return types.
+    - Added more specific exceptions (e.g. when expecting a type, a literal, a keyword, or an identifier).
+    - Added an error about casting to non-existing types.
+    - Added an error when attempting to cast an expression that does not return a value.
+    - Added errors when attempting to explicitly cast outside of the chain of inheritance of the type that the left-hand side expression evaluates to.
+    - Added an error when attempting to access properties, functions, or events of expressions that evaluate to a base type or nothing.
+    - Added an error when a variable's, property's, or parameter's name is the same as a known type.
+    - Added an error when attempting to assign a non-array value to an array.
+    - Added an error when attempting to use a type as if it were a variable (e.g. accessing a property directly via a type).
+    - Added errors when attempting to incorrectly use arithmetic or logical operators.
   - Code completion
-   - Performance has been improved by caching the result of the linter's semantic analysis.
-   - More scenarios are now supported (e.g. keywords in script headers, variable declarations, property declarations, function/event declarations).
-   - The source (the current script, the parent script, or another script) of the completion is specified.
+    - Performance has been improved by caching the result of the linter's semantic analysis.
+    - More scenarios are now supported (e.g. keywords in script headers, variable declarations, property declarations, function/event declarations).
+    - The source (the current script, the parent script, or another script) of the completion is specified.
 
 Version 1.0.7 - 2016/03/10:
   - Fixed a bug in the 'Generate completions' command.
