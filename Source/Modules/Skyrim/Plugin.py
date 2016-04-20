@@ -906,6 +906,24 @@ h1 {
 										completions.append(self.completionKeywordSelf)
 										completions.append(self.completionKeywordParent)
 
+									# Imported global functions
+									for imp in e.imports:
+										functions = self.GetFunctionCompletions(imp, True)
+										if not functions:
+											try:
+												script = sem.GetCachedScript(imp)
+												if script:
+													functions = []
+													impLower = imp.lower()
+													for name, obj in script.functions.items():
+														if lex.KW_GLOBAL in obj.data.flags:
+															functions.append(SublimePapyrus.MakeFunctionCompletion(obj, sem, True, impLower, parameters=settingFunctionEventParameters))
+													self.SetFunctionCompletions(imp, functions, True)
+											except:
+												return
+										if functions:
+											completions.extend(functions)
+
 									if tokens[-1].type != lex.OP_ASSIGN:
 										stack = syn.stack[:]
 										for item in reversed(stack):
