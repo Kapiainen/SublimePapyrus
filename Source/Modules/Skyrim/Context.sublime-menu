@@ -1,0 +1,19 @@
+[
+	{
+		"caption": "-"
+	},
+	{
+		"caption": "Peek definition",
+		"command": "sublime_papyrus_skyrim_peek_definition",
+		"context": [
+			{
+				"key": "selector",
+				"operator": "equal",
+				"operand": "source.papyrus.skyrim"
+			}
+		]
+	},
+	{
+		"caption": "-"
+	}
+]

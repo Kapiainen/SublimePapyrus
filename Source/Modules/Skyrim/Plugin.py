@@ -1116,6 +1116,89 @@ class SublimePapyrusSkyrimClearCache(sublime_plugin.WindowCommand):
 			completionCache = {} 
 			sem.cache = {}
 
+class SublimePapyrusSkyrimPeekDefinition(sublime_plugin.TextCommand):
+	def run(self, edit, **args):
+		global cacheLock
+		global linterCache
+		global lex
+		global syn
+		global sem
+		with cacheLock:
+			line, column = self.view.rowcol(self.view.sel()[0].begin())
+			line += 1
+			bufferID = self.view.buffer_id()
+			if bufferID:
+				currentScript = linterCache.get(bufferID, None)
+				if currentScript:
+					try:
+						sem.GetContext(currentScript, line)
+					except Linter.FunctionDefinitionCancel as context:
+						wordRegion = self.view.word(
+							self.view.sel()[0]
+						)
+
+						prefix = self.view.substr(
+							sublime.Region(
+								self.view.line(
+									self.view.sel()[0]
+								).begin(),
+								wordRegion.begin()
+							)
+						).strip()
+
+						word = self.view.substr(
+							wordRegion
+						)
+
+						functionCall = self.view.substr(
+							sublime.Region(
+								wordRegion.end(),
+								wordRegion.end() + 1
+							)
+						) == "("
+						print(prefix)
+						print(word)
+						print(functionCall)
+						if prefix == "":
+							# Self, parent, or imported
+							pass
+						else:
+							tokens = []
+							try:
+								for token in lex.Process(prefix):
+									if token.type == lex.COMMENT_LINE or token.type == lex.COMMENT_BLOCK or token.type == lex.DOCUMENTATION_STRING:
+										return
+									else:
+										tokens.append(token)
+							except Linter.LexicalError as e:
+								return
+							try:
+								stat = syn.Process(tokens)
+							except Linter.SyntacticError as e:
+								if syn.stack and len(syn.stack) >= 2:
+									if syn.stack[-1].type == lex.OP_DOT:
+										try:
+											result = sem.NodeVisitor(syn.stack[-2])
+											print("Function/event or property in %s" % result.type)
+											script = sem.GetCachedScript(result.type) # Replace by reading
+											if script:
+												# Get starting line from function/event/property signature
+												# Get ending line with 'find("endfunction|endevent|endproperty", startingPosition, sublime.IGNORECASE)'
+												# Extract function/event/property definition as a substring from the file
+												panel = None
+												if PYTHON_VERSION[0] == 2:
+													panel = self.view.window().get_output_panel("sublimepapyrus-peek-definition")
+												elif PYTHON_VERSION[0] >= 3:
+													panel = self.view.window().create_output_panel("sublimepapyrus-peek-definition")
+												self.view.window().run_command("show_panel", {"panel": "output.sublimepapyrus-peek-definition"})
+										except Linter.SemanticError as f:
+											return
+								return
+
+					except Linter.SemanticError as e:
+						pass
+		return
+
 class SublimePapyrusSkyrimActorValueSuggestionsCommand(SublimePapyrus.SublimePapyrusShowSuggestionsCommand):
 	def get_items(self, **args):
 		items = {
