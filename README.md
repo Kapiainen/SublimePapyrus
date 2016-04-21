@@ -220,6 +220,15 @@ Single file build system and a batch build variant.
     - SKSE mod event names
 
 ## **Changelog**
+Version 2.x.x - 2016/MM/DD:
+
+**Skyrim**
+  - Code completion
+    - Added completions for imported global functions when defining arguments in function/event calls.
+  - Tooltips
+    - Refactored tooltips for function/event parameters in order to reduce the amount of work that is done.
+    - Added parameter tooltips for imported global functions.
+
 Version 2.1.0 - 2016/04/19:
 
 **Core**
