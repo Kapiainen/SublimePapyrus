@@ -317,6 +317,8 @@ h1 {
 			if delay < 0.050:
 				delay = 0.050
 		self.bufferID = view.buffer_id()
+		if view.name() == "sublimepapyrus-no-linting":
+			return
 		if self.bufferID:
 			lineNumber, columnNumber = view.rowcol(view.sel()[0].begin())
 			lineNumber += 1
@@ -1146,9 +1148,9 @@ class SublimePapyrusSkyrimPeekDefinition(sublime_plugin.TextCommand):
 							)
 						).strip()
 
-						word = self.view.substr(
+						name = self.view.substr(
 							wordRegion
-						)
+						).upper()
 
 						functionCall = self.view.substr(
 							sublime.Region(
@@ -1156,9 +1158,9 @@ class SublimePapyrusSkyrimPeekDefinition(sublime_plugin.TextCommand):
 								wordRegion.end() + 1
 							)
 						) == "("
-						print(prefix)
-						print(word)
-						print(functionCall)
+#						print(prefix)
+#						print(name)
+#						print(functionCall)
 						if prefix == "":
 							# Self, parent, or imported
 							pass
@@ -1179,18 +1181,78 @@ class SublimePapyrusSkyrimPeekDefinition(sublime_plugin.TextCommand):
 									if syn.stack[-1].type == lex.OP_DOT:
 										try:
 											result = sem.NodeVisitor(syn.stack[-2])
-											print("Function/event or property in %s" % result.type)
-											script = sem.GetCachedScript(result.type) # Replace by reading
+#											print("Function/event or property in %s" % result.type)
+
+											scriptName = result.type
+											startDelimiter = None
+											endDelimiter = None
+											script = sem.GetCachedScript(scriptName)
 											if script:
-												# Get starting line from function/event/property signature
-												# Get ending line with 'find("endfunction|endevent|endproperty", startingPosition, sublime.IGNORECASE)'
-												# Extract function/event/property definition as a substring from the file
-												panel = None
-												if PYTHON_VERSION[0] == 2:
-													panel = self.view.window().get_output_panel("sublimepapyrus-peek-definition")
-												elif PYTHON_VERSION[0] >= 3:
-													panel = self.view.window().create_output_panel("sublimepapyrus-peek-definition")
-												self.view.window().run_command("show_panel", {"panel": "output.sublimepapyrus-peek-definition"})
+												item = None
+												if functionCall:
+													item = script.functions.get(name, None)
+													if item:
+														if item.type == syn.STAT_FUNCTIONDEF:
+															startDelimiter = "FUNCTION"
+															endDelimiter = "ENDFUNCTION"
+														elif item.type == syn.STAT_EVENTDEF:
+															startDelimiter = "EVENT"
+															endDelimiter = "ENDEVENT"
+												else:
+													item = script.properties.get(name, None)
+													if item:
+														startDelimiter = "PROPERTY"
+														endDelimiter = "ENDPROPERTY"
+												if item and startDelimiter and endDelimiter:
+													definition = None
+													extends = script.extends[:]
+													while extends:
+#														print(scriptName)
+														path = sem.GetPath(scriptName)
+														lines = None
+														with open(path, "r") as f:
+															lines = f.readlines()
+														if not lines:
+															return
+														if item.line < len(lines):
+															startLine = lines[item.line-1].upper()
+															if startDelimiter in startLine and name in startLine:
+																if startDelimiter == "PROPERTY":
+																	if lex.KW_AUTO in item.data.flags or lex.KW_AUTOREADONLY in item.data.flags:
+																		definition = lines[item.line-1]
+																	else:
+																		endIndex = item.line
+																		for s in lines[item.line:]:
+																			endIndex += 1
+																			if s.strip().upper().startswith(endDelimiter):
+																				definition = "".join(lines[item.line-1:endIndex])
+																				break
+																else:
+																	if lex.KW_NATIVE in item.data.flags:
+																		definition = lines[item.line-1]
+																	else:
+																		endIndex = item.line
+																		for s in lines[item.line:]:
+																			endIndex += 1
+																			if s.strip().upper().startswith(endDelimiter):
+																				definition = "".join(lines[item.line-1:endIndex])
+																				break
+														scriptName = extends.pop(0)
+#													print(definition)
+													if definition:
+														# Get starting line from function/event/property signature
+														# Get ending line with 'find("endfunction|endevent|endproperty", startingPosition, sublime.IGNORECASE)'
+														# Extract function/event/property definition as a substring from the file
+														panel = None
+														if PYTHON_VERSION[0] == 2:
+															panel = self.view.window().get_output_panel("sublimepapyrus-peek-definition")
+														elif PYTHON_VERSION[0] >= 3:
+															panel = self.view.window().create_output_panel("sublimepapyrus-peek-definition")
+														self.view.window().run_command("show_panel", {"panel": "output.sublimepapyrus-peek-definition"})
+														panel.run_command("sublime_papyrus_skyrim_print_definition", {"content": definition.strip()})
+													else:
+														SublimePapyrus.ShowMessage("Could not find the definition for %s." % name)
+											return
 										except Linter.SemanticError as f:
 											return
 								return
@@ -1198,6 +1260,14 @@ class SublimePapyrusSkyrimPeekDefinition(sublime_plugin.TextCommand):
 					except Linter.SemanticError as e:
 						pass
 		return
+
+class SublimePapyrusSkyrimPrintDefinition(sublime_plugin.TextCommand):
+	def run(self, edit, **args):
+		self.view.set_read_only(False)
+		self.view.insert(edit, 0, args["content"])
+		self.view.set_name("sublimepapyrus-no-linting")
+		self.view.set_syntax_file("Packages/SublimePapyrus - Skyrim/Skyrim.tmLanguage")
+		self.view.set_read_only(True)
 
 class SublimePapyrusSkyrimActorValueSuggestionsCommand(SublimePapyrus.SublimePapyrusShowSuggestionsCommand):
 	def get_items(self, **args):
