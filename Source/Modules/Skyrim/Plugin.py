@@ -202,7 +202,49 @@ class EventListener(sublime_plugin.EventListener):
 											syn.Process(tokens)
 										except Linter.ExpectedIdentifierError as f:
 											if tokens[-1].type != lex.OP_DOT:
-												self.ShowFunctionInfo(view, tokens, syn.stack, e)
+												stack = syn.stack[:]
+												arguments = []
+												for item in reversed(stack):
+													if item.type == sem.NODE_FUNCTIONCALLARGUMENT:
+														arguments.insert(0, stack.pop())
+													elif item.type == sem.LEFT_PARENTHESIS:
+														break
+												stackLength = len(stack)
+												func = None
+												if stackLength >= 2 and stack[-2].type == sem.IDENTIFIER:
+													name = stack[-2].value.upper()
+													if stackLength >= 4 and stack[-3].type == sem.OP_DOT:
+														try:
+															result = sem.NodeVisitor(stack[-4])
+															if result.type != sem.KW_SELF:
+																try:
+																	script = sem.GetCachedScript(result.type)
+																	func = script.functions.get(name, None)
+																except Linter.SemanticError as e:
+																	return
+															else:
+																for scope in reversed(e.functions):
+																	func = scope.get(name, None)
+																	if func:
+																		break
+														except Linter.SemanticError as e:
+															return
+													else:
+														for scope in reversed(e.functions):
+															func = scope.get(name, None)
+															if func:
+																break
+														for imp in e.imports:
+															script = sem.GetCachedScript(imp)
+															temp = script.functions.get(name, None)
+															if temp:
+																if func:
+																	func = None
+																else:
+																	func = temp
+																break
+												if func and func.data.parameters:
+													self.ShowFunctionInfo(view, tokens, func, len(arguments))
 										except Linter.SyntacticError as f:
 											pass
 								except Linter.LexicalError as f:
@@ -213,75 +255,40 @@ class EventListener(sublime_plugin.EventListener):
 			if settings and settings.get("linter_on_modified", True):
 				self.QueueLinter(view)
 
-	def ShowFunctionInfo(self, view, tokens, stack, context):
-		global sem
-		arguments = []
-		for item in reversed(stack):
-			if item.type == sem.NODE_FUNCTIONCALLARGUMENT:
-				arguments.insert(0, stack.pop())
-			elif item.type == sem.LEFT_PARENTHESIS:
-				break
-		argumentCount = len(arguments)
-		stackLength = len(stack)
-		func = None
-		if stackLength >= 2 and stack[-1].type == sem.LEFT_PARENTHESIS and stack[-2].type == sem.IDENTIFIER:			
-			name = stack[-2].value.upper()
-			if stackLength >= 4 and stack[-3].type == sem.OP_DOT:
-				try:
-					result = sem.NodeVisitor(stack[-4])
-					if result.type != sem.KW_SELF:
-						try:
-							script = sem.GetCachedScript(result.type)
-							func = script.functions.get(name, None)
-						except Linter.SemanticError as e:
-							return
-					else:
-						for scope in reversed(context.functions):
-							func = scope.get(name, None)
-							if func:
-								break
-				except Linter.SemanticError as e:
-					return
-			elif stackLength == 2:
-				for scope in reversed(context.functions):
-					func = scope.get(name, None)
-					if func:
-						break
-		if func and func.data.parameters:
-			funcName = func.data.identifier
-			currentParameter = None
-			if len(tokens) > 2 and tokens[-1].type == lex.OP_ASSIGN and tokens[-2].type == lex.IDENTIFIER:
-				currentParameter = tokens[-2].value.upper()
-			paramIndex = 0
-			argCount = len(arguments)
-			funcParameters = []
-			for param in func.data.parameters:
-				paramName = param.identifier
-				paramType = param.typeIdentifier
-				if param.array:
-					paramType = "%s[]" % paramType
-				paramContent = None
-				if param.expression:
-					paramDefaultValue = sem.GetLiteral(param.expression, True)
-					paramContent = "%s %s = %s" % (paramType, paramName, paramDefaultValue)
-				else:
-					paramContent = "%s %s" % (paramType, paramName)
-				if currentParameter:
-					if currentParameter == paramName.upper():
-						paramContent = "<b>%s</b>" % paramContent
-				else:
-					if paramIndex == argCount:
-						paramContent = "<b>%s</b>" % paramContent
-					paramIndex += 1
-				funcParameters.append(paramContent)
-			settings = SublimePapyrus.GetSettings()
-			backgroundColor = settings.get("tooltip_background_color", "#393939")
-			bodyTextColor = settings.get("tooltip_body_text_color", "#747369")
-			bodyFontSize = settings.get("tooltip_font_size", "12")
-			boldTextColor = settings.get("tooltip_bold_text_color", "#ffffff")
-			headingTextColor = settings.get("tooltip_heading_text_color", "#bfbfbf")
-			headingFontSize = settings.get("tooltip_heading_font_size", "14")
-			css = """<style>
+	def ShowFunctionInfo(self, view, tokens, func, argumentCount):
+		funcName = func.data.identifier
+		currentParameter = None
+		if len(tokens) > 2 and tokens[-1].type == lex.OP_ASSIGN and tokens[-2].type == lex.IDENTIFIER:
+			currentParameter = tokens[-2].value.upper()
+		paramIndex = 0
+		funcParameters = []
+		for param in func.data.parameters:
+			paramName = param.identifier
+			paramType = param.typeIdentifier
+			if param.array:
+				paramType = "%s[]" % paramType
+			paramContent = None
+			if param.expression:
+				paramDefaultValue = sem.GetLiteral(param.expression, True)
+				paramContent = "%s %s = %s" % (paramType, paramName, paramDefaultValue)
+			else:
+				paramContent = "%s %s" % (paramType, paramName)
+			if currentParameter:
+				if currentParameter == paramName.upper():
+					paramContent = "<b>%s</b>" % paramContent
+			else:
+				if paramIndex == argumentCount:
+					paramContent = "<b>%s</b>" % paramContent
+				paramIndex += 1
+			funcParameters.append(paramContent)
+		settings = SublimePapyrus.GetSettings()
+		backgroundColor = settings.get("tooltip_background_color", "#393939")
+		bodyTextColor = settings.get("tooltip_body_text_color", "#747369")
+		bodyFontSize = settings.get("tooltip_font_size", "12")
+		boldTextColor = settings.get("tooltip_bold_text_color", "#ffffff")
+		headingTextColor = settings.get("tooltip_heading_text_color", "#bfbfbf")
+		headingFontSize = settings.get("tooltip_heading_font_size", "14")
+		css = """<style>
 html {
 	background-color: %s;
 }
@@ -300,11 +307,11 @@ h1 {
     font-size: %spx;
 }
 </style>""" % (backgroundColor, bodyFontSize, bodyTextColor, boldTextColor, headingTextColor, headingFontSize)
-			content = "%s<h1>%s</h1>%s" % (css, funcName, "<br>".join(funcParameters))
-			if view.is_popup_visible():
-				view.update_popup(content)
-			else:
-				view.show_popup(content, flags=sublime.COOPERATE_WITH_AUTO_COMPLETE, max_width=int(settings.get("tooltip_max_width", 600)), max_height=int(settings.get("tooltip_max_height", 300)))
+		content = "%s<h1>%s</h1>%s" % (css, funcName, "<br>".join(funcParameters))
+		if view.is_popup_visible():
+			view.update_popup(content)
+		else:
+			view.show_popup(content, flags=sublime.COOPERATE_WITH_AUTO_COMPLETE, max_width=int(settings.get("tooltip_max_width", 600)), max_height=int(settings.get("tooltip_max_height", 300)))
 
 	def QueueLinter(self, view):
 		if self.linterRunning: # If an instance of the linter is running, then cancel
@@ -906,46 +913,73 @@ h1 {
 										completions.append(self.completionKeywordSelf)
 										completions.append(self.completionKeywordParent)
 
-									if tokens[-1].type != lex.OP_ASSIGN:
-										stack = syn.stack[:]
-										for item in reversed(stack):
-											if item.type == sem.NODE_FUNCTIONCALLARGUMENT:
-												stack.pop()
-											elif item.type == sem.LEFT_PARENTHESIS:
-												break
-										stackLength = len(stack)
-										func = None
-										if stackLength >= 2 and stack[-1].type == sem.LEFT_PARENTHESIS and stack[-2].type == sem.IDENTIFIER:
-											name = stack[-2].value.upper()
-											if stackLength >= 4 and stack[-3].type == sem.OP_DOT:
-												try:
-													result = sem.NodeVisitor(stack[-4])
-													if result.type != sem.KW_SELF:
-														try:
-															script = sem.GetCachedScript(result.type)
-															func = script.functions.get(name, None)
-														except Linter.SemanticError as e:
-															return
-													else:
-														for scope in reversed(e.functions):
-															func = scope.get(name, None)
-															if func:
-																break
-												except Linter.SemanticError as e:
-													return
-											elif stackLength == 2:
-												for scope in reversed(e.functions):
-													func = scope.get(name, None)
-													if func:
-														break
-										if func and func.data.parameters:
-											for param in func.data.parameters:
-												completions.append(SublimePapyrus.MakeParameterCompletion(Linter.Statement(sem.STAT_PARAMETER, 0, param)))
+									# Imported global functions
+									for imp in e.imports:
+										functions = self.GetFunctionCompletions(imp, True)
+										if not functions:
+											try:
+												script = sem.GetCachedScript(imp)
+												if script:
+													functions = []
+													impLower = imp.lower()
+													for name, obj in script.functions.items():
+														if lex.KW_GLOBAL in obj.data.flags:
+															functions.append(SublimePapyrus.MakeFunctionCompletion(obj, sem, True, impLower, parameters=settingFunctionEventParameters))
+													self.SetFunctionCompletions(imp, functions, True)
+											except:
+												return
+										if functions:
+											completions.extend(functions)
 
-									global SUBLIME_VERSION
-									if SUBLIME_VERSION >= 3070 and prefix == "" and settings.get("tooltip_function_parameters", True):
-										if not view.is_popup_visible():
-											self.ShowFunctionInfo(view, tokens, syn.stack, e)
+									# Show info about function/event parameters
+									stack = syn.stack[:]
+									arguments = []
+									for item in reversed(stack):
+										if item.type == sem.NODE_FUNCTIONCALLARGUMENT:
+											arguments.insert(0, stack.pop())
+										elif item.type == sem.LEFT_PARENTHESIS:
+											break
+									stackLength = len(stack)
+									func = None
+									if stackLength >= 2 and stack[-2].type == sem.IDENTIFIER:
+										name = stack[-2].value.upper()
+										if stackLength >= 4 and stack[-3].type == sem.OP_DOT:
+											try:
+												result = sem.NodeVisitor(stack[-4])
+												if result.type != sem.KW_SELF:
+													try:
+														script = sem.GetCachedScript(result.type)
+														func = script.functions.get(name, None)
+													except Linter.SemanticError as e:
+														return
+												else:
+													for scope in reversed(e.functions):
+														func = scope.get(name, None)
+														if func:
+															break
+											except Linter.SemanticError as e:
+												return
+										else:
+											for scope in reversed(e.functions):
+												func = scope.get(name, None)
+												if func:
+													break
+											for imp in e.imports:
+												script = sem.GetCachedScript(imp)
+												temp = script.functions.get(name, None)
+												if temp:
+													if func:
+														func = None
+													else:
+														func = temp
+													break
+									if func and func.data.parameters:
+										for param in func.data.parameters:
+											completions.append(SublimePapyrus.MakeParameterCompletion(Linter.Statement(sem.STAT_PARAMETER, 0, param)))
+										global SUBLIME_VERSION
+										if SUBLIME_VERSION >= 3070 and prefix == "" and settings.get("tooltip_function_parameters", True):
+											if not view.is_popup_visible():
+												self.ShowFunctionInfo(view, tokens, func, len(arguments))
 
 									return completions
 							except Linter.SyntacticError as f:
