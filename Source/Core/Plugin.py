@@ -49,6 +49,8 @@ def HighlightLinter(view, line, column = None, center = True):
 
 def Highlight(view, key, scope, line, column = None, center = True):
 	if view and line:
+		if view.name() == "sublimepapyrus-no-linting":
+			return
 		regions = view.get_regions(key) #[]
 		if column: # Highlight a word
 			point = view.text_point(line-1, column)

@@ -317,8 +317,6 @@ h1 {
 			if delay < 0.050:
 				delay = 0.050
 		self.bufferID = view.buffer_id()
-		if view.name() == "sublimepapyrus-no-linting":
-			return
 		if self.bufferID:
 			lineNumber, columnNumber = view.rowcol(view.sel()[0].begin())
 			lineNumber += 1
@@ -1217,6 +1215,8 @@ class SublimePapyrusSkyrimPeekDefinition(sublime_plugin.TextCommand):
 														if item.line < len(lines):
 															startLine = lines[item.line-1].upper()
 															if startDelimiter in startLine and name in startLine:
+#																definition = "".join(lines)
+#																break
 																if startDelimiter == "PROPERTY":
 																	if lex.KW_AUTO in item.data.flags or lex.KW_AUTOREADONLY in item.data.flags:
 																		definition = lines[item.line-1]
@@ -1238,11 +1238,7 @@ class SublimePapyrusSkyrimPeekDefinition(sublime_plugin.TextCommand):
 																				definition = "".join(lines[item.line-1:endIndex])
 																				break
 														scriptName = extends.pop(0)
-#													print(definition)
 													if definition:
-														# Get starting line from function/event/property signature
-														# Get ending line with 'find("endfunction|endevent|endproperty", startingPosition, sublime.IGNORECASE)'
-														# Extract function/event/property definition as a substring from the file
 														panel = None
 														if PYTHON_VERSION[0] == 2:
 															panel = self.view.window().get_output_panel("sublimepapyrus-peek-definition")
@@ -1265,9 +1261,11 @@ class SublimePapyrusSkyrimPrintDefinition(sublime_plugin.TextCommand):
 	def run(self, edit, **args):
 		self.view.set_read_only(False)
 		self.view.insert(edit, 0, args["content"])
+		self.view.set_read_only(True)
 		self.view.set_name("sublimepapyrus-no-linting")
 		self.view.set_syntax_file("Packages/SublimePapyrus - Skyrim/Skyrim.tmLanguage")
-		self.view.set_read_only(True)
+		self.view.show_at_center(self.view.text_point(0, 0))
+		
 
 class SublimePapyrusSkyrimActorValueSuggestionsCommand(SublimePapyrus.SublimePapyrusShowSuggestionsCommand):
 	def get_items(self, **args):
