@@ -1244,8 +1244,10 @@ class CachedScript(object):
 		self.states = aStates
 
 class Script(object):
-	__slots__ = ["functions", "variables", "states", "imports", "definitions"]
-	def __init__(self, aFunctions, aVariables, aStates, aImports, aDefinitions):
+	__slots__ = ["name", "extends", "functions", "variables", "states", "imports", "definitions"]
+	def __init__(self, aName, aExtends, aFunctions, aVariables, aStates, aImports, aDefinitions):
+		self.name = aName
+		self.extends = aExtends
 		self.functions = aFunctions
 		self.variables = aVariables
 		self.states = aStates
@@ -1784,7 +1786,7 @@ class Semantic(SharedResources):
 			self.PushFunctionScope()
 			self.StateBlock(statements)
 			self.PopFunctionScope()
-		return Script(self.functions[0:2], self.variables[0:2], self.states[0:2], self.imports, self.definitions)
+		return Script(self.header.data.name, self.header.data.parent, self.functions[0:2], self.variables[0:2], self.states[0:2], self.imports, self.definitions)
 
 	def PropertyBlock(self, statements):
 		if self.cancel:
