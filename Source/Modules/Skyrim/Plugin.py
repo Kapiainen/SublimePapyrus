@@ -113,6 +113,11 @@ cacheLock = threading.RLock()
 lex = Linter.Lexical()
 syn = Linter.Syntactic()
 sem = Linter.Semantic()
+validScope = "source.papyrus.skyrim"
+
+def IsValidScope(view):
+	global validScope
+	return validScope in view.scope_name(0)
 
 class EventListener(sublime_plugin.EventListener):
 	def __init__(self):
@@ -121,7 +126,6 @@ class EventListener(sublime_plugin.EventListener):
 		self.linterRunning = False
 		self.linterErrors = {}
 		self.completionRunning = False
-		self.validScope = "source.papyrus.skyrim"
 		self.completionKeywordAs = ("as\tcast", "As ",)
 		self.completionKeywordAuto = ("auto\tkeyword", "Auto",)
 		self.completionKeywordAutoReadOnly = ("autoreadonly\tkeyword", "AutoReadOnly",)
@@ -138,7 +142,7 @@ class EventListener(sublime_plugin.EventListener):
 
 	# Clear cache in order to force an update
 	def on_close(self, view):
-		if self.IsValidScope(view):
+		if IsValidScope(view):
 			bufferID = view.buffer_id()
 			if bufferID:
 				if self.linterErrors.get(bufferID, None):
@@ -147,7 +151,7 @@ class EventListener(sublime_plugin.EventListener):
 
 	# Linter
 	def on_post_save(self, view):
-		if self.IsValidScope(view):
+		if IsValidScope(view):
 			settings = SublimePapyrus.GetSettings()
 			if settings and settings.get("linter_on_save", True):
 				filePath = view.file_name()
@@ -166,7 +170,7 @@ class EventListener(sublime_plugin.EventListener):
 						self.Linter(view, lineNumber)
 
 	def on_modified(self, view):
-		if self.IsValidScope(view):
+		if IsValidScope(view):
 			settings = SublimePapyrus.GetSettings()
 
 			global SUBLIME_VERSION
@@ -458,7 +462,7 @@ h1 {
 
 	# Completions
 	def on_query_completions(self, view, prefix, locations):
-		if self.IsValidScope(view):
+		if IsValidScope(view):
 			settings = SublimePapyrus.GetSettings()
 			if settings and settings.get("intelligent_code_completion", True):
 				if self.completionRunning:
@@ -982,11 +986,6 @@ h1 {
 				return
 			return
 
-	def IsValidScope(self, view):
-		if self.validScope:
-			return self.validScope in view.scope_name(0)
-		return False
-
 	def ClearCompletionCache(self, script):
 		global cacheLock
 		with cacheLock:
@@ -1118,54 +1117,102 @@ class SublimePapyrusSkyrimClearCache(sublime_plugin.WindowCommand):
 
 class SublimePapyrusSkyrimPeekDefinition(sublime_plugin.TextCommand):
 	def run(self, edit, **args):
-		global cacheLock
-		global linterCache
-		global lex
-		global syn
-		global sem
-		with cacheLock:
-			line, column = self.view.rowcol(self.view.sel()[0].begin())
-			line += 1
-			bufferID = self.view.buffer_id()
-			if bufferID:
-				currentScript = linterCache.get(bufferID, None)
-				if currentScript:
-					try:
-						sem.GetContext(currentScript, line)
-					except Linter.FunctionDefinitionCancel as context:
-						wordRegion = self.view.word(
-							self.view.sel()[0]
-						)
-
-						prefix = self.view.substr(
-							sublime.Region(
-								self.view.line(
-									self.view.sel()[0]
-								).begin(),
-								wordRegion.begin()
+		global validScope
+		if IsValidScope(self.view):
+			global cacheLock
+			global linterCache
+			global lex
+			global syn
+			global sem
+			with cacheLock:
+				line, column = self.view.rowcol(self.view.sel()[0].begin())
+				line += 1
+				bufferID = self.view.buffer_id()
+				if bufferID:
+					currentScript = linterCache.get(bufferID, None)
+					if currentScript:
+						try:
+							sem.GetContext(currentScript, line)
+						except Linter.FunctionDefinitionCancel as context:
+							wordRegion = self.view.word(
+								self.view.sel()[0]
 							)
-						).strip()
 
-						name = self.view.substr(
-							wordRegion
-						).upper()
+							prefix = self.view.substr(
+								sublime.Region(
+									self.view.line(
+										self.view.sel()[0]
+									).begin(),
+									wordRegion.begin()
+								)
+							).strip()
 
-						functionCall = self.view.substr(
-							sublime.Region(
-								wordRegion.end(),
-								wordRegion.end() + 1
-							)
-						) == "("
-						definition = None
-						item = None
-						if prefix == "" or prefix[-1] != ".":
-							if functionCall:
-								item = currentScript.functions[1].get(name, None)
-								if item:
-									definition = self.view.substr(sublime.Region(0, self.view.size()))
+							name = self.view.substr(
+								wordRegion
+							).upper()
+
+							functionCall = self.view.substr(
+								sublime.Region(
+									wordRegion.end(),
+									wordRegion.end() + 1
+								)
+							) == "("
+							definition = None
+							item = None
+							if prefix == "" or prefix[-1] != ".":
+								if functionCall:
+									item = currentScript.functions[1].get(name, None)
+									if item:
+										definition = self.view.substr(sublime.Region(0, self.view.size()))
+									else:
+										if currentScript.extends:
+											item = currentScript.functions[0].get(name, None)
+											if item:
+												scriptName = currentScript.extends
+												script = sem.GetCachedScript(scriptName)
+												if script:
+													extends = script.extends[:]
+													while scriptName:
+														path = sem.GetPath(scriptName)
+														lines = None
+														with open(path, "r") as f:
+															lines = f.readlines()
+														if not lines:
+															return
+														if item.line < len(lines):
+															startLine = lines[item.line-1].upper()
+															if name in startLine and ("FUNCTION" in startLine or "EVENT" in startLine):
+																definition = "".join(lines)
+																break
+														if extends:
+															scriptName = extends.pop(0)
+														else:
+															scriptName = None
+									for imp in currentScript.imports:
+										script = sem.GetCachedScript(imp)
+										temp = script.functions.get(name, None)
+										if temp:
+											if item:
+												return
+											if lex.KW_GLOBAL in temp.data.flags:
+												path = sem.GetPath(imp)
+												lines = None
+												with open(path, "r") as f:
+													lines = f.readlines()
+												if not lines:
+													return
+												if temp.line < len(lines):
+													startLine = lines[temp.line-1].upper()
+													if name in startLine and "FUNCTION" in startLine:
+														definition = "".join(lines)
+														item = temp
+														break
 								else:
-									if currentScript.extends:
-										item = currentScript.functions[0].get(name, None)
+									item = currentScript.variables[1].get(name, None)
+									if item:
+										definition = self.view.substr(sublime.Region(0, self.view.size()))
+									if not definition:
+										item = currentScript.variables[0].get(name, None)
 										if item:
 											scriptName = currentScript.extends
 											script = sem.GetCachedScript(scriptName)
@@ -1180,122 +1227,75 @@ class SublimePapyrusSkyrimPeekDefinition(sublime_plugin.TextCommand):
 														return
 													if item.line < len(lines):
 														startLine = lines[item.line-1].upper()
-														if name in startLine and ("FUNCTION" in startLine or "EVENT" in startLine):
+														if name in startLine and "PROPERTY" in startLine:
 															definition = "".join(lines)
 															break
 													if extends:
 														scriptName = extends.pop(0)
 													else:
 														scriptName = None
-								for imp in currentScript.imports:
-									script = sem.GetCachedScript(imp)
-									temp = script.functions.get(name, None)
-									if temp:
-										if item:
-											return
-										if lex.KW_GLOBAL in temp.data.flags:
-											path = sem.GetPath(imp)
-											lines = None
-											with open(path, "r") as f:
-												lines = f.readlines()
-											if not lines:
-												return
-											if temp.line < len(lines):
-												startLine = lines[temp.line-1].upper()
-												if name in startLine and "FUNCTION" in startLine:
-													definition = "".join(lines)
-													item = temp
-													break
 							else:
-								item = currentScript.variables[1].get(name, None)
-								if item:
-									definition = self.view.substr(sublime.Region(0, self.view.size()))
-								if not definition:
-									item = currentScript.variables[0].get(name, None)
-									if item:
-										scriptName = currentScript.extends
-										script = sem.GetCachedScript(scriptName)
-										if script:
-											extends = script.extends[:]
-											while scriptName:
-												path = sem.GetPath(scriptName)
-												lines = None
-												with open(path, "r") as f:
-													lines = f.readlines()
-												if not lines:
-													return
-												if item.line < len(lines):
-													startLine = lines[item.line-1].upper()
-													if name in startLine and "PROPERTY" in startLine:
-														definition = "".join(lines)
-														break
-												if extends:
-													scriptName = extends.pop(0)
-												else:
-													scriptName = None
-						else:
-							tokens = []
-							try:
-								for token in lex.Process(prefix):
-									if token.type == lex.COMMENT_LINE or token.type == lex.COMMENT_BLOCK or token.type == lex.DOCUMENTATION_STRING:
-										return
-									else:
-										tokens.append(token)
-							except Linter.LexicalError as e:
-								return
-							try:
-								stat = syn.Process(tokens)
-							except Linter.SyntacticError as e:
-								if syn.stack and len(syn.stack) >= 2:
-									if syn.stack[-1].type == lex.OP_DOT:
-										try:
-											result = sem.NodeVisitor(syn.stack[-2])
-											if result.type == lex.KW_SELF:
-												pass
-											else:
-												scriptName = result.type
-												script = sem.GetCachedScript(scriptName)
-												if script:
-													if functionCall:
-														item = script.functions.get(name, None)
-													else:
-														item = script.properties.get(name, None)
-													if item:
-														extends = script.extends[:]
-														while scriptName:
-															path = sem.GetPath(scriptName)
-															lines = None
-															with open(path, "r") as f:
-																lines = f.readlines()
-															if not lines:
-																return
-															if item.line < len(lines):
-																startLine = lines[item.line-1].upper()
-																if name in startLine and ("FUNCTION" in startLine or "EVENT" in startLine or "PROPERTY" in startLine):
-																	definition = "".join(lines)
-																	break
-															if extends:
-																scriptName = extends.pop(0)
-															else:
-																scriptName = None
-										except Linter.SemanticError as f:
+								tokens = []
+								try:
+									for token in lex.Process(prefix):
+										if token.type == lex.COMMENT_LINE or token.type == lex.COMMENT_BLOCK or token.type == lex.DOCUMENTATION_STRING:
 											return
-						if definition:
-							panel = None
-							if PYTHON_VERSION[0] == 2:
-								panel = self.view.window().get_output_panel("sublimepapyrus-peek-definition")
-							elif PYTHON_VERSION[0] >= 3:
-								panel = self.view.window().find_output_panel("sublimepapyrus-peek-definition")
-								if not panel:
-									panel = self.view.window().create_output_panel("sublimepapyrus-peek-definition")
-							self.view.window().run_command("show_panel", {"panel": "output.sublimepapyrus-peek-definition"})
-							panel.run_command("sublime_papyrus_skyrim_print_definition", {"content": definition.strip(), "line": item.line - 1})
-						else:
-							SublimePapyrus.ShowMessage("Could not find the definition for %s." % name)				
-						return
-					except Linter.SemanticError as e:
-						pass
-		return
+										else:
+											tokens.append(token)
+								except Linter.LexicalError as e:
+									return
+								try:
+									stat = syn.Process(tokens)
+								except Linter.SyntacticError as e:
+									if syn.stack and len(syn.stack) >= 2:
+										if syn.stack[-1].type == lex.OP_DOT:
+											try:
+												result = sem.NodeVisitor(syn.stack[-2])
+												if result.type == lex.KW_SELF:
+													pass
+												else:
+													scriptName = result.type
+													script = sem.GetCachedScript(scriptName)
+													if script:
+														if functionCall:
+															item = script.functions.get(name, None)
+														else:
+															item = script.properties.get(name, None)
+														if item:
+															extends = script.extends[:]
+															while scriptName:
+																path = sem.GetPath(scriptName)
+																lines = None
+																with open(path, "r") as f:
+																	lines = f.readlines()
+																if not lines:
+																	return
+																if item.line < len(lines):
+																	startLine = lines[item.line-1].upper()
+																	if name in startLine and ("FUNCTION" in startLine or "EVENT" in startLine or "PROPERTY" in startLine):
+																		definition = "".join(lines)
+																		break
+																if extends:
+																	scriptName = extends.pop(0)
+																else:
+																	scriptName = None
+											except Linter.SemanticError as f:
+												return
+							if definition:
+								panel = None
+								if PYTHON_VERSION[0] == 2:
+									panel = self.view.window().get_output_panel("sublimepapyrus-peek-definition")
+								elif PYTHON_VERSION[0] >= 3:
+									panel = self.view.window().find_output_panel("sublimepapyrus-peek-definition")
+									if not panel:
+										panel = self.view.window().create_output_panel("sublimepapyrus-peek-definition")
+								self.view.window().run_command("show_panel", {"panel": "output.sublimepapyrus-peek-definition"})
+								panel.run_command("sublime_papyrus_skyrim_print_definition", {"content": definition.strip(), "line": item.line - 1})
+							else:
+								SublimePapyrus.ShowMessage("Could not find the definition for %s." % name)				
+							return
+						except Linter.SemanticError as e:
+							pass
 
 class SublimePapyrusSkyrimPrintDefinition(sublime_plugin.TextCommand):
 	def run(self, edit, **args):
