@@ -1156,9 +1156,6 @@ class SublimePapyrusSkyrimPeekDefinition(sublime_plugin.TextCommand):
 								wordRegion.end() + 1
 							)
 						) == "("
-						#print(prefix)
-						#print(name)
-						#print(functionCall)
 						definition = None
 						item = None
 						if prefix == "" or prefix[-1] != ".":
@@ -1175,7 +1172,6 @@ class SublimePapyrusSkyrimPeekDefinition(sublime_plugin.TextCommand):
 											if script:
 												extends = script.extends[:]
 												while scriptName:
-													#print(scriptName)
 													path = sem.GetPath(scriptName)
 													lines = None
 													with open(path, "r") as f:
@@ -1184,7 +1180,6 @@ class SublimePapyrusSkyrimPeekDefinition(sublime_plugin.TextCommand):
 														return
 													if item.line < len(lines):
 														startLine = lines[item.line-1].upper()
-														#print(startLine)
 														if name in startLine and ("FUNCTION" in startLine or "EVENT" in startLine):
 															definition = "".join(lines)
 															break
@@ -1207,14 +1202,13 @@ class SublimePapyrusSkyrimPeekDefinition(sublime_plugin.TextCommand):
 												return
 											if temp.line < len(lines):
 												startLine = lines[temp.line-1].upper()
-												#print(startLine)
 												if name in startLine and "FUNCTION" in startLine:
 													definition = "".join(lines)
 													item = temp
 													break
 							else:
 								item = currentScript.variables[1].get(name, None)
-								if item:# and item.type == syn.STAT_PROPERTYDEF:
+								if item:
 									definition = self.view.substr(sublime.Region(0, self.view.size()))
 								if not definition:
 									item = currentScript.variables[0].get(name, None)
@@ -1224,7 +1218,6 @@ class SublimePapyrusSkyrimPeekDefinition(sublime_plugin.TextCommand):
 										if script:
 											extends = script.extends[:]
 											while scriptName:
-												#print(scriptName)
 												path = sem.GetPath(scriptName)
 												lines = None
 												with open(path, "r") as f:
@@ -1233,7 +1226,6 @@ class SublimePapyrusSkyrimPeekDefinition(sublime_plugin.TextCommand):
 													return
 												if item.line < len(lines):
 													startLine = lines[item.line-1].upper()
-													#print(startLine)
 													if name in startLine and "PROPERTY" in startLine:
 														definition = "".join(lines)
 														break
@@ -1258,7 +1250,6 @@ class SublimePapyrusSkyrimPeekDefinition(sublime_plugin.TextCommand):
 									if syn.stack[-1].type == lex.OP_DOT:
 										try:
 											result = sem.NodeVisitor(syn.stack[-2])
-											#print("Function/event or property in %s" % result.type)
 											if result.type == lex.KW_SELF:
 												pass
 											else:
@@ -1272,7 +1263,6 @@ class SublimePapyrusSkyrimPeekDefinition(sublime_plugin.TextCommand):
 													if item:
 														extends = script.extends[:]
 														while scriptName:
-															#print(scriptName)
 															path = sem.GetPath(scriptName)
 															lines = None
 															with open(path, "r") as f:
@@ -1281,8 +1271,7 @@ class SublimePapyrusSkyrimPeekDefinition(sublime_plugin.TextCommand):
 																return
 															if item.line < len(lines):
 																startLine = lines[item.line-1].upper()
-																#print(startLine)
-																if name in startLine and ("FUNCTION" in startLine or "EVENT" in startLine or "PROPERTY" in startLine):#if startDelimiter in startLine and name in startLine:
+																if name in startLine and ("FUNCTION" in startLine or "EVENT" in startLine or "PROPERTY" in startLine):
 																	definition = "".join(lines)
 																	break
 															if extends:
