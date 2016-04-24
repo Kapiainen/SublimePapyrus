@@ -1,5 +1,8 @@
 # **EXPERIMENTAL BRANCH**
 
+- Context menu entry for the command is always visible regardless of the view's syntax highlighting.
+- Only supports functions, events, and properties.
+
 **SublimePapyrus**
 ==
 A Sublime Text 2 and 3 package for the Papyrus scripting language.
