@@ -220,6 +220,12 @@ Single file build system and a batch build variant.
     - SKSE mod event names
 
 ## **Changelog**
+Version 2.x.x - 2016/MM/DD:
+
+**Core**
+  - Added the ability to use the *Open script* command in views that do not have a compatible syntax. An additional panel, which allows you to select which module's *import* paths should be used, opens up after you enter the (partial) name of the script to look for.
+  - Added an optional *title* setting to module settings. The string value is used when listing modules by name. If this setting does not exist, then the module's key is used instead in listings.
+
 Version 2.1.1 - 2016/04/22:
 
 **Skyrim**
