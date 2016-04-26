@@ -29,6 +29,15 @@
 				"output": "",
 				"import": [],
 				"arguments": []
+		},
+		"fallout4":
+		{
+			"title": "Fallout 4",
+			"compiler": "",
+			"flags": "Institute_Papyrus_Flags.flg",
+			"output": "",
+			"import": [],
+			"arguments": [],
 		}
 	}
 }
