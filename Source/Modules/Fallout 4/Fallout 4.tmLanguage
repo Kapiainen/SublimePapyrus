@@ -278,7 +278,7 @@
 			<array>
 				<dict>
 					<key>begin</key>
-					<string>(?i)\b(new)\s+([_a-z][0-9_a-z]*)\[</string>
+					<string>(?i)\b(new)\s+(?:([_a-z][0-9_a-z]*)(\:))?([_a-z][0-9_a-z]*)\[</string>
 					<key>beginCaptures</key>
 					<dict>
 						<key>1</key>
@@ -396,7 +396,7 @@
 					<key>comment</key>
 					<string>Cast</string>
 					<key>match</key>
-					<string>(?i)\b(as)\s+([_a-z][0-9_a-z]*)\b</string>
+					<string>(?i)\b(as)\s+(?:([_a-z][0-9_a-z]*)(\:))?([_a-z][0-9_a-z]*)\b</string>
 					<key>name</key>
 					<string>meta.cast.papyrus</string>
 				</dict>
@@ -1673,7 +1673,7 @@
 			<array>
 				<dict>
 					<key>begin</key>
-					<string>(?i)^\s*([_a-z][0-9_a-z]*)(?:\[\])?\s+(property)\s+</string>
+					<string>(?i)^\s*(?:([_a-z][0-9_a-z]*)(\:))?([_a-z][0-9_a-z]*)(?:\[\])?\s+(property)\s+</string>
 					<key>beginCaptures</key>
 					<dict>
 						<key>1</key>
@@ -1682,6 +1682,16 @@
 							<string>storage.type.papyrus</string>
 						</dict>
 						<key>2</key>
+						<dict>
+							<key>name</key>
+							<string>keyword.operator.papyrus</string>
+						</dict>
+						<key>3</key>
+						<dict>
+							<key>name</key>
+							<string>storage.type.papyrus</string>
+						</dict>
+						<key>4</key>
 						<dict>
 							<key>name</key>
 							<string>keyword.other.papyrus</string>
@@ -1992,10 +2002,28 @@
 			<key>patterns</key>
 			<array>
 				<dict>
+					<key>captures</key>
+					<dict>
+						<key>1</key>
+						<dict>
+							<key>name</key>
+							<string>storage.type.papyrus</string>
+						</dict>
+						<key>2</key>
+						<dict>
+							<key>name</key>
+							<string>keyword.operator.papyrus</string>
+						</dict>
+						<key>3</key>
+						<dict>
+							<key>name</key>
+							<string>storage.type.papyrus</string>
+						</dict>
+					</dict>
 					<key>comment</key>
 					<string>Type identifier</string>
 					<key>match</key>
-					<string>(?i)\b([_a-z][0-9_a-z]*)\b</string>
+					<string>(?i)\b(?:([_a-z][0-9_a-z]*)(\:))?([_a-z][0-9_a-z]*)\b</string>
 					<key>name</key>
 					<string>storage.type.papyrus</string>
 				</dict>
@@ -2053,7 +2081,7 @@
 			<array>
 				<dict>
 					<key>begin</key>
-					<string>(?i)^\s*([_a-z][0-9_a-z]*)(?:\[\])?\s+([_a-z][0-9_a-z]*)(?:\s*(\=)\s*)</string>
+					<string>(?i)^\s*(?:([_a-z][0-9_a-z]*)(\:))?([_a-z][0-9_a-z]*)(?:\[\])?\s+([_a-z][0-9_a-z]*)(?:\s*(\=)\s*)</string>
 					<key>beginCaptures</key>
 					<dict>
 						<key>1</key>
@@ -2064,9 +2092,19 @@
 						<key>2</key>
 						<dict>
 							<key>name</key>
-							<string>variable.other.papyrus</string>
+							<string>keyword.operator.papyrus</string>
 						</dict>
 						<key>3</key>
+						<dict>
+							<key>name</key>
+							<string>storage.type.papyrus</string>
+						</dict>
+						<key>4</key>
+						<dict>
+							<key>name</key>
+							<string>variable.other.papyrus</string>
+						</dict>
+						<key>5</key>
 						<dict>
 							<key>name</key>
 							<string>keyword.operator.papyrus</string>
@@ -2102,7 +2140,7 @@
 				</dict>
 				<dict>
 					<key>begin</key>
-					<string>(?i)^\s*([_a-z][0-9_a-z]*)(?:\[\])?\s+([_a-z][0-9_a-z]*)(?:\s+(conditional|const)\b)?</string>
+					<string>(?i)^\s*(?:([_a-z][0-9_a-z]*)(\:))?([_a-z][0-9_a-z]*)(?:\[\])?\s+([_a-z][0-9_a-z]*)(?:\s+(conditional|const)\b)?</string>
 					<key>beginCaptures</key>
 					<dict>
 						<key>1</key>

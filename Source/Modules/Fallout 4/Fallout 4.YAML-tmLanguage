@@ -193,10 +193,12 @@ repository:
     patterns:
     - comment: Property declaration
       name: meta.property.papyrus
-      begin: (?i)^\s*([_a-z][0-9_a-z]*)(?:\[\])?\s+(property)\s+
+      begin: (?i)^\s*(?:([_a-z][0-9_a-z]*)(\:))?([_a-z][0-9_a-z]*)(?:\[\])?\s+(property)\s+
       beginCaptures:
         '1': {name: storage.type.papyrus}
-        '2': {name: keyword.other.papyrus}
+        '2': {name: keyword.operator.papyrus}
+        '3': {name: storage.type.papyrus}
+        '4': {name: keyword.other.papyrus}
       end: ([\n\r])
       patterns:
       - comment: Assignment operator
@@ -439,11 +441,13 @@ repository:
     patterns:
     - comment: Variable declaration with a default value
       name: meta.variable.papyrus
-      begin: (?i)^\s*([_a-z][0-9_a-z]*)(?:\[\])?\s+([_a-z][0-9_a-z]*)(?:\s*(\=)\s*)
+      begin: (?i)^\s*(?:([_a-z][0-9_a-z]*)(\:))?([_a-z][0-9_a-z]*)(?:\[\])?\s+([_a-z][0-9_a-z]*)(?:\s*(\=)\s*)
       beginCaptures:
        '1': {name: storage.type.papyrus}
-       '2': {name: variable.other.papyrus}
-       '3': {name: keyword.operator.papyrus}
+       '2': {name: keyword.operator.papyrus}
+       '3': {name: storage.type.papyrus}
+       '4': {name: variable.other.papyrus}
+       '5': {name: keyword.operator.papyrus}
       end: ([\n\r])
       patterns:
       - include: '#constants'
@@ -454,7 +458,7 @@ repository:
 
     - comment: Scriptwide variable declaration without a default value
       name: meta.variable.papyrus
-      begin: (?i)^\s*([_a-z][0-9_a-z]*)(?:\[\])?\s+([_a-z][0-9_a-z]*)(?:\s+(conditional|const)\b)?
+      begin: (?i)^\s*(?:([_a-z][0-9_a-z]*)(\:))?([_a-z][0-9_a-z]*)(?:\[\])?\s+([_a-z][0-9_a-z]*)(?:\s+(conditional|const)\b)?
       beginCaptures:
        '1': {name: storage.type.papyrus}
        '2': {name: variable.other.papyrus}
@@ -511,7 +515,7 @@ repository:
     patterns:
     - comment: Cast
       name: meta.cast.papyrus
-      match: (?i)\b(as)\s+([_a-z][0-9_a-z]*)\b
+      match: (?i)\b(as)\s+(?:([_a-z][0-9_a-z]*)(\:))?([_a-z][0-9_a-z]*)\b
       captures:
        '1': {name: keyword.operator.papyrus}
        '2': {name: storage.type.papyrus}
@@ -540,7 +544,7 @@ repository:
     patterns:
     - comment: New array
       name: meta.newarray.papyrus
-      begin: (?i)\b(new)\s+([_a-z][0-9_a-z]*)\[
+      begin: (?i)\b(new)\s+(?:([_a-z][0-9_a-z]*)(\:))?([_a-z][0-9_a-z]*)\[
       beginCaptures:
        '1': {name: keyword.operator.papyrus}
        '2': {name: storage.type.papyrus}
@@ -755,7 +759,11 @@ repository:
     patterns:
     - comment: Type identifier
       name: storage.type.papyrus
-      match: (?i)\b([_a-z][0-9_a-z]*)\b
+      match: (?i)\b(?:([_a-z][0-9_a-z]*)(\:))?([_a-z][0-9_a-z]*)\b
+      captures:
+        '1': {name: storage.type.papyrus}
+        '2': {name: keyword.operator.papyrus}
+        '3': {name: storage.type.papyrus}
 
   parameterIdentifier:
     patterns:
