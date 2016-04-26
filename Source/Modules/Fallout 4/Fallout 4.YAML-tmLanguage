@@ -308,7 +308,7 @@ repository:
       - include: '#illegalKeywords'
       - include: '#illegalSpecialVariables'
       - include: '#illegalBaseTypes'
-      - include: '#functionIdentifier'
+      - include: '#eventIdentifier'
       - include: '#endOfLine'
 
   eventParameters:
@@ -721,13 +721,13 @@ repository:
     patterns:
     - comment: Type
       name: storage.type.papyrus
-      match: (?i)\b(bool|float|int|string|var)\b
+      match: (?i)\b(bool|customevent|float|int|string|var)\b
 
   illegalBaseTypes:
     patterns:
     - comment: Type
       name: meta.invalid.papyrus
-      match: (?i)\b(bool|float|int|string|var)\b
+      match: (?i)\b(bool|customevent|float|int|string|var)\b
 
   identifier:
     patterns:
@@ -737,9 +737,19 @@ repository:
 
   functionIdentifier:
     patterns:
-    - comment: Function/event identifier
+    - comment: Function identifier
       name: entity.name.function.papyrus
       match: (?i)\b([_a-z][0-9_a-z]*)(?=\()
+
+  eventIdentifier:
+    patterns:
+    - comment: Event identifier
+      name: meta.name.event.papyrus
+      match: (?i)\b(?:([_a-z][0-9_a-z]*)(\.))?([_a-z][0-9_a-z]*)(?=\()
+      captures:
+        '1': {name: storage.type.papyrus}
+        '2': {name: keyword.operator.papyrus}
+        '3': {name: entity.name.function.papyrus}
 
   typeIdentifier:
     patterns:

@@ -337,7 +337,7 @@
 					<key>comment</key>
 					<string>Type</string>
 					<key>match</key>
-					<string>(?i)\b(bool|float|int|string|var)\b</string>
+					<string>(?i)\b(bool|customevent|float|int|string|var)\b</string>
 					<key>name</key>
 					<string>storage.type.papyrus</string>
 				</dict>
@@ -922,7 +922,7 @@
 						</dict>
 						<dict>
 							<key>include</key>
-							<string>#functionIdentifier</string>
+							<string>#eventIdentifier</string>
 						</dict>
 						<dict>
 							<key>include</key>
@@ -943,6 +943,38 @@
 					<string>(?i)(?&lt;=\))\s*(native)\b</string>
 					<key>name</key>
 					<string>keyword.other.papyrus</string>
+				</dict>
+			</array>
+		</dict>
+		<key>eventIdentifier</key>
+		<dict>
+			<key>patterns</key>
+			<array>
+				<dict>
+					<key>captures</key>
+					<dict>
+						<key>1</key>
+						<dict>
+							<key>name</key>
+							<string>storage.type.papyrus</string>
+						</dict>
+						<key>2</key>
+						<dict>
+							<key>name</key>
+							<string>keyword.operator.papyrus</string>
+						</dict>
+						<key>3</key>
+						<dict>
+							<key>name</key>
+							<string>entity.name.function.papyrus</string>
+						</dict>
+					</dict>
+					<key>comment</key>
+					<string>Event identifier</string>
+					<key>match</key>
+					<string>(?i)\b(?:([_a-z][0-9_a-z]*)(\.))?([_a-z][0-9_a-z]*)(?=\()</string>
+					<key>name</key>
+					<string>meta.name.event.papyrus</string>
 				</dict>
 			</array>
 		</dict>
@@ -1256,7 +1288,7 @@
 			<array>
 				<dict>
 					<key>comment</key>
-					<string>Function/event identifier</string>
+					<string>Function identifier</string>
 					<key>match</key>
 					<string>(?i)\b([_a-z][0-9_a-z]*)(?=\()</string>
 					<key>name</key>
@@ -1455,7 +1487,7 @@
 					<key>comment</key>
 					<string>Type</string>
 					<key>match</key>
-					<string>(?i)\b(bool|float|int|string|var)\b</string>
+					<string>(?i)\b(bool|customevent|float|int|string|var)\b</string>
 					<key>name</key>
 					<string>meta.invalid.papyrus</string>
 				</dict>
