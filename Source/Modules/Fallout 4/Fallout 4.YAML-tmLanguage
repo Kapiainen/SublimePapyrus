@@ -1,0 +1,756 @@
+# [PackageDev] target_format: plist, ext: tmLanguage
+---
+name: Papyrus - Fallout 4
+scopeName: source.papyrus.fallout4
+fileTypes: [psc]
+uuid: c3a48958-a5a3-4e6e-9434-ec86a0656c29
+
+patterns:
+- comment: Empty line
+  name: meta.emptyline.papyrus
+  match: ^\s*$
+- include: '#commentDocumentation'
+- include: '#commentBlock'
+- include: '#commentLine'
+- include: '#scriptHeader'
+- include: '#import'
+- include: '#group'
+- include: '#endgroup'
+- include: '#struct'
+- include: '#endstruct'
+- include: '#state'
+- include: '#endState'
+- include: '#event'
+- include: '#endEvent'
+- include: '#return'
+- include: '#if'
+- include: '#elseif'
+- include: '#else'
+- include: '#endIf'
+- include: '#while'
+- include: '#endWhile'
+- include: '#property'
+- include: '#endProperty'
+- include: '#function'
+- include: '#endFunction'
+- include: '#variable'
+- include: '#assign'
+- include: '#expression'
+- include: '#whitespace'
+- include: '#unmatched'
+
+repository:
+  endOfLine:
+    patterns:
+    - include: '#commentBlock'
+    - include: '#commentLine'
+    - include: '#whitespace'
+    - include: '#multiline'
+    - include: '#unmatched'
+
+  comments:
+    patterns:
+    - include: '#commentBlock'
+    - include: '#commentLine'
+    - include: '#commentDocumentation'
+
+  commentBlock:
+    patterns:
+    - comment: Comment block
+      name: comment.block.papyrus
+      begin: ;/
+      end: /;
+
+  commentLine:
+    patterns:
+    - comment: Single line comment
+      name: comment.line.papyrus
+      match: ;.*$
+
+  commentDocumentation:
+    patterns:
+    - comment: Documentation comment
+      name: comment.documentation.papyrus
+      begin: ^\s*\{
+      end: \}
+
+  scriptHeader:
+    patterns:
+    - comment: Scriptheader
+      name: meta.scriptheader.papyrus
+      begin: (?i)^\s*(scriptname)\s+ #\b
+      beginCaptures:
+        '1': {name: keyword.other.papyrus}
+      end: ([\n\r])
+      patterns:
+      - comment: Script parent declaration
+        name: keyword.other.papyrus
+        match: (?i)\b(extends)\b
+      - comment: Script flags
+        name: keyword.other.papyrus
+        match: (?i)\b(conditional|const|default|hidden|native)\b
+      - include: '#illegalKeywords'
+      - include: '#illegalSpecialVariables'
+      - include: '#illegalBaseTypes'
+      - include: '#typeIdentifier'
+      - include: '#endOfLine'
+
+  import:
+    patterns:
+    - comment: Import statement
+      name: meta.import.papyrus
+      begin: (?i)^\s*(import)\s+
+      beginCaptures:
+        '1': {name: keyword.other.papyrus}
+      end: ([\n\r])
+      patterns:
+      - include: '#illegalKeywords'
+      - include: '#illegalSpecialVariables'
+      - include: '#illegalBaseTypes'
+      - include: '#typeIdentifier'
+      - include: '#endOfLine'
+
+  struct:
+    patterns:
+    - comment: Struct declaration
+      name: meta.struct.papyrus
+      begin: (?i)^\s*(struct)\s+
+      beginCaptures:
+       '1': {name: keyword.other.papyrus}
+      end: ([\n\r])
+      patterns:
+      - include: '#illegalKeywords'
+      - include: '#illegalSpecialVariables'
+      - include: '#illegalBaseTypes'
+      - include: '#identifier'
+      - include: '#endOfLine'
+
+  endstruct:
+    patterns:
+    - comment: EndStruct statement
+      name: meta.endstruct.papyrus
+      begin: (?i)^\s*(endstruct)\b
+      beginCaptures:
+       '1': {name: keyword.other.papyrus}
+      end: ([\n\r])
+      patterns:
+      - include: '#endOfLine'
+
+  group:
+    patterns:
+    - comment: Gourp declaration
+      name: meta.group.papyrus
+      begin: (?i)^\s*(group)\s+
+      beginCaptures:
+       '1': {name: keyword.other.papyrus}
+      end: ([\n\r])
+      patterns:
+      - include: '#illegalKeywords'
+      - include: '#illegalSpecialVariables'
+      - include: '#illegalBaseTypes'
+      - include: '#identifier'
+      - include: '#endOfLine'
+
+  endgroup:
+    patterns:
+    - comment: EndGroup statement
+      name: meta.endgroup.papyrus
+      begin: (?i)^\s*(endgroup)\b
+      beginCaptures:
+       '1': {name: keyword.other.papyrus}
+      end: ([\n\r])
+      patterns:
+      - include: '#endOfLine'
+
+  state:
+    patterns:
+    - comment: State declaration
+      name: meta.state.papyrus
+      begin: (?i)^\s*(?:(auto)\s+)?(state)\s+
+      beginCaptures:
+       '1': {name: keyword.other.papyrus}
+       '2': {name: keyword.other.papyrus}
+      end: ([\n\r])
+      patterns:
+      - include: '#illegalKeywords'
+      - include: '#illegalSpecialVariables'
+      - include: '#illegalBaseTypes'
+      - include: '#identifier'
+      - include: '#endOfLine'
+
+  endState:
+    patterns:
+    - comment: EndState statement
+      name: meta.endstate.papyrus
+      begin: (?i)^\s*(endstate)\b
+      beginCaptures:
+       '1': {name: keyword.other.papyrus}
+      end: ([\n\r])
+      patterns:
+      - include: '#endOfLine'
+
+  property:
+    patterns:
+    - comment: Property declaration
+      name: meta.property.papyrus
+      begin: (?i)^\s*([_a-z][0-9_a-z]*)(?:\[\])?\s+(property)\s+
+      beginCaptures:
+        '1': {name: storage.type.papyrus}
+        '2': {name: keyword.other.papyrus}
+      end: ([\n\r])
+      patterns:
+      - comment: Assignment operator
+        name: keyword.operator.assignment.papyrus
+        match: (\=)
+      - include: '#constants'
+      - include: '#propertyFlags'
+      - include: '#illegalKeywords'
+      - include: '#illegalSpecialVariables'
+      - include: '#illegalBaseTypes'
+      - include: '#identifier'
+      - include: '#endOfLine'
+
+  propertyFlags:
+    patterns:
+    - comment: Property flags
+      name: keyword.other.papyrus
+      match: (?i)\b(auto|autoreadonly|conditional|const|hidden|mandatory)\b
+
+  endProperty:
+    patterns:
+    - comment: EndProperty statement
+      name: meta.endproperty.papyrus
+      begin: (?i)^\s*(endproperty)\b
+      beginCaptures:
+       '1': {name: keyword.other.papyrus}
+      end: ([\n\r])
+      patterns:
+      - include: '#endOfLine'
+
+  function:
+    patterns:
+    - comment: Function declaration
+      name: meta.function.papyrus
+      begin: (?i)^\s*(?:([_a-z][0-9_a-z]*)(?:\[\])?\s+)?(function)\s+
+      beginCaptures:
+       '1': {name: storage.type.papyrus}
+       '2': {name: keyword.control.functionstart.papyrus}
+       '3': {name: entity.name.function.papyrus}
+      end: ([\n\r])
+      patterns:
+      - include: '#functionParameters'
+      - include: '#functionFlags'
+      - include: '#illegalKeywords'
+      - include: '#illegalSpecialVariables'
+      - include: '#illegalBaseTypes'
+      - include: '#functionIdentifier'
+      - include: '#endOfLine'
+
+  functionParameters:
+    patterns:
+    - comment: Function parameters
+      name: meta.functionparameters.papyrus
+      begin: \(
+      end: \)
+      patterns:
+      - comment: Assignment operator
+        name: keyword.operator.assignment.papyrus
+        match: (\=)
+      - include: '#constants'
+      - include: '#illegalKeywords'
+      - include: '#illegalSpecialVariables'
+      - include: '#functionParameter'
+      - include: '#comma'
+      - include: '#multiline'
+      - include: '#whitespace'
+      - include: '#unmatched'
+
+  functionParameter:
+    patterns:
+    - include: '#functionParameterIdentifier'
+    - include: '#typeIdentifier'
+
+  functionParameterIdentifier:
+    patterns:
+    - comment: Event parameter identifier
+      name: variable.parameter.papyrus
+      match: (?i)\b([_a-z][0-9_a-z]*)\s*(?=(\,|\)|\=))
+
+  functionFlags:
+    patterns:
+    - comment: Function flags
+      name: keyword.other.papyrus
+      match: (?i)\b(betaonly|debugonly|global|native)\b
+
+  endFunction:
+    patterns:
+    - comment: EndFunction statement
+      name: meta.endfunction.papyrus
+      begin: (?i)^\s*(endfunction)\b
+      beginCaptures:
+       '1': {name: keyword.other.papyrus}
+      end: ([\n\r])
+      patterns:
+      - include: '#endOfLine'
+
+  event:
+    patterns:
+    - comment: Event declaration
+      name: meta.event.papyrus
+      begin: (?i)^\s*(event)\s+
+      beginCaptures:
+       '1': {name: keyword.control.eventstart.papyrus}
+       '2': {name: entity.name.function.papyrus}
+      end: ([\n\r])
+      patterns:
+      - include: '#eventParameters'
+      - include: '#eventFlags'
+      - include: '#illegalKeywords'
+      - include: '#illegalSpecialVariables'
+      - include: '#illegalBaseTypes'
+      - include: '#functionIdentifier'
+      - include: '#endOfLine'
+
+  eventParameters:
+    patterns:
+    - comment: Event parameters
+      name: meta.eventparameters.papyrus
+      begin: \(
+      end: \)
+      patterns:
+      - include: '#illegalKeywords'
+      - include: '#illegalSpecialVariables'
+      - include: '#eventParameter'
+      - include: '#comma'
+      - include: '#multiline'
+      - include: '#whitespace'
+      - include: '#unmatched'
+
+  eventParameter:
+    patterns:
+    - include: '#eventParameterIdentifier'
+    - include: '#typeIdentifier'
+
+  eventParameterIdentifier:
+    patterns:
+    - comment: Event parameter identifier
+      name: variable.parameter.papyrus
+      match: (?i)\b([_a-z][0-9_a-z]*)\s*(?=(\,|\)))
+
+  eventFlags:
+    patterns:
+    - comment: Event flags
+      name: keyword.other.papyrus
+      match: (?i)(?<=\))\s*(native)\b
+
+  endEvent:
+    patterns:
+    - comment: EndEvent statement
+      name: meta.endevent.papyrus
+      begin: (?i)^\s*(endevent)\b
+      beginCaptures:
+       '1': {name: keyword.other.papyrus}
+      end: ([\n\r])
+      patterns:
+      - include: '#endOfLine'
+
+  return:
+    patterns:
+    - comment: Return statements
+      name: meta.return.papyrus
+      begin: (?i)^\s*(return)\b
+      beginCaptures:
+       '1': {name: keyword.other.papyrus}
+      end: ([\n\r])
+      patterns:
+      - include: '#expression'
+      - include: '#endOfLine'
+
+  if:
+    patterns:
+    - comment: If statement
+      name: meta.if.papyrus
+      begin: (?i)^\s*(if)\b
+      beginCaptures:
+       '1': {name: keyword.other.papyrus}
+      end: ([\n\r])
+      patterns:
+      - include: '#expression'
+      - include: '#endOfLine'
+
+  elseif:
+    patterns:
+    - comment: ElseIf statement
+      name: meta.elseif.papyrus
+      begin: (?i)^\s*(elseif)\b
+      beginCaptures:
+       '1': {name: keyword.other.papyrus}
+      end: ([\n\r])
+      patterns:
+      - include: '#expression'
+      - include: '#endOfLine'
+
+  else:
+    patterns:
+    - comment: Else statement
+      name: meta.else.papyrus
+      begin: (?i)^\s*(else)\b
+      beginCaptures:
+       '1': {name: keyword.other.papyrus}
+      end: ([\n\r])
+      patterns:
+      - include: '#endOfLine'
+
+  endIf:
+    patterns:
+    - comment: EndIf statement
+      name: meta.endif.papyrus
+      begin: (?i)^\s*(endif)\b
+      beginCaptures:
+       '1': {name: keyword.other.papyrus}
+      end: ([\n\r])
+      patterns:
+      - include: '#endOfLine'
+
+  while:
+    patterns:
+    - comment: While statement
+      name: meta.while.papyrus
+      begin: (?i)^\s*(while)\b
+      beginCaptures:
+       '1': {name: keyword.other.papyrus}
+      end: ([\n\r])
+      patterns:
+      - include: '#expression'
+      - include: '#endOfLine'
+
+  endWhile:
+    patterns:
+    - comment: EndWhile statement
+      name: meta.endwhile.papyrus
+      begin: (?i)^\s*(endwhile)\b
+      beginCaptures:
+       '1': {name: keyword.other.papyrus}
+      end: ([\n\r])
+      patterns:
+      - include: '#endOfLine'
+
+  variable:
+    patterns:
+    - comment: Variable declaration with a default value
+      name: meta.variable.papyrus
+      begin: (?i)^\s*([_a-z][0-9_a-z]*)(?:\[\])?\s+([_a-z][0-9_a-z]*)(?:\s*(\=)\s*)
+      beginCaptures:
+       '1': {name: storage.type.papyrus}
+       '2': {name: variable.other.papyrus}
+       '3': {name: keyword.operator.papyrus}
+      end: ([\n\r])
+      patterns:
+      - include: '#constants'
+      - name: keyword.other.papyrus
+        match: (?i)(?:\b(conditional|const)\b)
+      - include: '#expression'
+      - include: '#endOfLine'
+
+    - comment: Scriptwide variable declaration without a default value
+      name: meta.variable.papyrus
+      begin: (?i)^\s*([_a-z][0-9_a-z]*)(?:\[\])?\s+([_a-z][0-9_a-z]*)(?:\s+(conditional|const)\b)?
+      beginCaptures:
+       '1': {name: storage.type.papyrus}
+       '2': {name: variable.other.papyrus}
+       '3': {name: keyword.other.papyrus}
+      end: ([\n\r])
+      patterns:
+      - include: '#endOfLine'
+
+  expression:
+    patterns:
+    - comment: OR
+      name: keyword.operator.papyrus
+      match: \|\|
+    - include: '#andExpression'
+    - include: '#endOfLine'
+
+  andExpression:
+    patterns:
+    - comment: AND
+      name: keyword.operator.papyrus
+      match: \&\&
+    - include: '#boolExpression'
+
+  boolExpression:
+    patterns:
+    - comment: Comparison operators
+      name: keyword.operator.papyrus
+      match: (\=\=|\!\=|\<\=|\>\=|\<|\>)
+    - include: '#addExpression'
+    
+
+  addExpression:
+    patterns:
+    - comment: Addition or subtraction
+      name: keyword.operator.papyrus
+      match: (\+|\-)
+    - include: '#multExpression'
+
+  multExpression:
+    patterns:
+    - comment: Multiplication, division, or modulus
+      name: keyword.operator.papyrus
+      match: (\*|/|\%)
+    - include: '#unaryExpression'
+
+  unaryExpression:
+    patterns:
+    - comment: Unary minus or NOT
+      name: keyword.operator.papyrus
+      match: (\-|\!)
+    - include: '#castAtom'
+
+  castAtom:
+    patterns:
+    - comment: Cast
+      name: meta.cast.papyrus
+      match: (?i)\b(as)\s+([_a-z][0-9_a-z]*)\b
+      captures:
+       '1': {name: keyword.operator.papyrus}
+       '2': {name: storage.type.papyrus}
+    - include: '#dotAtom'    
+
+  dotAtom:
+    patterns:
+    - comment: Dot
+      name: keyword.operator.papyrus
+      match: \.
+    - include: '#constants'
+    - include: '#arrayAtom'
+    - include: '#arrayFuncOrId'
+
+  arrayAtom:
+    patterns:
+    - comment: Array
+      name: meta.array.papyrus
+      begin: \[
+      end: \]
+      patterns:
+      - include: '#expression'
+    - include: '#atom'
+
+  atom:
+    patterns:
+    - comment: New array
+      name: meta.newarray.papyrus
+      begin: (?i)\b(new)\s+([_a-z][0-9_a-z]*)\[
+      beginCaptures:
+       '1': {name: keyword.operator.papyrus}
+       '2': {name: storage.type.papyrus}
+      end: \]
+      patterns:
+      - include: '#integer'
+    - comment: Parenthesis
+      name: meta.parenthesis.papyrus
+      begin: \(
+      end: (\)|[\n\r])
+      patterns:
+      - include: '#expression'
+    - include: '#funcOrId'
+
+  funcOrId:
+    patterns:
+    - comment: Length
+      name: keyword.other.papyrus
+      match: (?i)\b(length)\b
+    - include: '#functionCall'
+    - include: '#illegalKeywords'
+    - include: '#illegalBaseTypes'
+    - include: '#specialVariables'
+    - include: '#identifier'
+
+  functionCall:
+    patterns:
+    - comment: Function call
+      name: meta.functioncall.papyrus
+      begin: (?i)\b([_a-z][0-9_a-z]*)\(
+      beginCaptures:
+       '1': {name: variable.other.papyrus}
+      end: \)
+      patterns:
+      - include: '#functionCallParameters'
+
+  functionCallParameters:
+    patterns:
+    - include: '#comma'
+    - include: '#functionCallParameter'
+
+  functionCallParameter:
+    patterns:
+    - comment: Specific parameter
+      name: meta.functioncallparameter.papyrus
+      match: (?i)\b(?:([_a-z][0-9_a-z]*)\s*(\=))?
+      captures:
+       '1': {name: variable.parameter.papyrus}
+       '2': {name: keyword.operator.papyrus}
+    - include: '#expression'
+
+  arrayFuncOrId:
+    patterns:
+    - include: '#funcOrId'
+    - comment: Array element access
+      name: meta.arrayelement.papyrus
+      begin: \[
+      end: \]
+      patterns:
+      - include: '#expression'
+
+  assign:
+    patterns:
+    - comment: Assign statement
+      name: meta.assign.papyrus
+      begin: ^\s*
+      end: ([\n\r])
+      patterns:
+      - include: '#assignmentOperators'
+      - include: '#expression'
+      - include: '#endOfLine'
+
+  assignmentOperators:
+    patterns:
+    - comment: Assignment operators
+      name: keyword.operator.papyrus
+      match: (\=|\+\=|\-\=|\*\=|\/\=|\%\=)
+
+  comma:
+    patterns:
+    - comment: Comma
+      name: meta.comma.papyrus
+      match: \,
+
+  whitespace:
+    patterns:
+    - comment: Whitespace
+      name: meta.whitespace.papyrus
+      match: ([ \t])
+
+  multiline:
+    patterns:
+    - comment: Multiline
+      name: meta.multiline.papyrus
+      begin: \\
+      end: ([\n\r])
+      patterns:
+      - include: '#commentBlock'
+      - include: '#commentLine'
+      - include: '#whitespace'
+      - include: '#unmatched'
+
+  unmatched:
+    patterns:
+    - comment: Unmatched
+      name: meta.invalid.papyrus #invalid.illegal
+      match: ([^\n\r])
+
+  unaryMinus:
+    patterns:
+    - comment: Unary minus
+      name: keyword.operator.papyrus
+      match: \-(?=\d)
+
+  constants:
+    patterns:
+    - include: '#bool'
+    - include: '#float'
+    - include: '#integer'
+    - include: '#string'
+
+  bool:
+    patterns:
+    - comment: Boolean literal
+      name: constant.language.boolean.papyrus
+      match: (?i)\b(true|false|none)\b
+
+  float:
+    patterns:
+    - include: '#unaryMinus'
+    - comment: Float literal
+      name: constant.numeric.float.papyrus
+      match: \b(\d+\.\d+)\b
+
+  integer:
+    patterns:
+    - include: '#unaryMinus'
+    - comment: Integer literal
+      name: constant.numeric.integer.papyrus
+      match: (?i)\b(0x[0-9a-f]+|\d+)\b
+
+  string:
+    patterns:
+    - comment: String literal
+      name: string.quoted.double
+      begin: \"
+      end: \"
+      patterns:
+      - comment: Escape sequences
+        name: constant.character.escape.papyrus
+        match: (\\.)
+
+  keywords:
+    patterns:
+    - comment: Keywords
+      name: keyword.other.papyrus
+      match: (?i)\b(as|auto|autoreadonly|betaonly|collapsed|collapsedonref|collapsedonbase|const|debugonly|default|else|elseif|endevent|endfunction|endgroup|endif|endproperty|endstate|endwhile|event|extends|false|function|global|group|if|import|length|mandatory|native|new|none|property|return|scriptname|state|true|while)\b
+
+  illegalKeywords:
+    patterns:
+    - comment: Keywords
+      name: meta.invalid.papyrus
+      match: (?i)\b(as|auto|autoreadonly|betaonly|collapsed|collapsedonref|collapsedonbase|const|debugonly|default|else|elseif|endevent|endfunction|endgroup|endif|endproperty|endstate|endwhile|event|extends|false|function|global|group|if|import|length|mandatory|native|new|none|property|return|scriptname|state|true|while)\b
+
+  specialVariables:
+    patterns:
+    - comment: Special variables
+      name: keyword.other.papyrus
+      match: (?i)\b(parent|self)\b
+
+  illegalSpecialVariables:
+    patterns:
+    - comment: Special variables
+      name: meta.invalid.papyrus
+      match: (?i)\b(parent|self)\b
+
+  baseTypes:
+    patterns:
+    - comment: Type
+      name: storage.type.papyrus
+      match: (?i)\b(bool|float|int|string|var)\b
+
+  illegalBaseTypes:
+    patterns:
+    - comment: Type
+      name: meta.invalid.papyrus
+      match: (?i)\b(bool|float|int|string|var)\b
+
+  identifier:
+    patterns:
+    - comment: Identifier
+      name: variable.other.papyrus
+      match: (?i)\b([_a-z][0-9_a-z]*)\b
+
+  functionIdentifier:
+    patterns:
+    - comment: Function/event identifier
+      name: entity.name.function.papyrus
+      match: (?i)\b([_a-z][0-9_a-z]*)(?=\()
+
+  typeIdentifier:
+    patterns:
+    - comment: Type identifier
+      name: storage.type.papyrus
+      match: (?i)\b([_a-z][0-9_a-z]*)\b
+
+  parameterIdentifier:
+    patterns:
+    - comment: Parameter identifier
+      name: variable.parameter.papyrus
+      match: (?i)\b([_a-z][0-9_a-z]*)\b
+
+...
