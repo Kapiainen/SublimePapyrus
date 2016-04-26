@@ -291,6 +291,16 @@
 							<key>name</key>
 							<string>storage.type.papyrus</string>
 						</dict>
+						<key>3</key>
+						<dict>
+							<key>name</key>
+							<string>keyword.operator.papyrus</string>
+						</dict>
+						<key>4</key>
+						<dict>
+							<key>name</key>
+							<string>storage.type.papyrus</string>
+						</dict>
 					</dict>
 					<key>comment</key>
 					<string>New array</string>
@@ -388,6 +398,16 @@
 							<string>keyword.operator.papyrus</string>
 						</dict>
 						<key>2</key>
+						<dict>
+							<key>name</key>
+							<string>storage.type.papyrus</string>
+						</dict>
+						<key>3</key>
+						<dict>
+							<key>name</key>
+							<string>keyword.operator.papyrus</string>
+						</dict>
+						<key>4</key>
 						<dict>
 							<key>name</key>
 							<string>storage.type.papyrus</string>
@@ -2151,12 +2171,22 @@
 						<key>2</key>
 						<dict>
 							<key>name</key>
-							<string>variable.other.papyrus</string>
+							<string>keyword.operator.papyrus</string>
 						</dict>
 						<key>3</key>
 						<dict>
 							<key>name</key>
-							<string>keyword.other.papyrus</string>
+							<string>storage.type.papyrus</string>
+						</dict>
+						<key>4</key>
+						<dict>
+							<key>name</key>
+							<string>variable.other.papyrus</string>
+						</dict>
+						<key>5</key>
+						<dict>
+							<key>name</key>
+							<string>keyword.operator.papyrus</string>
 						</dict>
 					</dict>
 					<key>comment</key>

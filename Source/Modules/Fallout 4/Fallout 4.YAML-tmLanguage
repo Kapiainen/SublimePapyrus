@@ -461,8 +461,10 @@ repository:
       begin: (?i)^\s*(?:([_a-z][0-9_a-z]*)(\:))?([_a-z][0-9_a-z]*)(?:\[\])?\s+([_a-z][0-9_a-z]*)(?:\s+(conditional|const)\b)?
       beginCaptures:
        '1': {name: storage.type.papyrus}
-       '2': {name: variable.other.papyrus}
-       '3': {name: keyword.other.papyrus}
+       '2': {name: keyword.operator.papyrus}
+       '3': {name: storage.type.papyrus}
+       '4': {name: variable.other.papyrus}
+       '5': {name: keyword.operator.papyrus}
       end: ([\n\r])
       patterns:
       - include: '#endOfLine'
@@ -519,6 +521,8 @@ repository:
       captures:
        '1': {name: keyword.operator.papyrus}
        '2': {name: storage.type.papyrus}
+       '3': {name: keyword.operator.papyrus}
+       '4': {name: storage.type.papyrus}
     - include: '#dotAtom'    
 
   dotAtom:
@@ -548,6 +552,8 @@ repository:
       beginCaptures:
        '1': {name: keyword.operator.papyrus}
        '2': {name: storage.type.papyrus}
+       '3': {name: keyword.operator.papyrus}
+       '4': {name: storage.type.papyrus}
       end: \]
       patterns:
       - include: '#integer'
