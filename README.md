@@ -235,7 +235,7 @@ Completions for core language structures (e.g. properties, functions, structs).
 Single file, batch, and recursive batch build variants.
 
 ## **Changelog**
-Version 2.x.x - 2016/MM/DD:
+Version 2.2.0 - 2016/04/27:
 
 **Core**
   - Added the ability to use the *Open script* command in views that do not have a compatible syntax. An additional panel, which allows you to select which module's *import* paths should be used, opens up after you enter the (partial) name of the script to look for.
