@@ -7,10 +7,23 @@
 	"variants":
 	[
 		{
+			"name": "Release",
+			"cmd": "$file",
+			"module": "fallout4",
+			"arguments": ["-release"]
+		},
+		{
+			"name": "Final",
+			"cmd": "$file",
+			"module": "fallout4",
+			"arguments": ["-final"]
+		},
+		{
 			"name": "Batch",
 			"cmd": "$file",
 			"module": "fallout4",
-			"batch": "-all -norecurse"
+			"arguments": ["-norecurse"],
+			"batch": "-all"
 		},
 		{
 			"name": "Batch (recursive)",

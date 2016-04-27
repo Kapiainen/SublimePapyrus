@@ -269,10 +269,30 @@ class SublimePapyrusCompileScriptCommand(sublime_plugin.WindowCommand):
 									temp.append(k)
 								else:
 									temp.append("-%s" % k)
-							arguments = " ".join(temp)
+							arguments = temp
 						else:
 							return ShowMessage("The arguments setting has to be a list of strings.")
-					else:
+					buildArguments = args.get("arguments", None)
+					if buildArguments:
+						if isinstance(buildArguments, list) and all(isinstance(k, str) for k in buildArguments):
+							if arguments and isinstance(arguments, list):
+								for k in buildArguments:
+									if k[:1] != "-":
+										k = "-%s" % k
+									if k not in arguments:
+										arguments.append(k)
+							elif not arguments:
+								arguments = []
+								for k in buildArguments:
+									if k[:1] == "-":
+										arguments.append(k)
+									else:
+										arguments.append("-%s" % k)
+						else:
+							return ShowMessage("The build system's arguments setting has to be a list of strings.")
+					if arguments and isinstance(arguments, list):
+						arguments = " ".join(arguments)
+					if not arguments:
 						arguments = ""
 					if not batch:
 						args = {"cmd": "\"%s\" \"%s\" -i=\"%s\" -o=\"%s\" -f=\"%s\" %s" % (compiler, fileName, imports, output, flags, arguments), "file_regex": regex}

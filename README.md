@@ -232,9 +232,17 @@ Syntax highlighting for the version of Papyrus that is used in ***Fallout 4***.
 Completions for core language structures (e.g. properties, functions, structs).
 
 #### Build systems
-Single file, batch, and recursive batch build variants.
+Debug, release, final, batch, and recursive batch build variants.
 
 ## **Changelog**
+Version 2.3.0 - 2016/04/28:
+
+**Core**
+- Added support for "arguments" setting in build systems.
+
+**Fallout 4**
+- Added "Release" and "Final" build systems to Fallout 4.
+
 Version 2.2.0 - 2016/04/27:
 
 **Core**
