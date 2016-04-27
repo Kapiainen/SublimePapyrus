@@ -235,7 +235,7 @@ Completions for core language structures (e.g. properties, functions, structs).
 Debug, release, final, batch, and recursive batch build variants.
 
 ## **Changelog**
-Version 2.3.0 - 2016/04/28:
+Version 2.3.0 - 2016/04/27:
 
 **Core**
 - Added support for "arguments" setting in build systems.
