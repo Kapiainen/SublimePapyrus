@@ -159,16 +159,13 @@ class SublimePapyrusClearErrorHighlightsCommand(sublime_plugin.TextCommand):
 class SublimePapyrusOpenScriptCommand(sublime_plugin.WindowCommand):
 	def run(self):
 		text = ""
-		view = self.window.active_view()
-		self.view = view
-		if view:
-			for region in view.sel():
-				text = view.substr(region)
-				break
-			self.window.show_input_panel("Open script:", text, self.on_done, None, None)
+		self.view = self.window.active_view()
+		if self.view:
+			text = self.view.substr(self.view.sel()[0])
+		self.window.show_input_panel("Open script:", text, self.on_done, None, None)
 
 	def on_done(self, text):
-		if not text or not self.view:
+		if not text:
 			return
 		if PYTHON_VERSION[0] == 2:
 			self.get_matching_files(text)
@@ -176,11 +173,14 @@ class SublimePapyrusOpenScriptCommand(sublime_plugin.WindowCommand):
 			thread = threading.Thread(target=self.get_matching_files, args=(text,))
 			thread.start()
 
-	def get_matching_files(self, text):
-		paths = GetSourcePaths(self.view)
+	def get_matching_files(self, text, paths = None):
+		if not paths:
+			paths = GetSourcePaths(self.view)
 		if paths:
 			ShowMessage("Looking for matches...")
 			candidates = []
+			if text == "*":
+				text = ""
 			text = text.lower()
 			for path in paths:
 				for root, dirs, files in os.walk(path):
@@ -199,6 +199,26 @@ class SublimePapyrusOpenScriptCommand(sublime_plugin.WindowCommand):
 				self.window.run_command("sublime_papyrus_file_selection_panel", {"items": candidates})
 			else:
 				ShowMessage("Found no matches.")
+		else:
+			settings = GetSettings()
+			modules = settings.get("modules", None)
+			if modules:
+				moduleTitles = []
+				self.modulePaths = []
+				for ident, moduleSettings in modules.items():
+					paths = moduleSettings.get("import", None)
+					if paths:
+						self.modulePaths.append(paths)
+						moduleTitles.append(moduleSettings.get("title", ident.capitalize()))
+				if moduleTitles:
+					self.text = text
+					self.window.show_quick_panel(moduleTitles, self.module_paths)
+
+	def module_paths(self, index):
+		if index >= 0 and index < len(self.modulePaths):
+			self.get_matching_files(self.text, self.modulePaths[index])
+		else:
+			return
 
 # Build system
 class SublimePapyrusCompileScriptCommand(sublime_plugin.WindowCommand):
