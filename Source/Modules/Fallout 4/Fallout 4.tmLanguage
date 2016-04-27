@@ -1427,6 +1427,14 @@
 					<key>patterns</key>
 					<array>
 						<dict>
+							<key>comment</key>
+							<string>Group flags</string>
+							<key>match</key>
+							<string>(?i)\b(collapsed|collapsedonref|collapsedonbase)\b</string>
+							<key>name</key>
+							<string>keyword.other.papyrus</string>
+						</dict>
+						<dict>
 							<key>include</key>
 							<string>#illegalKeywords</string>
 						</dict>

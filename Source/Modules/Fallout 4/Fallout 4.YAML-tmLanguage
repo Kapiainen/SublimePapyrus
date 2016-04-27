@@ -145,6 +145,9 @@ repository:
        '1': {name: keyword.other.papyrus}
       end: ([\n\r])
       patterns:
+      - comment: Group flags
+        name: keyword.other.papyrus
+        match: (?i)\b(collapsed|collapsedonref|collapsedonbase)\b
       - include: '#illegalKeywords'
       - include: '#illegalSpecialVariables'
       - include: '#illegalBaseTypes'
