@@ -24,11 +24,12 @@
 	{
 		"skyrim":
 		{
-				"compiler":"",
-				"flags":"TESV_Papyrus_Flags.flg",
-				"output": "",
-				"import": [],
-				"arguments": []
+			"title": "The Elder Scrolls V: Skyrim",
+			"compiler":"",
+			"flags":"TESV_Papyrus_Flags.flg",
+			"output": "",
+			"import": [],
+			"arguments": []
 		},
 		"fallout4":
 		{
