@@ -235,6 +235,13 @@ Completions for core language structures (e.g. properties, functions, structs).
 Single file, batch, and recursive batch build variants.
 
 ## **Changelog**
+Version 2.x.x - 2016/MM/DD:
+**Fallout 4**
+  - Added syntax highlighting.
+  - Added basic completions.
+  - Added build systems.
+  - Added module settings.
+
 Version 2.1.1 - 2016/04/22:
 
 **Skyrim**
