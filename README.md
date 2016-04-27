@@ -111,13 +111,14 @@ Settings are located in *Preferences* > *Package Settings* > *SublimePapyrus*.
 - [The Elder Scrolls V: Skyrim](#the-elder-scrolls-v-skyrim)
  - [Skyrim Script Extender](#skyrim-script-extender-skse)
  - [Immersive First Person View](#immersive-first-person-view-ifpv)
+- [Fallout 4](#fallout-4)
 
 ### **The Elder Scrolls V: Skyrim**
 - [Syntax highlighting](#syntax-highlighting)
 - [Linter](#linter)
 - [Intelligent code completion](#intelligent-code-completion)
 - [Tooltips](#tooltips)
-- [Build system](#build-system)
+- [Build systems](#build-systems)
 - [Commands](#commands-1)
  - Generate completions
  - Valid key insertion
@@ -175,7 +176,7 @@ Shows additional information. The appearance of tooltips can be customized (e.g.
 Currently supported tooltips:
 - Show information about the function/event call that is being edited. The displayed information includes the name of the function/event, the parameters and their default values, and which parameter corresponds to the argument that is being edited. This feature can be toggled in the settings.
 
-#### Build system
+#### Build systems
 Single file build system and a batch build variant.
 
 #### Commands
@@ -219,6 +220,20 @@ Single file build system and a batch build variant.
     - Config value names (boolean, float, integer, and string)
     - SKSE mod event names
 
+### **Fallout 4**
+- [Syntax highlighting](#syntax-highlighting-1)
+- [Basic completions](#basic-completions)
+- [Build systems](#build-systems-1)
+
+#### Syntax highlighting
+Syntax highlighting for the version of Papyrus that is used in ***Fallout 4***.
+
+#### Basic completions
+Completions for core language structures (e.g. properties, functions, structs).
+
+#### Build systems
+Single file, batch, and recursive batch build variants.
+
 ## **Changelog**
 Version 2.x.x - 2016/MM/DD:
 
@@ -226,6 +241,12 @@ Version 2.x.x - 2016/MM/DD:
   - Added the ability to use the *Open script* command in views that do not have a compatible syntax. An additional panel, which allows you to select which module's *import* paths should be used, opens up after you enter the (partial) name of the script to look for.
   - Added support for listing all scripts with the *Open script* command by typing in an asterisk (\*) as the only character.
   - Added an optional *title* setting to module settings. The string value is used when listing modules by name. If this setting does not exist, then the module's key is used instead in listings.
+
+**Fallout 4**
+  - Added syntax highlighting.
+  - Added basic completions.
+  - Added build systems.
+  - Added module settings.
 
 Version 2.1.1 - 2016/04/22:
 

@@ -1,0 +1,22 @@
+{
+	"target": "sublime_papyrus_compile_script",
+	"cmd": "$file",
+	"file_regex": "^([^\\(]+)\\(([0-9]+),([0-9]+)\\):\\s(.*)$",
+	"module": "fallout4",
+	"selector": "source.papyrus.fallout4",
+	"variants":
+	[
+		{
+			"name": "Batch",
+			"cmd": "$file",
+			"module": "fallout4",
+			"batch": "-all -norecurse"
+		},
+		{
+			"name": "Batch (recursive)",
+			"cmd": "$file",
+			"module": "fallout4",
+			"batch": "-all"
+		}
+	]
+}
