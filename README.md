@@ -221,6 +221,7 @@ Single file build system and a batch build variant.
     - SKSE mod event names
 
 ### **Fallout 4**
+#### The Fallout 4 module should be considered experimental at the moment. The Papyrus language has changed significantly.
 - [Syntax highlighting](#syntax-highlighting-1)
 - [Basic completions](#basic-completions)
 - [Build systems](#build-systems-1)
