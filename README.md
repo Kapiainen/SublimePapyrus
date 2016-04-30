@@ -222,6 +222,14 @@ Single file build system and a batch build variant.
     - SKSE mod event names
 
 ## **Changelog**
+Version x.x.x - 2016/MM/DD:
+
+**Core**
+  - Added support for nested folders in *Open script* command.
+
+**Fallout 4**
+  - Added syntax highlighting.
+  - Added completions.
 
 Version 2.4.0 - 2016/04/30:
 
