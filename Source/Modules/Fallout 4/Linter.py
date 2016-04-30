@@ -590,7 +590,7 @@ class StateSignature(Statement):
 
 class StructSignature(Statement):
 	__slots__ = ["name", "auto"]
-	def __init__(self, aLine, aName, aAuto):
+	def __init__(self, aLine, aName):
 		super(StructSignature, self).__init__(StatementEnum.STRUCTSIGNATURE, aLine)
 		self.name = aName
 
@@ -816,13 +816,21 @@ class Syntactic(object):
 				result = EndFunction(self.line)
 			elif keyword == KeywordEnum.EVENT:
 				self.Consume()
-				pass
+				self.Expect(TokenEnum.IDENTIFIER)
+				name = self.PeekBackwards()
+				parameters = None
+#				nextToken = self.Peek()
+				self.Expect(TokenEnum.LEFTPARENTHESIS)
+				# Parameters
+				self.Expect(TokenEnum.RIGHTPARENTHESIS)
+				result = EventSignature(self.line, name, self.AcceptFlags([KeywordEnum.NATIVE]), parameters)
 			elif keyword == KeywordEnum.ENDEVENT:
 				self.Consume()
 				result = EndEvent(self.line)
 			elif keyword == KeywordEnum.STRUCT:
 				self.Consume()
-				pass
+				self.Expect(TokenEnum.IDENTIFIER)
+				result = StructSignature(self.line, self.PeekBackwards())
 			elif keyword == KeywordEnum.ENDSTRUCT:
 				self.Consume()
 				result = EndStruct(self.line)
@@ -831,7 +839,8 @@ class Syntactic(object):
 				result = EndProperty(self.line)
 			elif keyword == KeywordEnum.GROUP:
 				self.Consume()
-				pass
+				self.Expect(TokenEnum.IDENTIFIER)
+				result = GroupSignature(self.line, self.PeekBackwards(), self.AcceptFlags([KeywordEnum.COLLAPSED, KeywordEnum.COLLAPSEDONBASE, KeywordEnum.COLLAPSEDONREF]))
 			elif keyword == KeywordEnum.ENDGROUP:
 				self.Consume()
 				result = EndGroup(self.line)

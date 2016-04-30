@@ -192,10 +192,10 @@ class EventListener(sublime_plugin.EventListener):
 		start = time.time() #DEBUG
 		def Run():
 			print("Running linter")
-			print(aView)
-			print(aLineNumber)
-			print(aPaths)
-			print(aSource)
+			#print(aView)
+			#print(aLineNumber)
+			#print(aPaths)
+			#print(aSource)
 			global LEX
 			global SYN
 			tokens = []
@@ -220,7 +220,7 @@ class EventListener(sublime_plugin.EventListener):
 							print(e.message)
 							if aView:
 								SublimePapyrus.SetStatus(aView, "sublimepapyrus-linter", "Error on line %d: %s" % (e.line, e.message))
-								SublimePapyrus.HighlightLinter(aView, aLineNumber)
+								SublimePapyrus.HighlightLinter(aView, e.line)
 							return
 					elif token.type != Linter.TokenEnum.COMMENTLINE and token.type != Linter.TokenEnum.COMMENTBLOCK:
 						tokens.append(token)
@@ -228,7 +228,7 @@ class EventListener(sublime_plugin.EventListener):
 				print(e.message)
 				if aView:
 					SublimePapyrus.SetStatus(aView, "sublimepapyrus-linter", "Error on line %d, column %d: %s" % (e.line, e.column, e.message))
-					SublimePapyrus.HighlightLinter(aView, aLineNumber, e.column)
+					SublimePapyrus.HighlightLinter(aView, e.line, e.column)
 				return
 		Run()
 		print("Linter: Finished in %f milliseconds and releasing lock..." % ((time.time()-start)*1000.0)) #DEBUG
