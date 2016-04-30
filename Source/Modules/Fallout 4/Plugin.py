@@ -1,5 +1,5 @@
 # API for accessing the core plugin of SublimePapyrus
-import sublime, sublime_plugin, sys, os
+import sublime, sublime_plugin, sys, os, threading, time
 PYTHON_VERSION = sys.version_info
 SUBLIME_VERSION = None
 if PYTHON_VERSION[0] == 2:
@@ -12,12 +12,18 @@ if PYTHON_VERSION[0] == 2:
 	imp.load_source("SublimePapyrus", mainPackage)
 	del mainPackage
 	import SublimePapyrus
+	# Fallout 4 linter
+	linterPackage = os.path.join(root, module, "Linter.py")
+	imp.load_source("Linter", linterPackage)
+	del linterPackage
+	import Linter
 	# Cleaning up
 	del root
 	del module
 	del coreModule
 elif PYTHON_VERSION[0] >= 3:
 	from SublimePapyrus import Plugin as SublimePapyrus
+	from . import Linter
 
 VALID_SCOPE = "source.papyrus.fallout4"
 
@@ -106,3 +112,124 @@ class SublimePapyrusFallout4CompileScriptCommand(sublime_plugin.WindowCommand):
 		args = {"cmd": "\"%s\" \"%s\" -i=\"%s\" -o=\"%s\" -f=\"%s\" %s" % (compilerPath, target, ";".join(importPaths), outputPath, flags, " ".join(arguments)), "file_regex": args["file_regex"]}
 		self.window.run_command("exec", args)
 		return
+
+LINTER_CACHE = {}
+COMPLETION_CACHE = {}
+CACHE_LOCK = threading.RLock()
+LEX = Linter.Lexical()
+SYN = Linter.Syntactic()
+
+class EventListener(sublime_plugin.EventListener):
+	def __init__(self):
+		super(EventListener,self).__init__()
+		self.validScope = "source.papyrus.fallout4"
+		self.linterQueue = 0
+		self.linterErrors = {}
+		self.linterRunning = False
+		self.completionRunning = False
+
+	def IsValidScope(self, view):
+		if self.validScope:
+			return self.validScope in view.scope_name(0)
+		return False
+
+	def on_modified(self, view):
+		if self.IsValidScope(view):
+			settings = SublimePapyrus.GetSettings()
+			print("Fallout 4 script modified")
+			# Tooltips
+			global SUBLIME_VERSION
+			if SUBLIME_VERSION >= 3070 and settings.get("tooltip_function_parameters", True):
+				if self.linterRunning:
+					return
+				elif self.completionRunning:
+					return
+			# Linter
+			if settings and settings.get("linter_on_modified", True):
+				self.QueueLinter(view)
+
+	def QueueLinter(self, view):
+		if self.linterRunning: # If an instance of the linter is running, then cancel
+			return
+		self.linterQueue += 1 # Add to queue
+		settings = SublimePapyrus.GetSettings()
+		delay = 0.500
+		if settings:
+			delay = settings.get("linter_delay", 500)/1000.0
+			if delay < 0.050:
+				delay = 0.050
+		self.bufferID = view.buffer_id()
+		if self.bufferID:
+			SublimePapyrus.ClearLinterHighlights(view)
+			modules = settings.get("modules", None)
+			if modules:
+				moduleSettings = modules.get("fallout4", None)
+				if moduleSettings:
+					sourcePaths = SublimePapyrus.GetSourcePaths(view)
+					scripts = moduleSettings.get("scripts", None)
+					if scripts:
+						sourcePaths.insert(0, scripts)
+						lineNumber, columnNumber = view.rowcol(view.sel()[0].begin())
+						lineNumber += 1
+						scriptContents = view.substr(sublime.Region(0, view.size()))						
+						args = None
+						if PYTHON_VERSION[0] == 2:
+							args = {"aView": None, "aLineNumber": lineNumber, "aSource": scriptContents, "aPaths": sourcePaths}
+						elif PYTHON_VERSION[0] >= 3:
+							args = {"aView": view, "aLineNumber": lineNumber, "aSource": scriptContents, "aPaths": sourcePaths}
+						if args:
+							t = threading.Timer(delay, self.Linter, kwargs=args)
+							t.daemon = True
+							t.start()
+
+	def Linter(self, aView, aLineNumber, aSource, aPaths):
+		self.linterQueue -= 1 # Remove from queue
+		if self.linterQueue > 0: # If there is a queue, then cancel
+			return
+		elif self.completionRunning: # If completions are being generated, then cancel
+			return
+		self.linterRunning = True # Block further attempts to run the linter until this instance has finished
+		start = time.time() #DEBUG
+		def Run():
+			print("Running linter")
+			print(aView)
+			print(aLineNumber)
+			print(aPaths)
+			print(aSource)
+			global LEX
+			global SYN
+			tokens = []
+			try:
+				for token in LEX.Process(aSource):
+					if token.type == Linter.TokenEnum.NEWLINE:
+						i = 0
+						for t in tokens:
+							if t.type == Linter.TokenEnum.KEYWORD:
+								print("%d: %s = %s" % (i, Linter.TokenDescription[t.type], Linter.KeywordDescription[t.value]))
+							else:
+								print("%d: %s = %s" % (i, Linter.TokenDescription[t.type], t.value))
+							i += 1
+						try:
+							stat = SYN.Process(tokens)
+							if stat:
+								print(Linter.StatementDescription[stat.statementType])
+								# Semantic
+								pass
+							tokens = []
+						except Linter.SyntacticError as e:
+							print(e.message)
+							if aView:
+								SublimePapyrus.SetStatus(aView, "sublimepapyrus-linter", "Error on line %d: %s" % (e.line, e.message))
+								SublimePapyrus.HighlightLinter(aView, aLineNumber)
+							return
+					elif token.type != Linter.TokenEnum.COMMENTLINE and token.type != Linter.TokenEnum.COMMENTBLOCK:
+						tokens.append(token)
+			except Linter.LexicalError as e:
+				print(e.message)
+				if aView:
+					SublimePapyrus.SetStatus(aView, "sublimepapyrus-linter", "Error on line %d, column %d: %s" % (e.line, e.column, e.message))
+					SublimePapyrus.HighlightLinter(aView, aLineNumber, e.column)
+				return
+		Run()
+		print("Linter: Finished in %f milliseconds and releasing lock..." % ((time.time()-start)*1000.0)) #DEBUG
+		self.linterRunning = False
