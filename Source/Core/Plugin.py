@@ -195,7 +195,6 @@ class SublimePapyrusOpenScriptCommand(sublime_plugin.WindowCommand):
 							fullPath = os.path.join(root, file)
 							if not fullPath in candidates:
 								candidates.append(fullPath)
-					break
 			i = len(candidates)
 			if i == 1:
 				ShowMessage("Found 1 match.")
