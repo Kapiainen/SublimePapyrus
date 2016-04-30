@@ -96,6 +96,12 @@ class SublimePapyrusFileSelectionPanelCommand(sublime_plugin.WindowCommand):
 		items = args["items"]
 		if items:
 			self.items = items
+			settings = GetSettings()
+			if settings and settings.get("open_script_split_paths", True):
+				items = []
+				for path in self.items:
+					root, file = os.path.split(path)
+					items.append([file, root])
 			if PYTHON_VERSION[0] == 2:
 				self.window.show_quick_panel(items, self.on_select, 0, -1)
 			elif PYTHON_VERSION[0] >= 3:

@@ -20,6 +20,7 @@
 	"highlight_build_errors": true,
 	"hide_successful_build_results": false,
 	"batch_compilation_warning": true,
+	"open_script_split_paths": true,
 	"modules":
 	{
 		"skyrim":
