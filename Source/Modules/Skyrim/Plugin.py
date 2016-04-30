@@ -525,12 +525,12 @@ h1 {
 						elif obj.type == syn.STAT_EVENTDEF:
 							completions.append(SublimePapyrus.MakeEventCompletion(obj, sem, False, "parent"))
 					completions.append(("import\timport statement", "Import ${0:$SELECTION}",))
-					completions.append(("property\tproperty definition", "${1:Type} Property ${2:PropertyName} ${3:Auto}",))
-					completions.append(("fullproperty\tfull property definition", "${1:Type} Property ${2:PropertyName}\n\t${1:Type} Function Get()\n\t\t${3}\n\tEndFunction\n\n\tFunction Set(${1:Type} Variable)\n\t\t${4}\n\tEndFunction\nEndProperty",))
-					completions.append(("autostate\tauto state definition", "Auto State ${1:StateName}\n\t${0}\nEndState",))
-					completions.append(("state\tstate definition", "State ${1:StateName}\n\t${0}\nEndState",))
-					completions.append(("event\tevent definition", "Event ${1:EventName}(${2:Parameters})\n\t${0}\nEndEvent",))
-					completions.append(("function\tfunction definition", "${1:Type} Function ${2:FunctionName}(${3:Parameters})\n\t${0}\nEndFunction",))
+					completions.append(("property\tproperty def.", "${1:Type} Property ${2:PropertyName} ${3:Auto}",))
+					completions.append(("fullproperty\tfull property def.", "${1:Type} Property ${2:PropertyName}\n\t${1:Type} Function Get()\n\t\t${3}\n\tEndFunction\n\n\tFunction Set(${1:Type} Variable)\n\t\t${4}\n\tEndFunction\nEndProperty",))
+					completions.append(("autostate\tauto state def.", "Auto State ${1:StateName}\n\t${0}\nEndState",))
+					completions.append(("state\tstate def.", "State ${1:StateName}\n\t${0}\nEndState",))
+					completions.append(("event\tevent def.", "Event ${1:EventName}(${2:Parameters})\n\t${0}\nEndEvent",))
+					completions.append(("function\tfunction def.", "${1:Type} Function ${2:FunctionName}(${3:Parameters})\n\t${0}\nEndFunction",))
 					# Types to facilitate variable declarations
 					completions.extend(self.GetTypeCompletions(view, True))
 					return completions

@@ -213,6 +213,7 @@ repository:
     patterns:
     - include: '#functionParameterIdentifier'
     - include: '#typeIdentifier'
+    - include: '#brackets'
 
   functionParameterIdentifier:
     patterns:
@@ -274,6 +275,7 @@ repository:
     patterns:
     - include: '#eventParameterIdentifier'
     - include: '#typeIdentifier'
+    - include: '#brackets'
 
   eventParameterIdentifier:
     patterns:
@@ -530,7 +532,7 @@ repository:
     patterns:
     - comment: Specific parameter
       name: meta.functioncallparameter.papyrus
-      match: (?i)\b(?:([_a-z][0-9_a-z]*)\s*(\=))?
+      match: (?i)\b(?:([_a-z][0-9_a-z]*)\s*(\=)(?!\=))?
       captures:
        '1': {name: variable.parameter.papyrus}
        '2': {name: keyword.operator.papyrus}
@@ -580,6 +582,8 @@ repository:
     - comment: Multiline
       name: meta.multiline.papyrus
       begin: \\
+      beginCaptures:
+        '0': {name: keyword.operator.papyrus}
       end: ([\n\r])
       patterns:
       - include: '#commentBlock'
@@ -683,7 +687,7 @@ repository:
     patterns:
     - comment: Function/event identifier
       name: entity.name.function.papyrus
-      match: (?i)\b([_a-z][0-9_a-z]*)(?=\()
+      match: (?i)\b([_a-z][0-9_a-z]*)\s*(?=\()
 
   typeIdentifier:
     patterns:
@@ -696,5 +700,11 @@ repository:
     - comment: Parameter identifier
       name: variable.parameter.papyrus
       match: (?i)\b([_a-z][0-9_a-z]*)\b
+
+  brackets:
+    patterns:
+    - comment: Brackets
+      name: meta.array.papyrus
+      match: \[\]
 
 ...

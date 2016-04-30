@@ -359,6 +359,20 @@
 				</dict>
 			</array>
 		</dict>
+		<key>brackets</key>
+		<dict>
+			<key>patterns</key>
+			<array>
+				<dict>
+					<key>comment</key>
+					<string>Brackets</string>
+					<key>match</key>
+					<string>\[\]</string>
+					<key>name</key>
+					<string>meta.array.papyrus</string>
+				</dict>
+			</array>
+		</dict>
 		<key>castAtom</key>
 		<dict>
 			<key>patterns</key>
@@ -880,6 +894,10 @@
 					<key>include</key>
 					<string>#typeIdentifier</string>
 				</dict>
+				<dict>
+					<key>include</key>
+					<string>#brackets</string>
+				</dict>
 			</array>
 		</dict>
 		<key>eventParameterIdentifier</key>
@@ -1134,7 +1152,7 @@
 					<key>comment</key>
 					<string>Specific parameter</string>
 					<key>match</key>
-					<string>(?i)\b(?:([_a-z][0-9_a-z]*)\s*(\=))?</string>
+					<string>(?i)\b(?:([_a-z][0-9_a-z]*)\s*(\=)(?!\=))?</string>
 					<key>name</key>
 					<string>meta.functioncallparameter.papyrus</string>
 				</dict>
@@ -1180,7 +1198,7 @@
 					<key>comment</key>
 					<string>Function/event identifier</string>
 					<key>match</key>
-					<string>(?i)\b([_a-z][0-9_a-z]*)(?=\()</string>
+					<string>(?i)\b([_a-z][0-9_a-z]*)\s*(?=\()</string>
 					<key>name</key>
 					<string>entity.name.function.papyrus</string>
 				</dict>
@@ -1197,6 +1215,10 @@
 				<dict>
 					<key>include</key>
 					<string>#typeIdentifier</string>
+				</dict>
+				<dict>
+					<key>include</key>
+					<string>#brackets</string>
 				</dict>
 			</array>
 		</dict>
@@ -1468,6 +1490,14 @@
 				<dict>
 					<key>begin</key>
 					<string>\\</string>
+					<key>beginCaptures</key>
+					<dict>
+						<key>0</key>
+						<dict>
+							<key>name</key>
+							<string>keyword.operator.papyrus</string>
+						</dict>
+					</dict>
 					<key>comment</key>
 					<string>Multiline</string>
 					<key>end</key>
