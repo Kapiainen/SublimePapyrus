@@ -96,6 +96,8 @@ Settings are located in *Preferences* > *Package Settings* > *SublimePapyrus*.
 
   - ***batch_compilation_warning***: Shows a warning in the scenario where batch building would involve compiling scripts in one of the folders that have been defined in the relevant module's import folders setting. Default: True
 
+  - ***open_script_split_paths***: Determines whether or not to split the paths to the scripts listed in the panel, which the *Open script* command brings up, into file and folder name. The full path to a script may get cut off if it is long enough. Splitting the path makes it easier to see the name of the script even when the full path is long. Not splitting the path allows for filtering scripts based on the contents of the folder path in addition to the script name. Default: True
+
 - Build settings specific to each module
   - ***compiler***: The path to the compiler executable.
 
@@ -111,7 +113,6 @@ Settings are located in *Preferences* > *Package Settings* > *SublimePapyrus*.
 - [The Elder Scrolls V: Skyrim](#the-elder-scrolls-v-skyrim)
  - [Skyrim Script Extender](#skyrim-script-extender-skse)
  - [Immersive First Person View](#immersive-first-person-view-ifpv)
-- [Fallout 4](#fallout-4)
 
 ### **The Elder Scrolls V: Skyrim**
 - [Syntax highlighting](#syntax-highlighting)
@@ -220,22 +221,21 @@ Single file build system and a batch build variant.
     - Config value names (boolean, float, integer, and string)
     - SKSE mod event names
 
-### **Fallout 4**
-#### The Fallout 4 module should be considered experimental at the moment. The Papyrus language has changed significantly.
-- [Syntax highlighting](#syntax-highlighting-1)
-- [Basic completions](#basic-completions)
-- [Build systems](#build-systems-1)
-
-#### Syntax highlighting
-Syntax highlighting for the version of Papyrus that is used in ***Fallout 4***.
-
-#### Basic completions
-Completions for core language structures (e.g. properties, functions, structs).
-
-#### Build systems
-Debug, release, final, batch, and recursive batch build variants.
-
 ## **Changelog**
+
+Version 2.4.0 - 2016/04/30:
+
+**Core**
+  - Added setting for splitting the full paths to scripts into filenames and folder paths in the *Open script* command.
+
+**Skyrim**
+  - Shortened descriptions in definition completions (e.g. state, function).
+  - Updated syntax highlighting to support whitespace between function/event identifiers and left parentheses in function/event definitions.
+  - Fixed incorrect syntax highlighting when passing '\<identifier\> == \<expression\>' as an argument. It was previously highlighted as if one were passing an argument while specifying the corresponding parameter identifier.
+
+**Fallout 4**
+  - This module has been removed until further notice. The changes made in the latest version of Papyrus, which is used in Fallout 4, are extensive and incompatible with e.g. the build system framework. The package provided by Bethesda on the official Fallout 4 Creation Kit wiki should be used while this module is being developed.
+
 Version 2.3.0 - 2016/04/27:
 
 **Core**
