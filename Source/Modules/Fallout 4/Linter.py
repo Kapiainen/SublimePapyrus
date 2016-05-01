@@ -138,6 +138,7 @@ class KeywordEnum(object):
 	TRUE = 46
 	VAR = 47
 	WHILE = 48
+	IS = 49
 
 KeywordDescription = [
 	"AS",
@@ -188,7 +189,8 @@ KeywordDescription = [
 	"STRUCT",
 	"TRUE",
 	"VAR",
-	"WHILE"
+	"WHILE",
+	"IS"
 ]
 
 class Token(object):
@@ -305,7 +307,8 @@ class Lexical(object):
 			"STRUCT",
 			"TRUE",
 			"VAR",
-			"WHILE"
+			"WHILE",
+			"IS"
 		]
 
 	def Process(self, asString):
