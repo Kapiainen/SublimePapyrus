@@ -629,8 +629,8 @@ class Syntactic(object):
 			self.tokenIndex -= 1
 		if self.stack:
 			print(self.stack)
-#			for s in self.stack:
-#				print(TokenDescription[s.type])
+			for s in self.stack:
+				print(TokenDescription[s.type])
 #		print(TokenDescription[self.tokens[self.tokenIndex].type])
 		raise SyntacticError(aMessage, self.tokens[self.tokenIndex].line)
 
@@ -772,15 +772,15 @@ class Syntactic(object):
 			self.Expect(TokenEnum.IDENTIFIER)
 			name = self.PeekBackwards()
 			value = None
-#			if self.Accept(TokenEnum.ASSIGN):
-#				if not self.Expression():
-#					self.Abort("Expected an expression.")
-#				value = self.Pop()
+			if self.Accept(TokenEnum.ASSIGN):
+				if not self.Expression():
+					self.Abort("Expected an expression.")
+				self.Expression()
+				value = self.Pop()
 			parameters.append(ParameterSignature(self.line, name, typ, value))
 
 		nextToken = self.Peek()
 		self.Expect(TokenEnum.LEFTPARENTHESIS)
-		# Parameters
 		if nextToken and nextToken.type != TokenEnum.RIGHTPARENTHESIS:
 			parameters = []
 			Parameter()
@@ -789,6 +789,242 @@ class Syntactic(object):
 
 		self.Expect(TokenEnum.RIGHTPARENTHESIS)
 		return FunctionSignature(self.line, name, aType, self.AcceptFlags([KeywordEnum.NATIVE, KeywordEnum.GLOBAL, KeywordEnum.DEBUGONLY, KeywordEnum.BETAONLY]), parameters)
+
+	def Shift(self, aItem = None):
+		if aItem:
+			self.stack.append(aItem)
+		else:
+			self.stack.append(self.PeekBackwards())
+
+	def Pop(self):
+		if len(self.stack) > 0:
+			return self.stack.pop()
+		else:
+			return None
+
+	def ReduceBinaryOperator(self):
+		operand2 = self.Pop()
+		operator = self.Pop()
+		operand1 = self.Pop()
+		self.Shift(BinaryOperatorNode(operator, operand1, operand2))
+
+	def ReduceUnaryOperator(self):
+		operand = self.Pop()
+		operator = self.Pop()
+		self.Shift(UnaryOperatorNode(operator, operand))
+
+	def Expression(self):
+#		print(1)
+		def Reduce():
+			self.Shift(ExpressionNode(self.Pop()))
+
+		self.AndExpression()
+		while self.Accept(TokenEnum.OR):
+			self.Shift()
+			self.AndExpression()
+			self.ReduceBinaryOperator()
+		Reduce()
+		return True
+
+	def AndExpression(self):
+#		print(2)
+		self.BoolExpression()
+		while self.Accept(TokenEnum.AND):
+			self.Shift()
+			self.BoolExpression()
+			self.ReduceBinaryOperator()
+		return True
+
+	def BoolExpression(self):
+#		print(3)
+		self.AddExpression()
+		while self.Accept(TokenEnum.EQUAL) or self.Accept(TokenEnum.NOTEQUAL) or self.Accept(TokenEnum.GREATERTHANOREQUAL) or self.Accept(TokenEnum.LESSTHANOREQUAL) or self.Accept(TokenEnum.GREATERTHAN) or self.Accept(TokenEnum.LESSTHAN):
+			self.Shift()
+			self.AddExpression()
+			self.ReduceBinaryOperator()
+		return True
+
+	def AddExpression(self):
+#		print(4)
+		self.MultExpression()
+		while self.Accept(TokenEnum.ADDITION) or self.Accept(TokenEnum.SUBTRACTION):
+			self.Shift()
+			self.MultExpression()
+			self.ReduceBinaryOperator()
+		return True
+
+	def MultExpression(self):
+#		print(5)
+		self.UnaryExpression()
+		while self.Accept(TokenEnum.MULTIPLICATION) or self.Accept(TokenEnum.DIVISION) or self.Accept(TokenEnum.MODULUS):
+			self.Shift()
+			self.UnaryExpression()
+			self.ReduceBinaryOperator()
+		return True
+
+	def UnaryExpression(self):
+#		print(6)
+		unaryOp = False
+		if self.Accept(TokenEnum.SUBTRACTION) or self.Accept(TokenEnum.NOT):
+			self.Shift()
+			unaryOp = True
+		self.CastAtom()
+		if unaryOp:
+			self.ReduceUnaryOperator()
+		return True
+
+	def CastAtom(self):
+#		print(7)
+		self.DotAtom()
+		if self.AcceptKeyword(KeywordEnum.AS) or self.AcceptKeyword(KeywordEnum.IS):
+			self.Shift()
+			#self.ExpectType(True)
+			if self.tokens[self.tokenIndex].type == TokenEnum.IDENTIFIER or (self.tokens[self.tokenIndex].type == TokenEnum.KEYWORD and (self.tokens[self.tokenIndex].value == KeywordEnum.BOOL or self.tokens[self.tokenIndex].value == KeywordEnum.FLOAT or self.tokens[self.tokenIndex].value == KeywordEnum.INT or self.tokens[self.tokenIndex].value == KeywordEnum.STRING)):
+				self.Consume()
+			else:
+				self.Abort("Expected a type.")
+			self.Shift(IdentifierNode(self.PeekBackwards().value))
+			self.ReduceBinaryOperator()
+		return True
+
+	def DotAtom(self):
+#		print(8)
+		#if self.AcceptLiteral():
+		if self.AcceptKeyword(KeywordEnum.FALSE) or self.AcceptKeyword(KeywordEnum.TRUE) or self.Accept(TokenEnum.FLOAT) or self.Accept(TokenEnum.INT) or self.Accept(TokenEnum.STRING) or self.AcceptKeyword(KeywordEnum.NONE):
+			self.Shift(ConstantNode(self.PeekBackwards().value))
+			return True
+		elif self.Accept(TokenEnum.SUBTRACTION) and (self.Accept(TokenEnum.INT) or self.Expect(TokenEnum.FLOAT)):
+			self.Shift(ConstantNode(UnaryOperatorNode(self.PeekBackwards(2).value, self.PeekBackwards(1).value)))
+			return True
+		elif self.ArrayAtom():
+			while self.Accept(TokenEnum.DOT):
+				self.Shift()
+				self.ArrayFuncOrId()
+				self.ReduceBinaryOperator()
+			return True
+
+	def ArrayAtom(self):
+#		print(9)
+		def Reduce():
+			temp = self.Pop()
+			self.Shift(ArrayAtomNode(self.Pop(), temp))
+
+		self.Atom()
+		if self.Accept(TokenEnum.LEFTBRACKET):
+			self.Expression()
+			self.Expect(TokenEnum.RIGHTBRACKET)
+			Reduce()
+		return True
+
+	def Atom(self):
+#		print(10)
+		if self.AcceptKeyword(KeywordEnum.NEW):
+			self.ExpectType(True)
+			typ = self.PeekBackwards()
+			self.Expect(TokenEnum.LEFTBRACKET)
+			if not self.Accept(TokenEnum.INT):
+				self.Abort("Expected an int literal.")
+			size = self.PeekBackwards()
+			self.Expect(TokenEnum.RIGHTBRACKET)
+			self.Shift(ArrayCreationNode(typ, size))
+			return True
+		elif self.Accept(TokenEnum.LEFTPARENTHESIS):
+			self.Shift()
+			self.Expression()
+			self.Expect(TokenEnum.RIGHTPARENTHESIS)
+			expr = self.Pop()
+			self.Pop()
+			self.Shift(expr)
+			return True
+		elif self.FuncOrId():
+			return True
+
+	def ArrayFuncOrId(self):
+#		print(11)
+		def Reduce():
+			temp = self.Pop()
+			self.Shift(ArrayFuncOrIdNode(self.Pop(), temp))
+
+		self.FuncOrId()
+		if self.Accept(TokenEnum.LEFTBRACKET):
+			self.Expression()
+			self.Expect(TokenEnum.RIGHTBRACKET)
+			Reduce()
+		return True
+
+	def FuncOrId(self):
+#		print(12)
+		nextToken = self.Peek()
+		if nextToken and nextToken.type == TokenEnum.LEFTPARENTHESIS:
+			self.FunctionCall()
+			return True
+		elif self.Accept(KeywordEnum.LENGTH):
+			self.Shift(LengthNode())
+			return True
+		elif self.Accept(TokenEnum.IDENTIFIER) or self.AcceptKeyword(KeywordEnum.SELF) or self.AcceptKeyword(KeywordEnum.PARENT):
+			self.Shift(IdentifierNode(self.PeekBackwards().value))
+			return True
+		else:
+			self.Abort("Expected a function call, and identifier, or the LENGTH keyword")
+
+	def FunctionCall(self):
+#		print(13)
+		def Reduce():
+			arguments = []
+			temp = self.Pop() # Right parenthesis
+			temp = self.Pop()
+			while temp.type == NodeEnum.FUNCTIONCALLARGUMENT:
+				arguments.insert(0, temp)
+				temp = self.Pop()
+			self.Shift(FunctionCallNode(self.Pop().value, arguments))
+
+		def Argument():
+			ident = None
+			nextToken = self.Peek()
+			if nextToken and nextToken.type == TokenEnum.ASSIGN:
+				self.Expect(TokenEnum.IDENTIFIER)
+				ident = self.PeekBackwards()
+				self.Expect(TokenEnum.ASSIGN)
+			self.Expression()
+			expr = self.Pop()
+			self.Shift(FunctionCallArgument(ident, expr))
+			return True
+
+		self.Expect(TokenEnum.IDENTIFIER)
+		self.Shift()
+		self.Expect(TokenEnum.LEFTPARENTHESIS)
+		self.Shift()
+		if self.Accept(TokenEnum.RIGHTPARENTHESIS):
+			self.Shift()
+			Reduce()
+			return True
+		else:
+			Argument()
+			while self.Accept(TokenEnum.COMMA):
+				Argument()
+			self.Expect(TokenEnum.RIGHTPARENTHESIS)
+			self.Shift()
+			Reduce()
+			return True
+
+	def ExpressionOrAssignment(self):
+		self.Expression()
+		left = self.Pop()
+		if self.Accept(TokenEnum.ASSIGN) or self.Accept(TokenEnum.ASSIGNADDITION) or self.Accept(TokenEnum.ASSIGNSUBTRACTION) or self.Accept(TokenEnum.ASSIGNMULTIPLICATION) or self.Accept(TokenEnum.ASSIGNDIVISION) or self.Accept(TokenEnum.ASSIGNMODULUS):
+			operator = self.PeekBackwards()
+			self.Expression()
+			right = self.Pop()
+			return Assignment(self.line, left, right)
+		elif self.tokenIndex >= self.tokenCount or self.tokens[self.tokenIndex] == None:
+			return Expression(self.line, left)
+
+	def Variable(self, aType):
+		name = self.PeekBackwards()
+		value = None
+		if self.Accept(TokenEnum.ASSIGN):
+			self.Expression()
+			value = self.Pop()
+		return Variable(self.line, name.value, aType, self.AcceptFlags([KeywordEnum.CONDITIONAL, KeywordEnum.CONST]), value)
 
 	def Process(self, aTokens):
 		if not aTokens:
@@ -799,6 +1035,7 @@ class Syntactic(object):
 		self.tokenIndex = 0
 		self.tokenCount = len(self.tokens)
 		self.line = self.tokens[self.tokenIndex].line
+		self.stack = []
 		namespace = self.Namespace()
 		print(namespace)
 		if namespace:
@@ -859,10 +1096,12 @@ class Syntactic(object):
 				
 				elif keyword == KeywordEnum.IF:
 					self.Consume()
-					pass
+					#self.Expression()
+					#result = If(self.line, self.PopStack())
 				elif keyword == KeywordEnum.ELSEIF:
 					self.Consume()
-					pass
+					#self.Expression()
+					#result = ElseIf(self.line, self.PopStack())
 				elif keyword == KeywordEnum.ELSE:
 					self.Consume()
 					result = Else(self.line)
@@ -871,7 +1110,8 @@ class Syntactic(object):
 					result = EndIf(self.line)
 				elif keyword == KeywordEnum.WHILE:
 					self.Consume()
-					pass
+					#self.Expression()
+					#result = While(self.line, self.PopStack())
 				elif keyword == KeywordEnum.ENDWHILE:
 					self.Consume()
 					result = EndWhile(self.line)
@@ -881,38 +1121,10 @@ class Syntactic(object):
 					result = Import(self.line, self.PeekBackwards())
 				elif keyword == KeywordEnum.RETURN:
 					self.Consume()
-					pass
+					self.Expression()
+					result = Return(self.line, self.Pop())
 				elif keyword == KeywordEnum.FUNCTION:
 					result = self.Function(None)
-#					self.Consume()
-#					self.Expect(TokenEnum.IDENTIFIER)
-#					name = self.PeekBackwards()
-#					parameters = None
-#	#				nextToken = self.Peek()
-#					self.Expect(TokenEnum.LEFTPARENTHESIS)
-#	#				if nextToken and nextToken.type != self.RIGHT_PARENTHESIS:
-#	#					def Parameter():
-#	#						self.ExpectType(True)
-#	#						typ = self.GetPreviousValue()
-#	#						array = False
-#	#						if self.Accept(self.LEFT_BRACKET):
-#	#							self.Expect(self.RIGHT_BRACKET)
-#	#							array = True
-#	#						self.Expect(self.IDENTIFIER)
-#	#						name = self.GetPreviousValue()
-#	#						value = None
-#	#						if self.Accept(self.OP_ASSIGN):
-#	#							defaultValues = True
-#	#							if not self.Expression():
-#	#								self.Abort("Expected an expression.")
-#	#							value = self.Pop()
-#	#						params.append(ParameterDef(typ.upper(), typ, array, name.upper(), name, value))
-#	#						return True
-#	#					Parameter()
-#	#					while self.Accept(TokenEnum.COMMA):
-#	#						Parameter()
-#					self.Expect(TokenEnum.RIGHTPARENTHESIS)	
-#					result = FunctionSignature(self.line, name, None, self.AcceptFlags([KeywordEnum.NATIVE, KeywordEnum.GLOBAL, KeywordEnum.DEBUGONLY, KeywordEnum.BETAONLY]), parameters)
 				elif keyword == KeywordEnum.ENDFUNCTION:
 					self.Consume()
 					result = EndFunction(self.line)
@@ -1012,7 +1224,7 @@ class Syntactic(object):
 				#		PROPERTY
 
 				else:
-					pass
+					result = self.ExpressionOrAssignment()
 			elif self.tokens[self.tokenIndex].type == TokenEnum.IDENTIFIER:#self.Accept(TokenEnum.IDENTIFIER):
 				nextToken = self.Peek()
 				if nextToken:
@@ -1039,11 +1251,14 @@ class Syntactic(object):
 										result = self.Function(typ)
 									elif nextToken.value == KeywordEnum.PROPERTY:
 										result = self.Property(typ)
-									# Variable
+								else:
+									result = self.Variable(typ)
 							else:
-								pass # Expression or assignment
+								result = self.ExpressionOrAssignment()
+					else:
+						result = self.ExpressionOrAssignment()
 				else:
-					pass # Expression or assignment
+					result = self.ExpressionOrAssignment()
 
 #				name = self.PeekBackwards()
 #				array = False
@@ -1070,110 +1285,110 @@ class Syntactic(object):
 		return result
 
 ## Node types
-#class NodeEnum(object):
-#	ARRAYATOM = 0
-#	ARRAYCREATION = 1
-#	ARRAYFUNCORID = 2
-#	BINARYOPERATOR = 3
-#	CONSTANT = 4
-#	EXPRESSION = 5
-#	FUNCTIONCALL = 6
-#	FUNCTIONCALLARGUMENT = 7
-#	IDENTIFIER = 8
-#	LENGTH = 9
-#	UNARYOPERATOR = 10
-#
-#NodeDescription = [
-#	"ARRAYATOM", #ARRAYATOM
-#	"ARRAYCREATION", #ARRAYCREATION
-#	"ARRAYFUNCORID", #ARRAYFUNCORID
-#	"BINARYOPERATOR", #BINARYOPERATOR
-#	"CONSTANT", #CONSTANT
-#	"EXPRESSION", #EXPRESSION
-#	"FUNCTIONCALL", #FUNCTIONCALL
-#	"FUNCTIONCALLARGUMENT", #FUNCTIONCALLARGUMENT
-#	"IDENTIFIER", #IDENTIFIER
-#	"LENGTH", #LENGTH
-#	"UNARYOPERATOR" #UNARYOPERATOR
-#]
-#
-#class Node(object):
-#	__slots__ = ["type"]
-#	def __init__(self, aType):
-#		self.type = aType
-#
-#class BinaryOperatorNode(Node):
-#	__slots__ = ["operator", "leftOperand", "rightOperand"]
-#	def __init__(self, aOperator, aLeftOperand, aRightOperand):
-#		super(BinaryOperatorNode, self).__init__(NodeEnum.BINARYOPERATOR)
-#		self.operator = aOperator
-#		self.leftOperand = aLeftOperand
-#		self.rightOperand = aRightOperand
-#
-#class UnaryOperatorNode(Node):
-#	__slots__ = ["operator", "operand"]
-#	def __init__(self, aOperator, aOperand):
-#		super(UnaryOperatorNode, self).__init__(NodeEnum.UNARYOPERATOR)
-#		self.operator = aOperator
-#		self.operand = aOperand
-#
-#class ExpressionNode(Node):
-#	__slots__ = ["child"]
-#	def __init__(self, aChild):
-#		super(ExpressionNode, self).__init__(NodeEnum.EXPRESSION)
-#		self.child = aChild
-#
-#class ArrayAtomNode(Node):
-#	__slots__ = ["child", "expression"]
-#	def __init__(self, aChild, aExpression):
-#		super(ArrayAtomNode, self).__init__(NodeEnum.ARRAYATOM)
-#		self.child = aChild
-#		self.expression = aExpression
-#
-#class ArrayFuncOrIdNode(Node):
-#	__slots__ = ["child", "expression"]
-#	def __init__(self, aChild, aExpression):
-#		super(ArrayFuncOrIdNode, self).__init__(NodeEnum.ARRAYFUNCORID)
-#		self.child = aChild
-#		self.expression = aExpression
-#
-#class ConstantNode(Node):
-#	__slots__ = ["value"]
-#	def __init__(self, aValue):
-#		super(ConstantNode, self).__init__(NodeEnum.CONSTANT)
-#		self.value = aValue
-#
-#class FunctionCallNode(Node):
-#	__slots__ = ["name", "arguments"]
-#	def __init__(self, aName, aArguments):
-#		super(FunctionCallNode, self).__init__(NodeEnum.FUNCTIONCALL)
-#		self.name = aName
-#		self.arguments = aArguments
-#
-#class FunctionCallArgument(Node):
-#	__slots__ = ["name", "expression"]
-#	def __init__(self, aName, aExpression):
-#		super(FunctionCallArgument, self).__init__(NodeEnum.FUNCTIONCALLARGUMENT)
-#		self.name = aName
-#		self.expression = aExpression
-#
-#class IdentifierNode(Node):
-#	__slots__ = ["value"]
-#	def __init__(self, aValue):
-#		super(IdentifierNode, self).__init__(NodeEnum.IDENTIFIER)
-#		self.value = aValue
-#
-#class LengthNode(Node):
-#	__slots__ = []
-#	def __init__(self):
-#		super(LengthNode, self).__init__(NodeEnum.LENGTH)
-#
-#class ArrayCreationNode(Node):
-#	__slots__ = ["arrayType", "size"]
-#	def __init__(self, aArrayType, aSize):
-#		super(ArrayCreationNode, self).__init__(NodeEnum.ARRAYCREATION)
-#		self.arrayType = aArrayType
-#		self.size = aSize
+class NodeEnum(object):
+	ARRAYATOM = 0
+	ARRAYCREATION = 1
+	ARRAYFUNCORID = 2
+	BINARYOPERATOR = 3
+	CONSTANT = 4
+	EXPRESSION = 5
+	FUNCTIONCALL = 6
+	FUNCTIONCALLARGUMENT = 7
+	IDENTIFIER = 8
+	LENGTH = 9
+	UNARYOPERATOR = 10
+
+NodeDescription = [
+	"ARRAYATOM", #ARRAYATOM
+	"ARRAYCREATION", #ARRAYCREATION
+	"ARRAYFUNCORID", #ARRAYFUNCORID
+	"BINARYOPERATOR", #BINARYOPERATOR
+	"CONSTANT", #CONSTANT
+	"EXPRESSION", #EXPRESSION
+	"FUNCTIONCALL", #FUNCTIONCALL
+	"FUNCTIONCALLARGUMENT", #FUNCTIONCALLARGUMENT
+	"IDENTIFIER", #IDENTIFIER
+	"LENGTH", #LENGTH
+	"UNARYOPERATOR" #UNARYOPERATOR
+]
+
+class Node(object):
+	__slots__ = ["type"]
+	def __init__(self, aType):
+		self.type = aType
+
+class BinaryOperatorNode(Node):
+	__slots__ = ["operator", "leftOperand", "rightOperand"]
+	def __init__(self, aOperator, aLeftOperand, aRightOperand):
+		super(BinaryOperatorNode, self).__init__(NodeEnum.BINARYOPERATOR)
+		self.operator = aOperator
+		self.leftOperand = aLeftOperand
+		self.rightOperand = aRightOperand
+
+class UnaryOperatorNode(Node):
+	__slots__ = ["operator", "operand"]
+	def __init__(self, aOperator, aOperand):
+		super(UnaryOperatorNode, self).__init__(NodeEnum.UNARYOPERATOR)
+		self.operator = aOperator
+		self.operand = aOperand
+
+class ExpressionNode(Node):
+	__slots__ = ["child"]
+	def __init__(self, aChild):
+		super(ExpressionNode, self).__init__(NodeEnum.EXPRESSION)
+		self.child = aChild
+
+class ArrayAtomNode(Node):
+	__slots__ = ["child", "expression"]
+	def __init__(self, aChild, aExpression):
+		super(ArrayAtomNode, self).__init__(NodeEnum.ARRAYATOM)
+		self.child = aChild
+		self.expression = aExpression
+
+class ArrayFuncOrIdNode(Node):
+	__slots__ = ["child", "expression"]
+	def __init__(self, aChild, aExpression):
+		super(ArrayFuncOrIdNode, self).__init__(NodeEnum.ARRAYFUNCORID)
+		self.child = aChild
+		self.expression = aExpression
+
+class ConstantNode(Node):
+	__slots__ = ["value"]
+	def __init__(self, aValue):
+		super(ConstantNode, self).__init__(NodeEnum.CONSTANT)
+		self.value = aValue
+
+class FunctionCallNode(Node):
+	__slots__ = ["name", "arguments"]
+	def __init__(self, aName, aArguments):
+		super(FunctionCallNode, self).__init__(NodeEnum.FUNCTIONCALL)
+		self.name = aName
+		self.arguments = aArguments
+
+class FunctionCallArgument(Node):
+	__slots__ = ["name", "expression"]
+	def __init__(self, aName, aExpression):
+		super(FunctionCallArgument, self).__init__(NodeEnum.FUNCTIONCALLARGUMENT)
+		self.name = aName
+		self.expression = aExpression
+
+class IdentifierNode(Node):
+	__slots__ = ["value"]
+	def __init__(self, aValue):
+		super(IdentifierNode, self).__init__(NodeEnum.IDENTIFIER)
+		self.value = aValue
+
+class LengthNode(Node):
+	__slots__ = []
+	def __init__(self):
+		super(LengthNode, self).__init__(NodeEnum.LENGTH)
+
+class ArrayCreationNode(Node):
+	__slots__ = ["arrayType", "size"]
+	def __init__(self, aArrayType, aSize):
+		super(ArrayCreationNode, self).__init__(NodeEnum.ARRAYCREATION)
+		self.arrayType = aArrayType
+		self.size = aSize
 #
 #class SyntacticError(Exception):
 #	def __init__(self, aMessage, aLine):
@@ -1595,223 +1810,8 @@ class Syntactic(object):
 #		elif self.tokenIndex >= self.tokenLength or self.tokens[self.tokenIndex] == None:
 #			return Expression(self.line, left)
 #
-#	def Shift(self, aItem = None):
-#		if aItem:
-#			self.stack.append(aItem)
-#		else:
-#			self.stack.append(self.PeekBackwards())
-#
-#	def Pop(self):
-#		if len(self.stack) > 0:
-#			return self.stack.pop()
-#		else:
-#			return None
-#
-#	def ReduceBinaryOperator(self):
-#		operand2 = self.Pop()
-#		operator = self.Pop()
-#		operand1 = self.Pop()
-#		self.Shift(BinaryOperatorNode(operator, operand1, operand2))
-#
-#	def ReduceUnaryOperator(self):
-#		operand = self.Pop()
-#		operator = self.Pop()
-#		self.Shift(UnaryOperatorNode(operator, operand))
-#
-#	def Expression(self):
-##		print(1)
-#		def Reduce():
-#			self.Shift(ExpressionNode(self.Pop()))
-#
-#		self.AndExpression()
-#		while self.Accept(TokenEnum.OR):
-#			self.Shift()
-#			self.AndExpression()
-#			self.ReduceBinaryOperator()
-#		Reduce()
-#		return True
-#
-#	def AndExpression(self):
-##		print(2)
-#		self.BoolExpression()
-#		while self.Accept(TokenEnum.AND):
-#			self.Shift()
-#			self.BoolExpression()
-#			self.ReduceBinaryOperator()
-#		return True
-#
-#	def BoolExpression(self):
-##		print(3)
-#		self.AddExpression()
-#		while self.Accept(TokenEnum.EQUAL) or self.Accept(TokenEnum.NOTEQUAL) or self.Accept(TokenEnum.GREATERTHANOREQUAL) or self.Accept(TokenEnum.LESSTHANOREQUAL) or self.Accept(TokenEnum.GREATERTHAN) or self.Accept(TokenEnum.LESSTHAN):
-#			self.Shift()
-#			self.AddExpression()
-#			self.ReduceBinaryOperator()
-#		return True
-#
-#	def AddExpression(self):
-##		print(4)
-#		self.MultExpression()
-#		while self.Accept(TokenEnum.ADDITION) or self.Accept(TokenEnum.SUBTRACTION):
-#			self.Shift()
-#			self.MultExpression()
-#			self.ReduceBinaryOperator()
-#		return True
-#
-#	def MultExpression(self):
-##		print(5)
-#		self.UnaryExpression()
-#		while self.Accept(TokenEnum.MULTIPLICATION) or self.Accept(TokenEnum.DIVISION) or self.Accept(TokenEnum.MODULUS):
-#			self.Shift()
-#			self.UnaryExpression()
-#			self.ReduceBinaryOperator()
-#		return True
-#
-#	def UnaryExpression(self):
-##		print(6)
-#		unaryOp = False
-#		if self.Accept(TokenEnum.SUBTRACTION) or self.Accept(TokenEnum.NOT):
-#			self.Shift()
-#			unaryOp = True
-#		self.CastAtom()
-#		if unaryOp:
-#			self.ReduceUnaryOperator()
-#		return True
-#
-#	def CastAtom(self):
-##		print(7)
-#		self.DotAtom()
-#		if self.AcceptKeyword(KeywordEnum.AS):
-#			self.Shift()
-#			#self.ExpectType(True)
-#			if self.Accept(TokenEnum.IDENTIFIER) or (self.tokens[self.tokenIndex].type == TokenEnum.KEYWORD and (self.tokens[self.tokenIndex].value == KeywordEnum.BOOL or self.tokens[self.tokenIndex].value == KeywordEnum.FLOAT or self.tokens[self.tokenIndex].value == KeywordEnum.INT or self.tokens[self.tokenIndex].value == KeywordEnum.STRING)):
-#				self.Consume()
-#			else:
-#				self.Abort("Expected a type.")
-#			self.Shift(IdentifierNode(self.PeekBackwards().value))
-#			self.ReduceBinaryOperator()
-#		return True
-#
-#	def DotAtom(self):
-##		print(8)
-#		#if self.AcceptLiteral():
-#		if self.AcceptKeyword(KeywordEnum.FALSE) or self.AcceptKeyword(KeywordEnum.TRUE) or self.Accept(TokenEnum.FLOAT) or self.Accept(TokenEnum.INT) or self.Accept(TokenEnum.STRING) or self.AcceptKeyword(KeywordEnum.NONE):
-#			self.Shift(ConstantNode(self.PeekBackwards().value))
-#			return True
-#		elif self.Accept(TokenEnum.SUBTRACTION) and (self.Accept(TokenEnum.INT) or self.Expect(TokenEnum.FLOAT)):
-#			self.Shift(ConstantNode(UnaryOperatorNode(self.PeekBackwards(2).value, self.PeekBackwards(1).value)))
-#			return True
-#		elif self.ArrayAtom():
-#			while self.Accept(TokenEnum.DOT):
-#				self.Shift()
-#				self.ArrayFuncOrId()
-#				self.ReduceBinaryOperator()
-#			return True
-#
-#	def ArrayAtom(self):
-##		print(9)
-#		def Reduce():
-#			temp = self.Pop()
-#			self.Shift(ArrayAtomNode(self.Pop(), temp))
-#
-#		self.Atom()
-#		if self.Accept(TokenEnum.LEFTBRACKET):
-#			self.Expression()
-#			self.Expect(TokenEnum.RIGHTBRACKET)
-#			Reduce()
-#		return True
-#
-#	def Atom(self):
-##		print(10)
-#		if self.AcceptKeyword(KeywordEnum.NEW):
-#			self.ExpectType(True)
-#			typ = self.PeekBackwards()
-#			self.Expect(TokenEnum.LEFTBRACKET)
-#			if not self.Accept(TokenEnum.INT):
-#				self.Abort("Expected an int literal.")
-#			size = self.PeekBackwards()
-#			self.Expect(TokenEnum.RIGHTBRACKET)
-#			self.Shift(ArrayCreationNode(typ, size))
-#			return True
-#		elif self.Accept(TokenEnum.LEFTPARENTHESIS):
-#			self.Shift()
-#			self.Expression()
-#			self.Expect(TokenEnum.RIGHTPARENTHESIS)
-#			expr = self.Pop()
-#			self.Pop()
-#			self.Shift(expr)
-#			return True
-#		elif self.FuncOrId():
-#			return True
-#
-#	def ArrayFuncOrId(self):
-##		print(11)
-#		def Reduce():
-#			temp = self.Pop()
-#			self.Shift(ArrayFuncOrIdNode(self.Pop(), temp))
-#
-#		self.FuncOrId()
-#		if self.Accept(TokenEnum.LEFTBRACKET):
-#			self.Expression()
-#			self.Expect(TokenEnum.RIGHTBRACKET)
-#			Reduce()
-#		return True
-#
-#	def FuncOrId(self):
-##		print(12)
-#		nextToken = self.Peek()
-#		if nextToken and nextToken.type == TokenEnum.LEFTPARENTHESIS:
-#			self.FunctionCall()
-#			return True
-#		elif self.Accept(KeywordEnum.LENGTH):
-#			self.Shift(LengthNode())
-#			return True
-#		elif self.Accept(TokenEnum.IDENTIFIER) or self.AcceptKeyword(KeywordEnum.SELF) or self.AcceptKeyword(KeywordEnum.PARENT):
-#			self.Shift(IdentifierNode(self.PeekBackwards().value))
-#			return True
-#		else:
-#			self.Abort("Expected a function call, and identifier, or the LENGTH keyword")
-#
-#	def FunctionCall(self):
-##		print(13)
-#		def Reduce():
-#			arguments = []
-#			temp = self.Pop() # Right parenthesis
-#			temp = self.Pop()
-#			while temp.type == NodeEnum.FUNCTIONCALLARGUMENT:
-#				arguments.insert(0, temp)
-#				temp = self.Pop()
-#			self.Shift(FunctionCallNode(self.Pop().value, arguments))
-#
-#		def Argument():
-#			ident = None
-#			nextToken = self.Peek()
-#			if nextToken and nextToken.type == TokenEnum.ASSIGN:
-#				self.Expect(TokenEnum.IDENTIFIER)
-#				ident = self.PeekBackwards()
-#				self.Expect(TokenEnum.ASSIGN)
-#			self.Expression()
-#			expr = self.Pop()
-#			self.Shift(FunctionCallArgument(ident, expr))
-#			return True
-#
-#		self.Expect(TokenEnum.IDENTIFIER)
-#		self.Shift()
-#		self.Expect(TokenEnum.LEFTPARENTHESIS)
-#		self.Shift()
-#		if self.Accept(TokenEnum.RIGHTPARENTHESIS):
-#			self.Shift()
-#			Reduce()
-#			return True
-#		else:
-#			Argument()
-#			while self.Accept(TokenEnum.COMMA):
-#				Argument()
-#			self.Expect(TokenEnum.RIGHTPARENTHESIS)
-#			self.Shift()
-#			Reduce()
-#			return True
-#
+
+
 ##3: Semantic analysis
 
 class SemanticError(Exception):
