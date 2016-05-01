@@ -435,10 +435,11 @@ class KeywordExpression(Statement):
 		self.expression = aExpression
 
 class Type(object):
-	__slots__ = ["name", "array"]
-	def __init__(self, aName, aArray):
+	__slots__ = ["namespace", "name", "array"]
+	def __init__(self, aNamespace, aName, aArray):
 		self.name = aName # String
 		self.array = aArray # Bool
+		self.namespace = aNamespace
 
 class Assignment(Statement):
 	__slots__ = ["leftExpression", "rightExpression"]
@@ -515,7 +516,7 @@ class Expression(Statement):
 		super(Expression, self).__init__(StatementEnum.EXPRESSION, aLine)
 		self.expression = aExpression
 
-class Parameter(object):#Statement):
+class ParameterSignature(object):#Statement):
 	__slots__ = ["line", "name", "type", "value"]
 	def __init__(self, aLine, aName, aType, aValue):
 		#super(Parameter, self).__init__(StatementEnum.PARAMETER, aLine)
@@ -541,12 +542,14 @@ class GroupSignature(Statement):
 		self.flags = aFlags
 
 class EventSignature(Statement):
-	__slots__ = ["name", "flags", "parameters"]
-	def __init__(self, aLine, aName, aFlags, aParameters):
+	__slots__ = ["namespace", "remoteScript", "name", "flags", "parameters"]
+	def __init__(self, aLine, aNamespace, aRemoteScript, aName, aFlags, aParameters):
 		super(EventSignature, self).__init__(StatementEnum.EVENTSIGNATURE, aLine)
 		self.name = aName
 		self.flags = aFlags
 		self.parameters = aParameters
+		self.namespace = aNamespace
+		self.remoteScript = aRemoteScript
 
 class If(KeywordExpression):
 	__slots__ = []
@@ -574,12 +577,13 @@ class Return(KeywordExpression):
 		super(Return, self).__init__(StatementEnum.RETURN, aLine, aExpression)
 
 class ScriptSignature(Statement):
-	__slots__ = ["name", "parent", "flags"]
-	def __init__(self, aLine, aName, aParent, aFlags):
+	__slots__ = ["namespace", "name", "parent", "flags"]
+	def __init__(self, aLine, aNamespace, aName, aParent, aFlags):
 		super(ScriptSignature, self).__init__(StatementEnum.SCRIPTSIGNATURE, aLine)
 		self.name = aName
 		self.parent = aParent
 		self.flags = aFlags
+		self.namespace = aNamespace
 
 class StateSignature(Statement):
 	__slots__ = ["name", "auto"]
@@ -696,14 +700,23 @@ class Syntactic(object):
 			return successfulFlags
 		return None
 
-	def Process(self, aTokens):
-		if not aTokens:
-			return
-		self.line = aTokens[0].line
-		result = None
-		self.tokens = aTokens
-		self.tokenIndex = 0
-		self.tokenCount = len(self.tokens)
+	def AcceptType(self, aBaseTypes):
+		if self.Accept(TokenEnum.IDENTIFIER):
+			return True
+		elif aBaseTypes and (self.AcceptKeyword(KeywordEnum.BOOL) or self.AcceptKeyword(KeywordEnum.FLOAT) or self.AcceptKeyword(KeywordEnum.INT) or self.AcceptKeyword(KeywordEnum.STRING) or self.AcceptKeyword(KeywordEnum.VAR)):
+			return True
+		else:
+			return False
+
+	def ExpectType(self, aBaseTypes):
+		if self.Accept(TokenEnum.IDENTIFIER):
+			return True
+		elif aBaseTypes and (self.AcceptKeyword(KeywordEnum.BOOL) or self.AcceptKeyword(KeywordEnum.FLOAT) or self.AcceptKeyword(KeywordEnum.INT) or self.AcceptKeyword(KeywordEnum.STRING) or self.AcceptKeyword(KeywordEnum.VAR)):
+			return True
+		else:
+			raise SyntacticError("Expected a type identifier.", self.line)
+
+	def Namespace(self):
 		namespace = None
 		nextToken = self.Peek()
 		if nextToken and nextToken.type == TokenEnum.COLON and self.Accept(TokenEnum.IDENTIFIER):
@@ -714,190 +727,336 @@ class Syntactic(object):
 				namespace.append(self.PeekBackwards())
 				self.Consume()
 				nextToken = self.Peek()
-			print(namespace)
-		if self.tokens[0].type == TokenEnum.KEYWORD:
-			keyword = self.tokens[0].value
-			#	Functions, properties, and variables
-			#		BOOL
-			#		FLOAT
-			#		INT
-			#		STRING
-			#		VAR
-			
-			if keyword == KeywordEnum.BOOL or keyword == KeywordEnum.FLOAT or keyword == KeywordEnum.INT or keyword == KeywordEnum.STRING or keyword == KeywordEnum.VAR:
-				#if keyword == KeywordEnum.FUNCTION:
-				#	function
-				#elif keyword == KeywordEnum.PROPERTY:
-				#	property
-				#else:
-				#	variable
-				self.Consume()
-				pass
+		return namespace
 
-			#	Definitions
-			#		IF
-			#		ELSEIF
-			#		ELSE
-			#		ENDIF
-			#		WHILE
-			#		ENDWHILE
-			#		IMPORT
-			#		RETURN
-			#		FUNCTION
-			#		ENDFUNCTION
-			#		EVENT
-			#		ENDEVENT
-			#		STRUCT
-			#		ENDSTRUCT
-			#		ENDPROPERTY
-			#		GROUP
-			#		ENDGROUP
-			#		CUSTOMEVENT
-			#		STATE
-			#		ENDSTATE
-			#		AUTO
-			#			STATE
-			#		SCRIPTNAME
-			
-			elif keyword == KeywordEnum.IF:
-				self.Consume()
+	def Property(self, aType):
+		self.ExpectKeyword(KeywordEnum.PROPERTY)
+		self.Expect(TokenEnum.IDENTIFIER)
+		name = self.PeekBackwards()
+		value = None
+		flags = None
+		if self.Accept(TokenEnum.ASSIGN):
+			#Expression
+			self.Consume()
+			flags = self.AcceptFlags([KeywordEnum.AUTOREADONLY, KeywordEnum.AUTO, KeywordEnum.CONST, KeywordEnum.MANDATORY, KeywordEnum.HIDDEN, KeywordEnum.CONDITIONAL])
+			if KeywordEnum.AUTO in flags and KeywordEnum.AUTOREADONLY in flags:
+				self.Abort("A property cannot have both the AUTO and the AUTOREADONLY keyword.")
+			if KeywordEnum.AUTO in flags:
 				pass
-			elif keyword == KeywordEnum.ELSEIF:
-				self.Consume()
+			elif KeywordEnum.AUTOREADONLY in flags:
 				pass
-			elif keyword == KeywordEnum.ELSE:
-				result = Else(self.line)
-			elif keyword == KeywordEnum.ENDIF:
-				result = EndIf(self.line)
-			elif keyword == KeywordEnum.WHILE:
-				self.Consume()
-				pass
-			elif keyword == KeywordEnum.ENDWHILE:
-				result = EndWhile(self.line)
-			elif keyword == KeywordEnum.IMPORT:
-				self.Consume()
-				self.Expect(TokenEnum.IDENTIFIER)
-				result = Import(self.line, self.PeekBackwards())
-			elif keyword == KeywordEnum.RETURN:
-				self.Consume()
-				pass
-			elif keyword == KeywordEnum.FUNCTION:
-				self.Consume()
-				self.Expect(TokenEnum.IDENTIFIER)
-				name = self.PeekBackwards()
-				parameters = None
-#				nextToken = self.Peek()
-				self.Expect(TokenEnum.LEFTPARENTHESIS)
-#				if nextToken and nextToken.type != self.RIGHT_PARENTHESIS:
-#					def Parameter():
-#						self.ExpectType(True)
-#						typ = self.GetPreviousValue()
-#						array = False
-#						if self.Accept(self.LEFT_BRACKET):
-#							self.Expect(self.RIGHT_BRACKET)
-#							array = True
-#						self.Expect(self.IDENTIFIER)
-#						name = self.GetPreviousValue()
-#						value = None
-#						if self.Accept(self.OP_ASSIGN):
-#							defaultValues = True
-#							if not self.Expression():
-#								self.Abort("Expected an expression.")
-#							value = self.Pop()
-#						params.append(ParameterDef(typ.upper(), typ, array, name.upper(), name, value))
-#						return True
-#					Parameter()
-#					while self.Accept(TokenEnum.COMMA):
-#						Parameter()
-				self.Expect(TokenEnum.RIGHTPARENTHESIS)	
-				result = FunctionSignature(self.line, name, None, self.AcceptFlags([KeywordEnum.NATIVE, KeywordEnum.GLOBAL, KeywordEnum.DEBUGONLY, KeywordEnum.BETAONLY]), parameters)
-			elif keyword == KeywordEnum.ENDFUNCTION:
-				self.Consume()
-				result = EndFunction(self.line)
-			elif keyword == KeywordEnum.EVENT:
-				self.Consume()
-				self.Expect(TokenEnum.IDENTIFIER)
-				name = self.PeekBackwards()
-				parameters = None
-#				nextToken = self.Peek()
-				self.Expect(TokenEnum.LEFTPARENTHESIS)
-				# Parameters
-				self.Expect(TokenEnum.RIGHTPARENTHESIS)
-				result = EventSignature(self.line, name, self.AcceptFlags([KeywordEnum.NATIVE]), parameters)
-			elif keyword == KeywordEnum.ENDEVENT:
-				self.Consume()
-				result = EndEvent(self.line)
-			elif keyword == KeywordEnum.STRUCT:
-				self.Consume()
-				self.Expect(TokenEnum.IDENTIFIER)
-				result = StructSignature(self.line, self.PeekBackwards())
-			elif keyword == KeywordEnum.ENDSTRUCT:
-				self.Consume()
-				result = EndStruct(self.line)
-			elif keyword == KeywordEnum.ENDPROPERTY:
-				self.Consume()
-				result = EndProperty(self.line)
-			elif keyword == KeywordEnum.GROUP:
-				self.Consume()
-				self.Expect(TokenEnum.IDENTIFIER)
-				result = GroupSignature(self.line, self.PeekBackwards(), self.AcceptFlags([KeywordEnum.COLLAPSED, KeywordEnum.COLLAPSEDONBASE, KeywordEnum.COLLAPSEDONREF]))
-			elif keyword == KeywordEnum.ENDGROUP:
-				self.Consume()
-				result = EndGroup(self.line)
-			elif keyword == KeywordEnum.CUSTOMEVENT:
-				self.Consume()
-				self.Expect(TokenEnum.IDENTIFIER)
-				result = CustomEvent(self.line, self.PeekBackwards())
-			elif keyword == KeywordEnum.STATE:
-				self.Consume()
-				self.Expect(TokenEnum.IDENTIFIER)
-				result = StateSignature(self.line, self.PeekBackwards(), False)
-			elif keyword == KeywordEnum.ENDSTATE:
-				self.Consume()
-				result = EndState(self.line)
-			elif keyword == KeywordEnum.AUTO:
-				self.Consume()
-				self.ExpectKeyword(KeywordEnum.STATE)
-				self.Expect(TokenEnum.IDENTIFIER)
-				result = StateSignature(self.line, self.PeekBackwards(), True)
-			elif keyword == KeywordEnum.SCRIPTNAME:
-				self.Consume()
-				self.Expect(TokenEnum.IDENTIFIER)
-				name = self.PeekBackwards()
-				parent = None
-				if self.AcceptKeyword(KeywordEnum.EXTENDS):
-					self.Expect(TokenEnum.IDENTIFIER)
-					parent = self.PeekBackwards()
-				result = ScriptSignature(self.line, name, parent, self.AcceptFlags([KeywordEnum.HIDDEN, KeywordEnum.CONDITIONAL, KeywordEnum.NATIVE]))
-
-			#	Expressions (or assignments)
-			#		FALSE
-			#		NEW
-			#		NONE
-			#		PARENT
-			#		SELF
-			#		TRUE
-			#
-			#	Other keywords
-			#		AS
-			#		AUTOREADONLY
-			#		BETAONLY
-			#		COLLAPSED
-			#		COLLAPSEDONBASE
-			#		COLLAPSEDONREF
-			#		CONDITIONAL
-			#		CONST
-			#		DEBUGONLY
-			#		EXTENDS
-			#		GLOBAL
-			#		HIDDEN
-			#		LENGTH
-			#		MANDATORY
-			#		NATIVE
-			#		PROPERTY
-
 			else:
-				pass
+				self.Abort("Properties initialized with a value require either the AUTO or the AUTOREADONLY flag.")
+		else:
+			flags = self.AcceptFlags([KeywordEnum.AUTOREADONLY, KeywordEnum.AUTO, KeywordEnum.CONST, KeywordEnum.MANDATORY, KeywordEnum.HIDDEN, KeywordEnum.CONDITIONAL])
+		return PropertySignature(self.line, name, aType, flags, value)
+
+	def Function(self, aType):
+		self.ExpectKeyword(KeywordEnum.FUNCTION)
+		self.Expect(TokenEnum.IDENTIFIER)
+		name = self.PeekBackwards()
+		parameters = None
+
+		def Parameter():
+			namespace = self.Namespace()
+			self.ExpectType(True)
+			name = self.PeekBackwards()
+			array = False
+			if self.Accept(TokenEnum.LEFTBRACKET):
+				self.Expect(TokenEnum.RIGHTBRACKET)
+				array = True
+			typ = Type(namespace, name, array)
+			self.Expect(TokenEnum.IDENTIFIER)
+			name = self.PeekBackwards()
+			value = None
+#			if self.Accept(TokenEnum.ASSIGN):
+#				if not self.Expression():
+#					self.Abort("Expected an expression.")
+#				value = self.Pop()
+			parameters.append(ParameterSignature(self.line, name, typ, value))
+
+		nextToken = self.Peek()
+		self.Expect(TokenEnum.LEFTPARENTHESIS)
+		# Parameters
+		if nextToken and nextToken.type != TokenEnum.RIGHTPARENTHESIS:
+			parameters = []
+			Parameter()
+			while self.Accept(TokenEnum.COMMA):
+				Parameter()
+
+		self.Expect(TokenEnum.RIGHTPARENTHESIS)
+		return FunctionSignature(self.line, name, aType, self.AcceptFlags([KeywordEnum.NATIVE, KeywordEnum.GLOBAL, KeywordEnum.DEBUGONLY, KeywordEnum.BETAONLY]), parameters)
+
+	def Process(self, aTokens):
+		if not aTokens:
+			return
+		
+		result = None
+		self.tokens = aTokens
+		self.tokenIndex = 0
+		self.tokenCount = len(self.tokens)
+		self.line = self.tokens[self.tokenIndex].line
+		namespace = self.Namespace()
+		print(namespace)
+		if namespace:
+			# Properties, functions, and variables
+			pass
+		else:
+			if self.tokens[self.tokenIndex].type == TokenEnum.KEYWORD:
+				keyword = self.tokens[0].value
+				#	Functions, properties, and variables
+				#		BOOL
+				#		FLOAT
+				#		INT
+				#		STRING
+				#		VAR
+				
+				if keyword == KeywordEnum.BOOL or keyword == KeywordEnum.FLOAT or keyword == KeywordEnum.INT or keyword == KeywordEnum.STRING or keyword == KeywordEnum.VAR:
+					self.Consume()
+					name = self.PeekBackwards()
+					array = False
+					if self.Accept(TokenEnum.LEFTBRACKET):
+						self.Expect(TokenEnum.RIGHTBRACKET)
+						array = True
+					typ = Type(namespace, name, array)
+					nextToken = self.Peek()
+					if nextToken:
+						if nextToken.type == TokenEnum.KEYWORD:
+							if nextToken.value == KeywordEnum.FUNCTION:
+								self.Function(typ)
+							elif nextToken.value == KeywordEnum.PROPERTY:
+								result = self.Property(typ)
+						elif nextToken.type == TokenEnum.IDENTIFIER:
+							pass
+
+				#	Definitions
+				#		IF
+				#		ELSEIF
+				#		ELSE
+				#		ENDIF
+				#		WHILE
+				#		ENDWHILE
+				#		IMPORT
+				#		RETURN
+				#		FUNCTION
+				#		ENDFUNCTION
+				#		EVENT
+				#		ENDEVENT
+				#		STRUCT
+				#		ENDSTRUCT
+				#		ENDPROPERTY
+				#		GROUP
+				#		ENDGROUP
+				#		CUSTOMEVENT
+				#		STATE
+				#		ENDSTATE
+				#		AUTO
+				#			STATE
+				#		SCRIPTNAME
+				
+				elif keyword == KeywordEnum.IF:
+					self.Consume()
+					pass
+				elif keyword == KeywordEnum.ELSEIF:
+					self.Consume()
+					pass
+				elif keyword == KeywordEnum.ELSE:
+					self.Consume()
+					result = Else(self.line)
+				elif keyword == KeywordEnum.ENDIF:
+					self.Consume()
+					result = EndIf(self.line)
+				elif keyword == KeywordEnum.WHILE:
+					self.Consume()
+					pass
+				elif keyword == KeywordEnum.ENDWHILE:
+					self.Consume()
+					result = EndWhile(self.line)
+				elif keyword == KeywordEnum.IMPORT:
+					self.Consume()
+					self.Expect(TokenEnum.IDENTIFIER)
+					result = Import(self.line, self.PeekBackwards())
+				elif keyword == KeywordEnum.RETURN:
+					self.Consume()
+					pass
+				elif keyword == KeywordEnum.FUNCTION:
+					result = self.Function(None)
+#					self.Consume()
+#					self.Expect(TokenEnum.IDENTIFIER)
+#					name = self.PeekBackwards()
+#					parameters = None
+#	#				nextToken = self.Peek()
+#					self.Expect(TokenEnum.LEFTPARENTHESIS)
+#	#				if nextToken and nextToken.type != self.RIGHT_PARENTHESIS:
+#	#					def Parameter():
+#	#						self.ExpectType(True)
+#	#						typ = self.GetPreviousValue()
+#	#						array = False
+#	#						if self.Accept(self.LEFT_BRACKET):
+#	#							self.Expect(self.RIGHT_BRACKET)
+#	#							array = True
+#	#						self.Expect(self.IDENTIFIER)
+#	#						name = self.GetPreviousValue()
+#	#						value = None
+#	#						if self.Accept(self.OP_ASSIGN):
+#	#							defaultValues = True
+#	#							if not self.Expression():
+#	#								self.Abort("Expected an expression.")
+#	#							value = self.Pop()
+#	#						params.append(ParameterDef(typ.upper(), typ, array, name.upper(), name, value))
+#	#						return True
+#	#					Parameter()
+#	#					while self.Accept(TokenEnum.COMMA):
+#	#						Parameter()
+#					self.Expect(TokenEnum.RIGHTPARENTHESIS)	
+#					result = FunctionSignature(self.line, name, None, self.AcceptFlags([KeywordEnum.NATIVE, KeywordEnum.GLOBAL, KeywordEnum.DEBUGONLY, KeywordEnum.BETAONLY]), parameters)
+				elif keyword == KeywordEnum.ENDFUNCTION:
+					self.Consume()
+					result = EndFunction(self.line)
+				elif keyword == KeywordEnum.EVENT:
+					self.Consume()
+					namespace = self.Namespace()
+					remoteScript = None
+					if namespace:
+						self.Expect(TokenEnum.IDENTIFIER)
+						remoteScript = self.PeekBackwards()
+						self.Expect(TokenEnum.DOT)
+					else:
+						nextToken = self.Peek()
+						if nextToken and nextToken.type == TokenEnum.DOT:
+							self.Expect(TokenEnum.IDENTIFIER)
+							remoteScript = self.PeekBackwards()
+							self.Consume()
+					self.Expect(TokenEnum.IDENTIFIER)
+					name = self.PeekBackwards()
+					parameters = None
+	#				nextToken = self.Peek()
+					self.Expect(TokenEnum.LEFTPARENTHESIS)
+					# Parameters
+					self.Expect(TokenEnum.RIGHTPARENTHESIS)
+					result = EventSignature(self.line, namespace, remoteScript, name, self.AcceptFlags([KeywordEnum.NATIVE]), parameters)
+				elif keyword == KeywordEnum.ENDEVENT:
+					self.Consume()
+					result = EndEvent(self.line)
+				elif keyword == KeywordEnum.STRUCT:
+					self.Consume()
+					self.Expect(TokenEnum.IDENTIFIER)
+					result = StructSignature(self.line, self.PeekBackwards())
+				elif keyword == KeywordEnum.ENDSTRUCT:
+					self.Consume()
+					result = EndStruct(self.line)
+				elif keyword == KeywordEnum.ENDPROPERTY:
+					self.Consume()
+					result = EndProperty(self.line)
+				elif keyword == KeywordEnum.GROUP:
+					self.Consume()
+					self.Expect(TokenEnum.IDENTIFIER)
+					result = GroupSignature(self.line, self.PeekBackwards(), self.AcceptFlags([KeywordEnum.COLLAPSED, KeywordEnum.COLLAPSEDONBASE, KeywordEnum.COLLAPSEDONREF]))
+				elif keyword == KeywordEnum.ENDGROUP:
+					self.Consume()
+					result = EndGroup(self.line)
+				elif keyword == KeywordEnum.CUSTOMEVENT:
+					self.Consume()
+					self.Expect(TokenEnum.IDENTIFIER)
+					result = CustomEvent(self.line, self.PeekBackwards())
+				elif keyword == KeywordEnum.STATE:
+					self.Consume()
+					self.Expect(TokenEnum.IDENTIFIER)
+					result = StateSignature(self.line, self.PeekBackwards(), False)
+				elif keyword == KeywordEnum.ENDSTATE:
+					self.Consume()
+					result = EndState(self.line)
+				elif keyword == KeywordEnum.AUTO:
+					self.Consume()
+					self.ExpectKeyword(KeywordEnum.STATE)
+					self.Expect(TokenEnum.IDENTIFIER)
+					result = StateSignature(self.line, self.PeekBackwards(), True)
+				elif keyword == KeywordEnum.SCRIPTNAME:
+					self.Consume()
+					namespace = self.Namespace()
+					self.Expect(TokenEnum.IDENTIFIER)
+					name = self.PeekBackwards()
+					parent = None
+					if self.AcceptKeyword(KeywordEnum.EXTENDS):
+						self.Expect(TokenEnum.IDENTIFIER)
+						parent = self.PeekBackwards()
+					result = ScriptSignature(self.line, namespace, name, parent, self.AcceptFlags([KeywordEnum.HIDDEN, KeywordEnum.CONDITIONAL, KeywordEnum.NATIVE]))
+
+				#	Expressions (or assignments)
+				#		FALSE
+				#		NEW
+				#		NONE
+				#		PARENT
+				#		SELF
+				#		TRUE
+				#
+				#	Other keywords
+				#		AS
+				#		AUTOREADONLY
+				#		BETAONLY
+				#		COLLAPSED
+				#		COLLAPSEDONBASE
+				#		COLLAPSEDONREF
+				#		CONDITIONAL
+				#		CONST
+				#		DEBUGONLY
+				#		EXTENDS
+				#		GLOBAL
+				#		HIDDEN
+				#		LENGTH
+				#		MANDATORY
+				#		NATIVE
+				#		PROPERTY
+
+				else:
+					pass
+			elif self.tokens[self.tokenIndex].type == TokenEnum.IDENTIFIER:#self.Accept(TokenEnum.IDENTIFIER):
+				nextToken = self.Peek()
+				if nextToken:
+					if nextToken.type == TokenEnum.KEYWORD:
+						if nextToken.value == KeywordEnum.FUNCTION:
+							self.Consume()
+							typ = Type(namespace, self.PeekBackwards(), False)
+							result = self.Function(typ)
+						elif nextToken.value == KeywordEnum.PROPERTY:
+							self.Consume()
+							typ = Type(namespace, self.PeekBackwards(), False)
+							result = self.Property(typ)
+					elif nextToken.type == TokenEnum.LEFTBRACKET:
+						nextToken = self.Peek(2)
+						if nextToken:
+							if nextToken.type == TokenEnum.RIGHTBRACKET:
+								self.Consume()
+								typ = Type(namespace, self.PeekBackwards(), True)
+								self.Consume()
+								nextToken = self.Peek()
+								self.Consume()
+								if nextToken and nextToken.type == TokenEnum.KEYWORD:
+									if nextToken.value == KeywordEnum.FUNCTION:
+										result = self.Function(typ)
+									elif nextToken.value == KeywordEnum.PROPERTY:
+										result = self.Property(typ)
+									# Variable
+							else:
+								pass # Expression or assignment
+				else:
+					pass # Expression or assignment
+
+#				name = self.PeekBackwards()
+#				array = False
+#				if self.Accept(TokenEnum.LEFTBRACKET):
+#					self.Expect(TokenEnum.RIGHTBRACKET)
+#					array = True
+#				typ = Type(namespace, name, array)
+#				nextToken = self.Peek()
+#				if nextToken:
+#					if nextToken.type == TokenEnum.KEYWORD:
+#						if nextToken.value == KeywordEnum.FUNCTION:
+#							self.Function(typ)
+#						elif nextToken.value == KeywordEnum.PROPERTY:
+#							result = self.Property(typ)
+#					elif nextToken.type == TokenEnum.IDENTIFIER:
+#						pass
 		if self.tokenIndex < self.tokenCount:
 			if self.tokens[self.tokenIndex].type == TokenEnum.KEYWORD:
 				self.Abort("Unexpected %s symbol (%s)." % (TokenDescription[self.tokens[self.tokenIndex].type], KeywordDescription[self.tokens[self.tokenIndex].value]))
@@ -1651,6 +1810,12 @@ class Syntactic(object):
 #			return True
 #
 ##3: Semantic analysis
+
+class SemanticError(Exception):
+	def __init__(self, aMessage, aLine):
+		self.message = aMessage
+		self.line = aLine
+
 #class Script(object):
 #	__slots__ = ["name", "parent", "flags", "properties", "variables", "functions", "states"]
 #	def __init__(self, aName, aParent, aFlags, aProperties, aVariables, aFunctions, aStates):
@@ -1690,3 +1855,6 @@ class Syntactic(object):
 #		self.starts = aStarts # Integer
 #		self.ends = aEnds # Integer
 #		self.functions = aFunctions # Dict of Function/Event instances
+#
+# Group
+# Struct
