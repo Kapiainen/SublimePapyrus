@@ -221,19 +221,19 @@ class EventListener(sublime_plugin.EventListener):
 			try:
 				for token in LEX.Process(aSource):
 					if token.type == Linter.TokenEnum.NEWLINE:
-						i = 0
-						for t in tokens:
-							if t.type == Linter.TokenEnum.KEYWORD:
-								print("%d: %s = %s" % (i, Linter.TokenDescription[t.type], Linter.KeywordDescription[t.value]))
-							else:
-								print("%d: %s = %s" % (i, Linter.TokenDescription[t.type], t.value))
-							i += 1
+#						i = 0
+#						for t in tokens:
+#							if t.type == Linter.TokenEnum.KEYWORD:
+#								print("%d: %s = %s" % (i, Linter.TokenDescription[t.type], Linter.KeywordDescription[t.value]))
+#							else:
+#								print("%d: %s = %s" % (i, Linter.TokenDescription[t.type], t.value))
+#							i += 1
 						try:
 							stat = SYN.Process(tokens)
 							if stat:
 								try:
 									# Semantic
-									print(Linter.StatementDescription[stat.statementType])
+#									print(Linter.StatementDescription[stat.statementType])
 									#	ASSIGNMENT
 									#	CUSTOMEVENT
 									#	DOCSTRING
@@ -263,7 +263,7 @@ class EventListener(sublime_plugin.EventListener):
 									#	WHILE
 									statType = stat.statementType
 									#if statType == Linter.StatementEnum.
-									print(mode)
+#									print(mode)
 									if mode == 0: # Empty state
 										if statType == Linter.StatementEnum.SCRIPTSIGNATURE:
 											if scriptheader:

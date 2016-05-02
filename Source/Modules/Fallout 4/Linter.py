@@ -475,7 +475,7 @@ class EndGroup(Keyword):
 
 class ElseIf(KeywordExpression):
 	__slots__ = []
-	def __init__(self, aStat, aLine, aExpression):
+	def __init__(self, aLine, aExpression):
 		super(ElseIf, self).__init__(StatementEnum.ELSEIF, aLine, aExpression)
 
 class EndEvent(Keyword):
@@ -759,29 +759,28 @@ class Syntactic(object):
 		self.Expect(TokenEnum.IDENTIFIER)
 		name = self.PeekBackwards()
 		parameters = None
-
-		def Parameter():
-			namespace = self.Namespace()
-			self.ExpectType(True)
-			name = self.PeekBackwards()
-			array = False
-			if self.Accept(TokenEnum.LEFTBRACKET):
-				self.Expect(TokenEnum.RIGHTBRACKET)
-				array = True
-			typ = Type(namespace, name, array)
-			self.Expect(TokenEnum.IDENTIFIER)
-			name = self.PeekBackwards()
-			value = None
-			if self.Accept(TokenEnum.ASSIGN):
-				if not self.Expression():
-					self.Abort("Expected an expression.")
-				self.Expression()
-				value = self.Pop()
-			parameters.append(ParameterSignature(self.line, name, typ, value))
-
 		nextToken = self.Peek()
 		self.Expect(TokenEnum.LEFTPARENTHESIS)
 		if nextToken and nextToken.type != TokenEnum.RIGHTPARENTHESIS:
+
+			def Parameter():
+				namespace = self.Namespace()
+				self.ExpectType(True)
+				name = self.PeekBackwards()
+				array = False
+				if self.Accept(TokenEnum.LEFTBRACKET):
+					self.Expect(TokenEnum.RIGHTBRACKET)
+					array = True
+				typ = Type(namespace, name, array)
+				self.Expect(TokenEnum.IDENTIFIER)
+				name = self.PeekBackwards()
+				value = None
+				if self.Accept(TokenEnum.ASSIGN):
+					if not self.Expression():
+						self.Abort("Expected an expression.")
+					value = self.Pop()
+				parameters.append(ParameterSignature(self.line, name, typ, value))
+
 			parameters = []
 			Parameter()
 			while self.Accept(TokenEnum.COMMA):
@@ -878,12 +877,11 @@ class Syntactic(object):
 		self.DotAtom()
 		if self.AcceptKeyword(KeywordEnum.AS) or self.AcceptKeyword(KeywordEnum.IS):
 			self.Shift()
-			#self.ExpectType(True)
 			if self.tokens[self.tokenIndex].type == TokenEnum.IDENTIFIER or (self.tokens[self.tokenIndex].type == TokenEnum.KEYWORD and (self.tokens[self.tokenIndex].value == KeywordEnum.BOOL or self.tokens[self.tokenIndex].value == KeywordEnum.FLOAT or self.tokens[self.tokenIndex].value == KeywordEnum.INT or self.tokens[self.tokenIndex].value == KeywordEnum.STRING)):
 				self.Consume()
 			else:
 				self.Abort("Expected a type.")
-			self.Shift(IdentifierNode(self.PeekBackwards().value))
+			self.Shift(IdentifierNode(self.PeekBackwards()))
 			self.ReduceBinaryOperator()
 		return True
 
@@ -891,10 +889,10 @@ class Syntactic(object):
 #		print(8)
 		#if self.AcceptLiteral():
 		if self.AcceptKeyword(KeywordEnum.FALSE) or self.AcceptKeyword(KeywordEnum.TRUE) or self.Accept(TokenEnum.FLOAT) or self.Accept(TokenEnum.INT) or self.Accept(TokenEnum.STRING) or self.AcceptKeyword(KeywordEnum.NONE):
-			self.Shift(ConstantNode(self.PeekBackwards().value))
+			self.Shift(ConstantNode(self.PeekBackwards()))
 			return True
 		elif self.Accept(TokenEnum.SUBTRACTION) and (self.Accept(TokenEnum.INT) or self.Expect(TokenEnum.FLOAT)):
-			self.Shift(ConstantNode(UnaryOperatorNode(self.PeekBackwards(2).value, self.PeekBackwards(1).value)))
+			self.Shift(ConstantNode(UnaryOperatorNode(self.PeekBackwards(2), self.PeekBackwards(1))))
 			return True
 		elif self.ArrayAtom():
 			while self.Accept(TokenEnum.DOT):
@@ -962,7 +960,7 @@ class Syntactic(object):
 			self.Shift(LengthNode())
 			return True
 		elif self.Accept(TokenEnum.IDENTIFIER) or self.AcceptKeyword(KeywordEnum.SELF) or self.AcceptKeyword(KeywordEnum.PARENT):
-			self.Shift(IdentifierNode(self.PeekBackwards().value))
+			self.Shift(IdentifierNode(self.PeekBackwards()))
 			return True
 		else:
 			self.Abort("Expected a function call, and identifier, or the LENGTH keyword")
@@ -976,7 +974,7 @@ class Syntactic(object):
 			while temp.type == NodeEnum.FUNCTIONCALLARGUMENT:
 				arguments.insert(0, temp)
 				temp = self.Pop()
-			self.Shift(FunctionCallNode(self.Pop().value, arguments))
+			self.Shift(FunctionCallNode(self.Pop(), arguments))
 
 		def Argument():
 			ident = None
@@ -1019,6 +1017,8 @@ class Syntactic(object):
 			return Expression(self.line, left)
 
 	def Variable(self, aType):
+#		print("Variable def")
+		self.Expect(TokenEnum.IDENTIFIER)
 		name = self.PeekBackwards()
 		value = None
 		if self.Accept(TokenEnum.ASSIGN):
@@ -1037,10 +1037,25 @@ class Syntactic(object):
 		self.line = self.tokens[self.tokenIndex].line
 		self.stack = []
 		namespace = self.Namespace()
-		print(namespace)
+#		print(namespace)
 		if namespace:
 			# Properties, functions, and variables
-			pass
+			self.Expect(TokenEnum.IDENTIFIER)
+			name = self.PeekBackwards()
+			array = False
+			if self.Accept(TokenEnum.LEFTBRACKET):
+				self.Expect(TokenEnum.RIGHTBRACKET)
+				array = True
+			typ = Type(namespace, name, array)
+			token = self.tokens[self.tokenIndex]
+			if token:
+				if token.type == TokenEnum.KEYWORD:
+					if token.value == KeywordEnum.FUNCTION:
+						result = self.Function(typ)
+					elif token.value == KeywordEnum.PROPERTY:
+						result = self.Property(typ)
+				elif token.type == TokenEnum.IDENTIFIER:
+					result = self.Variable(typ)
 		else:
 			if self.tokens[self.tokenIndex].type == TokenEnum.KEYWORD:
 				keyword = self.tokens[0].value
@@ -1052,6 +1067,7 @@ class Syntactic(object):
 				#		VAR
 				
 				if keyword == KeywordEnum.BOOL or keyword == KeywordEnum.FLOAT or keyword == KeywordEnum.INT or keyword == KeywordEnum.STRING or keyword == KeywordEnum.VAR:
+
 					self.Consume()
 					name = self.PeekBackwards()
 					array = False
@@ -1059,15 +1075,24 @@ class Syntactic(object):
 						self.Expect(TokenEnum.RIGHTBRACKET)
 						array = True
 					typ = Type(namespace, name, array)
-					nextToken = self.Peek()
-					if nextToken:
-						if nextToken.type == TokenEnum.KEYWORD:
-							if nextToken.value == KeywordEnum.FUNCTION:
-								self.Function(typ)
-							elif nextToken.value == KeywordEnum.PROPERTY:
+					token = self.tokens[self.tokenIndex]
+					if token:
+						if token.type == TokenEnum.KEYWORD:
+							if token.value == KeywordEnum.FUNCTION:
+								result = self.Function(typ)
+							elif token.value == KeywordEnum.PROPERTY:
 								result = self.Property(typ)
-						elif nextToken.type == TokenEnum.IDENTIFIER:
-							pass
+						elif token.type == TokenEnum.IDENTIFIER:
+							result = self.Variable(typ)
+#					nextToken = self.Peek()
+#					if nextToken:
+#						if nextToken.type == TokenEnum.KEYWORD:
+#							if nextToken.value == KeywordEnum.FUNCTION:
+#								result = self.Function(typ)
+#							elif nextToken.value == KeywordEnum.PROPERTY:
+#								result = self.Property(typ)
+#						elif nextToken.type == TokenEnum.IDENTIFIER:
+#							result = self.Variable(typ)
 
 				#	Definitions
 				#		IF
@@ -1096,12 +1121,14 @@ class Syntactic(object):
 				
 				elif keyword == KeywordEnum.IF:
 					self.Consume()
-					#self.Expression()
-					#result = If(self.line, self.PopStack())
+					if not self.Expression():
+						self.Abort("Expected an expression")
+					result = If(self.line, self.Pop())
 				elif keyword == KeywordEnum.ELSEIF:
 					self.Consume()
-					#self.Expression()
-					#result = ElseIf(self.line, self.PopStack())
+					if not self.Expression():
+						self.Abort("Expected an expression")
+					result = ElseIf(self.line, self.Pop())
 				elif keyword == KeywordEnum.ELSE:
 					self.Consume()
 					result = Else(self.line)
@@ -1110,8 +1137,9 @@ class Syntactic(object):
 					result = EndIf(self.line)
 				elif keyword == KeywordEnum.WHILE:
 					self.Consume()
-					#self.Expression()
-					#result = While(self.line, self.PopStack())
+					if not self.Expression():
+						self.Abort("Expected an expression")
+					result = While(self.line, self.Pop())
 				elif keyword == KeywordEnum.ENDWHILE:
 					self.Consume()
 					result = EndWhile(self.line)
@@ -1121,8 +1149,12 @@ class Syntactic(object):
 					result = Import(self.line, self.PeekBackwards())
 				elif keyword == KeywordEnum.RETURN:
 					self.Consume()
-					self.Expression()
-					result = Return(self.line, self.Pop())
+					if self.tokenIndex < self.tokenCount:
+						if not self.Expression():
+							self.Abort("Expected an expression")
+						result = Return(self.line, self.Pop())
+					else:
+						result = Return(self.line, None)
 				elif keyword == KeywordEnum.FUNCTION:
 					result = self.Function(None)
 				elif keyword == KeywordEnum.ENDFUNCTION:
@@ -1145,9 +1177,30 @@ class Syntactic(object):
 					self.Expect(TokenEnum.IDENTIFIER)
 					name = self.PeekBackwards()
 					parameters = None
-	#				nextToken = self.Peek()
-					self.Expect(TokenEnum.LEFTPARENTHESIS)
+
 					# Parameters
+					nextToken = self.Peek()
+					self.Expect(TokenEnum.LEFTPARENTHESIS)
+					if nextToken and nextToken.type != TokenEnum.RIGHTPARENTHESIS:
+						
+						def Parameter():
+							namespace = self.Namespace()
+							self.ExpectType(True)
+							name = self.PeekBackwards()
+							array = False
+							if self.Accept(TokenEnum.LEFTBRACKET):
+								self.Expect(TokenEnum.RIGHTBRACKET)
+								array = True
+							typ = Type(namespace, name, array)
+							self.Expect(TokenEnum.IDENTIFIER)
+							name = self.PeekBackwards()
+							parameters.append(ParameterSignature(self.line, name, typ, None))
+
+						parameters = []
+						Parameter()
+						while self.Accept(TokenEnum.COMMA):
+							Parameter()
+					
 					self.Expect(TokenEnum.RIGHTPARENTHESIS)
 					result = EventSignature(self.line, namespace, remoteScript, name, self.AcceptFlags([KeywordEnum.NATIVE]), parameters)
 				elif keyword == KeywordEnum.ENDEVENT:
@@ -1246,15 +1299,20 @@ class Syntactic(object):
 								self.Consume()
 								nextToken = self.Peek()
 								self.Consume()
-								if nextToken and nextToken.type == TokenEnum.KEYWORD:
-									if nextToken.value == KeywordEnum.FUNCTION:
-										result = self.Function(typ)
-									elif nextToken.value == KeywordEnum.PROPERTY:
-										result = self.Property(typ)
-								else:
-									result = self.Variable(typ)
+								if nextToken:
+									if nextToken.type == TokenEnum.KEYWORD:
+										if nextToken.value == KeywordEnum.FUNCTION:
+											result = self.Function(typ)
+										elif nextToken.value == KeywordEnum.PROPERTY:
+											result = self.Property(typ)
+#									elif nextToken.type == TokenEnum.IDENTIFIER:
+#										result = self.Variable(typ)
 							else:
 								result = self.ExpressionOrAssignment()
+					elif nextToken.type == TokenEnum.IDENTIFIER:
+						self.Consume()
+						typ = Type(namespace, self.PeekBackwards(), False)
+						result = self.Variable(typ)
 					else:
 						result = self.ExpressionOrAssignment()
 				else:
