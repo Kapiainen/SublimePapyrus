@@ -1940,7 +1940,9 @@ class SemanticError(Exception):
 #			.docstring
 #				String
 #			.imports
-#				List of string
+#				List of String
+#			.customEvents
+#				List of String
 #			.variables
 #				Dict of Variable
 #			.properties
@@ -1957,13 +1959,14 @@ class SemanticError(Exception):
 #			.states
 #				Dict of State
 class Script(object):
-	__slots__ = ["name", "flags", "parent", "docstring", "imports", "variables", "properties",  "groups", "functions", "events", "states"]
-	def __init__(self, aName, aFlags, aParent, aDocstring, aImports, aVariables, aProperties, aGroups, aFunctions, aEvents, aStates):
+	__slots__ = ["name", "flags", "parent", "docstring", "imports", "customEvents", "variables", "properties",  "groups", "functions", "events", "states"]
+	def __init__(self, aName, aFlags, aParent, aDocstring, aImports, aCustomEvents, aVariables, aProperties, aGroups, aFunctions, aEvents, aStates):
 		self.name = aName
 		self.flags = aFlags
 		self.parent = aParent
 		self.docstring = aDocstring
 		self.imports = aImports
+		self.customEvents = aCustomEvents
 		self.variables = aVariables
 		self.properties = aProperties
 		self.groups = aGroups
@@ -1974,7 +1977,9 @@ class Script(object):
 #
 #		Property
 #			.name
+#				String
 #			.flags
+#				List of KeywordEnum
 #			.type
 #				.namespace
 #					List of Token
@@ -1983,8 +1988,11 @@ class Script(object):
 #				.array
 #					Bool
 #			.value
+#				ExpressionNode
 #			.docstring
+#				String
 #			.functions
+#				List of Function
 class Property(object):
 	__slots__ = ["name", "flags", "type", "value", "docstring", "functions", "starts", "ends"]
 	def __init__(self, aName, aFlags, aType, aValue, aDocstring, aFunctions, aStarts, aEnds):
@@ -2000,6 +2008,7 @@ class Property(object):
 #
 #		Group
 #			.name
+#				String
 #			.flags
 #				List of KeywordEnum
 #			.properties
@@ -2020,13 +2029,14 @@ class Group(object):
 #
 #		StructMember
 #			.name
+#				String
 #			.flags (cannot be CONST)
 #			.type
 #				.namespace
 #				.name (cannot be VAR nor another Struct)
 #				.array (must always be false)
 #			.value
-#				Literal
+#				ExpressionNode (has to be a constant)
 #			
 class StructMember(object):
 	__slots__ = ["name", "flags", "type", "value", "docstring"]
@@ -2050,7 +2060,9 @@ class Struct(object):
 #
 #		Function
 #			.name
+#				String
 #			.flags
+#				List of KeywordEnum
 #			.type
 #				.namespace
 #					List of Token
@@ -2061,9 +2073,13 @@ class Struct(object):
 #			.parameters
 #				Dict of Parameter
 #			.docstring
+#				String
 #			.body
+#				List of Statement
 #			.starts
+#				Int
 #			.ends
+#				Int
 class Function(object):
 	__slots__ = ["name", "flags", "type", "parameters", "docstring", "body", "starts", "ends"]
 	def __init__(self, aName, aFlags, aType, aParameters, aDocstring, aBody, aStarts, aEnds):
@@ -2079,16 +2095,22 @@ class Function(object):
 #
 #		Event
 #			.name
+#				String
 #			.flags
+#				List of KeywordEnum
 #			.remote
 #				.namespace
 #				.name
 #			.parameters
 #				Dict of Parameter
 #			.docstring
+#				String
 #			.body
+#				List of Statement
 #			.starts
+#				Int
 #			.ends
+#				Int
 class Event(object):
 	__slots__ = ["name", "flags", "remote", "parameters", "docstring", "body", "starts", "ends"]
 	def __init__(self, aName, aFlags, aRemote, aParameters, aDocstring, aBody, aStarts, aEnds):
@@ -2104,7 +2126,7 @@ class Event(object):
 #
 #		State
 #			.name
-#				Token
+#				String
 #			.auto
 #				Bool
 #			.functions

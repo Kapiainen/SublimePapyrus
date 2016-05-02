@@ -208,21 +208,27 @@ class EventListener(sublime_plugin.EventListener):
 			#		6 = Event
 			mode = 0
 			scriptSignature = None
+			scriptImports = []
+			scriptCustomEvents = []
+			scriptDocstring = None
+			scriptVariables = {}
+			scriptProperties = {}
+			scriptGroups = {}
+			scriptStructs = {}
+			scriptFunctions = {}
+			scriptEvents = {}
+			scriptStates = {}
+
+			
+			
+
+
 			currentStateName = ""
 			currentGroupDef = {}
 			currentPropertyDef = []
 			currentStructDef = []
 			currentFunctionDef = []
 			currentEventDef = []
-
-			scriptStates = {}
-			scriptGroups = {}
-			scriptProperties = {}
-			scriptVariables = {}
-			scriptStructs = {}
-
-			scriptFunctions = {}
-			scriptEvents = {}
 
 #			properties = {}
 #			groups = {}
@@ -287,7 +293,8 @@ class EventListener(sublime_plugin.EventListener):
 										elif statType == Linter.StatementEnum.CUSTOMEVENT:
 											pass
 										elif statType == Linter.StatementEnum.DOCSTRING:
-											pass
+											if not scriptDocstring:
+												scriptDocstring = stat
 										elif statType == Linter.StatementEnum.EVENTSIGNATURE:
 											mode = 6
 										elif statType == Linter.StatementEnum.FUNCTIONSIGNATURE:
