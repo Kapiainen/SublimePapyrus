@@ -207,16 +207,31 @@ class EventListener(sublime_plugin.EventListener):
 			#		5 = Function
 			#		6 = Event
 			mode = 0
-			scriptheader = None
-			state = ""
-			properties = {}
-			groups = {}
-			structs = {}
-			functions = {}
-			events = {}
-			variables = {}
-			states = {}
-			imports = []
+			scriptSignature = None
+			currentStateName = ""
+			currentGroupDef = {}
+			currentPropertyDef = []
+			currentStructDef = []
+			currentFunctionDef = []
+			currentEventDef = []
+
+			scriptStates = {}
+			scriptGroups = {}
+			scriptProperties = {}
+			scriptVariables = {}
+			scriptStructs = {}
+
+			scriptFunctions = {}
+			scriptEvents = {}
+
+#			properties = {}
+#			groups = {}
+#			structs = {}
+#			functions = {}
+#			events = {}
+#			variables = {}
+#			states = {}
+#			imports = []
 			tokens = []
 			try:
 				for token in LEX.Process(aSource):
@@ -266,9 +281,9 @@ class EventListener(sublime_plugin.EventListener):
 #									print(mode)
 									if mode == 0: # Empty state
 										if statType == Linter.StatementEnum.SCRIPTSIGNATURE:
-											if scriptheader:
+											if scriptSignature:
 												raise Linter.SemanticError("Only one scriptheader is allowed per script.", stat.line)
-											scriptheader = stat
+											scriptSignature = stat
 										elif statType == Linter.StatementEnum.CUSTOMEVENT:
 											pass
 										elif statType == Linter.StatementEnum.DOCSTRING:
@@ -325,7 +340,7 @@ class EventListener(sublime_plugin.EventListener):
 											raise Linter.SemanticError("Illegal statement in a struct definition.", stat.line)
 									elif mode == 5 or mode == 6: # Function or event
 										if (mode == 5 and statType == Linter.StatementEnum.ENDFUNCTION) or (mode == 6 and statType == Linter.StatementEnum.ENDEVENT):
-											if state == "":
+											if currentStateName == "":
 												mode = 0
 											else:
 												mode = 1
@@ -361,14 +376,14 @@ class EventListener(sublime_plugin.EventListener):
 									if aView:
 										SublimePapyrus.SetStatus(aView, "sublimepapyrus-linter", "Error on line %d: %s" % (e.line, e.message))
 										SublimePapyrus.HighlightLinter(aView, e.line)
-									return
+									return False
 							tokens = []
 						except Linter.SyntacticError as e:
 							print(e.message)
 							if aView:
 								SublimePapyrus.SetStatus(aView, "sublimepapyrus-linter", "Error on line %d: %s" % (e.line, e.message))
 								SublimePapyrus.HighlightLinter(aView, e.line)
-							return
+							return False
 					elif token.type != Linter.TokenEnum.COMMENTLINE and token.type != Linter.TokenEnum.COMMENTBLOCK:
 						tokens.append(token)
 			except Linter.LexicalError as e:
@@ -376,7 +391,33 @@ class EventListener(sublime_plugin.EventListener):
 				if aView:
 					SublimePapyrus.SetStatus(aView, "sublimepapyrus-linter", "Error on line %d, column %d: %s" % (e.line, e.column, e.message))
 					SublimePapyrus.HighlightLinter(aView, e.line, e.column)
-				return
-		Run()
+				return False
+			if mode > 0:
+				if aView:
+					if mode == 1:
+						SublimePapyrus.SetStatus(aView, "sublimepapyrus-linter", "Unterminated state.")
+					elif mode == 2:
+						SublimePapyrus.SetStatus(aView, "sublimepapyrus-linter", "Unterminated group.")
+					elif mode == 3:
+						SublimePapyrus.SetStatus(aView, "sublimepapyrus-linter", "Unterminated property.")
+					elif mode == 4:
+						SublimePapyrus.SetStatus(aView, "sublimepapyrus-linter", "Unterminated struct.")
+					elif mode == 5:
+						SublimePapyrus.SetStatus(aView, "sublimepapyrus-linter", "Unterminated function.")
+					elif mode == 6:
+						SublimePapyrus.SetStatus(aView, "sublimepapyrus-linter", "Unterminated event.")
+				return False
+			return True
+
+			#		1 = State
+			#		2 = Group
+			#		3 = Property
+			#		4 = Struct
+			#		5 = Function
+			#		6 = Event
+
+		if Run():
+			if aView:
+				SublimePapyrus.ClearStatus(aView, "sublimepapyrus-linter")
 		print("Linter: Finished in %f milliseconds and releasing lock..." % ((time.time()-start)*1000.0)) #DEBUG
 		self.linterRunning = False

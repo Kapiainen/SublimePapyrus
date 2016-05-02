@@ -139,6 +139,7 @@ class KeywordEnum(object):
 	VAR = 47
 	WHILE = 48
 	IS = 49
+	DEFAULT = 50
 
 KeywordDescription = [
 	"AS",
@@ -190,7 +191,8 @@ KeywordDescription = [
 	"TRUE",
 	"VAR",
 	"WHILE",
-	"IS"
+	"IS",
+	"DEFAULT"
 ]
 
 class Token(object):
@@ -739,8 +741,9 @@ class Syntactic(object):
 		value = None
 		flags = None
 		if self.Accept(TokenEnum.ASSIGN):
-			#Expression
-			self.Consume()
+			if not self.Expression():
+				self.Abort("Expected an expression.")
+			value = self.Pop()
 			flags = self.AcceptFlags([KeywordEnum.AUTOREADONLY, KeywordEnum.AUTO, KeywordEnum.CONST, KeywordEnum.MANDATORY, KeywordEnum.HIDDEN, KeywordEnum.CONDITIONAL])
 			if KeywordEnum.AUTO in flags and KeywordEnum.AUTOREADONLY in flags:
 				self.Abort("A property cannot have both the AUTO and the AUTOREADONLY keyword.")
@@ -752,6 +755,12 @@ class Syntactic(object):
 				self.Abort("Properties initialized with a value require either the AUTO or the AUTOREADONLY flag.")
 		else:
 			flags = self.AcceptFlags([KeywordEnum.AUTOREADONLY, KeywordEnum.AUTO, KeywordEnum.CONST, KeywordEnum.MANDATORY, KeywordEnum.HIDDEN, KeywordEnum.CONDITIONAL])
+		if flags:
+			if KeywordEnum.AUTO not in flags:
+				if KeywordEnum.CONDITIONAL in flags:
+					self.Abort("Only AUTO properties can have the CONDITIONAL flag.")
+				elif KeywordEnum.CONST in flags:
+					self.Abort("Only AUTO properties can have the CONST flag.")
 		return PropertySignature(self.line, name, aType, flags, value)
 
 	def Function(self, aType):
@@ -1024,7 +1033,7 @@ class Syntactic(object):
 		if self.Accept(TokenEnum.ASSIGN):
 			self.Expression()
 			value = self.Pop()
-		return Variable(self.line, name.value, aType, self.AcceptFlags([KeywordEnum.CONDITIONAL, KeywordEnum.CONST]), value)
+		return Variable(self.line, name.value, aType, self.AcceptFlags([KeywordEnum.CONDITIONAL, KeywordEnum.CONST, KeywordEnum.HIDDEN]), value)
 
 	def Process(self, aTokens):
 		if not aTokens:
@@ -1248,7 +1257,7 @@ class Syntactic(object):
 					if self.AcceptKeyword(KeywordEnum.EXTENDS):
 						self.Expect(TokenEnum.IDENTIFIER)
 						parent = self.PeekBackwards()
-					result = ScriptSignature(self.line, namespace, name, parent, self.AcceptFlags([KeywordEnum.HIDDEN, KeywordEnum.CONDITIONAL, KeywordEnum.NATIVE]))
+					result = ScriptSignature(self.line, namespace, name, parent, self.AcceptFlags([KeywordEnum.HIDDEN, KeywordEnum.CONDITIONAL, KeywordEnum.NATIVE, KeywordEnum.CONST, KeywordEnum.DEBUGONLY, KeywordEnum.BETAONLY, KeywordEnum.DEFAULT]))
 
 				#	Expressions (or assignments)
 				#		FALSE
@@ -1919,3 +1928,195 @@ class SemanticError(Exception):
 #
 # Group
 # Struct
+
+#	Objects
+#
+#		Script
+#			.name
+#			.flags
+#				List of KeywordEnum
+#			.parent
+#				Script
+#			.docstring
+#				String
+#			.imports
+#				List of string
+#			.variables
+#				Dict of Variable
+#			.properties
+#				Dict of Property
+#			.groups
+#				Dict of Group
+#					Dict of Property
+#			.structs
+#				Dict of Struct
+#			.functions
+#				Dict of Function
+#			.events
+#				Dict of Event
+#			.states
+#				Dict of State
+class Script(object):
+	__slots__ = ["name", "flags", "parent", "docstring", "imports", "variables", "properties",  "groups", "functions", "events", "states"]
+	def __init__(self, aName, aFlags, aParent, aDocstring, aImports, aVariables, aProperties, aGroups, aFunctions, aEvents, aStates):
+		self.name = aName
+		self.flags = aFlags
+		self.parent = aParent
+		self.docstring = aDocstring
+		self.imports = aImports
+		self.variables = aVariables
+		self.properties = aProperties
+		self.groups = aGroups
+		self.functions = aFunctions
+		self.events = aEvents
+		self.states = aStates
+
+#
+#		Property
+#			.name
+#			.flags
+#			.type
+#				.namespace
+#					List of Token
+#				.name
+#					Token
+#				.array
+#					Bool
+#			.value
+#			.docstring
+#			.functions
+class Property(object):
+	__slots__ = ["name", "flags", "type", "value", "docstring", "functions", "starts", "ends"]
+	def __init__(self, aName, aFlags, aType, aValue, aDocstring, aFunctions, aStarts, aEnds):
+		self.name = aName
+		self.flags = aFlags
+		self.type = aType
+		self.value = aValue
+		self.docstring = aDocstring
+		self.functions = aFunctions
+		self.starts = aStarts
+		self.ends = aEnds
+
+#
+#		Group
+#			.name
+#			.flags
+#				List of KeywordEnum
+#			.properties
+#				Dict of Property
+#			.starts
+#				Int
+#			.ends
+#				Int
+class Group(object):
+	__slots__ = ["name", "flags", "properties", "starts", "ends"]
+	def __init__(self, aName, aFlags, aProperties, aStarts, aEnds):
+		self.name = aName
+		self.flags = aFlags
+		self.properties = aProperties
+		self.starts = aStarts
+		self.ends = aEnds
+
+#
+#		StructMember
+#			.name
+#			.flags (cannot be CONST)
+#			.type
+#				.namespace
+#				.name (cannot be VAR nor another Struct)
+#				.array (must always be false)
+#			.value
+#				Literal
+#			
+class StructMember(object):
+	__slots__ = ["name", "flags", "type", "value", "docstring"]
+	def __init__(self, aName, aFlags, aType, aValue, aDocstring):
+		self.name = aName
+		self.flags = aFlags
+		self.type = aType
+		self.value = aValue
+		self.docstring = aDocstring
+
+#
+#		Struct
+#			.members
+#				Dict of StructMember
+class Struct(object):
+	__slots__ = ["name", "members"]
+	def __init__(self, aName, aMembers):
+		self.name = aName
+		self.members = aMembers
+
+#
+#		Function
+#			.name
+#			.flags
+#			.type
+#				.namespace
+#					List of Token
+#				.name
+#					Token
+#				.array
+#					Bool
+#			.parameters
+#				Dict of Parameter
+#			.docstring
+#			.body
+#			.starts
+#			.ends
+class Function(object):
+	__slots__ = ["name", "flags", "type", "parameters", "docstring", "body", "starts", "ends"]
+	def __init__(self, aName, aFlags, aType, aParameters, aDocstring, aBody, aStarts, aEnds):
+		self.name = aName
+		self.flags = aFlags
+		self.type = aType
+		self.parameters = aParameters
+		self.docstring = aDocstring
+		self.body = aBody
+		self.starts = aStarts
+		self.ends = aEnds
+
+#
+#		Event
+#			.name
+#			.flags
+#			.remote
+#				.namespace
+#				.name
+#			.parameters
+#				Dict of Parameter
+#			.docstring
+#			.body
+#			.starts
+#			.ends
+class Event(object):
+	__slots__ = ["name", "flags", "remote", "parameters", "docstring", "body", "starts", "ends"]
+	def __init__(self, aName, aFlags, aRemote, aParameters, aDocstring, aBody, aStarts, aEnds):
+		self.name = aName
+		self.flags = aFlags
+		self.remote = aRemote
+		self.parameters = aParameters
+		self.docstring = aDocstring
+		self.body = aBody
+		self.starts = aStarts
+		self.ends = aEnds
+
+#
+#		State
+#			.name
+#				Token
+#			.auto
+#				Bool
+#			.functions
+#				Dict of Function
+#			.events
+#				Dict of Event
+class State(object):
+	__slots__ = ["name", "auto", "functions", "events", "starts", "ends"]
+	def __init__(self, aName, aAuto, aFunctions, aEvents, aStarts, aEnds):
+		self.name = aName
+		self.auto = aAuto
+		self.functions = aFunctions
+		self.events = aEvents
+		self.starts = aStarts
+		self.ends = aEnds
