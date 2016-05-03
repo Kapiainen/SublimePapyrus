@@ -1853,6 +1853,24 @@ class Struct(object):
 		self.starts = aStarts
 		self.ends = aEnds
 
+	def __str__(self):
+		members = {}
+		if self.members:
+			members = self.members
+		return """
+===== Object =====
+Type: Struct
+Name: %s
+Members: %s
+Starts: %d
+Ends: %d
+""" % (
+		self.name,
+		", ".join([m for m in members]),
+		self.starts,
+		self.ends
+	)
+
 #
 #		Function
 #			.name
@@ -1938,6 +1956,31 @@ class State(object):
 		self.events = aEvents
 		self.starts = aStarts
 		self.ends = aEnds
+
+	def __str__(self):
+		functions = {}
+		if self.functions:
+			functions = self.functions
+		events = {}
+		if self.events:
+			events = self.events
+		return """
+===== Object =====
+Type: State
+Name: %s
+Auto: %s
+Functions: %s
+Events: %s
+Starts: %d
+Ends: %d
+""" % (
+		self.name,
+		self.auto,
+		", ".join([f for f in functions]),
+		", ".join([e for e in events]),
+		self.starts,
+		self.ends
+	)
 
 class Semantic(object):
 	def __init__(self):
@@ -2258,6 +2301,9 @@ class Semantic(object):
 				raise SemanticError("Unterminated group definition.", line)
 			elif self.scope[-1] == 6:
 				raise SemanticError("Unterminated struct definition.", line)
+		scriptDef = self.definition.pop()
+		for obj in scriptDef:
+			print(obj)
 
 #4: Putting it all together
 def Process(aLex, aSyn, aSem, aSource):
