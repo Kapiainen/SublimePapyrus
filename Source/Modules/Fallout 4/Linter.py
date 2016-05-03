@@ -2332,21 +2332,18 @@ class Semantic(object):
 				print(obj)
 				if isinstance(obj, Statement):
 					if obj.statementType == StatementEnum.IMPORT:
-						# Check for duplicates
 						key = ":".join(obj.name)
 						existing = imports.get(key, None)
 						if existing:
 							raise SemanticError("'%s' has already been imported on line %d." % (key, existing.line), obj.line)
 						imports[key] = obj
 					elif obj.statementType == StatementEnum.CUSTOMEVENT:
-						# Check for duplicates
 						key = obj.name.upper()
 						existing = customEvents.get(key, None)
 						if existing:
 							raise SemanticError("A CustomEvent called '%s' has already been declared on line %d." % (obj.name, existing.line), obj.line)
 						customEvents[key] = obj
 					elif obj.statementType == StatementEnum.VARIABLE:
-						# Check for duplicates among variables and properties
 						key = obj.name.upper()
 						existing = variables.get(key, None)
 						if existing:
@@ -2358,7 +2355,6 @@ class Semantic(object):
 				else:
 					objectType = type(obj)
 					if objectType is Property:
-						# Check for duplicates among properties and variables
 						key = obj.name.upper()
 						existing = properties.get(key, None)
 						if existing:
@@ -2368,8 +2364,6 @@ class Semantic(object):
 							raise SemanticError("A variable called '%s' has already been declared on line %d." % (obj.name, existing.line), obj.starts)
 						properties[key] = obj
 					elif objectType is Group:
-						# Check for duplicates
-						#"name", "flags", "properties", "starts", "ends"
 						key = obj.name.upper()
 						existing = groups.get(key, None)
 						if existing:
@@ -2384,17 +2378,40 @@ class Semantic(object):
 								raise SemanticError("A variable called '%s' has already been declared on line %d." % (prop.name, existing.line), prop.starts)
 							properties[key] = prop
 					elif objectType is Struct:
-						# Check for duplicates
-						pass
+						key = obj.name.upper()
+						existing = structs.get(key, None)
+						if existing:
+							raise SemanticError("A struct called '%s' has already been declared on line %d." % (obj.name, existing.starts), obj.starts)
+						structs[key] = obj
 					elif objectType is Function:
-						# Check for duplicates among functions and events
-						pass
+						key = obj.name.upper()
+						existing = functions.get(key, None)
+						if existing:
+							raise SemanticError("A function called '%s' has already been declared on line %d." % (obj.name, existing.starts), obj.starts)
+						existing = events.get(key, None)
+						if existing:
+							raise SemanticError("An event called '%s' has already been declared on line %d." % (obj.name, existing.starts), obj.starts)
+						functions[key] = obj
 					elif objectType is Event:
-						# Check for duplicates among events and functions
-						pass
+						key = None
+						if obj.remote:
+							key = "%s.%s" % (":".join(obj.remote), obj.name.upper())
+							print(key)
+						else:
+							key = obj.name.upper()
+						existing = events.get(key, None)
+						if existing:
+							raise SemanticError("An event called '%s' has already been declared on line %d." % (obj.name, existing.starts), obj.starts)
+						existing = functions.get(key, None)
+						if existing:
+							raise SemanticError("A function called '%s' has already been declared on line %d." % (obj.name, existing.starts), obj.starts)
+						events[key] = obj
 					elif objectType is State:
-						# Check for duplicates
-						pass
+						key = obj.name.upper()
+						existing = states.get(key, None)
+						if existing:
+							raise SemanticError("A state called '%s' has already been declared on line %d." % (obj.name, existing.starts), obj.starts)
+						states[key] = obj
 
 #	aName, aFlags, aParent, aDocstring, aImports, aCustomEvents, aVariables, aProperties, aGroups, aFunctions, aEvents, aStates
 
