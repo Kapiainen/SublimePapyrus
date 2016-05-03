@@ -1751,8 +1751,8 @@ class SemanticError(Exception):
 #			.states
 #				Dict of State
 class Script(object):
-	__slots__ = ["name", "flags", "parent", "docstring", "imports", "customEvents", "variables", "properties",  "groups", "functions", "events", "states"]
-	def __init__(self, aName, aFlags, aParent, aDocstring, aImports, aCustomEvents, aVariables, aProperties, aGroups, aFunctions, aEvents, aStates):
+	__slots__ = ["name", "flags", "parent", "docstring", "imports", "customEvents", "variables", "properties",  "groups", "functions", "events", "states", "structs"]
+	def __init__(self, aName, aFlags, aParent, aDocstring, aImports, aCustomEvents, aVariables, aProperties, aGroups, aFunctions, aEvents, aStates, aStructs):
 		self.name = aName
 		self.flags = aFlags
 		self.parent = aParent
@@ -1765,6 +1765,7 @@ class Script(object):
 		self.functions = aFunctions
 		self.events = aEvents
 		self.states = aStates
+		self.structs = aStructs
 
 #
 #		Property
@@ -2297,8 +2298,6 @@ class Semantic(object):
 			self.StructMemberScope(aStat)
 
 	def BuildScript(self):
-#		print(len(self.definition))
-#		print(self.definition)
 		if len(self.scope) != 1 and self.scope[-1] != 0:
 			line = self.definition[-1][0].line
 			if self.scope[-1] == 1:
@@ -2412,8 +2411,7 @@ class Semantic(object):
 						if existing:
 							raise SemanticError("A state called '%s' has already been declared on line %d." % (obj.name, existing.starts), obj.starts)
 						states[key] = obj
-
-#	aName, aFlags, aParent, aDocstring, aImports, aCustomEvents, aVariables, aProperties, aGroups, aFunctions, aEvents, aStates
+			return Script(signature.name, signature.flags, signature.parent, docstring, imports, customEvents, variables, properties, groups, functions, events, states, structs)
 
 #4: Putting it all together
 def Process(aLex, aSyn, aSem, aSource):
@@ -2431,6 +2429,8 @@ def Process(aLex, aSyn, aSem, aSource):
 			tokens.append(token)
 			#print(token)
 	script = aSem.BuildScript()
+	if script:
+		pass
 	return None
 
 ##
