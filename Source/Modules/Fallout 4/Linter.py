@@ -707,7 +707,7 @@ Flags: %s
 Line: %d
 """ % (
 		self.name,
-		", ".join([TokenDescription[f.type] for f in flags]),
+		", ".join([TokenDescription[f] for f in flags]),
 		self.line
 	)
 
@@ -740,9 +740,9 @@ Flags: %s
 Line: %d
 """ % (
 		self.name,
-		":".join([f.value for f in remote]),
+		":".join([f for f in remote]),
 		parameterCount,
-		", ".join([TokenDescription[f.type] for f in flags]),
+		", ".join([TokenDescription[f] for f in flags]),
 		self.line
 	)
 
@@ -771,7 +771,7 @@ Type: Import
 Name: %s
 Line: %d
 """ % (
-		":".join([f.value for f in self.name]),
+		":".join([f for f in self.name]),
 		self.line
 	)
 
@@ -840,9 +840,9 @@ Parent: %s
 Flags: %s
 Line: %d
 """ % (
-		":".join([f.value for f in self.name]),
-		":".join([f.value for f in self.parent]),
-		", ".join([TokenDescription[f.type] for f in flags]),
+		":".join([f for f in self.name]),
+		":".join([f for f in self.parent]),
+		", ".join([TokenDescription[f] for f in flags]),
 		self.line
 	)
 
@@ -908,7 +908,7 @@ Line: %d
 		self.name,
 		":".join([f for f in self.type.name]),
 		self.type.array,
-		", ".join([TokenDescription[f.type] for f in flags]),
+		", ".join([TokenDescription[f] for f in flags]),
 		self.line
 	)
 
@@ -1027,7 +1027,7 @@ class Syntactic(object):
 				result.append(self.PeekBackwards().value.upper())
 			return result
 		elif aBaseTypes and (self.Accept(TokenEnum.kBOOL) or self.Accept(TokenEnum.kFLOAT) or self.Accept(TokenEnum.kINT) or self.Accept(TokenEnum.kSTRING) or self.Accept(TokenEnum.kVAR)):
-			result = [self.PeekBackwards()]
+			result = [self.PeekBackwards().value.upper()]
 			return result
 		else:
 			raise SyntacticError("Expected a type identifier.", self.line)
@@ -1381,7 +1381,7 @@ class Syntactic(object):
 			if self.Accept(TokenEnum.LEFTBRACKET):
 				self.Expect(TokenEnum.RIGHTBRACKET)
 				array = True
-			typ = Type([typ], array)
+			typ = Type([typ.value.upper()], array)
 			if self.Accept(TokenEnum.kPROPERTY):
 				result = self.Property(typ)
 			elif self.Accept(TokenEnum.kFUNCTION):
@@ -2219,7 +2219,7 @@ class Semantic(object):
 			else:
 				existing = properties.get(name, None)
 				if existing:
-					raise SemanticError("A property called '%s' has already been declared in the '%s' group on line %d." % (s.name, signature.name, existing.starts), s.line)
+					raise SemanticError("A property called '%s' has already been declared in the '%s' group on line %d." % (s.name, signature.name, existing.starts), s.starts)
 				properties[name] = s
 		self.definition[-1].append(Group(signature.name, signature.flags, properties, signature.line, aStat.line))
 #		print(self.definition[-1])
@@ -2313,9 +2313,90 @@ class Semantic(object):
 				raise SemanticError("Unterminated group definition.", line)
 			elif self.scope[-1] == 6:
 				raise SemanticError("Unterminated struct definition.", line)
-#		scriptDef = self.definition.pop()
-#		for obj in scriptDef:
-#			print(obj)
+		scriptDef = self.definition.pop()
+		if scriptDef:
+			signature = scriptDef.pop(0)
+			docstring = None
+			functions = {}
+			events = {}
+			variables = {}
+			properties = {}
+			structs = {}
+			customEvents = {}
+			imports = {}
+			groups = {}
+			states = {}
+			if scriptDef and isinstance(scriptDef[0], Statement) and scriptDef[0].statementType == StatementEnum.DOCSTRING:
+				docstring = scriptDef.pop(0)
+			for obj in scriptDef:
+				print(obj)
+				if isinstance(obj, Statement):
+					if obj.statementType == StatementEnum.IMPORT:
+						# Check for duplicates
+						key = ":".join(obj.name)
+						existing = imports.get(key, None)
+						if existing:
+							raise SemanticError("'%s' has already been imported on line %d." % (key, existing.line), obj.line)
+						imports[key] = obj
+					elif obj.statementType == StatementEnum.CUSTOMEVENT:
+						# Check for duplicates
+						key = obj.name.upper()
+						existing = customEvents.get(key, None)
+						if existing:
+							raise SemanticError("A CustomEvent called '%s' has already been declared on line %d." % (obj.name, existing.line), obj.line)
+						customEvents[key] = obj
+					elif obj.statementType == StatementEnum.VARIABLE:
+						# Check for duplicates among variables and properties
+						key = obj.name.upper()
+						existing = variables.get(key, None)
+						if existing:
+							raise SemanticError("A variable called '%s' has already been declared on line %d." % (obj.name, existing.line), obj.line)
+						existing = properties.get(key, None)
+						if existing:
+							raise SemanticError("A property called '%s' has already been declared on line %d." % (obj.name, existing.starts), obj.line)
+						variables[key] = obj
+				else:
+					objectType = type(obj)
+					if objectType is Property:
+						# Check for duplicates among properties and variables
+						key = obj.name.upper()
+						existing = properties.get(key, None)
+						if existing:
+							raise SemanticError("A property called '%s' has already been declared on line %d." % (obj.name, existing.starts), obj.starts)
+						existing = variables.get(key, None)
+						if existing:
+							raise SemanticError("A variable called '%s' has already been declared on line %d." % (obj.name, existing.line), obj.starts)
+						properties[key] = obj
+					elif objectType is Group:
+						# Check for duplicates
+						#"name", "flags", "properties", "starts", "ends"
+						key = obj.name.upper()
+						existing = groups.get(key, None)
+						if existing:
+							raise SemanticError("A group called '%s' has already been declared on line %d." % (obj.name, existing.starts), obj.starts)
+						groups[key] = obj
+						for key, prop in obj.properties.items():
+							existing = properties.get(key, None)
+							if existing:
+								raise SemanticError("A property called '%s' has already been declared on line %d." % (prop.name, existing.starts), prop.starts)
+							existing = variables.get(key, None)
+							if existing:
+								raise SemanticError("A variable called '%s' has already been declared on line %d." % (prop.name, existing.line), prop.starts)
+							properties[key] = prop
+					elif objectType is Struct:
+						# Check for duplicates
+						pass
+					elif objectType is Function:
+						# Check for duplicates among functions and events
+						pass
+					elif objectType is Event:
+						# Check for duplicates among events and functions
+						pass
+					elif objectType is State:
+						# Check for duplicates
+						pass
+
+#	aName, aFlags, aParent, aDocstring, aImports, aCustomEvents, aVariables, aProperties, aGroups, aFunctions, aEvents, aStates
 
 #4: Putting it all together
 def Process(aLex, aSyn, aSem, aSource):
@@ -2334,3 +2415,47 @@ def Process(aLex, aSyn, aSem, aSource):
 			#print(token)
 	script = aSem.BuildScript()
 	return None
+
+##
+##		Script
+##			.name
+##			.flags
+##				List of KeywordEnum
+##			.parent
+##				Script
+##			.docstring
+##				String
+##			.imports
+##				List of String
+##			.customEvents
+##				List of String
+##			.variables
+##				Dict of Variable
+##			.properties
+##				Dict of Property
+##			.groups
+##				Dict of Group
+##					Dict of Property
+##			.structs
+##				Dict of Struct
+##			.functions
+##				Dict of Function
+##			.events
+##				Dict of Event
+##			.states
+##				Dict of State
+#class Script(object):
+#	__slots__ = ["name", "flags", "parent", "docstring", "imports", "customEvents", "variables", "properties",  "groups", "functions", "events", "states"]
+#	def __init__(self, aName, aFlags, aParent, aDocstring, aImports, aCustomEvents, aVariables, aProperties, aGroups, aFunctions, aEvents, aStates):
+#		self.name = aName
+#		self.flags = aFlags
+#		self.parent = aParent
+#		self.docstring = aDocstring
+#		self.imports = aImports
+#		self.customEvents = aCustomEvents
+#		self.variables = aVariables
+#		self.properties = aProperties
+#		self.groups = aGroups
+#		self.functions = aFunctions
+#		self.events = aEvents
+#		self.states = aStates
