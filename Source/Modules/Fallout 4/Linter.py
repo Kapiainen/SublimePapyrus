@@ -2231,10 +2231,14 @@ class Semantic(object):
 		if typ == StatementEnum.DOCSTRING:
 			previous = self.definition[-1][-1]
 			if isinstance(previous, Statement) and previous.statementType != StatementEnum.VARIABLE:
-				raise SemanticError("Docstrings may only follow immediately after variable definitions in struct definitions.", aStat.line)
+				raise SemanticError("Docstrings may only follow immediately after member definitions in struct definitions.", aStat.line)
 		elif typ == StatementEnum.ENDSTRUCT:
 			self.EndStructScope(aStat)
 		elif typ == StatementEnum.VARIABLE:
+			if aStat.type.name[-1] == "VAR":
+				raise SemanticError("Struct members cannot have VAR as their type.", aStat.line)
+			if aStat.type.array:
+				raise SemanticError("Struct members cannot be arrays.", aStat.line)
 			self.scope.append(7)
 			self.definition.append([aStat])
 		else:
@@ -2413,6 +2417,20 @@ class Semantic(object):
 						states[key] = obj
 			return Script(signature.name, signature.flags, signature.parent, docstring, imports, customEvents, variables, properties, groups, functions, events, states, structs)
 
+	def ValidateScript(self, aScript):
+		# Recursively process parent script(s)
+		# Process imported script(s)
+		# Process properties
+		# Process variables
+		# Process functions
+		# Process events
+		# Process states
+		# Process structs
+		pass
+
+	def GetContext(self, aScript, aLine):
+		pass
+
 #4: Putting it all together
 def Process(aLex, aSyn, aSem, aSource):
 	aSem.Reset()
@@ -2430,49 +2448,35 @@ def Process(aLex, aSyn, aSem, aSource):
 			#print(token)
 	script = aSem.BuildScript()
 	if script:
-		pass
+		aSem.ValidateScript(script)
+		# Add to cache
+		return script
 	return None
 
-##
-##		Script
-##			.name
-##			.flags
-##				List of KeywordEnum
-##			.parent
-##				Script
-##			.docstring
-##				String
-##			.imports
-##				List of String
-##			.customEvents
-##				List of String
-##			.variables
-##				Dict of Variable
-##			.properties
-##				Dict of Property
-##			.groups
-##				Dict of Group
-##					Dict of Property
-##			.structs
-##				Dict of Struct
-##			.functions
-##				Dict of Function
-##			.events
-##				Dict of Event
-##			.states
-##				Dict of State
-#class Script(object):
-#	__slots__ = ["name", "flags", "parent", "docstring", "imports", "customEvents", "variables", "properties",  "groups", "functions", "events", "states"]
-#	def __init__(self, aName, aFlags, aParent, aDocstring, aImports, aCustomEvents, aVariables, aProperties, aGroups, aFunctions, aEvents, aStates):
-#		self.name = aName
-#		self.flags = aFlags
-#		self.parent = aParent
-#		self.docstring = aDocstring
-#		self.imports = aImports
-#		self.customEvents = aCustomEvents
-#		self.variables = aVariables
-#		self.properties = aProperties
-#		self.groups = aGroups
-#		self.functions = aFunctions
-#		self.events = aEvents
-#		self.states = aStates
+#	Script
+#		.name
+#		.flags
+#			List of KeywordEnum
+#		.parent
+#			Script
+#		.docstring
+#			String
+#		.imports
+#			List of String
+#		.customEvents
+#			List of String
+#		.variables
+#			Dict of Variable
+#		.properties
+#			Dict of Property
+#		.groups
+#			Dict of Group
+#				Dict of Property
+#		.structs
+#			Dict of Struct
+#		.functions
+#			Dict of Function
+#		.events
+#			Dict of Event
+#		.states
+#			Dict of State
