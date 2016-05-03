@@ -2071,6 +2071,7 @@ class Semantic(object):
 						raise SemanticError("A function called '%s' has already been declared in the '%s' state on line %d." % (s.name, signature.name, existing.starts), s.starts)
 					events[name] = s
 		self.definition[-1].append(State(signature.name, signature.auto, functions, events, signature.line, aStat.line))
+#		print(self.definition[-1])
 		self.scope.pop()
 
 	def FunctionEventScope(self, aStat):
@@ -2089,9 +2090,9 @@ class Semantic(object):
 		elif typ == StatementEnum.ELSEIF:
 			self.definition[-1].append(aStat)
 		elif self.scope[-1] == 2 and typ == StatementEnum.ENDFUNCTION:
-			self.scope.pop()
+			self.EndFunctionEventScope(aStat)
 		elif self.scope[-1] == 3 and typ == StatementEnum.ENDEVENT:
-			self.scope.pop()
+			self.EndFunctionEventScope(aStat)
 		elif typ == StatementEnum.ENDIF:
 			self.definition[-1].append(aStat)
 		elif typ == StatementEnum.ENDWHILE:
@@ -2117,9 +2118,14 @@ class Semantic(object):
 		functionEventDef = self.definition.pop()
 		signature = functionEventDef.pop(0)
 		docstring = None
-		if functionEventDef[0].type == StatementEnum.DOCSTRING:
+		if functionEventDef and functionEventDef[0].statementType == StatementEnum.DOCSTRING:
 			docstring = functionEventDef.pop(0)
-		self.definition[-1].append(Function(signature.name, signature.flags, signature.type, signature.parameters, docstring, functionEventDef, signature.line, aStat.line))
+		if signature.statementType == StatementEnum.FUNCTIONSIGNATURE:
+			self.definition[-1].append(Function(signature.name, signature.flags, signature.type, signature.parameters, docstring, functionEventDef, signature.line, aStat.line))
+		else:
+			self.definition[-1].append(Event(signature.name, signature.flags, signature.remote, signature.parameters, docstring, functionEventDef, signature.line, aStat.line))
+			#aName, aFlags, aRemote, aParameters, aDocstring, aBody, aStarts, aEnds
+#		print(self.definition[-1])
 		self.scope.pop()
 
 	def PropertyScope(self, aStat):
@@ -2180,6 +2186,7 @@ class Semantic(object):
 			self.definition[-1].append(Property(signature.name, signature.flags, signature.type, signature.value, docstring, getFunc, setFunc, signature.line, aEndLine))
 		else:
 			self.definition[-1].append(Property(signature.name, signature.flags, signature.type, signature.value, docstring, getFunc, setFunc, signature.line, signature.line))
+#		print(self.definition[-1])
 		self.scope.pop()
 
 	def GroupScope(self, aStat):
@@ -2202,7 +2209,7 @@ class Semantic(object):
 		groupDefinition = self.definition.pop()
 		signature = groupDefinition.pop(0)
 		docstring = None
-		if isinstance(groupDefinition[0], Statement) and groupDefinition[0].statementType == StatementEnum.DOCSTRING:
+		if groupDefinition and isinstance(groupDefinition[0], Statement) and groupDefinition[0].statementType == StatementEnum.DOCSTRING:
 			docstring = groupDefinition.pop(0)
 		properties = None
 		for s in groupDefinition:
@@ -2215,6 +2222,7 @@ class Semantic(object):
 					raise SemanticError("A property called '%s' has already been declared in the '%s' group on line %d." % (s.name, signature.name, existing.starts), s.line)
 				properties[name] = s
 		self.definition[-1].append(Group(signature.name, signature.flags, properties, signature.line, aStat.line))
+#		print(self.definition[-1])
 		self.scope.pop()
 
 	def StructScope(self, aStat):
@@ -2246,6 +2254,7 @@ class Semantic(object):
 					raise SemanticError("A struct member called '%s' has already been declared in the '%s' struct on line %d." % (s.name, signature.name, existing.line), s.line)
 				members[name] = s
 		self.definition[-1].append(Struct(signature.name, members, signature.line, aStat.line))
+#		print(self.definition[-1])
 		self.scope.pop()
 
 	def StructMemberScope(self, aStat):
@@ -2267,6 +2276,7 @@ class Semantic(object):
 		if structMemberDef:
 			docstring = structMemberDef.pop(0)
 		self.definition[-1].append(StructMember(signature.line, signature.name, signature.flags, signature.type, signature.value, docstring))
+#		print(self.definition[-1])
 		self.scope.pop()
 
 	def AssembleScript(self, aStat):
@@ -2287,6 +2297,8 @@ class Semantic(object):
 			self.StructMemberScope(aStat)
 
 	def BuildScript(self):
+#		print(len(self.definition))
+#		print(self.definition)
 		if len(self.scope) != 1 and self.scope[-1] != 0:
 			line = self.definition[-1][0].line
 			if self.scope[-1] == 1:
@@ -2301,9 +2313,9 @@ class Semantic(object):
 				raise SemanticError("Unterminated group definition.", line)
 			elif self.scope[-1] == 6:
 				raise SemanticError("Unterminated struct definition.", line)
-		scriptDef = self.definition.pop()
-		for obj in scriptDef:
-			print(obj)
+#		scriptDef = self.definition.pop()
+#		for obj in scriptDef:
+#			print(obj)
 
 #4: Putting it all together
 def Process(aLex, aSyn, aSem, aSource):
