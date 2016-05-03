@@ -118,6 +118,7 @@ COMPLETION_CACHE = {}
 CACHE_LOCK = threading.RLock()
 LEX = Linter.Lexical()
 SYN = Linter.Syntactic()
+SEM = Linter.Semantic()
 
 class EventListener(sublime_plugin.EventListener):
 	def __init__(self):
@@ -194,8 +195,9 @@ class EventListener(sublime_plugin.EventListener):
 			print("Running linter")
 			global LEX
 			global SYN
+			global SEM
 			try:
-				script = Linter.Process(LEX, SYN, None, aSource)
+				script = Linter.Process(LEX, SYN, SEM, aSource)
 			except Linter.LexicalError as e:
 				print(e.message)
 				if aView:
@@ -208,8 +210,12 @@ class EventListener(sublime_plugin.EventListener):
 					SublimePapyrus.SetStatus(aView, "sublimepapyrus-linter", "Error on line %d: %s" % (e.line, e.message))
 					SublimePapyrus.HighlightLinter(aView, e.line)
 				return False
-#			except Linter.SemanticError as e:
-#				pass
+			except Linter.SemanticError as e:
+				print(e.message)
+				if aView:
+					SublimePapyrus.SetStatus(aView, "sublimepapyrus-linter", "Error on line %d: %s" % (e.line, e.message))
+					SublimePapyrus.HighlightLinter(aView, e.line)
+				return False
 			return True
 
 		if Run():

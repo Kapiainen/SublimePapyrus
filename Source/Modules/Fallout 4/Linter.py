@@ -198,6 +198,20 @@ class Token(object):
 		self.column = aColumn
 		self.value = aValue
 
+	def __str__(self):
+		return """
+===== Token =====
+Type: %s
+Value: '%s'
+Line: %d
+Column: %d
+""" % (
+		TokenDescription[self.type],
+		self.value,
+		self.line,
+		self.column
+	)
+
 class LexicalError(Exception):
 	"""Lexical error."""
 	def __init__(self, aMessage, aLine, aColumn):
@@ -436,11 +450,29 @@ class Assignment(Statement):
 		self.leftExpression = aLeftExpression
 		self.rightExpression = aRightExpression
 
+	def __str__(self):
+		return """
+===== Statement =====
+Type: Assignment
+Line: %d
+""" % (self.line)
+
 class CustomEvent(Keyword):
 	__slots__ = ["name"]
 	def __init__(self, aLine, aName):
 		super(CustomEvent, self).__init__(StatementEnum.CUSTOMEVENT, aLine)
 		self.name = aName
+
+	def __str__(self):
+		return """
+===== Statement =====
+Type: CustomEvent signature
+Name: %s
+Line: %d
+""" % (
+		self.name,
+		self.line
+	)
 
 class DocString(Statement):
 	__slots__ = ["value"]
@@ -448,61 +480,149 @@ class DocString(Statement):
 		super(DocString, self).__init__(StatementEnum.DOCSTRING, aLine)
 		self.value = aValue
 
+	def __str__(self):
+		return """
+===== Statement =====
+Type: Docstring
+Value: %s
+Line: %d
+""" % (
+		self.value,
+		self.line
+	)
+
 class Else(Keyword):
 	__slots__ = []
 	def __init__(self, aLine):
 		super(Else, self).__init__(StatementEnum.ELSE, aLine)
+
+	def __str__(self):
+		return """
+===== Statement =====
+Type: Else
+Line: %d
+""" % (self.line)
 
 class EndGroup(Keyword):
 	__slots__ = []
 	def __init__(self, aLine):
 		super(EndGroup, self).__init__(StatementEnum.ENDGROUP, aLine)
 
+	def __str__(self):
+		return """
+===== Statement =====
+Type: EndGroup
+Line: %d
+""" % (self.line)
+
 class ElseIf(KeywordExpression):
 	__slots__ = []
 	def __init__(self, aLine, aExpression):
 		super(ElseIf, self).__init__(StatementEnum.ELSEIF, aLine, aExpression)
+
+	def __str__(self):
+		return """
+===== Statement =====
+Type: ElseIf
+Line: %d
+""" % (self.line)
 
 class EndEvent(Keyword):
 	__slots__ = []
 	def __init__(self, aLine):
 		super(EndEvent, self).__init__(StatementEnum.ENDEVENT, aLine)
 
+	def __str__(self):
+		return """
+===== Statement =====
+Type: EndEvent
+Line: %d
+""" % (self.line)
+
 class EndFunction(Keyword):
 	__slots__ = []
 	def __init__(self, aLine):
 		super(EndFunction, self).__init__(StatementEnum.ENDFUNCTION, aLine)
+
+	def __str__(self):
+		return """
+===== Statement =====
+Type: EndFunction
+Line: %d
+""" % (self.line)
 
 class EndIf(Keyword):
 	__slots__ = []
 	def __init__(self, aLine):
 		super(EndIf, self).__init__(StatementEnum.ENDIF, aLine)
 
+	def __str__(self):
+		return """
+===== Statement =====
+Type: EndIf
+Line: %d
+""" % (self.line)
+
 class EndProperty(Keyword):
 	__slots__ = []
 	def __init__(self, aLine):
 		super(EndProperty, self).__init__(StatementEnum.ENDPROPERTY, aLine)
+
+	def __str__(self):
+		return """
+===== Statement =====
+Type: EndProperty
+Line: %d
+""" % (self.line)
 
 class EndState(Keyword):
 	__slots__ = []
 	def __init__(self, aLine):
 		super(EndState, self).__init__(StatementEnum.ENDSTATE, aLine)
 
+	def __str__(self):
+		return """
+===== Statement =====
+Type: EndState
+Line: %d
+""" % (self.line)
+
 class EndStruct(Keyword):
 	__slots__ = []
 	def __init__(self, aLine):
 		super(EndStruct, self).__init__(StatementEnum.ENDSTRUCT, aLine)
+
+	def __str__(self):
+		return """
+===== Statement =====
+Type: EndStruct
+Line: %d
+""" % (self.line)
 
 class EndWhile(Keyword):
 	__slots__ = []
 	def __init__(self, aLine):
 		super(EndWhile, self).__init__(StatementEnum.ENDWHILE, aLine)
 
+	def __str__(self):
+		return """
+===== Statement =====
+Type: EndWhile
+Line: %d
+""" % (self.line)
+
 class Expression(Statement):
 	__slots__ = ["expression"]
 	def __init__(self, aLine, aExpression):
 		super(Expression, self).__init__(StatementEnum.EXPRESSION, aLine)
 		self.expression = aExpression
+
+	def __str__(self):
+		return """
+===== Statement =====
+Type: Expression
+Line: %d
+""" % (self.line)
 
 class ParameterSignature(object):#Statement):
 	__slots__ = ["line", "name", "type", "value"]
@@ -513,6 +633,21 @@ class ParameterSignature(object):#Statement):
 		self.type = aType # Instance of Type
 		self.value = aValue # Literal expression
 
+	def __str__(self):
+		return """
+===== Statement =====
+Type: Parameter signature
+Name: %s
+Parameter type: %s
+Array: %s
+Line: %d
+""" % (
+		self.name,
+		":".join([f.value for f in self.type.name]),
+		self.type.array,
+		self.line
+	)
+
 class FunctionSignature(Statement):
 	__slots__ = ["name", "type", "flags", "parameters"]
 	def __init__(self, aLine, aName, aType, aFlags, aParameters):
@@ -522,12 +657,59 @@ class FunctionSignature(Statement):
 		self.flags = aFlags
 		self.parameters = aParameters
 
+	def __str__(self):
+		flags = self.flags
+		if not flags:
+			flags = []
+		parameterCount = 0
+		if self.parameters:
+			parameterCount = len(self.parameters)
+		returnType = []
+		if self.type:
+			returnType = self.type.name
+		array = False
+		if self.type:
+			array = self.type.array
+		return """
+===== Statement =====
+Type: Function signature
+Name: %s
+Return type: %s
+Array: %d
+#Parameters: %d
+Flags: %s
+Line: %d
+""" % (
+		self.name,
+		":".join([f.value for f in returnType]),
+		array,
+		parameterCount,
+		", ".join([TokenDescription[f] for f in flags]),
+		self.line
+	)
+
 class GroupSignature(Statement):
 	__slots__ = ["name", "flags"]
 	def __init__(self, aLine, aName, aFlags):
 		super(GroupSignature, self).__init__(StatementEnum.GROUPSIGNATURE, aLine)
 		self.name = aName
 		self.flags = aFlags
+
+	def __str__(self):
+		flags = self.flags
+		if not flags:
+			flags = []
+		return """
+===== Statement =====
+Type: Group signature
+Name: %s
+Flags: %s
+Line: %d
+""" % (
+		self.name,
+		", ".join([TokenDescription[f.type] for f in flags]),
+		self.line
+	)
 
 class EventSignature(Statement):
 	__slots__ = ["remote", "name", "flags", "parameters"]
@@ -538,16 +720,60 @@ class EventSignature(Statement):
 		self.parameters = aParameters
 		self.remote = aRemote
 
+	def __str__(self):
+		flags = self.flags
+		if not flags:
+			flags = []
+		parameterCount = 0
+		remote = []
+		if self.remote:
+			remote = self.remote
+		if self.parameters:
+			parameterCount = len(self.parameters)
+		return """
+===== Statement =====
+Type: Event signature
+Name: %s
+Remote: %s
+#Parameters: %d
+Flags: %s
+Line: %d
+""" % (
+		self.name,
+		":".join([f.value for f in remote]),
+		parameterCount,
+		", ".join([TokenDescription[f.type] for f in flags]),
+		self.line
+	)
+
 class If(KeywordExpression):
 	__slots__ = []
 	def __init__(self, aLine, aExpression):
 		super(If, self).__init__(StatementEnum.IF, aLine, aExpression)
+
+	def __str__(self):
+		return """
+===== Statement =====
+Type: If
+Line: %d
+""" % (self.line)
 
 class Import(Statement):
 	__slots__ = ["name"]
 	def __init__(self, aLine, aName):
 		super(Import, self).__init__(StatementEnum.IMPORT, aLine)
 		self.name = aName
+
+	def __str__(self):
+		return """
+===== Statement =====
+Type: Import
+Name: %s
+Line: %d
+""" % (
+		":".join([f.value for f in self.name]),
+		self.line
+	)
 
 class PropertySignature(Statement):
 	__slots__ = ["name", "type", "flags", "value"]
@@ -558,10 +784,41 @@ class PropertySignature(Statement):
 		self.flags = aFlags # List of Lex.KeywordEnum properties
 		self.value = aValue # Literal expression
 
+	def __str__(self):
+		flags = self.flags
+		if not flags:
+			flags = []
+		return """
+===== Statement =====
+Type: Property signature
+Name: %s
+Property type: %s
+Array: %s
+Flags: %s
+Line: %d
+""" % (
+		self.name,
+		":".join([f.value for f in self.type.name]),
+		self.type.array,
+		", ".join([TokenDescription[f.type] for f in flags]),
+		self.line
+	)
+
 class Return(KeywordExpression):
 	__slots__ = []
 	def __init__(self, aLine, aExpression):
 		super(Return, self).__init__(StatementEnum.RETURN, aLine, aExpression)
+
+	def __str__(self):
+		return """
+===== Statement =====
+Type: Return
+Expression: %s
+Line: %d
+""" % (
+		self.expression != None,
+		self.line
+	)
 
 class ScriptSignature(Statement):
 	__slots__ = ["name", "parent", "flags"]
@@ -571,6 +828,24 @@ class ScriptSignature(Statement):
 		self.parent = aParent
 		self.flags = aFlags
 
+	def __str__(self):
+		flags = self.flags
+		if not flags:
+			flags = []
+		return """
+===== Statement =====
+Type: Script signature
+Name: %s
+Parent: %s
+Flags: %s
+Line: %d
+""" % (
+		":".join([f.value for f in self.name]),
+		":".join([f.value for f in self.parent]),
+		", ".join([TokenDescription[f.type] for f in flags]),
+		self.line
+	)
+
 class StateSignature(Statement):
 	__slots__ = ["name", "auto"]
 	def __init__(self, aLine, aName, aAuto):
@@ -578,11 +853,35 @@ class StateSignature(Statement):
 		self.name = aName
 		self.auto = aAuto
 
+	def __str__(self):
+		return """
+===== Statement =====
+Type: State signature
+Name: %s
+Auto: %s
+Line: %d
+""" % (
+		self.name,
+		self.auto,
+		self.line
+	)
+
 class StructSignature(Statement):
 	__slots__ = ["name", "auto"]
 	def __init__(self, aLine, aName):
 		super(StructSignature, self).__init__(StatementEnum.STRUCTSIGNATURE, aLine)
 		self.name = aName
+
+	def __str__(self):
+		return """
+===== Statement =====
+Type: Struct signature
+Name: %s
+Line: %d
+""" % (
+		self.name,
+		self.line
+	)
 
 class Variable(Statement):
 	__slots__ = ["name", "type", "flags", "value"]
@@ -593,10 +892,37 @@ class Variable(Statement):
 		self.flags = aFlags # List of Lex.KeywordEnum properties
 		self.value = aValue # Expression
 
+	def __str__(self):
+		flags = self.flags
+		if not flags:
+			flags = []
+		return """
+===== Statement =====
+Type: Variable definition
+Name: %s
+Variable type: %s
+Array: %s
+Flags: %s
+Line: %d
+""" % (
+		self.name,
+		":".join([f.value for f in self.type.name]),
+		self.type.array,
+		", ".join([TokenDescription[f.type] for f in flags]),
+		self.line
+	)
+
 class While(KeywordExpression):
 	__slots__ = []
 	def __init__(self, aLine, aExpression):
 		super(While, self).__init__(StatementEnum.WHILE, aLine, aExpression)
+
+	def __str__(self):
+		return """
+===== Statement =====
+Type: While
+Line: %d
+""" % (self.line)
 
 class SyntacticError(Exception):
 	def __init__(self, aMessage, aLine):
@@ -727,6 +1053,33 @@ class Syntactic(object):
 					self.Abort("Only AUTO properties can have the CONST flag.")
 		return PropertySignature(self.line, name, aType, flags, value)
 
+	def FunctionParameters(self):
+		parameters = []
+		typ = self.ExpectType(True)
+		array = False
+		if self.Accept(TokenEnum.LEFTBRACKET):
+			self.Expect(TokenEnum.RIGHTBRACKET)
+			array = True
+		typ = Type(typ, array)
+		name = self.Expect(TokenEnum.IDENTIFIER)
+		value = None
+		if self.Accept(TokenEnum.ASSIGN):
+			value = self.ExpectExpression()
+		parameters.append(ParameterSignature(self.line, name, typ, value))
+		while self.Accept(TokenEnum.COMMA):
+			typ = self.ExpectType(True)
+			array = False
+			if self.Accept(TokenEnum.LEFTBRACKET):
+				self.Expect(TokenEnum.RIGHTBRACKET)
+				array = True
+			typ = Type(typ, array)
+			name = self.Expect(TokenEnum.IDENTIFIER)
+			value = None
+			if self.Accept(TokenEnum.ASSIGN):
+				value = self.ExpectExpression()
+			parameters.append(ParameterSignature(self.line, name, typ, value))
+		return parameters
+
 	def Function(self, aType):
 		self.Expect(TokenEnum.IDENTIFIER)
 		name = self.PeekBackwards()
@@ -734,25 +1087,7 @@ class Syntactic(object):
 		nextToken = self.Peek()
 		self.Expect(TokenEnum.LEFTPARENTHESIS)
 		if nextToken and nextToken.type != TokenEnum.RIGHTPARENTHESIS:
-
-			def Parameter():
-				typ = self.ExpectType(True)
-				array = False
-				if self.Accept(TokenEnum.LEFTBRACKET):
-					self.Expect(TokenEnum.RIGHTBRACKET)
-					array = True
-				typ = Type(typ, array)
-				name = self.Expect(TokenEnum.IDENTIFIER)
-				value = None
-				if self.Accept(TokenEnum.ASSIGN):
-					value = self.ExpectExpression()
-				parameters.append(ParameterSignature(self.line, name, typ, value))
-
-			parameters = []
-			Parameter()
-			while self.Accept(TokenEnum.COMMA):
-				Parameter()
-
+			parameters = self.FunctionParameters()
 		self.Expect(TokenEnum.RIGHTPARENTHESIS)
 		return FunctionSignature(self.line, name, aType, self.AcceptFlags([TokenEnum.kNATIVE, TokenEnum.kGLOBAL, TokenEnum.kDEBUGONLY, TokenEnum.kBETAONLY]), parameters)
 
@@ -998,6 +1333,27 @@ class Syntactic(object):
 			self.Abort("Expected an expression")
 		return self.Pop()
 
+	def EventParameters(self):
+		parameters = []
+		typ = self.ExpectType(True)
+		array = False
+		if self.Accept(TokenEnum.LEFTBRACKET):
+			self.Expect(TokenEnum.RIGHTBRACKET)
+			array = True
+		typ = Type(typ, array)
+		name = self.Expect(TokenEnum.IDENTIFIER)
+		parameters.append(ParameterSignature(self.line, name, typ, None))
+		while self.Accept(TokenEnum.COMMA):
+			typ = self.ExpectType(True)
+			array = False
+			if self.Accept(TokenEnum.LEFTBRACKET):
+				self.Expect(TokenEnum.RIGHTBRACKET)
+				array = True
+			typ = Type(typ, array)
+			name = self.Expect(TokenEnum.IDENTIFIER)
+			parameters.append(ParameterSignature(self.line, name, typ, None))
+		return parameters
+
 	def Process(self, aTokens):
 		if not aTokens:
 			return
@@ -1017,7 +1373,7 @@ class Syntactic(object):
 			if self.Accept(TokenEnum.LEFTBRACKET):
 				self.Expect(TokenEnum.RIGHTBRACKET)
 				array = True
-			typ = Type(typ, array)
+			typ = Type([typ], array)
 			if self.Accept(TokenEnum.kPROPERTY):
 				result = self.Property(typ)
 			elif self.Accept(TokenEnum.kFUNCTION):
@@ -1046,7 +1402,7 @@ class Syntactic(object):
 					nextToken = self.Peek(2)
 					if nextToken:
 						if nextToken.type == TokenEnum.RIGHTBRACKET:
-							typ = Type(namespace, self.Expect(TokenEnum.IDENTIFIER), True)
+							typ = Type([self.Expect(TokenEnum.IDENTIFIER)], True)
 							self.Consume()
 							nextToken = self.Peek()
 							self.Consume()
@@ -1063,15 +1419,15 @@ class Syntactic(object):
 						else:
 							result = self.ExpressionOrAssignment()
 				elif nextToken.type == TokenEnum.kPROPERTY:
-					typ = Type(self.Expect(TokenEnum.IDENTIFIER), False)
+					typ = Type([self.Expect(TokenEnum.IDENTIFIER)], False)
 					self.Consume()
 					result = self.Property(typ)
 				elif nextToken.type == TokenEnum.kFUNCTION:
-					typ = Type(self.Expect(TokenEnum.IDENTIFIER), False)
+					typ = Type([self.Expect(TokenEnum.IDENTIFIER)], False)
 					self.Consume()
 					result = self.Function(typ)
 				elif nextToken.type == TokenEnum.IDENTIFIER:
-					result = self.Variable(Type(self.Expect(TokenEnum.IDENTIFIER), False))
+					result = self.Variable(Type([self.Expect(TokenEnum.IDENTIFIER)], False))
 				else:
 					result = self.ExpressionOrAssignment()
 			else:
@@ -1118,22 +1474,7 @@ class Syntactic(object):
 			self.Expect(TokenEnum.LEFTPARENTHESIS)
 			parameters = None
 			if nextToken and nextToken.type != TokenEnum.RIGHTPARENTHESIS:
-
-				def Parameter():
-					typ = self.ExpectType(True)
-					array = False
-					if self.Accept(TokenEnum.LEFTBRACKET):
-						self.Expect(TokenEnum.RIGHTBRACKET)
-						array = True
-					typ = Type(typ, array)
-					name = self.Expect(TokenEnum.IDENTIFIER)
-					parameters.append(ParameterSignature(self.line, name, typ, None))
-
-				parameters = []
-				Parameter()
-				while self.Accept(TokenEnum.COMMA):
-					Parameter()
-
+				parameters = self.EventParameters()
 			self.Expect(TokenEnum.RIGHTPARENTHESIS)
 			result = EventSignature(self.line, remote, name, self.AcceptFlags([TokenEnum.kNATIVE]), parameters)
 		elif tokenType == TokenEnum.kENDEVENT:
@@ -1231,6 +1572,12 @@ class BinaryOperatorNode(Node):
 		self.leftOperand = aLeftOperand
 		self.rightOperand = aRightOperand
 
+	def __str__(self):
+		return """
+===== Node =====
+Type: Binary operator
+"""
+
 class UnaryOperatorNode(Node):
 	__slots__ = ["operator", "operand"]
 	def __init__(self, aOperator, aOperand):
@@ -1238,11 +1585,23 @@ class UnaryOperatorNode(Node):
 		self.operator = aOperator
 		self.operand = aOperand
 
+	def __str__(self):
+		return """
+===== Node =====
+Type: Unary operator
+"""
+
 class ExpressionNode(Node):
 	__slots__ = ["child"]
 	def __init__(self, aChild):
 		super(ExpressionNode, self).__init__(NodeEnum.EXPRESSION)
 		self.child = aChild
+
+	def __str__(self):
+		return """
+===== Node =====
+Type: Expression
+"""
 
 class ArrayAtomNode(Node):
 	__slots__ = ["child", "expression"]
@@ -1251,6 +1610,12 @@ class ArrayAtomNode(Node):
 		self.child = aChild
 		self.expression = aExpression
 
+	def __str__(self):
+		return """
+===== Node =====
+Type: Array atom
+"""
+
 class ArrayFuncOrIdNode(Node):
 	__slots__ = ["child", "expression"]
 	def __init__(self, aChild, aExpression):
@@ -1258,11 +1623,23 @@ class ArrayFuncOrIdNode(Node):
 		self.child = aChild
 		self.expression = aExpression
 
+	def __str__(self):
+		return """
+===== Node =====
+Type: Array, function, or identifier
+"""
+
 class ConstantNode(Node):
 	__slots__ = ["value"]
 	def __init__(self, aValue):
 		super(ConstantNode, self).__init__(NodeEnum.CONSTANT)
 		self.value = aValue
+
+	def __str__(self):
+		return """
+===== Node =====
+Type: Constant
+"""
 
 class FunctionCallNode(Node):
 	__slots__ = ["name", "arguments"]
@@ -1271,6 +1648,12 @@ class FunctionCallNode(Node):
 		self.name = aName
 		self.arguments = aArguments
 
+	def __str__(self):
+		return """
+===== Node =====
+Type: Function call
+"""
+
 class FunctionCallArgument(Node):
 	__slots__ = ["name", "expression"]
 	def __init__(self, aName, aExpression):
@@ -1278,16 +1661,34 @@ class FunctionCallArgument(Node):
 		self.name = aName
 		self.expression = aExpression
 
+	def __str__(self):
+		return """
+===== Node =====
+Type: Function call argument
+"""
+
 class IdentifierNode(Node):
 	__slots__ = ["value"]
 	def __init__(self, aValue):
 		super(IdentifierNode, self).__init__(NodeEnum.IDENTIFIER)
 		self.value = aValue
 
+	def __str__(self):
+		return """
+===== Node =====
+Type: Identifier
+"""
+
 class LengthNode(Node):
 	__slots__ = []
 	def __init__(self):
 		super(LengthNode, self).__init__(NodeEnum.LENGTH)
+
+	def __str__(self):
+		return """
+===== Node =====
+Type: Length
+"""
 
 class ArrayCreationNode(Node):
 	__slots__ = ["arrayType", "size"]
@@ -1296,7 +1697,13 @@ class ArrayCreationNode(Node):
 		self.arrayType = aArrayType
 		self.size = aSize
 
-##3: Semantic analysis
+	def __str__(self):
+		return """
+===== Node =====
+Type: Array creation
+"""
+
+#3: Semantic analysis
 
 class SemanticError(Exception):
 	def __init__(self, aMessage, aLine):
@@ -1517,14 +1924,463 @@ class State(object):
 		self.starts = aStarts
 		self.ends = aEnds
 
+class Semantic(object):
+	def __init__(self):
+		# Scopes
+		#	0 = Empty state
+		#	1 = State
+		#	2 = Function
+		#	3 = Event
+		#	4 = Property
+		#	5 = Group
+		#	6 = Struct
+		#	7 = StructMember
+		self.scope = [0]
+		self.definition = []
+
+	def Reset(self):
+		self.scope = [0]
+		self.definition = []
+
+	def EndPropertyScope(aFullProperty, aEndLine):
+		propertyDefinition = self.definition.pop()
+		signature = propertyDefinition.pop(0)
+		docstring = None
+		if isinstance(groupDefinition[0], Statement) and groupDefinition[0].type == StatementEnum.DOCSTRING:
+			docstring = groupDefinition.pop(0)
+		setFunc = None
+		getFunc = None
+		for s in propertyDefinition:
+#								if type(s) is Function:
+			name = s.name.upper()
+			if name == "SET":
+				setFunc = s
+			elif name == "GET":
+				getFunc = s
+			else:
+				raise SemanticError("Only SET and GET functions are allowed in property definitions.", s.starts)
+		if aFullProperty:
+			if not setFunc and not getFunc:
+				raise SemanticError("The '%s' property has to at least have a GET or a SET function." % signature.name, signature.line)
+		if aFullProperty:
+			self.definition[-1].append(Property(signature.name, signature.flags, signature.type, signature.value, docstring, getFunc, setFunc, signature.line, aEndLine))
+		else:
+			self.definition[-1].append(Property(signature.name, signature.flags, signature.type, signature.value, docstring, getFunc, setFunc, signature.line, signature.line))
+		self.scope.pop()
+
+	def EndGroupScope():
+		groupDefinition = self.definition.pop()
+		signature = groupDefinition.pop(0)
+		docstring = None
+		if isinstance(groupDefinition[0], Statement) and groupDefinition[0].type == StatementEnum.DOCSTRING:
+			docstring = groupDefinition.pop(0)
+		properties = None
+		for s in groupDefinition:
+#								if type(s) is Property:
+			if not properties:
+				properties = [s]
+			else:
+				properties.append(s)
+#								else:
+#									raise SemanticError("Illegal statement in a group definition.", signature.line)
+		self.definition[-1].append(Group(signature.name, signature.flags, properties, signature.line, aStat.line))
+		self.scope.pop()
+
+	def AssembleScript(self, aStat):
+		typ = aStat.statementType
+		currentScope = self.scope[-1]
+		if currentScope == 0: # Empty state
+			if typ == StatementEnum.CUSTOMEVENT:
+				self.definition[-1].append(aStat)
+			elif typ == StatementEnum.DOCSTRING:
+				self.definition[-1].append(aStat)
+			elif typ == StatementEnum.EVENTSIGNATURE:
+				self.scope.append(3)
+				self.definition.append([aStat])
+			elif typ == StatementEnum.FUNCTIONSIGNATURE:
+				self.scope.append(2)
+				self.definition.append([aStat])
+			elif typ == StatementEnum.GROUPSIGNATURE:
+				self.scope.append(5)
+				self.definition.append([aStat])
+			elif typ == StatementEnum.IMPORT:
+				self.definition[-1].append(aStat)
+			elif typ == StatementEnum.PROPERTYSIGNATURE:
+				self.scope.append(4)
+				self.definition.append([aStat])
+			elif typ == StatementEnum.SCRIPTSIGNATURE:
+				self.definition[-1].append(aStat)
+			elif typ == StatementEnum.STATESIGNATURE:
+				self.scope.append(1)
+				self.definition.append([aStat])
+			elif typ == StatementEnum.STRUCTSIGNATURE:
+				self.scope.append(6)
+				self.definition.append([aStat])
+			elif typ == StatementEnum.VARIABLE:
+				self.definition[-1].append(aStat)
+			else:
+				raise SemanticError("Illegal statement in the empty state.", aStat.line)
+		elif currentScope == 1: # State
+			if typ == StatementEnum.ENDSTATE:
+				self.scope.pop()
+			elif typ == StatementEnum.EVENTSIGNATURE:
+				self.scope.append(3)
+				self.definition.append([aStat])
+			elif typ == StatementEnum.FUNCTIONSIGNATURE:
+				self.scope.append(2)
+				self.definition.append([aStat])
+			else:
+				raise SemanticError("Illegal statement in a state definition.", aStat.line)
+		elif currentScope == 2 or self.scope[-1] == 3: # Function
+			if typ == StatementEnum.ASSIGNMENT:
+				pass
+			elif typ == StatementEnum.DOCSTRING:
+				pass
+			elif typ == StatementEnum.ELSE:
+				pass
+			elif typ == StatementEnum.ELSEIF:
+				pass
+			elif self.scope[-1] == 2 and typ == StatementEnum.ENDFUNCTION:
+				self.scope.pop()
+			elif self.scope[-1] == 3 and typ == StatementEnum.ENDEVENT:
+				self.scope.pop()
+			elif typ == StatementEnum.ENDIF:
+				pass
+			elif typ == StatementEnum.ENDWHILE:
+				pass
+			elif typ == StatementEnum.EXPRESSION:
+				pass
+			elif typ == StatementEnum.IF:
+				pass
+			elif typ == StatementEnum.RETURN:
+				pass
+			elif typ == StatementEnum.VARIABLE:
+				pass
+			elif typ == StatementEnum.WHILE:
+				pass
+			else:
+				if self.scope[-1] == 2:
+					raise SemanticError("Illegal statement in a function definition.", aStat.line)
+				else:
+					raise SemanticError("Illegal statement in an event definition.", aStat.line)
+		elif currentScope == 4: # Property
+			if typ == StatementEnum.DOCSTRING:
+				if len(self.definition[-1]) == 1:
+					self.definition[-1].append(aStat)
+				else:
+					raise SemanticError("The '%s' property already has a docstring." % self.definition[-1][0].name, aStat.line)
+			elif typ == StatementEnum.ENDPROPERTY:
+				EndPropertyScope(True, aStat.line)
+			elif typ == StatementEnum.FUNCTIONSIGNATURE:
+				self.scope.append(2)
+				self.definition.append([aStat])
+			else:
+				signature = self.definition[-1][0]
+				if TokenEnum.kAUTO in signature.flags or TokenEnum.kAUTOREADONLY in signature.flags:
+					EndPropertyScope(False, None)
+					currentScope = self.scope[-1]
+					if currentScope == 0: # Empty state
+						pass
+					elif currentScope == 5: # Group, only PropertySignatures are allowed
+						self.scope.append(4)
+						self.definition.append([aStat])
+				else:
+					raise SemanticError("Illegal statement in a property definition.", aStat.line)
+		elif currentScope == 5: # Group
+			if typ == StatementEnum.DOCSTRING:
+				if len(self.definition[-1]) == 1:
+					self.definition[-1].append(aStat)
+				else:
+					raise SemanticError("The '%s' group already has a docstring." % self.definition[-1][0].name, aStat.line)
+			elif typ == StatementEnum.ENDGROUP:
+				EndGroupScope()
+			elif typ == StatementEnum.PROPERTYSIGNATURE:
+				self.scope.append(4)
+				self.definition.append([aStat])
+			else:
+				raise SemanticError("Illegal statement in a group definition.", aStat.line)
+		elif currentScope == 6: # Struct
+			if typ == StatementEnum.DOCSTRING:
+				pass
+			elif typ == StatementEnum.ENDSTRUCT:
+				self.scope.pop()
+			elif typ == StatementEnum.VARIABLE:
+				pass
+			else:
+				raise SemanticError("Illegal statement in a struct definition.", aStat.line)
+		elif currentScope == 7: # Struct member
+			if typ == StatementEnum.DOCSTRING:
+				self.definition[-1].append(aStat)
+			else:
+				raise SemanticError("Illegal statement in a struct member definition.", aStat.line)
+					#	ASSIGNMENT = 0
+					#	CUSTOMEVENT = 1
+					#	DOCSTRING = 2
+					#	ELSE = 3
+					#	ELSEIF = 4
+					#	ENDEVENT = 5
+					#	ENDFUNCTION = 6
+					#	ENDGROUP = 7
+					#	ENDIF = 8
+					#	ENDPROPERTY = 9
+					#	ENDSTATE = 10
+					#	ENDSTRUCT = 11
+					#	ENDWHILE = 12
+					#	EVENTSIGNATURE = 13
+					#	EXPRESSION = 14
+					#	FUNCTIONSIGNATURE = 15
+					#	GROUPSIGNATURE = 16
+					#	IF = 17
+					#	IMPORT = 18
+					#	PARAMETER = 19
+					#	PROPERTYSIGNATURE = 20
+					#	RETURN = 21
+					#	SCRIPTSIGNATURE = 22
+					#	STATESIGNATURE = 23
+					#	STRUCTSIGNATURE = 24
+					#	VARIABLE = 25
+					#	WHILE = 26
+
+	def BuildScript(self):
+		if len(self.scope) != 1 and self.scope[-1] != 0:
+			line = self.definition[-1][0].line
+			if self.scope[-1] == 1:
+				raise SemanticError("Unterminated state definition.", line)
+			elif self.scope[-1] == 2:
+				raise SemanticError("Unterminated function definition.", line)
+			elif self.scope[-1] == 3:
+				raise SemanticError("Unterminated event definition.", line)
+			elif self.scope[-1] == 4:
+				raise SemanticError("Unterminated property definition.", line)
+			elif self.scope[-1] == 5:
+				raise SemanticError("Unterminated group definition.", line)
+			elif self.scope[-1] == 6:
+				raise SemanticError("Unterminated struct definition.", line)
+
 #4: Putting it all together
 def Process(aLex, aSyn, aSem, aSource):
 	tokens = []
 	for token in aLex.Process(aSource):
 		if token.type == TokenEnum.NEWLINE:
-			stat = aSyn.Process(tokens)
 			if tokens:
+				stat = aSyn.Process(tokens)
+				#print(stat)
+#				if stat:
+#					aSem.AssembleScript(stat)
+#					typ = stat.statementType
+#					currentScope = scope[-1]
+#					if currentScope == 0: # Empty state
+#						if typ == StatementEnum.CUSTOMEVENT:
+#							definition[-1].append(stat)
+#						elif typ == StatementEnum.DOCSTRING:
+#							definition[-1].append(stat)
+#						elif typ == StatementEnum.EVENTSIGNATURE:
+#							scope.append(3)
+#							definition.append([stat])
+#						elif typ == StatementEnum.FUNCTIONSIGNATURE:
+#							scope.append(2)
+#							definition.append([stat])
+#						elif typ == StatementEnum.GROUPSIGNATURE:
+#							scope.append(5)
+#							definition.append([stat])
+#						elif typ == StatementEnum.IMPORT:
+#							definition[-1].append(stat)
+#						elif typ == StatementEnum.PROPERTYSIGNATURE:
+#							scope.append(4)
+#							definition.append([stat])
+#						elif typ == StatementEnum.SCRIPTSIGNATURE:
+#							definition[-1].append(stat)
+#						elif typ == StatementEnum.STATESIGNATURE:
+#							scope.append(1)
+#							definition.append([stat])
+#						elif typ == StatementEnum.STRUCTSIGNATURE:
+#							scope.append(6)
+#							definition.append([stat])
+#						elif typ == StatementEnum.VARIABLE:
+#							definition[-1].append(stat)
+#						else:
+#							raise SemanticError("Illegal statement in the empty state.", stat.line)
+#					elif currentScope == 1: # State
+#						if typ == StatementEnum.ENDSTATE:
+#							scope.pop()
+#						elif typ == StatementEnum.EVENTSIGNATURE:
+#							scope.append(3)
+#							definition.append([stat])
+#						elif typ == StatementEnum.FUNCTIONSIGNATURE:
+#							scope.append(2)
+#							definition.append([stat])
+#						else:
+#							raise SemanticError("Illegal statement in a state definition.", stat.line)
+#					elif currentScope == 2 or scope[-1] == 3: # Function
+#						if typ == StatementEnum.ASSIGNMENT:
+#							pass
+#						elif typ == StatementEnum.DOCSTRING:
+#							pass
+#						elif typ == StatementEnum.ELSE:
+#							pass
+#						elif typ == StatementEnum.ELSEIF:
+#							pass
+#						elif scope[-1] == 2 and typ == StatementEnum.ENDFUNCTION:
+#							scope.pop()
+#						elif scope[-1] == 3 and typ == StatementEnum.ENDEVENT:
+#							scope.pop()
+#						elif typ == StatementEnum.ENDIF:
+#							pass
+#						elif typ == StatementEnum.ENDWHILE:
+#							pass
+#						elif typ == StatementEnum.EXPRESSION:
+#							pass
+#						elif typ == StatementEnum.IF:
+#							pass
+#						elif typ == StatementEnum.RETURN:
+#							pass
+#						elif typ == StatementEnum.VARIABLE:
+#							pass
+#						elif typ == StatementEnum.WHILE:
+#							pass
+#						else:
+#							if scope[-1] == 2:
+#								raise SemanticError("Illegal statement in a function definition.", stat.line)
+#							else:
+#								raise SemanticError("Illegal statement in an event definition.", stat.line)
+#					elif currentScope == 4: # Property
+#						def EndPropertyScope(aFullProperty, aEndLine):
+#							propertyDefinition = definition.pop()
+#							signature = propertyDefinition.pop(0)
+#							docstring = None
+#							if isinstance(groupDefinition[0], Statement) and groupDefinition[0].type == StatementEnum.DOCSTRING:
+#								docstring = groupDefinition.pop(0)
+#							setFunc = None
+#							getFunc = None
+#							for s in propertyDefinition:
+##								if type(s) is Function:
+#								name = s.name.upper()
+#								if name == "SET":
+#									setFunc = s
+#								elif name == "GET":
+#									getFunc = s
+#								else:
+#									raise SemanticError("Only SET and GET functions are allowed in property definitions.", s.starts)
+#							if aFullProperty:
+#								if not setFunc and not getFunc:
+#									raise SemanticError("The '%s' property has to at least have a GET or a SET function." % signature.name, signature.line)
+#							if aFullProperty:
+#								definition[-1].append(Property(signature.name, signature.flags, signature.type, signature.value, docstring, getFunc, setFunc, signature.line, aEndLine))
+#							else:
+#								definition[-1].append(Property(signature.name, signature.flags, signature.type, signature.value, docstring, getFunc, setFunc, signature.line, signature.line))
+#							scope.pop()
+#
+#						if typ == StatementEnum.DOCSTRING:
+#							if len(definition[-1]) == 1:
+#								definition[-1].append(stat)
+#							else:
+#								raise SemanticError("The '%s' property already has a docstring." % definition[-1][0].name, stat.line)
+#						elif typ == StatementEnum.ENDPROPERTY:
+#							EndPropertyScope(True, stat.line)
+#						elif typ == StatementEnum.FUNCTIONSIGNATURE:
+#							scope.append(2)
+#							definition.append([stat])
+#						else:
+#							signature = definition[-1][0]
+#							if TokenEnum.kAUTO in signature.flags or TokenEnum.kAUTOREADONLY in signature.flags:
+#								EndPropertyScope(False, None)
+#								currentScope = scope[-1]
+#								if currentScope == 0: # Empty state
+#									pass
+#								elif currentScope == 5: # Group, only PropertySignatures are allowed
+#									scope.append(4)
+#									definition.append([stat])
+#							else:
+#								raise SemanticError("Illegal statement in a property definition.", stat.line)
+#					elif currentScope == 5: # Group
+#						def EndGroupScope():
+#							groupDefinition = definition.pop()
+#							signature = groupDefinition.pop(0)
+#							docstring = None
+#							if isinstance(groupDefinition[0], Statement) and groupDefinition[0].type == StatementEnum.DOCSTRING:
+#								docstring = groupDefinition.pop(0)
+#							properties = None
+#							for s in groupDefinition:
+##								if type(s) is Property:
+#								if not properties:
+#									properties = [s]
+#								else:
+#									properties.append(s)
+##								else:
+##									raise SemanticError("Illegal statement in a group definition.", signature.line)
+#							definition[-1].append(Group(signature.name, signature.flags, properties, signature.line, stat.line))
+#							scope.pop()
+#
+#						if typ == StatementEnum.DOCSTRING:
+#							if len(definition[-1]) == 1:
+#								definition[-1].append(stat)
+#							else:
+#								raise SemanticError("The '%s' group already has a docstring." % definition[-1][0].name, stat.line)
+#						elif typ == StatementEnum.ENDGROUP:
+#							EndGroupScope()
+#						elif typ == StatementEnum.PROPERTYSIGNATURE:
+#							scope.append(4)
+#							definition.append([stat])
+#						else:
+#							raise SemanticError("Illegal statement in a group definition.", stat.line)
+#					elif currentScope == 6: # Struct
+#						if typ == StatementEnum.DOCSTRING:
+#							pass
+#						elif typ == StatementEnum.ENDSTRUCT:
+#							scope.pop()
+#						elif typ == StatementEnum.VARIABLE:
+#							pass
+#						else:
+#							raise SemanticError("Illegal statement in a struct definition.", stat.line)
+#					elif currentScope == 7: # Struct member
+#						if typ == StatementEnum.DOCSTRING:
+#							definition[-1].append(stat)
+#						else:
+#							raise SemanticError("Illegal statement in a struct member definition.", stat.line)
+#					#	ASSIGNMENT = 0
+#					#	CUSTOMEVENT = 1
+#					#	DOCSTRING = 2
+#					#	ELSE = 3
+#					#	ELSEIF = 4
+#					#	ENDEVENT = 5
+#					#	ENDFUNCTION = 6
+#					#	ENDGROUP = 7
+#					#	ENDIF = 8
+#					#	ENDPROPERTY = 9
+#					#	ENDSTATE = 10
+#					#	ENDSTRUCT = 11
+#					#	ENDWHILE = 12
+#					#	EVENTSIGNATURE = 13
+#					#	EXPRESSION = 14
+#					#	FUNCTIONSIGNATURE = 15
+#					#	GROUPSIGNATURE = 16
+#					#	IF = 17
+#					#	IMPORT = 18
+#					#	PARAMETER = 19
+#					#	PROPERTYSIGNATURE = 20
+#					#	RETURN = 21
+#					#	SCRIPTSIGNATURE = 22
+#					#	STATESIGNATURE = 23
+#					#	STRUCTSIGNATURE = 24
+#					#	VARIABLE = 25
+#					#	WHILE = 26
 				tokens = []
 		elif token.type != TokenEnum.COMMENTLINE and token.type != TokenEnum.COMMENTBLOCK:
 			tokens.append(token)
+			#print(token)
+	script = aSem.BuildScript()
+#	if len(scope) != 1 and scope[-1] != 0:
+#		line = definition[-1][0].line
+#		if scope[-1] == 1:
+#			raise SemanticError("Unterminated state definition.", line)
+#		elif scope[-1] == 2:
+#			raise SemanticError("Unterminated function definition.", line)
+#		elif scope[-1] == 3:
+#			raise SemanticError("Unterminated event definition.", line)
+#		elif scope[-1] == 4:
+#			raise SemanticError("Unterminated property definition.", line)
+#		elif scope[-1] == 5:
+#			raise SemanticError("Unterminated group definition.", line)
+#		elif scope[-1] == 6:
+#			raise SemanticError("Unterminated struct definition.", line)
 	return None
