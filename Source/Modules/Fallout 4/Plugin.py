@@ -192,236 +192,25 @@ class EventListener(sublime_plugin.EventListener):
 		start = time.time() #DEBUG
 		def Run():
 			print("Running linter")
-			#print(aView)
-			#print(aLineNumber)
-			#print(aPaths)
-			#print(aSource)
 			global LEX
 			global SYN
-			#	Modes
-			#		0 = Empty state
-			#		1 = State
-			#		2 = Group
-			#		3 = Property
-			#		4 = Struct
-			#		5 = Function
-			#		6 = Event
-			mode = 0
-			scriptSignature = None
-			scriptImports = []
-			scriptCustomEvents = []
-			scriptDocstring = None
-			scriptVariables = {}
-			scriptProperties = {}
-			scriptGroups = {}
-			scriptStructs = {}
-			scriptFunctions = {}
-			scriptEvents = {}
-			scriptStates = {}
-
-			
-			
-
-
-			currentStateName = ""
-			currentGroupDef = {}
-			currentPropertyDef = []
-			currentStructDef = []
-			currentFunctionDef = []
-			currentEventDef = []
-
-#			properties = {}
-#			groups = {}
-#			structs = {}
-#			functions = {}
-#			events = {}
-#			variables = {}
-#			states = {}
-#			imports = []
-			tokens = []
 			try:
-				for token in LEX.Process(aSource):
-					if token.type == Linter.TokenEnum.NEWLINE:
-#						i = 0
-#						for t in tokens:
-#							if t.type == Linter.TokenEnum.KEYWORD:
-#								print("%d: %s = %s" % (i, Linter.TokenDescription[t.type], Linter.KeywordDescription[t.value]))
-#							else:
-#								print("%d: %s = %s" % (i, Linter.TokenDescription[t.type], t.value))
-#							i += 1
-						try:
-							stat = SYN.Process(tokens)
-							if stat:
-								try:
-									# Semantic
-#									print(Linter.StatementDescription[stat.statementType])
-									#	ASSIGNMENT
-									#	CUSTOMEVENT
-									#	DOCSTRING
-									#	ELSE
-									#	ELSEIF
-									#	ENDEVENT
-									#	ENDFUNCTION
-									#	ENDGROUP
-									#	ENDIF
-									#	ENDPROPERTY
-									#	ENDSTATE
-									#	ENDSTRUCT
-									#	ENDWHILE
-									#	EVENTSIGNATURE
-									#	EXPRESSION
-									#	FUNCTIONSIGNATURE
-									#	GROUPSIGNATURE
-									#	IF
-									#	IMPORT
-									#	PARAMETER
-									#	PROPERTYSIGNATURE
-									#	RETURN
-									#	SCRIPTSIGNATURE
-									#	STATESIGNATURE
-									#	STRUCTSIGNATURE
-									#	VARIABLE
-									#	WHILE
-									statType = stat.statementType
-									#if statType == Linter.StatementEnum.
-#									print(mode)
-									if mode == 0: # Empty state
-										if statType == Linter.StatementEnum.SCRIPTSIGNATURE:
-											if scriptSignature:
-												raise Linter.SemanticError("Only one scriptheader is allowed per script.", stat.line)
-											scriptSignature = stat
-										elif statType == Linter.StatementEnum.CUSTOMEVENT:
-											pass
-										elif statType == Linter.StatementEnum.DOCSTRING:
-											if not scriptDocstring:
-												scriptDocstring = stat
-										elif statType == Linter.StatementEnum.EVENTSIGNATURE:
-											mode = 6
-										elif statType == Linter.StatementEnum.FUNCTIONSIGNATURE:
-											mode = 5
-										elif statType == Linter.StatementEnum.GROUPSIGNATURE:
-											mode = 2
-										elif statType == Linter.StatementEnum.IMPORT:
-											pass
-										elif statType == Linter.StatementEnum.PROPERTYSIGNATURE:
-											if stat.flags and Linter.KeywordEnum.AUTO not in stat.flags and Linter.KeywordEnum.AUTOREADONLY not in stat.flags:
-												mode = 3
-										elif statType == Linter.StatementEnum.STRUCTSIGNATURE:
-											mode = 4
-										elif statType == Linter.StatementEnum.VARIABLE:
-											pass
-										elif statType == Linter.StatementEnum.STATESIGNATURE:
-											mode = 1
-										else:
-											raise Linter.SemanticError("Illegal statement in the empty state", stat.line)
-									elif mode == 1: # State
-										if statType == Linter.StatementEnum.ENDSTATE:
-											mode = 0
-										elif statType == Linter.StatementEnum.EVENTSIGNATURE:
-											mode = 6
-										elif statType == Linter.StatementEnum.FUNCTIONSIGNATURE:
-											mode = 5
-										else:
-											raise Linter.SemanticError("Illegal statement in a state.", stat.line)
-									elif mode == 2: # Group
-										if statType == Linter.StatementEnum.PROPERTYSIGNATURE:
-											if stat.flags and Linter.KeywordEnum.AUTO not in stat.flags and Linter.KeywordEnum.AUTOREADONLY not in stat.flags:
-												mode = 3
-										elif statType == Linter.StatementEnum.ENDGROUP:
-											mode = 0
-										else:
-											raise Linter.SemanticError("Illegal statement in a group.", stat.line)
-									elif mode == 3: # Property
-										if statType == Linter.StatementEnum.FUNCTIONSIGNATURE:
-											mode = 5
-										elif statType == Linter.StatementEnum.DOCSTRING:
-											pass
-										else:
-											raise Linter.SemanticError("Illegal statement in a property definition.", stat.line)
-									elif mode == 4: # Struct
-										if statType == Linter.StatementEnum.ENDSTRUCT:
-											mode = 0
-										elif statType == Linter.StatementEnum.VARIABLE:
-											pass
-										else:
-											raise Linter.SemanticError("Illegal statement in a struct definition.", stat.line)
-									elif mode == 5 or mode == 6: # Function or event
-										if (mode == 5 and statType == Linter.StatementEnum.ENDFUNCTION) or (mode == 6 and statType == Linter.StatementEnum.ENDEVENT):
-											if currentStateName == "":
-												mode = 0
-											else:
-												mode = 1
-										elif statType == Linter.StatementEnum.ASSIGNMENT:
-											pass
-										elif statType == Linter.StatementEnum.DOCSTRING:
-											pass
-										elif statType == Linter.StatementEnum.ELSE:
-											pass
-										elif statType == Linter.StatementEnum.ELSEIF:
-											pass
-										elif statType == Linter.StatementEnum.ENDIF:
-											pass
-										elif statType == Linter.StatementEnum.ENDWHILE:
-											pass
-										elif statType == Linter.StatementEnum.EXPRESSION:
-											pass
-										elif statType == Linter.StatementEnum.IF:
-											pass
-										elif statType == Linter.StatementEnum.RETURN:
-											pass
-										elif statType == Linter.StatementEnum.VARIABLE:
-											pass
-										elif statType == Linter.StatementEnum.WHILE:
-											pass
-										else:
-											if mode == 5:
-												raise Linter.SemanticError("Illegal statement in a function definition.", stat.line)
-											else:
-												raise Linter.SemanticError("Illegal statement in an event definition.", stat.line)
-								except Linter.SemanticError as e:
-									print(e.message)
-									if aView:
-										SublimePapyrus.SetStatus(aView, "sublimepapyrus-linter", "Error on line %d: %s" % (e.line, e.message))
-										SublimePapyrus.HighlightLinter(aView, e.line)
-									return False
-							tokens = []
-						except Linter.SyntacticError as e:
-							print(e.message)
-							if aView:
-								SublimePapyrus.SetStatus(aView, "sublimepapyrus-linter", "Error on line %d: %s" % (e.line, e.message))
-								SublimePapyrus.HighlightLinter(aView, e.line)
-							return False
-					elif token.type != Linter.TokenEnum.COMMENTLINE and token.type != Linter.TokenEnum.COMMENTBLOCK:
-						tokens.append(token)
+				script = Linter.Process(LEX, SYN, None, aSource)
 			except Linter.LexicalError as e:
 				print(e.message)
 				if aView:
 					SublimePapyrus.SetStatus(aView, "sublimepapyrus-linter", "Error on line %d, column %d: %s" % (e.line, e.column, e.message))
 					SublimePapyrus.HighlightLinter(aView, e.line, e.column)
 				return False
-			if mode > 0:
+			except Linter.SyntacticError as e:
+				print(e.message)
 				if aView:
-					if mode == 1:
-						SublimePapyrus.SetStatus(aView, "sublimepapyrus-linter", "Unterminated state.")
-					elif mode == 2:
-						SublimePapyrus.SetStatus(aView, "sublimepapyrus-linter", "Unterminated group.")
-					elif mode == 3:
-						SublimePapyrus.SetStatus(aView, "sublimepapyrus-linter", "Unterminated property.")
-					elif mode == 4:
-						SublimePapyrus.SetStatus(aView, "sublimepapyrus-linter", "Unterminated struct.")
-					elif mode == 5:
-						SublimePapyrus.SetStatus(aView, "sublimepapyrus-linter", "Unterminated function.")
-					elif mode == 6:
-						SublimePapyrus.SetStatus(aView, "sublimepapyrus-linter", "Unterminated event.")
+					SublimePapyrus.SetStatus(aView, "sublimepapyrus-linter", "Error on line %d: %s" % (e.line, e.message))
+					SublimePapyrus.HighlightLinter(aView, e.line)
 				return False
+#			except Linter.SemanticError as e:
+#				pass
 			return True
-
-			#		1 = State
-			#		2 = Group
-			#		3 = Property
-			#		4 = Struct
-			#		5 = Function
-			#		6 = Event
 
 		if Run():
 			if aView:
