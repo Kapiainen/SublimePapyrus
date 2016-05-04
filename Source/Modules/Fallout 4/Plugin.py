@@ -134,6 +134,11 @@ class EventListener(sublime_plugin.EventListener):
 			return self.validScope in view.scope_name(0)
 		return False
 
+	def on_post_save(self, view):
+		# Check if extension is .psc and in one of the import folders or the scripts folder
+		#	Yes -> Check if the completions for script types needs to be updated
+		pass
+
 	def on_modified(self, view):
 		if self.IsValidScope(view):
 			settings = SublimePapyrus.GetSettings()
@@ -179,11 +184,11 @@ class EventListener(sublime_plugin.EventListener):
 						elif PYTHON_VERSION[0] >= 3:
 							args = {"aView": view, "aLineNumber": lineNumber, "aSource": scriptContents, "aPaths": sourcePaths}
 						if args:
-							t = threading.Timer(delay, self.Linter, kwargs=args)
+							t = threading.Timer(delay, self.RunLinter, kwargs=args)
 							t.daemon = True
 							t.start()
 
-	def Linter(self, aView, aLineNumber, aSource, aPaths):
+	def RunLinter(self, aView, aLineNumber, aSource, aPaths):
 		self.linterQueue -= 1 # Remove from queue
 		if self.linterQueue > 0: # If there is a queue, then cancel
 			return
