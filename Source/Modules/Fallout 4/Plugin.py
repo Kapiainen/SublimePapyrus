@@ -202,7 +202,7 @@ class EventListener(sublime_plugin.EventListener):
 			global SYN
 			global SEM
 			try:
-				script = Linter.Process(LEX, SYN, SEM, aSource)
+				script = SEM.Process(LEX, SYN, aSource, aPaths)
 			except Linter.LexicalError as e:
 				print(e.message)
 				if aView:

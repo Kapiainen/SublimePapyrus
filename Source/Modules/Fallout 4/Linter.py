@@ -1,4 +1,4 @@
-import re
+import re, os
 
 #1: Lexical analysis
 class TokenEnum(object):
@@ -1768,9 +1768,10 @@ class SemanticError(Exception):
 #			.states
 #				Dict of State
 class Script(object):
-	__slots__ = ["name", "flags", "parent", "docstring", "imports", "customEvents", "variables", "properties",  "groups", "functions", "events", "states", "structs"]
-	def __init__(self, aName, aFlags, aParent, aDocstring, aImports, aCustomEvents, aVariables, aProperties, aGroups, aFunctions, aEvents, aStates, aStructs):
+	__slots__ = ["name", "starts", "flags", "parent", "docstring", "imports", "customEvents", "variables", "properties",  "groups", "functions", "events", "states", "structs"]
+	def __init__(self, aName, aStarts, aFlags, aParent, aDocstring, aImports, aCustomEvents, aVariables, aProperties, aGroups, aFunctions, aEvents, aStates, aStructs):
 		self.name = aName
+		self.starts = aStarts
 		self.flags = aFlags
 		self.parent = aParent
 		self.docstring = aDocstring
@@ -2011,12 +2012,13 @@ class Semantic(object):
 		#	5 = Group
 		#	6 = Struct
 		#	7 = StructMember
+		self.paths = None
+		self.scriptExtension = "psc"
+		self.cache = {}
 		self.scope = [0]
 		self.definition = [[]]
-
-	def Reset(self):
-		self.scope = [0]
-		self.definition = [[]]
+		self.line = None
+		self.script = None
 
 	def EmptyStateScope(self, aStat):
 		typ = aStat.statementType
@@ -2094,54 +2096,70 @@ class Semantic(object):
 
 	def FunctionEventScope(self, aStat):
 		typ = aStat.statementType
-		if typ == StatementEnum.ASSIGNMENT:
-			self.definition[-1].append(aStat)
-		elif typ == StatementEnum.DOCSTRING:
-			if self.scope[-1] == 2 and self.definition[-1][-1].type != StatementEnum.FUNCTIONSIGNATURE:
-				raise SemanticError("Docstrings may only follow immediately after the function signature in function definitions.", aStat.line)
-			elif self.scope[-1] == 3 and self.definition[-1][-1].type != StatementEnum.EVENTSIGNATURE:
-				raise SemanticError("Docstrings may only follow immediately after the event signature in event definitions.", aStat.line)
-			else:
+		signature = self.definition[-1][0]
+		if signature.flags and TokenEnum.kNATIVE in signature.flags:
+			if typ == StatementEnum.DOCSTRING:
 				self.definition[-1].append(aStat)
-		elif typ == StatementEnum.ELSE:
-			self.definition[-1].append(aStat)
-		elif typ == StatementEnum.ELSEIF:
-			self.definition[-1].append(aStat)
-		elif self.scope[-1] == 2 and typ == StatementEnum.ENDFUNCTION:
-			self.EndFunctionEventScope(aStat)
-		elif self.scope[-1] == 3 and typ == StatementEnum.ENDEVENT:
-			self.EndFunctionEventScope(aStat)
-		elif typ == StatementEnum.ENDIF:
-			self.definition[-1].append(aStat)
-		elif typ == StatementEnum.ENDWHILE:
-			self.definition[-1].append(aStat)
-		elif typ == StatementEnum.EXPRESSION:
-			self.definition[-1].append(aStat)
-		elif typ == StatementEnum.IF:
-			self.definition[-1].append(aStat)
-		elif typ == StatementEnum.RETURN:
-			self.definition[-1].append(aStat)
-		elif typ == StatementEnum.VARIABLE:
-			self.definition[-1].append(aStat)
-		elif typ == StatementEnum.WHILE:
-			self.definition[-1].append(aStat)
-		else:
-			signature = self.definition[-1][0]
-			if self.scope[-1] == 2:
-				raise SemanticError("Illegal statement in a function definition called '%s' that starts on line %d." % (signature.name, signature.line), aStat.line)
+				self.EndFunctionEventScope(signature.line)
 			else:
-				raise SemanticError("Illegal statement in an event definition called '%s' that starts on line %d." % (signature.name, signature.line), aStat.line)
+				self.EndFunctionEventScope(signature.line)
+				currentScope = self.scope[-1]
+				if currentScope == 0: # Empty state
+					self.EmptyStateScope(aStat)
+				elif currentScope == 1: # State
+					self.StateScope(aStat)
+				elif currentScope == 1: # Property
+					self.PropertyScope(aStat)
 
-	def EndFunctionEventScope(self, aStat):
+		else:
+			if typ == StatementEnum.ASSIGNMENT:
+				self.definition[-1].append(aStat)
+			elif typ == StatementEnum.DOCSTRING:
+				if self.scope[-1] == 2 and self.definition[-1][-1].type != StatementEnum.FUNCTIONSIGNATURE:
+					raise SemanticError("Docstrings may only follow immediately after the function signature in function definitions.", aStat.line)
+				elif self.scope[-1] == 3 and self.definition[-1][-1].type != StatementEnum.EVENTSIGNATURE:
+					raise SemanticError("Docstrings may only follow immediately after the event signature in event definitions.", aStat.line)
+				else:
+					self.definition[-1].append(aStat)
+
+			elif typ == StatementEnum.ELSE:
+				self.definition[-1].append(aStat)
+			elif typ == StatementEnum.ELSEIF:
+				self.definition[-1].append(aStat)
+			elif self.scope[-1] == 2 and typ == StatementEnum.ENDFUNCTION:
+				self.EndFunctionEventScope(aStat.line)
+			elif self.scope[-1] == 3 and typ == StatementEnum.ENDEVENT:
+				self.EndFunctionEventScope(aStat.line)
+			elif typ == StatementEnum.ENDIF:
+				self.definition[-1].append(aStat)
+			elif typ == StatementEnum.ENDWHILE:
+				self.definition[-1].append(aStat)
+			elif typ == StatementEnum.EXPRESSION:
+				self.definition[-1].append(aStat)
+			elif typ == StatementEnum.IF:
+				self.definition[-1].append(aStat)
+			elif typ == StatementEnum.RETURN:
+				self.definition[-1].append(aStat)
+			elif typ == StatementEnum.VARIABLE:
+				self.definition[-1].append(aStat)
+			elif typ == StatementEnum.WHILE:
+				self.definition[-1].append(aStat)
+			else:
+				if self.scope[-1] == 2:
+					raise SemanticError("Illegal statement in a function definition called '%s' that starts on line %d." % (signature.name, signature.line), aStat.line)
+				else:
+					raise SemanticError("Illegal statement in an event definition called '%s' that starts on line %d." % (signature.name, signature.line), aStat.line)
+
+	def EndFunctionEventScope(self, aEndLine):
 		functionEventDef = self.definition.pop()
 		signature = functionEventDef.pop(0)
 		docstring = None
 		if functionEventDef and functionEventDef[0].statementType == StatementEnum.DOCSTRING:
 			docstring = functionEventDef.pop(0)
 		if signature.statementType == StatementEnum.FUNCTIONSIGNATURE:
-			self.definition[-1].append(Function(signature.name, signature.flags, signature.type, signature.parameters, docstring, functionEventDef, signature.line, aStat.line))
+			self.definition[-1].append(Function(signature.name, signature.flags, signature.type, signature.parameters, docstring, functionEventDef, signature.line, aEndLine))
 		else:
-			self.definition[-1].append(Event(signature.name, signature.flags, signature.remote, signature.parameters, docstring, functionEventDef, signature.line, aStat.line))
+			self.definition[-1].append(Event(signature.name, signature.flags, signature.remote, signature.parameters, docstring, functionEventDef, signature.line, aEndLine))
 			#aName, aFlags, aRemote, aParameters, aDocstring, aBody, aStarts, aEnds
 #		print(self.definition[-1])
 		self.scope.pop()
@@ -2334,6 +2352,7 @@ class Semantic(object):
 			elif self.scope[-1] == 6:
 				raise SemanticError("Unterminated struct definition.", line)
 		scriptDef = self.definition.pop()
+		result = None
 		if scriptDef:
 			signature = scriptDef.pop(0)
 			docstring = None
@@ -2432,10 +2451,18 @@ class Semantic(object):
 						if existing:
 							raise SemanticError("A state called '%s' has already been declared on line %d." % (obj.name, existing.starts), obj.starts)
 						states[key] = obj
-			return Script(signature.name, signature.flags, signature.parent, docstring, imports, customEvents, variables, properties, groups, functions, events, states, structs)
+			result = Script(signature.name, signature.line, signature.flags, signature.parent, docstring, imports, customEvents, variables, properties, groups, functions, events, states, structs)
+		self.scope = [0]
+		self.definition = [[]]
+		return result
 
 	def ValidateScript(self, aScript):
+		self.script = aScript
 		# Recursively process parent script(s)
+		print(self.script.parent)
+		if self.script.parent:
+			self.script.parent = self.GetCachedScript(self.script.parent, self.script.starts)
+
 		# Process imported script(s)
 		# Process properties
 		# Process variables
@@ -2445,33 +2472,86 @@ class Semantic(object):
 		# Process structs
 		pass
 
+	def GetCachedScript(self, aType, aLine):
+		self.line = aLine
+		key = ":".join(aType)
+		print("Caching %s" % key)
+		result = self.cache.get(key, None)
+		if result:
+			return result
+		for impPath in self.paths:
+			path = "%s.%s" % (os.path.join(impPath, *aType), self.scriptExtension)
+			if os.path.isfile(path):
+				self.CacheScript(path)
+				result = self.cache.get(key, None)
+				if result:
+					return result
+				else:
+					break
+		raise SemanticError("Cannot find a script called '%s'." % key, self.line)
+
+	def CacheScript(self, aPath):
+		signature = None
+		parent = None
+		source = None
+		with open(aPath, "r") as f:
+			source = f.read()
+		if not source:
+			raise SemanticError("Failed to read source of %s." % aPath, self.line)
+		tokens = []
+		for token in self.lex.Process(source):
+			if token.type == TokenEnum.NEWLINE:
+				if tokens:
+					stat = self.syn.Process(tokens)
+					#print(stat)
+					if stat:
+						if not signature:
+							signature = stat
+							if signature.parent:
+								parent = self.GetCachedScript(signature.parent, 0)
+						self.AssembleScript(stat)
+					tokens = []
+			elif token.type != TokenEnum.COMMENTLINE and token.type != TokenEnum.COMMENTBLOCK:
+				tokens.append(token)
+				#print(token)
+		script = self.BuildScript()
+		script.parent = parent
+		self.cache[":".join(signature.name)] = script
+
 	def GetContext(self, aScript, aLine):
 		pass
 
-#4: Putting it all together
-def Process(aLex, aSyn, aSem, aSource):
-	aSem.Reset()
-	tokens = []
-	for token in aLex.Process(aSource):
-		if token.type == TokenEnum.NEWLINE:
-			if tokens:
-				stat = aSyn.Process(tokens)
-				#print(stat)
-				if stat:
-					aSem.AssembleScript(stat)
-				tokens = []
-		elif token.type != TokenEnum.COMMENTLINE and token.type != TokenEnum.COMMENTBLOCK:
-			tokens.append(token)
-			#print(token)
-	script = aSem.BuildScript()
-	if script:
-		aSem.ValidateScript(script)
-		# Add to cache
-		return script
-	return None
+	def Process(self, aLex, aSyn, aSource, aPaths):
+		print(self.cache)
+		self.lex = aLex
+		self.syn = aSyn
+		self.paths = aPaths
+		self.line = None
+		self.script = None
+		tokens = []
+		for token in aLex.Process(aSource):
+			if token.type == TokenEnum.NEWLINE:
+				if tokens:
+					stat = aSyn.Process(tokens)
+					#print(stat)
+					if stat:
+						self.AssembleScript(stat)
+					tokens = []
+			elif token.type != TokenEnum.COMMENTLINE and token.type != TokenEnum.COMMENTBLOCK:
+				tokens.append(token)
+				#print(token)
+		script = self.BuildScript()
+		if script:
+			self.ValidateScript(script)
+			# Add to cache
+			print(self.cache)
+			return script
+		print(self.cache)
+		return None
 
 #	Script
 #		.name
+#		.starts
 #		.flags
 #			List of KeywordEnum
 #		.parent
