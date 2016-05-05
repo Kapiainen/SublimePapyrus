@@ -1728,7 +1728,7 @@ class StructCreationNode(Node):
 	def __str__(self):
 		return """
 ===== Node =====
-Type: Array creation
+Type: Struct creation
 """
 
 #3: Semantic analysis
