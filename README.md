@@ -231,6 +231,12 @@ Version x.x.x - 2016/MM/DD:
   - Added syntax highlighting.
   - Added completions.
 
+Version 2.5.0 - 2016/05/05:
+
+**Skyrim**
+  - Added indentation and comment rules with a .tmPreferences file.
+  - Fixed a bug in the linter. The bug caused accessing the *Length* property of bool, float, int, and string arrays to throw a semantic error.
+
 Version 2.4.0 - 2016/04/30:
 
 **Core**

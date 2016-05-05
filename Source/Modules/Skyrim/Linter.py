@@ -2355,7 +2355,7 @@ class Semantic(SharedResources):
 						else:
 							self.Abort("'%s' does not have a property called '%s'." % (expected.type, node.data.token.value))
 					else:
-						pass
+						self.Abort("'%s' does not have a property called '%s'." % (expected.type, node.data.token.value))
 			else: # Self or parent
 				globalFunction = self.KW_GLOBAL in self.statements[0].data.flags
 				if node.data.token.type == self.KW_PARENT:
@@ -2400,7 +2400,7 @@ class Semantic(SharedResources):
 			if node.data.operator.type == self.OP_DOT:
 				leftResult = self.NodeVisitor(node.data.leftOperand, expected)
 				expected = leftResult
-				if expected and (expected.type == self.KW_NONE or expected.type == self.KW_BOOL or expected.type == self.KW_FLOAT or expected.type == self.KW_INT or expected.type == self.KW_STRING):
+				if expected and not expected.array and (expected.type == self.KW_NONE or expected.type == self.KW_BOOL or expected.type == self.KW_FLOAT or expected.type == self.KW_INT or expected.type == self.KW_STRING):
 					self.Abort("'%s' does not have any properties, functions, nor events." % expected.type)
 				rightResult = self.NodeVisitor(node.data.rightOperand, expected)
 				result = rightResult
