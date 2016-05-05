@@ -2110,7 +2110,6 @@ class Semantic(object):
 					self.StateScope(aStat)
 				elif currentScope == 1: # Property
 					self.PropertyScope(aStat)
-
 		else:
 			if typ == StatementEnum.ASSIGNMENT:
 				self.definition[-1].append(aStat)
@@ -2121,7 +2120,6 @@ class Semantic(object):
 					raise SemanticError("Docstrings may only follow immediately after the event signature in event definitions.", aStat.line)
 				else:
 					self.definition[-1].append(aStat)
-
 			elif typ == StatementEnum.ELSE:
 				self.definition[-1].append(aStat)
 			elif typ == StatementEnum.ELSEIF:
@@ -2156,10 +2154,13 @@ class Semantic(object):
 		docstring = None
 		if functionEventDef and functionEventDef[0].statementType == StatementEnum.DOCSTRING:
 			docstring = functionEventDef.pop(0)
+		body = None
+		if body:
+			body = functionEventDef
 		if signature.statementType == StatementEnum.FUNCTIONSIGNATURE:
-			self.definition[-1].append(Function(signature.name, signature.flags, signature.type, signature.parameters, docstring, functionEventDef, signature.line, aEndLine))
+			self.definition[-1].append(Function(signature.name, signature.flags, signature.type, signature.parameters, docstring, body, signature.line, aEndLine))
 		else:
-			self.definition[-1].append(Event(signature.name, signature.flags, signature.remote, signature.parameters, docstring, functionEventDef, signature.line, aEndLine))
+			self.definition[-1].append(Event(signature.name, signature.flags, signature.remote, signature.parameters, docstring, body, signature.line, aEndLine))
 			#aName, aFlags, aRemote, aParameters, aDocstring, aBody, aStarts, aEnds
 #		print(self.definition[-1])
 		self.scope.pop()
@@ -2337,16 +2338,29 @@ class Semantic(object):
 			self.StructMemberScope(aStat)
 
 	def BuildScript(self):
+		print(self.scope)
 		if len(self.scope) != 1 and self.scope[-1] != 0:
 			line = self.definition[-1][0].line
 			if self.scope[-1] == 1:
 				raise SemanticError("Unterminated state definition.", line)
 			elif self.scope[-1] == 2:
-				raise SemanticError("Unterminated function definition.", line)
+				signature = self.definition[-1][0]
+				if signature.flags and TokenEnum.kNATIVE in signature.flags:
+					self.EndFunctionEventScope(signature.line)
+				else:
+					raise SemanticError("Unterminated function definition.", line)
 			elif self.scope[-1] == 3:
-				raise SemanticError("Unterminated event definition.", line)
+				signature = self.definition[-1][0]
+				if signature.flags and TokenEnum.kNATIVE in signature.flags:
+					self.EndFunctionEventScope(signature.line)
+				else:
+					raise SemanticError("Unterminated event definition.", line)
 			elif self.scope[-1] == 4:
-				raise SemanticError("Unterminated property definition.", line)
+				signature = self.definition[-1][0]
+				if signature.flags and (TokenEnum.kAUTO in signature.flags or TokenEnum.kAUTOREADONLY):
+					self.EndPropertyScope(signature.line)
+				else:
+					raise SemanticError("Unterminated property definition.", line)
 			elif self.scope[-1] == 5:
 				raise SemanticError("Unterminated group definition.", line)
 			elif self.scope[-1] == 6:
@@ -2475,10 +2489,10 @@ class Semantic(object):
 	def GetCachedScript(self, aType, aLine):
 		self.line = aLine
 		key = ":".join(aType)
-		print("Caching %s" % key)
 		result = self.cache.get(key, None)
 		if result:
 			return result
+		print("Caching %s" % key)
 		for impPath in self.paths:
 			path = "%s.%s" % (os.path.join(impPath, *aType), self.scriptExtension)
 			if os.path.isfile(path):
@@ -2525,6 +2539,8 @@ class Semantic(object):
 		print(self.cache)
 		self.lex = aLex
 		self.syn = aSyn
+		self.scope = [0]
+		self.definition = [[]]
 		self.paths = aPaths
 		self.line = None
 		self.script = None
