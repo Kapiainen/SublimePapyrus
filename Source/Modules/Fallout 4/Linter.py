@@ -438,10 +438,11 @@ class KeywordExpression(Statement):
 		self.expression = aExpression
 
 class Type(object):
-	__slots__ = ["name", "array"]
-	def __init__(self, aName, aArray):
+	__slots__ = ["name", "array", "struct"]
+	def __init__(self, aName, aArray, aStruct):
 		self.name = aName # String
 		self.array = aArray # Bool
+		self.struct = aStruct
 
 class Assignment(Statement):
 	__slots__ = ["leftExpression", "rightExpression"]
@@ -1019,7 +1020,6 @@ class Syntactic(object):
 			return None
 
 	def ExpectType(self, aBaseTypes):
-		result = None
 		if self.Accept(TokenEnum.IDENTIFIER):
 			result = [self.PeekBackwards().value.upper()]
 			while self.Accept(TokenEnum.COLON):
@@ -1027,8 +1027,8 @@ class Syntactic(object):
 				result.append(self.PeekBackwards().value.upper())
 			return result
 		elif aBaseTypes and (self.Accept(TokenEnum.kBOOL) or self.Accept(TokenEnum.kFLOAT) or self.Accept(TokenEnum.kINT) or self.Accept(TokenEnum.kSTRING) or self.Accept(TokenEnum.kVAR)):
-			result = [self.PeekBackwards().value.upper()]
-			return result
+			return [self.PeekBackwards().value.upper()]
+			#return [self.PeekBackwards().type]
 		else:
 			raise SyntacticError("Expected a type identifier.", self.line)
 
@@ -1068,7 +1068,7 @@ class Syntactic(object):
 		if self.Accept(TokenEnum.LEFTBRACKET):
 			self.Expect(TokenEnum.RIGHTBRACKET)
 			array = True
-		typ = Type(typ, array)
+		typ = Type(typ, array, False)
 		name = self.Expect(TokenEnum.IDENTIFIER)
 		value = None
 		if self.Accept(TokenEnum.ASSIGN):
@@ -1080,7 +1080,7 @@ class Syntactic(object):
 			if self.Accept(TokenEnum.LEFTBRACKET):
 				self.Expect(TokenEnum.RIGHTBRACKET)
 				array = True
-			typ = Type(typ, array)
+			typ = Type(typ, array, False)
 			name = self.Expect(TokenEnum.IDENTIFIER)
 			value = None
 			if self.Accept(TokenEnum.ASSIGN):
@@ -1227,14 +1227,17 @@ class Syntactic(object):
 	def Atom(self):
 #		print(10)
 		if self.Accept(TokenEnum.kNEW):
-			self.ExpectType(True)
-			typ = self.PeekBackwards()
-			self.Expect(TokenEnum.LEFTBRACKET)
-			if not self.Accept(TokenEnum.INT):
-				self.Abort("Expected an int literal.")
-			size = self.PeekBackwards()
-			self.Expect(TokenEnum.RIGHTBRACKET)
-			self.Shift(ArrayCreationNode(typ, size))
+			nextToken = self.Peek()
+			if nextToken and nextToken.type == TokenEnum.LEFTBRACKET:
+				typ = self.ExpectType(True)
+				self.Expect(TokenEnum.LEFTBRACKET)
+				self.ExpectExpression()
+				size = self.Pop()
+				self.Expect(TokenEnum.RIGHTBRACKET)
+				self.Shift(ArrayCreationNode(typ, size))
+			else:
+				typ = self.ExpectType(False)
+				self.Shift(StructCreationNode(typ))
 			return True
 		elif self.Accept(TokenEnum.LEFTPARENTHESIS):
 			self.Shift()
@@ -1348,7 +1351,7 @@ class Syntactic(object):
 		if self.Accept(TokenEnum.LEFTBRACKET):
 			self.Expect(TokenEnum.RIGHTBRACKET)
 			array = True
-		typ = Type(typ, array)
+		typ = Type(typ, array, False)
 		name = self.Expect(TokenEnum.IDENTIFIER)
 		parameters.append(ParameterSignature(self.line, name, typ, None))
 		while self.Accept(TokenEnum.COMMA):
@@ -1357,7 +1360,7 @@ class Syntactic(object):
 			if self.Accept(TokenEnum.LEFTBRACKET):
 				self.Expect(TokenEnum.RIGHTBRACKET)
 				array = True
-			typ = Type(typ, array)
+			typ = Type(typ, array, False)
 			name = self.Expect(TokenEnum.IDENTIFIER)
 			parameters.append(ParameterSignature(self.line, name.value, typ, None))
 		return parameters
@@ -1381,7 +1384,7 @@ class Syntactic(object):
 			if self.Accept(TokenEnum.LEFTBRACKET):
 				self.Expect(TokenEnum.RIGHTBRACKET)
 				array = True
-			typ = Type([typ.value.upper()], array)
+			typ = Type([typ.value.upper()], array, False)
 			if self.Accept(TokenEnum.kPROPERTY):
 				result = self.Property(typ)
 			elif self.Accept(TokenEnum.kFUNCTION):
@@ -1399,7 +1402,7 @@ class Syntactic(object):
 						if self.Accept(TokenEnum.LEFTBRACKET):
 							self.Expect(TokenEnum.RIGHTBRACKET)
 							array = True
-						typ = Type(typ, array)
+						typ = Type(typ, array, False)
 						if self.Accept(TokenEnum.kPROPERTY):
 							result = self.Property(typ)
 						elif self.Accept(TokenEnum.kFUNCTION):
@@ -1410,7 +1413,7 @@ class Syntactic(object):
 					nextToken = self.Peek(2)
 					if nextToken:
 						if nextToken.type == TokenEnum.RIGHTBRACKET:
-							typ = Type([self.Expect(TokenEnum.IDENTIFIER).value.upper()], True)
+							typ = Type([self.Expect(TokenEnum.IDENTIFIER).value.upper()], True, False)
 							self.Consume()
 							nextToken = self.Peek()
 							self.Consume()
@@ -1422,20 +1425,20 @@ class Syntactic(object):
 								elif nextToken.type == TokenEnum.kPROPERTY:
 									self.Consume()
 									result = self.Property(typ)
-#								elif nextToken.type == TokenEnum.IDENTIFIER:
-#									result = self.Variable(typ)
+								elif nextToken.type == TokenEnum.IDENTIFIER:
+									result = self.Variable(typ)
 						else:
 							result = self.ExpressionOrAssignment()
 				elif nextToken.type == TokenEnum.kPROPERTY:
-					typ = Type([self.Expect(TokenEnum.IDENTIFIER).value.upper()], False)
+					typ = Type([self.Expect(TokenEnum.IDENTIFIER).value.upper()], False, False)
 					self.Consume()
 					result = self.Property(typ)
 				elif nextToken.type == TokenEnum.kFUNCTION:
-					typ = Type([self.Expect(TokenEnum.IDENTIFIER).value.upper()], False)
+					typ = Type([self.Expect(TokenEnum.IDENTIFIER).value.upper()], False, False)
 					self.Consume()
 					result = self.Function(typ)
 				elif nextToken.type == TokenEnum.IDENTIFIER:
-					result = self.Variable(Type([self.Expect(TokenEnum.IDENTIFIER).value.upper()], False))
+					result = self.Variable(Type([self.Expect(TokenEnum.IDENTIFIER).value.upper()], False, False))
 				else:
 					result = self.ExpressionOrAssignment()
 			else:
@@ -1554,7 +1557,8 @@ class NodeEnum(object):
 	FUNCTIONCALLARGUMENT = 7
 	IDENTIFIER = 8
 	LENGTH = 9
-	UNARYOPERATOR = 10
+	STRUCTCREATION = 10
+	UNARYOPERATOR = 11
 
 NodeDescription = [
 	"ARRAYATOM",
@@ -1567,6 +1571,7 @@ NodeDescription = [
 	"FUNCTIONCALLARGUMENT",
 	"IDENTIFIER",
 	"LENGTH",
+	"STRUCTCREATION",
 	"UNARYOPERATOR"
 ]
 
@@ -1707,6 +1712,18 @@ class ArrayCreationNode(Node):
 		super(ArrayCreationNode, self).__init__(NodeEnum.ARRAYCREATION)
 		self.arrayType = aArrayType
 		self.size = aSize
+
+	def __str__(self):
+		return """
+===== Node =====
+Type: Array creation
+"""
+
+class StructCreationNode(Node):
+	__slots__ = ["structType"]
+	def __init__(self, aStructType):
+		super(StructCreationNode, self).__init__(NodeEnum.STRUCTCREATION)
+		self.structType = aStructType
 
 	def __str__(self):
 		return """
