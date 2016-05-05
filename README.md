@@ -224,6 +224,7 @@ Single file build system and a batch build variant.
 ## **Changelog**
 
 Version 2.5.0 - 2016/05/05:
+
 **Skyrim**
   - Added indentation and comment rules with a .tmPreferences file.
   - Fixed a bug in the linter. The bug caused accessing the *Length* property of bool, float, int, and string arrays to throw a semantic error.
