@@ -2258,6 +2258,8 @@ class Semantic(object):
 				if existing:
 					raise SemanticError("A property called '%s' has already been declared in the '%s' group on line %d." % (s.name, signature.name, existing.starts), s.starts)
 				properties[name] = s
+		if not properties:
+			raise SemanticError("The '%s' group does not have any properties." % signature.name, signature.line)
 		self.definition[-1].append(Group(signature.name, signature.flags, properties, signature.line, aStat.line))
 #		print(self.definition[-1])
 		self.scope.pop()
@@ -2294,6 +2296,8 @@ class Semantic(object):
 				if existing:
 					raise SemanticError("A struct member called '%s' has already been declared in the '%s' struct on line %d." % (s.name, signature.name, existing.line), s.line)
 				members[name] = s
+		if not members:
+			raise SemanticError("The '%s' struct does not have any members." % signature.name, signature.line)
 		self.definition[-1].append(Struct(signature.name, members, signature.line, aStat.line))
 #		print(self.definition[-1])
 		self.scope.pop()
