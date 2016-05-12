@@ -48,7 +48,10 @@ class SublimePapyrusFallout4CompileScriptCommand(sublime_plugin.WindowCommand):
 			return SublimePapyrus.ShowMessage("No scripts path.")
 		if scriptsPath[-1:] == "\\":
 			scriptsPath = scriptsPath[:-1]
-		if not scriptsPath in args["cmd"]:
+		print(scriptsPath)
+		print(args["cmd"])
+		print(scriptsPath in args["cmd"])
+		if not scriptsPath.lower() in args["cmd"].lower():
 			return SublimePapyrus.ShowMessage("Compilation target not in scripts path.")
 		compilerPath = moduleSettings.get("compiler", None)
 		if not compilerPath:

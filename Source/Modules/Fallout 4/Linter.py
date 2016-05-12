@@ -442,7 +442,7 @@ class Type(object):
 	def __init__(self, aName, aArray, aStruct):
 		self.name = aName # String
 		self.array = aArray # Bool
-		self.struct = aStruct
+		self.struct = aStruct # Bool
 
 class Assignment(Statement):
 	__slots__ = ["leftExpression", "rightExpression"]
@@ -682,7 +682,7 @@ Flags: %s
 Line: %d
 """ % (
 		self.name,
-		":".join([f.value for f in returnType]),
+		":".join([f for f in returnType]),
 		array,
 		parameterCount,
 		", ".join([TokenDescription[f] for f in flags]),
@@ -1044,7 +1044,7 @@ class Syntactic(object):
 			value = self.Pop()
 			flags = self.AcceptFlags([TokenEnum.kAUTOREADONLY, TokenEnum.kAUTO, TokenEnum.kCONST, TokenEnum.kMANDATORY, TokenEnum.kHIDDEN, TokenEnum.kCONDITIONAL])
 			if TokenEnum.kAUTO in flags and TokenEnum.kAUTOREADONLY in flags:
-				self.Abort("A property cannot have both the AUTO and the AUTOREADONLY keyword.")
+				self.Abort("A property cannot have both the AUTO and the AUTOREADONLY flag.")
 			if TokenEnum.kAUTO in flags:
 				pass
 			elif TokenEnum.kAUTOREADONLY in flags:
@@ -1344,13 +1344,18 @@ class Syntactic(object):
 			self.Abort("Expected an expression")
 		return self.Pop()
 
-	def EventParameters(self):
+	def EventParameters(self, aRemote):
 		parameters = []
 		typ = self.ExpectType(True)
 		array = False
 		if self.Accept(TokenEnum.LEFTBRACKET):
 			self.Expect(TokenEnum.RIGHTBRACKET)
 			array = True
+		if aRemote:
+			if array:
+				self.Abort("The first parameter in a remote/custom event cannot be an array.")
+			if ":".join(typ) != ":".join(aRemote):
+				self.Abort("The first parameter in a remote/custom event has to have the same type as the script that emits the event.")
 		typ = Type(typ, array, False)
 		name = self.Expect(TokenEnum.IDENTIFIER)
 		parameters.append(ParameterSignature(self.line, name, typ, None))
@@ -1485,7 +1490,9 @@ class Syntactic(object):
 			self.Expect(TokenEnum.LEFTPARENTHESIS)
 			parameters = None
 			if nextToken and nextToken.type != TokenEnum.RIGHTPARENTHESIS:
-				parameters = self.EventParameters()
+				parameters = self.EventParameters(remote)
+			if remote and not parameters:
+				self.Abort("Remote/custom events have to have a parameter defining the script that emits the event.")
 			self.Expect(TokenEnum.RIGHTPARENTHESIS)
 			result = EventSignature(self.line, remote, name.value, self.AcceptFlags([TokenEnum.kNATIVE]), parameters)
 		elif tokenType == TokenEnum.kENDEVENT:
@@ -1773,6 +1780,8 @@ class Script(object):
 		self.name = aName
 		self.starts = aStarts
 		self.flags = aFlags
+		if aParent == None and len(aName) == 1 and "SCRIPTOBJECT" not in aName:
+			aParent = ["SCRIPTOBJECT"]
 		self.parent = aParent
 		self.docstring = aDocstring
 		self.imports = aImports
@@ -2114,9 +2123,11 @@ class Semantic(object):
 			if typ == StatementEnum.ASSIGNMENT:
 				self.definition[-1].append(aStat)
 			elif typ == StatementEnum.DOCSTRING:
-				if self.scope[-1] == 2 and self.definition[-1][-1].type != StatementEnum.FUNCTIONSIGNATURE:
+				print(self.scope[-1])
+				print(self.definition[-1][-1])
+				if self.scope[-1] == 2 and self.definition[-1][-1].statementType != StatementEnum.FUNCTIONSIGNATURE:
 					raise SemanticError("Docstrings may only follow immediately after the function signature in function definitions.", aStat.line)
-				elif self.scope[-1] == 3 and self.definition[-1][-1].type != StatementEnum.EVENTSIGNATURE:
+				elif self.scope[-1] == 3 and self.definition[-1][-1].statementType != StatementEnum.EVENTSIGNATURE:
 					raise SemanticError("Docstrings may only follow immediately after the event signature in event definitions.", aStat.line)
 				else:
 					self.definition[-1].append(aStat)
@@ -2196,7 +2207,7 @@ class Semantic(object):
 				else:
 					raise SemanticError("Property definitions may only contain GET and SET functions.", aStat.line)
 			elif typ == StatementEnum.ENDPROPERTY:
-				EndPropertyScope(True, aStat.line)
+				self.EndPropertyScope(True, aStat.line)
 			else:
 				raise SemanticError("Illegal statement in a property definition called '%s' that starts on line %d." % (signature.name, signature.line), aStat.line)
 
@@ -2325,6 +2336,7 @@ class Semantic(object):
 		self.scope.pop()
 
 	def AssembleScript(self, aStat):
+		"""Checks the legality of a statement within a scope."""
 		currentScope = self.scope[-1]
 		if currentScope == 0: # Empty state
 			self.EmptyStateScope(aStat)
@@ -2342,6 +2354,7 @@ class Semantic(object):
 			self.StructMemberScope(aStat)
 
 	def BuildScript(self):
+		"""Checks for duplicate definitions and returns a Script object."""
 		print(self.scope)
 		if len(self.scope) != 1 and self.scope[-1] != 0:
 			line = self.definition[-1][0].line
@@ -2362,7 +2375,7 @@ class Semantic(object):
 			elif self.scope[-1] == 4:
 				signature = self.definition[-1][0]
 				if signature.flags and (TokenEnum.kAUTO in signature.flags or TokenEnum.kAUTOREADONLY):
-					self.EndPropertyScope(signature.line)
+					self.EndPropertyScope(False, signature.line)
 				else:
 					raise SemanticError("Unterminated property definition.", line)
 			elif self.scope[-1] == 5:
@@ -2475,11 +2488,220 @@ class Semantic(object):
 		return result
 
 	def ValidateScript(self, aScript):
+		"""Validates a Script object when taking into account e.g. the contents of other scripts."""
 		self.script = aScript
+		self.functions = [{}]
+		self.events = [{}]
+		self.properties = [{}]
+		self.variables = [{}]
+		self.structs = [{}]
 		# Recursively process parent script(s)
 		print(self.script.parent)
 		if self.script.parent:
 			self.script.parent = self.GetCachedScript(self.script.parent, self.script.starts)
+			# Start building a list of dicts of available functions, events, properties, and structs
+			parent = self.script.parent
+			while parent:
+				# Functions
+				if parent.functions:
+					for key, value in parent.functions.items():
+						if not self.functions[-1].get(key, None):
+							self.functions[-1][key] = value
+
+				# Events
+				if parent.events:
+					for key, value in parent.events.items():
+						if not self.events[-1].get(key, None):
+							self.events[-1][key] = value
+
+				# Properties
+				if parent.properties:
+					for key, value in parent.properties.items():
+						if not self.properties[-1].get(key, None):
+							self.properties[-1][key] = value
+				for key, value in self.script.properties.items():
+					if self.properties[-1].get(key, None):
+						raise SemanticError("A property called '%s' already exists in a parent script.", value.starts)
+				for key, value in self.script.variables.items():
+					if self.properties[-1].get(key, None):
+						raise SemanticError("A property called '%s' already exists in a parent script.", value.starts)
+
+				# Structs
+				if parent.structs:
+					for key, value in parent.structs.items():
+						if not self.structs[-1].get(key, None):
+							self.structs[-1][key] = value
+				parent = parent.parent
+
+		self.functions.append({})
+		self.events.append({})
+		self.properties.append({})
+		self.variables.append({})
+		self.structs.append({})
+
+		# Properties
+		if self.properties[0]:
+			for key, value in self.script.properties.items():
+				if self.properties[0].get(key, None):
+					raise SemanticError("A property called '%s' has already been defined in a parent script." % value.name, value.starts)
+
+		# Structs
+		if self.structs[0]:
+			for key, value in self.script.structs.items():
+				if self.structs[0].get(key, None):
+					raise SemanticError("A struct called '%s' has already been defined in a parent script." % value.name, value.starts)
+
+		# Events
+		#	Remote
+		#		Event definition in another script
+		#			Check parameters
+		#		CustomEvent
+		#			Two parameters
+		#				Sender
+		#				Var[] <identifier>
+		#	Not remote
+		#		Overridden event inherited from a parent script
+		#		New event, script has to have the Native flag
+		for key, value in self.script.events.items():
+			if value.remote:
+				remoteScript = self.GetCachedScript(value.remote, value.starts)
+				if remoteScript:
+					#remoteEvent = remoteScript.events.get(key, None)
+					remoteEvent = remoteScript.events.get(value.name.upper(), None)
+					print(remoteScript.events)
+					if remoteEvent:
+						print("'%s' is an event defined in '%s'" % (value.name, ":".join(remoteScript.name)))
+						# Check if the event definition exists in a parent script of the remote script, in which case raise an exception (e.g. OnAddItem requires the remote script to be ObjectReference while OnDeath requires the remote script to be Actor)
+						valueParameterCount = len(value.parameters)
+						if valueParameterCount == 0:
+							raise SemanticError("Remote events must have at least a sender parameter.", value.starts)
+						else:
+							remoteParameterCount = len(remoteEvent.parameters) + 1 # +1 due to sender parameter
+							if valueParameterCount > remoteParameterCount:
+								raise SemanticError("Too many parameters when compared to the event definition in '%s'." % ":".join(value.remote), value.starts)
+							elif valueParameterCount < remoteParameterCount:
+								raise SemanticError("Too few parameters when compared to the event definition in '%s'." % ":".join(value.remote), value.starts)
+							else:
+								# Check that the sender parameter is correct
+								# Check that the remaining parameters match
+								pass
+								#self.events[-1][key] = value
+					else:
+						#customEvent = remoteScript.customEvents.get(key, None)
+						customEvent = remoteScript.customEvents.get(value.name.upper(), None)
+						print(remoteScript.customEvents)
+						if customEvent:
+							print("'%s' is a CustomEvent defined in '%s'" % (value.name, ":".join(remoteScript.name)))
+							if len(value.parameters) == 2:
+								sender = value.parameters[0]
+								if sender.type.array:
+									raise SemanticError("The sender parameter cannot be an array.", value.starts)
+								elif sender.type.struct:
+									raise SemanticError("The sender parameter cannot be a struct.", value.starts)
+								elif ":".join(sender.type.name) != ":".join(value.remote):
+									raise SemanticError("The type of the sender parameter does not match the sender script's name.", value.starts)
+								args = value.parameters[1]
+								if not args.type.array:
+									raise SemanticError("The second parameter has to be an array.", value.starts)
+								elif args.type.struct:
+									raise SemanticError("The second parameter cannot be a struct.", value.starts)
+								elif ":".join(args.type.name) != "VAR":
+									raise SemanticError("The second parameter's type has to be VAR.", value.starts)
+								self.events[-1][key] = value
+							else:
+								raise SemanticError("CustomEvents must have two parameters: the sender and a VAR array containing the arguments.", value.starts)
+						else:
+							raise SemanticError("'%s' does not have an event (regular or CustomEvent) called '%s'." % (":".join(value.remote), value.name), value.starts)
+				else:
+					raise SemanticError("value.remote script does not exist")
+			else:
+				overridden = self.events[0].get(key, None)
+				if overridden:
+					# Check that the parameters match
+					pass
+					#self.events[-1][key] = value
+				else:
+					if TokenEnum.kNATIVE in self.script.flags:
+						self.events[-1][key] = value
+					else:
+						raise SemanticError("New events can only be defined in scripts with the NATIVE flag.", value.starts)
+
+		# # Overriding functions
+		# for key, value in self.script.functions.items():
+		# 	overridden = self.functions[-1].get(key, None)
+		# 	if overridden:
+		# 		if overridden.type and value.type:
+		# 			# Name
+		# 			# Array
+		# 			# Struct
+		# 			if overridden.type.array != value.type.array:
+		# 				if overridden.type.array:
+		# 					raise SemanticError("The overridden function returns an array.", value.starts)
+		# 				else:
+		# 					raise SemanticError("The overridden function does not return an array.", value.starts)
+		# 			if overridden.type.struct != value.type.struct:
+		# 				if overridden.type.struct:
+		# 					raise SemanticError("The overridden function returns a struct.", value.starts)
+		# 				else:
+		# 					raise SemanticError("The overridden function does not return a struct.", value.starts)
+		# 			try:
+		# 				overriddenType = ":".join(overridden.type.name)
+		# 			except TypeError:
+		# 				overriddenType = overridden.type.name
+		# 			try:
+		# 				valueType = ":".join(value.type.name)
+		# 			except TypeError:
+		# 				valueType = value.type.name
+		# 			if overriddenType != valueType:
+		# 				raise SemanticError("The overridden function returns a different type.", value.starts)
+		# 			overriddenParameterCount = len(overridden.parameters)
+		# 			valueParameterCount = len(value.parameters)
+		# 			if overriddenParameterCount != valueParameterCount:
+		# 				raise SemanticError("The overridden function has %d parameters while the overriding function has %d parameters." % (overriddenParameterCount, valueParameterCount), value.starts)
+		# 			i = 0
+		# 			while i < overriddenParameterCount:
+		# 				if overridden.parameters[i].type.array != value.parameters[i].type.array:
+		# 					if overridden.parameters[i].type.array:
+		# 						raise SemanticError("The overridden parameter at index %d is an array." % i, value.starts)
+		# 					else:
+		# 						raise SemanticError("The overridden parameter at index %d is not an array." % i, value.starts)
+		# 				if overridden.parameters[i].type.struct != value.parameters[i].type.struct:
+		# 					if overridden.parameters[i].type.struct:
+		# 						raise SemanticError("The overridden parameter at index %d is a struct." % i, value.starts)
+		# 					else:
+		# 						raise SemanticError("The overridden parameter at index %d is not a struct." % i, value.starts)
+		# 				try:
+		# 					overriddenParameterType = ":".join(overridden.parameters[i].type.name)
+		# 				except TypeError:
+		# 					overriddenParameterType = overridden.parameters[i].type.name
+		# 				try:
+		# 					valueParameterType = ":".join(value.parameters[i].type.name)
+		# 				except TypeError:
+		# 					valueParameterType = value.parameters[i].type.name
+		# 				if overriddenParameterType != valueParameterType:
+		# 					raise SemanticError("", value.starts)
+		# 				i += 1
+		# 		elif not overridden.type and not value.type:
+		# 			pass
+		# 		else:
+		# 			if value.type:
+		# 				raise SemanticError("The overridden function does not return a value.", value.starts)
+		# 			else:
+		# 				raise SemanticError("The overridden function returns a value." , value.starts)
+#self.name = aName
+#self.flags = aFlags
+#self.type = aType
+#self.parameters = aParameters
+#self.docstring = aDocstring
+#self.body = aBody
+#self.starts = aStarts
+#self.ends = aEnds
+
+#		self.functions.append({})
+#		self.events.append({})
+#		self.properties.append({})
+#		self.variables.append({})
+#		self.structs.append({})
 
 		# Process imported script(s)
 		# Process properties
@@ -2489,6 +2711,87 @@ class Semantic(object):
 		# Process states
 		# Process structs
 		pass
+
+#	Script
+#		.name
+#		.starts
+#		.flags
+#			List of KeywordEnum
+#				Conditional
+#					Required for properties and variables to have the Conditional flag
+#				Const
+#					No variables without the Const flag
+#					Non Auto properties without the Const flag
+#					No states
+#					Cannot be stored as a variable in a script
+#				DebugOnly
+#					No effect
+#				BetaOnly
+#					No effect
+#				Hidden
+#					No effect
+#				Native
+#					Required for defining functions with the Native flag
+#					Required for defining new events
+#					No states
+#					No data (variables, properties, structs?) outside of functions and events
+#				Default
+#					No effect
+#		.parent
+#			Script
+#		.docstring
+#			String
+#		.imports
+#			List of String
+#		.customEvents
+#			List of String
+#		.variables
+#			Dict of Variable
+#			Flags
+#				Conditional
+#					The script also has to have the Conditional flag
+#				Const
+#					Only non-struct members
+#					Value must be set on the same line as the definition
+#					Value cannot be changed
+#				Hidden
+#					Only struct members
+#		.properties
+#			Dict of Property
+#			Flags
+#				Conditional
+#					The script also has to have the Conditional flag
+#					Has to also have the Auto flag (what about AutoReadOnly?)
+#				Const
+#					Has to also have the Auto flag
+#					Value cannot be changed
+#				Hidden
+#					No effect
+#				Mandatory
+#					No effect
+#		.groups
+#			Dict of Group
+#				Dict of Property
+#			Flags
+#				Collapsed
+#					No effect
+#				CollapsedOnBase
+#					No effect
+#				CollapsedOnRef
+#					No effect
+#		.structs
+#			Dict of Struct
+#		.functions
+#			Dict of Function
+#			Flags
+#				DebugOnly
+#					No effect
+#				BetaOnly
+#					No effect
+#		.events
+#			Dict of Event
+#		.states
+#			Dict of State
 
 	def GetCachedScript(self, aType, aLine):
 		self.line = aLine
@@ -2568,32 +2871,3 @@ class Semantic(object):
 			return script
 		print(self.cache)
 		return None
-
-#	Script
-#		.name
-#		.starts
-#		.flags
-#			List of KeywordEnum
-#		.parent
-#			Script
-#		.docstring
-#			String
-#		.imports
-#			List of String
-#		.customEvents
-#			List of String
-#		.variables
-#			Dict of Variable
-#		.properties
-#			Dict of Property
-#		.groups
-#			Dict of Group
-#				Dict of Property
-#		.structs
-#			Dict of Struct
-#		.functions
-#			Dict of Function
-#		.events
-#			Dict of Event
-#		.states
-#			Dict of State
