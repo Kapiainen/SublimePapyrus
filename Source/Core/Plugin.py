@@ -261,6 +261,9 @@ class SublimePapyrusCompileScriptCommand(sublime_plugin.WindowCommand):
 								t = filePath.lower()
 								if not all(t != k.lower() for k in imports) and settings.get("batch_compilation_warning", True) and not sublime.ok_cancel_dialog("Are you sure you want to batch compile all script sources in \"%s\"?\n\nThis folder is one of the import folders and may contain script sources that are a part of the base game. Compiling said script sources could lead to unintended behavior if they have been modified." % filePath):
 									return
+							for path in imports:
+								if not os.path.isdir(path):
+									return ShowMessage("'%s' is not a path that exists." % path)
 							imports = ";".join(imports)
 						else:
 							return ShowMessage("The import path(s) setting has to be a list of strings.")
