@@ -223,6 +223,17 @@ Single file build system and a batch build variant.
 
 ## **Changelog**
 
+Version 2.6.0 - 2016/MM/DD:
+
+**Core**
+  - Added setting for toggling displaying docstrings in function call tooltips.
+  - Added a warning to the build system framework for when an import path defined in a module's settings does not actually exist.
+
+**Skyrim**
+  - Added docstring support to scriptheaders, functions, events (not used in scripts according to the CK wiki, but not disallowed by the reference compiler), and properties.
+  - Added support for showing docstrings in tooltips for function and event calls.
+
+
 Version 2.5.0 - 2016/05/05:
 
 **Skyrim**
