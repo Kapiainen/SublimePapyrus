@@ -230,7 +230,7 @@ Version 2.6.0 - 2016/MM/DD:
   - Added a warning to the build system framework for when an import path defined in a module's settings does not actually exist on the filesystem.
 
 **Skyrim**
-  - Added docstring support to classes representing scriptheaders, functions, events (not used in scripts according to the CK wiki, but not disallowed by the reference compiler), and properties.
+  - Added docstring support to classes representing scriptheaders, functions, events, and properties in the linter.
   - Added support for displaying docstrings in tooltips for function and event calls.
 
 Version 2.5.0 - 2016/05/05:
