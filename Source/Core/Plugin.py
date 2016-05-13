@@ -263,7 +263,7 @@ class SublimePapyrusCompileScriptCommand(sublime_plugin.WindowCommand):
 									return
 							for path in imports:
 								if not os.path.isdir(path):
-									return ShowMessage("'%s' is not a path that exists." % path)
+									return ShowMessage("The import path '%s' does not exist on the filesystem." % path)
 							imports = ";".join(imports)
 						else:
 							return ShowMessage("The import path(s) setting has to be a list of strings.")
