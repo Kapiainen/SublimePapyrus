@@ -170,7 +170,9 @@ class EventListener(sublime_plugin.EventListener):
 			settings = SublimePapyrus.GetSettings()
 
 			global SUBLIME_VERSION
-			if SUBLIME_VERSION >= 3070 and settings.get("tooltip_function_parameters", True):
+			tooltipParameters = settings.get("tooltip_function_parameters", True)
+			tooltipDocstring = settings.get("tooltip_function_docstring", True)
+			if SUBLIME_VERSION >= 3070 and (tooltipParameters or tooltipDocstring):
 				if self.linterRunning:
 					return
 				elif self.completionRunning:
@@ -243,8 +245,8 @@ class EventListener(sublime_plugin.EventListener):
 																else:
 																	func = temp
 																break
-												if func and func.data.parameters:
-													self.ShowFunctionInfo(view, tokens, func, len(arguments))
+												if func:# and func.data.parameters:
+													self.ShowFunctionInfo(view, tokens, func, len(arguments), tooltipParameters, tooltipDocstring)
 										except Linter.SyntacticError as f:
 											pass
 								except Linter.LexicalError as f:
@@ -255,32 +257,42 @@ class EventListener(sublime_plugin.EventListener):
 			if settings and settings.get("linter_on_modified", True):
 				self.QueueLinter(view)
 
-	def ShowFunctionInfo(self, view, tokens, func, argumentCount):
-		funcName = func.data.identifier
+	def ShowFunctionInfo(self, aView, aTokens, aFunction, aArgumentCount, aParameters, aDocstring):
+		funcName = aFunction.data.identifier
 		currentParameter = None
-		if len(tokens) > 2 and tokens[-1].type == lex.OP_ASSIGN and tokens[-2].type == lex.IDENTIFIER:
-			currentParameter = tokens[-2].value.upper()
+		if len(aTokens) > 2 and aTokens[-1].type == lex.OP_ASSIGN and aTokens[-2].type == lex.IDENTIFIER:
+			currentParameter = aTokens[-2].value.upper()
 		paramIndex = 0
 		funcParameters = []
-		for param in func.data.parameters:
-			paramName = param.identifier
-			paramType = param.typeIdentifier
-			if param.array:
-				paramType = "%s[]" % paramType
-			paramContent = None
-			if param.expression:
-				paramDefaultValue = sem.GetLiteral(param.expression, True)
-				paramContent = "%s %s = %s" % (paramType, paramName, paramDefaultValue)
-			else:
-				paramContent = "%s %s" % (paramType, paramName)
-			if currentParameter:
-				if currentParameter == paramName.upper():
-					paramContent = "<b>%s</b>" % paramContent
-			else:
-				if paramIndex == argumentCount:
-					paramContent = "<b>%s</b>" % paramContent
-				paramIndex += 1
-			funcParameters.append(paramContent)
+		if aParameters:
+			for param in aFunction.data.parameters:
+				paramName = param.identifier
+				paramType = param.typeIdentifier
+				if param.array:
+					paramType = "%s[]" % paramType
+				paramContent = None
+				if param.expression:
+					paramDefaultValue = sem.GetLiteral(param.expression, True)
+					paramContent = "%s %s = %s" % (paramType, paramName, paramDefaultValue)
+				else:
+					paramContent = "%s %s" % (paramType, paramName)
+				if currentParameter:
+					if currentParameter == paramName.upper():
+						paramContent = "<b>%s</b>" % paramContent
+				else:
+					if paramIndex == aArgumentCount:
+						paramContent = "<b>%s</b>" % paramContent
+					paramIndex += 1
+				funcParameters.append(paramContent)
+
+		docstring = ""
+		if aDocstring:
+			if aFunction.data.docstring:
+				if funcParameters:
+					docstring = "<br><br>%s" % "<br>".join(aFunction.data.docstring.data.value.split("\n"))
+				else:
+					docstring = "<br>".join(aFunction.data.docstring.data.value.split("\n"))
+
 		settings = SublimePapyrus.GetSettings()
 		backgroundColor = settings.get("tooltip_background_color", "#393939")
 		bodyTextColor = settings.get("tooltip_body_text_color", "#747369")
@@ -307,11 +319,11 @@ h1 {
     font-size: %spx;
 }
 </style>""" % (backgroundColor, bodyFontSize, bodyTextColor, boldTextColor, headingTextColor, headingFontSize)
-		content = "%s<h1>%s</h1>%s" % (css, funcName, "<br>".join(funcParameters))
-		if view.is_popup_visible():
-			view.update_popup(content)
+		content = "%s<h1>%s</h1>%s%s" % (css, funcName, "<br>".join(funcParameters), docstring)
+		if aView.is_popup_visible():
+			aView.update_popup(content)
 		else:
-			view.show_popup(content, flags=sublime.COOPERATE_WITH_AUTO_COMPLETE, max_width=int(settings.get("tooltip_max_width", 600)), max_height=int(settings.get("tooltip_max_height", 300)))
+			aView.show_popup(content, flags=sublime.COOPERATE_WITH_AUTO_COMPLETE, max_width=int(settings.get("tooltip_max_width", 600)), max_height=int(settings.get("tooltip_max_height", 300)))
 
 	def QueueLinter(self, view):
 		if self.linterRunning: # If an instance of the linter is running, then cancel
@@ -977,9 +989,11 @@ h1 {
 										for param in func.data.parameters:
 											completions.append(SublimePapyrus.MakeParameterCompletion(Linter.Statement(sem.STAT_PARAMETER, 0, param)))
 										global SUBLIME_VERSION
-										if SUBLIME_VERSION >= 3070 and prefix == "" and settings.get("tooltip_function_parameters", True):
+										tooltipParameters = settings.get("tooltip_function_parameters", True)
+										tooltipDocstring = settings.get("tooltip_function_docstring", True)
+										if SUBLIME_VERSION >= 3070 and prefix == "" and (tooltipParameters or tooltipDocstring):
 											if not view.is_popup_visible():
-												self.ShowFunctionInfo(view, tokens, func, len(arguments))
+												self.ShowFunctionInfo(view, tokens, func, len(arguments), tooltipParameters, tooltipDocstring)
 
 									return completions
 							except Linter.SyntacticError as f:

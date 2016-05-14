@@ -278,11 +278,12 @@ class Keyword(object):
 		self.type = aType
 
 class Scriptheader(object):
-	__slots__ = ["name", "parent", "flags"]
+	__slots__ = ["name", "parent", "flags", "docstring"]
 	def __init__(self, aName, aParent, aFlags):
 		self.name = aName
 		self.parent = aParent
 		self.flags = aFlags
+		self.docstring = None
 
 class Import(object):
 	__slots__ = ["name"]
@@ -290,7 +291,7 @@ class Import(object):
 		self.name = aName
 
 class FunctionDef(object):
-	__slots__ = ["type", "typeIdentifier", "array", "name", "identifier", "parameters", "flags"]
+	__slots__ = ["type", "typeIdentifier", "array", "name", "identifier", "parameters", "flags", "docstring"]
 	def __init__(self, aType, aTypeIdentifier, aArray, aName, aIdentifier, aParameters, aFlags):
 		self.type = aType
 		self.typeIdentifier = aTypeIdentifier
@@ -299,15 +300,17 @@ class FunctionDef(object):
 		self.identifier = aIdentifier
 		self.parameters = aParameters
 		self.flags = aFlags
+		self.docstring = None
 
 class EventDef(object):
-	__slots__ = ["type", "name", "identifier", "parameters", "flags"]
+	__slots__ = ["type", "name", "identifier", "parameters", "flags", "docstring"]
 	def __init__(self, aType, aName, aIdentifier, aParameters, aFlags):
 		self.type = aType
 		self.name = aName
 		self.identifier = aIdentifier
 		self.parameters = aParameters
 		self.flags = aFlags
+		self.docstring = None
 
 class ParameterDef(object):
 	__slots__ = ["type", "typeIdentifier", "array", "name", "identifier", "expression"]
@@ -346,7 +349,7 @@ class VariableDef(object):
 		self.flags = aFlags
 
 class PropertyDef(object):
-	__slots__ = ["type", "typeIdentifier", "array", "name", "identifier", "value", "flags"]
+	__slots__ = ["type", "typeIdentifier", "array", "name", "identifier", "value", "flags", "docstring"]
 	def __init__(self, aType, aTypeIdentifier, aArray, aName, aIdentifier, aValue, aFlags):
 		self.type = aType
 		self.typeIdentifier = aTypeIdentifier
@@ -355,6 +358,7 @@ class PropertyDef(object):
 		self.identifier = aIdentifier
 		self.value = aValue
 		self.flags = aFlags
+		self.docstring = None
 
 class Return(object):
 	__slots__ = ["expression"]
@@ -1586,17 +1590,34 @@ class Semantic(SharedResources):
 					i = 0
 					while i < len(statements):
 						if statements[i].type == self.STAT_FUNCTIONDEF or statements[i].type == self.STAT_EVENTDEF:
-							functions[statements[i].data.name] = statements[i]
+							start = statements[i]
+							functions[statements[i].data.name] = start
 							if not self.KW_NATIVE in statements[i].data.flags:
 								while i < len(statements) and not (statements[i].type == self.STAT_KEYWORD and (statements[i].data.type == self.KW_ENDFUNCTION or statements[i].data.type == self.KW_ENDEVENT)):
+									if start.type == self.STAT_FUNCTIONDEF and not start.data.docstring:
+										if statements[i].type == self.STAT_DOCUMENTATION:
+											start.data.docstring = statements[i]
+									i += 1
+							else:
+								if start.type == self.STAT_FUNCTIONDEF and i + 1 < len(statements) and statements[i + 1].type == self.STAT_DOCUMENTATION:
+									start.data.docstring = statements[i + 1]
 									i += 1
 						elif statements[i].type == self.STAT_PROPERTYDEF:
-							properties[statements[i].data.name] = statements[i]
+							start = statements[i]
+							properties[statements[i].data.name] = start
 							if not self.KW_AUTO in statements[i].data.flags and not self.KW_AUTOREADONLY in statements[i].data.flags:
 								while i < len(statements) and not (statements[i].type == self.STAT_KEYWORD and statements[i].data.type == self.KW_ENDPROPERTY):
+									if not start.data.docstring:
+										if statements[i].type == self.STAT_DOCUMENTATION:
+											start.data.docstring = statements[i]
+									i += 1
+							else:
+								if i + 1 < len(statements) and statements[i + 1].type == self.STAT_DOCUMENTATION:
+									start.data.docstring = statements[i + 1]
 									i += 1
 						elif statements[i].type == self.STAT_STATEDEF:
-							states[statements[i].data.name] = statements[i]
+							start = statements[i]
+							states[statements[i].data.name] = start
 							while i < len(statements) and not (statements[i].type == self.STAT_KEYWORD and statements[i].data.type == self.KW_ENDSTATE):
 								i += 1
 						elif statements[i].type == self.STAT_SCRIPTHEADER:
@@ -1645,11 +1666,9 @@ class Semantic(SharedResources):
 					self.states[0].update(parentScript.states)
 				else:
 					self.Abort("Failed to process the parent script.", self.header.line)
-			# Doc string
-			docString = None
 			if len(statements) > 0:
 				if statements[0].type == self.STAT_DOCUMENTATION:
-					docString = statements.pop(0)
+					self.header.data.docstring = statements.pop(0)
 		else:
 			self.Abort("The first line has to be a script header.", statements[0].line)
 		if not self.functions[0].get("GOTOSTATE", None):
@@ -1692,10 +1711,9 @@ class Semantic(SharedResources):
 					else:
 						raise UnterminatedPropertyError(prop[0].line)
 				else:
-					docString = None
 					if len(statements) > 0:
 						if statements[0].type == self.STAT_DOCUMENTATION:
-							docString = statements.pop(0)
+							stat.data.docstring = statements.pop(0)
 			elif stat.type == self.STAT_VARIABLEDEF:
 				self.AddVariable(stat)
 				if stat.data.value:
@@ -1725,10 +1743,9 @@ class Semantic(SharedResources):
 					self.PushVariableScope()
 					self.AddVariable(stat)
 					self.PopVariableScope()
-					docString = None
 					if len(statements) > 0:
 						if statements[0].type == self.STAT_DOCUMENTATION:
-							docString = statements.pop(0)
+							stat.data.docstring = statements.pop(0)
 			elif stat.type == self.STAT_EVENTDEF:
 				self.AddFunction(stat)
 				if not self.KW_NATIVE in stat.data.flags:
@@ -1744,10 +1761,9 @@ class Semantic(SharedResources):
 					self.PushVariableScope()
 					self.AddVariable(stat)
 					self.PopVariableScope()
-					docString = None
 					if len(statements) > 0:
 						if statements[0].type == self.STAT_DOCUMENTATION:
-							docString = statements.pop(0)
+							stat.data.docstring = statements.pop(0)
 			elif stat.type == self.STAT_IMPORT:
 				if not stat.data.name in self.imports:
 					self.imports.append(stat.data.name)
@@ -1821,10 +1837,9 @@ class Semantic(SharedResources):
 			i = 0
 			start = statements[i]
 			i += 1
-			docString = None
 			if i < statementsLength:
 				if statements[i].type == self.STAT_DOCUMENTATION:
-					docString = statements[i]
+					start.data.docstring = statements[i]
 					i += 1
 			functions = {}
 			while i < statementsLength:
@@ -1896,10 +1911,9 @@ class Semantic(SharedResources):
 			self.statementsLength = len(statements)
 			self.statementsIndex = 1
 			start = self.statements[0]
-			docString = None
 			if self.statementsIndex < self.statementsLength:
 				if self.statements[self.statementsIndex].type == self.STAT_DOCUMENTATION:
-					docString = statements[self.statementsIndex]
+					start.data.docstring = statements[self.statementsIndex]
 					self.statementsIndex += 1
 			self.AddVariable(start)
 			if start.type == self.STAT_FUNCTIONDEF:
