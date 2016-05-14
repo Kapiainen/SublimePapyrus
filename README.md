@@ -225,7 +225,7 @@ Single file build system and a batch build variant.
 
 ## **Changelog**
 
-Version 2.6.0 - 2016/05/DD:
+Version 2.6.0 - 2016/05/14:
 
 **Core**
   - Added a boolean setting for displaying docstrings in function/event call tooltips.
