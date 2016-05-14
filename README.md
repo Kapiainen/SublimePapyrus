@@ -70,8 +70,10 @@ Settings are located in *Preferences* > *Package Settings* > *SublimePapyrus*.
 
   - ***intelligent_code_completion_function_event_parameters***: Determines if function/event parameters should be included in completions for function/event calls. Default: True
 
-  - ***tooltip_function_parameters***: Determines if a tooltip shows up with information about the parameters of a function/event call that is being edited. Default: True
-    
+  - ***tooltip_function_parameters***: Determines if a tooltip shows up with information about the parameters of the function/event call that is being edited. Default: True
+
+  - ***tooltip_function_docstring***: Determines if a tooltip shows up with the docstring of the function/event call that is being edited. Default: True
+
   - ***tooltip_background_color***: Hex color code of a tooltip's background. Default: #393939
     
   - ***tooltip_body_text_color***: Hex color code of a tooltip's text. Default: #747369
@@ -222,6 +224,16 @@ Single file build system and a batch build variant.
     - SKSE mod event names
 
 ## **Changelog**
+
+Version 2.6.0 - 2016/05/14:
+
+**Core**
+  - Added a boolean setting for displaying docstrings in function/event call tooltips.
+  - Added a warning to the build system framework for when an import path defined in a module's settings does not actually exist on the filesystem.
+
+**Skyrim**
+  - Added docstring support to classes representing scriptheaders, functions, events, and properties in the linter.
+  - Added support for displaying docstrings in tooltips for function/event calls.
 
 Version 2.5.0 - 2016/05/05:
 
