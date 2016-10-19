@@ -1780,9 +1780,17 @@ class Script(object):
 		self.name = aName
 		self.starts = aStarts
 		self.flags = aFlags
-		if aParent == None and len(aName) == 1 and "SCRIPTOBJECT" not in aName:
-			aParent = ["SCRIPTOBJECT"]
-		self.parent = aParent
+		commonParent = "SCRIPTOBJECT"
+#		print(aName)
+#		print(aParent)
+		if not aParent and not (len(aName) == 1 and aName[0] == commonParent):
+			self.parent = [commonParent]
+		elif aParent:
+			self.parent = aParent
+		else:
+			self.parent = None
+#		print(aParent)
+#		print(self.parent)
 		self.docstring = aDocstring
 		self.imports = aImports
 		self.customEvents = aCustomEvents
@@ -2386,6 +2394,8 @@ class Semantic(object):
 		result = None
 		if scriptDef:
 			signature = scriptDef.pop(0)
+			if signature.parent and ":".join(signature.name) == ":".join(signature.parent):
+				raise SemanticError("A script cannot extend itself.", signature.line)
 			docstring = None
 			functions = {}
 			events = {}
@@ -2495,10 +2505,11 @@ class Semantic(object):
 		self.properties = [{}]
 		self.variables = [{}]
 		self.structs = [{}]
+		self.importedNamespaces = [] # List of strings
+		self.importedScripts = {} # Dict of Script objects
 		# Recursively process parent script(s)
-		print(self.script.parent)
 		if self.script.parent:
-			self.script.parent = self.GetCachedScript(self.script.parent, self.script.starts)
+#			self.script.parent = self.GetCachedScript(self.script.parent, self.script.starts)
 			# Start building a list of dicts of available functions, events, properties, and structs
 			parent = self.script.parent
 			while parent:
@@ -2532,6 +2543,12 @@ class Semantic(object):
 						if not self.structs[-1].get(key, None):
 							self.structs[-1][key] = value
 				parent = parent.parent
+
+		return
+		
+		# Imports - Namespaces and/or scripts
+#		for imp in self.script.imports:
+#			print(imp)
 
 		self.functions.append({})
 		self.events.append({})
@@ -2821,23 +2838,26 @@ class Semantic(object):
 			raise SemanticError("Failed to read source of %s." % aPath, self.line)
 		tokens = []
 		for token in self.lex.Process(source):
-			if token.type == TokenEnum.NEWLINE:
+			tokenType = token.type
+			if tokenType == TokenEnum.NEWLINE:
 				if tokens:
 					stat = self.syn.Process(tokens)
 					#print(stat)
 					if stat:
-						if not signature:
-							signature = stat
-							if signature.parent:
-								parent = self.GetCachedScript(signature.parent, 0)
+#						if not signature:
+#							signature = stat
+#							if signature.parent:
+#								parent = self.GetCachedScript(signature.parent, 0)
 						self.AssembleScript(stat)
 					tokens = []
-			elif token.type != TokenEnum.COMMENTLINE and token.type != TokenEnum.COMMENTBLOCK:
+			elif tokenType != TokenEnum.COMMENTLINE and tokenType != TokenEnum.COMMENTBLOCK:
 				tokens.append(token)
 				#print(token)
 		script = self.BuildScript()
 		script.parent = parent
 		self.cache[":".join(signature.name)] = script
+		print(parent)
+		#if parent:
 
 	def GetContext(self, aScript, aLine):
 		pass
@@ -2865,6 +2885,8 @@ class Semantic(object):
 				#print(token)
 		script = self.BuildScript()
 		if script:
+			if script.parent:
+				script.parent = self.GetCachedScript(script.parent, script.starts)
 			self.ValidateScript(script)
 			# Add to cache
 			print(self.cache)
