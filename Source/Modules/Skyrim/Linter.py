@@ -2218,8 +2218,12 @@ class Semantic(SharedResources):
 					self.Abort("This script does not have a function/event called '%s'." % node.data.name.value)
 			elif expected and expected.type:
 				if expected.array:
-					script = self.GetCachedScript(expected.type)
-					if script:
+					validArrayType = None
+					if expected.type == self.KW_BOOL or expected.type == self.KW_FLOAT or expected.type == self.KW_INT or expected.type == self.KW_STRING:
+						validArrayType = True
+					else:
+						validArrayType = self.GetCachedScript(expected.type)
+					if validArrayType:
 						funcName = node.data.name.value.upper()
 						if funcName == "FIND":
 							func = Statement(self.STAT_FUNCTIONDEF, 0, FunctionDef("INT", "Int", False, "FIND", "Find", [ParameterDef(expected.type, expected.type.capitalize(), False, "AKELEMENT", "akElement", None), ParameterDef("INT", "Int", False, "AISTARTINDEX", "aiStartIndex", Node(self.NODE_EXPRESSION, ExpressionNode(Node(self.NODE_CONSTANT, ConstantNode(Token(self.INT, "0", 0, 0))))))], [self.KW_NATIVE]))							

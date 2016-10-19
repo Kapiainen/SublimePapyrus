@@ -221,7 +221,8 @@ class EventListener(sublime_plugin.EventListener):
 															if result.type != sem.KW_SELF:
 																try:
 																	script = sem.GetCachedScript(result.type)
-																	func = script.functions.get(name, None)
+																	if script:
+																		func = script.functions.get(name, None)
 																except Linter.SemanticError as e:
 																	return
 															else:
@@ -961,7 +962,8 @@ h1 {
 												if result.type != sem.KW_SELF:
 													try:
 														script = sem.GetCachedScript(result.type)
-														func = script.functions.get(name, None)
+														if script:
+															func = script.functions.get(name, None)
 													except Linter.SemanticError as e:
 														return
 												else:

@@ -225,6 +225,11 @@ Single file build system and a batch build variant.
 
 ## **Changelog**
 
+Version 2.6.1 - 2016/MM/DD:
+
+**Skyrim**
+  - Fixed issue that caused errors when attempting to call *Find* and *RFind* functions on arrays of base types.
+
 Version 2.6.0 - 2016/05/14:
 
 **Core**
