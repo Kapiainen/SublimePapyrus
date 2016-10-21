@@ -229,6 +229,7 @@ Version 2.6.1 - 2016/MM/DD:
 
 **Skyrim**
   - Fixed issue that caused errors when attempting to call *Find* and *RFind* functions on arrays of base types.
+  - The name of the first argument in the completions for the *Find* and *RFind* functions of arrays now changes based on the array's element type (abElement, afElement, aiElement, asElement, or akElement).
 
 Version 2.6.0 - 2016/05/14:
 
