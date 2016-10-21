@@ -832,8 +832,17 @@ h1 {
 											return completions
 										elif result.array:
 											typ = result.type.capitalize()
-											completions.append(("find\tint func.", "Find(${1:%s akElement}, ${2:Int aiStartIndex = 0})" % typ,))
-											completions.append(("rfind\tint func.", "RFind(${1:%s akElement}, ${2:Int aiStartIndex = -1})" % typ,))
+											elementIdentifier = "akElement"
+											if typ == "Bool":
+												elementIdentifier = "abElement"
+											elif typ == "Float":
+												elementIdentifier = "afElement"
+											elif typ == "Int":
+												elementIdentifier = "aiElement"
+											elif typ == "String":
+												elementIdentifier = "asElement"
+											completions.append(("find\tint func.", "Find(${1:%s %s}, ${2:Int aiStartIndex = 0})" % (typ, elementIdentifier),))
+											completions.append(("rfind\tint func.", "RFind(${1:%s %s}, ${2:Int aiStartIndex = -1})" % (typ, elementIdentifier),))
 											completions.append(("length\tkeyword", "Length",))
 											return completions
 										else:
