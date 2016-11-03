@@ -55,56 +55,64 @@ class SublimePapyrusSkyrimGenerateCompletionsCommand(sublime_plugin.WindowComman
 		syn = Linter.Syntactic()
 		sem = Linter.Semantic()
 		files = [f for f in os.listdir(self.path) if ".psc" in f]
+		if len(files) > 100:
+			if not sublime.ok_cancel_dialog("You are about to generate static completions for %d scripts.\n\nAre you sure you want to continue?" % len(files)):
+				return
 		for file in files:
 			path = os.path.join(self.path, file)
 			scriptName = file[:-4]
-			with open(path) as fi:
-				scriptContents = fi.read()
-				if scriptContents:
-					lines = []
-					tokens = []
-					try:
-						for token in lex.Process(scriptContents):
-							if token.type == lex.NEWLINE:
-								if tokens:
-									lines.append(tokens)
-								tokens = []
-							elif token.type != lex.COMMENT_LINE and token.type != lex.COMMENT_BLOCK:
-								tokens.append(token)
-					except Linter.LexicalError as e:
-						if PYTHON_VERSION[0] == 2:
-							print("SublimePapyrus - Lexical error on line %d, column %d in '%s': %s" % (e.line, e.column, path, e.message))
-						elif PYTHON_VERSION[0] >= 3:
-							SublimePapyrus.ShowMessage("Error on line %d, column %d in '%s': %s" % (e.line, e.column, path, e.message))
-						return
-					if lines:
-						statements = []
-						for line in lines:
-							try:
-								stat = syn.Process(line)
-								if stat and (stat.type == sem.STAT_FUNCTIONDEF or stat.type == sem.STAT_EVENTDEF):
-									statements.append(stat)
-							except Linter.SyntacticError as e:
-								if PYTHON_VERSION[0] == 2:
-									print("SublimePapyrus - Syntactic error on line %d in '%s': %s" % (e.line, path, e.message))
-								elif PYTHON_VERSION[0] >= 3:
-									SublimePapyrus.ShowMessage("Error on line %d in '%s': %s" % (e.line, path, e.message))
-								return
-						scriptNameLower = scriptName.lower()
-						completions = [{"trigger": "%s\t%s" % (scriptNameLower, "script"), "contents": scriptName}]
-						for stat in statements:
-							if stat.type == sem.STAT_FUNCTIONDEF:
-								temp = SublimePapyrus.MakeFunctionCompletion(stat, sem, script=scriptNameLower)
-								completions.append({"trigger": temp[0], "contents": temp[1]})
-							elif stat.type == sem.STAT_EVENTDEF:
-								temp = SublimePapyrus.MakeEventCompletion(stat, sem, calling=False, script=scriptNameLower)
-								completions.append({"trigger": temp[0], "contents": temp[1]})
-						output = {
-							"scope": VALID_SCOPE,
-							"completions": completions
-						}
-						with open(os.path.join(outputFolder, "SublimePapyrus - Skyrim - %s.sublime-completions" % scriptName), "w") as fo:
-							json.dump(output, fo, indent=2)
+			scriptContents = ""
+			try:
+				with open(path) as fi:
+					scriptContents = fi.read()
+			except UnicodeDecodeError:
+				with open(path, encoding="utf8") as fi:
+					scriptContents = fi.read()
+			if scriptContents:
+				lines = []
+				tokens = []
+				try:
+					for token in lex.Process(scriptContents):
+						if token.type == lex.NEWLINE:
+							if tokens:
+								lines.append(tokens)
+							tokens = []
+						elif token.type != lex.COMMENT_LINE and token.type != lex.COMMENT_BLOCK:
+							tokens.append(token)
+				except Linter.LexicalError as e:
+					if PYTHON_VERSION[0] == 2:
+						print("SublimePapyrus - Lexical error on line %d, column %d in '%s': %s" % (e.line, e.column, path, e.message))
+					elif PYTHON_VERSION[0] >= 3:
+						SublimePapyrus.ShowMessage("Error on line %d, column %d in '%s': %s" % (e.line, e.column, path, e.message))
+					return
+				if lines:
+					statements = []
+					for line in lines:
+						try:
+							stat = syn.Process(line)
+							if stat and (stat.type == sem.STAT_FUNCTIONDEF or stat.type == sem.STAT_EVENTDEF):
+								statements.append(stat)
+						except Linter.SyntacticError as e:
+							if PYTHON_VERSION[0] == 2:
+								print("SublimePapyrus - Syntactic error on line %d in '%s': %s" % (e.line, path, e.message))
+							elif PYTHON_VERSION[0] >= 3:
+								SublimePapyrus.ShowMessage("Error on line %d in '%s': %s" % (e.line, path, e.message))
+							return
+					scriptNameLower = scriptName.lower()
+					completions = [{"trigger": "%s\t%s" % (scriptNameLower, "script"), "contents": scriptName}]
+					for stat in statements:
+						if stat.type == sem.STAT_FUNCTIONDEF:
+							temp = SublimePapyrus.MakeFunctionCompletion(stat, sem, script=scriptNameLower)
+							completions.append({"trigger": temp[0], "contents": temp[1]})
+						elif stat.type == sem.STAT_EVENTDEF:
+							temp = SublimePapyrus.MakeEventCompletion(stat, sem, calling=False, script=scriptNameLower)
+							completions.append({"trigger": temp[0], "contents": temp[1]})
+					output = {
+						"scope": VALID_SCOPE,
+						"completions": completions
+					}
+					with open(os.path.join(outputFolder, "SublimePapyrus - Skyrim - %s.sublime-completions" % scriptName), "w") as fo:
+						json.dump(output, fo, indent=2)
 		print("SublimePapyrus - Finished generating completions for scripts in '%s'" % self.path)
 
 linterCache = {}

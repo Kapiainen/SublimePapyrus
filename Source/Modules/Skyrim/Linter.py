@@ -1547,86 +1547,91 @@ class Semantic(SharedResources):
 					fullPath = self.GetPath(name)
 					if not fullPath:
 						self.Abort("Could not find the '%s' script." % name, line)
-				with open(fullPath) as f:
-					scriptContents = f.read()
-					lines = []
-					tokens = []
-					try:
-						for token in self.lex.Process(scriptContents):
-							if token.type == self.lex.NEWLINE:
-								if tokens:
-									lines.append(tokens)
-								tokens = []
-							elif token.type != self.COMMENT_LINE and token.type != self.COMMENT_BLOCK:
-								tokens.append(token)
-					except LexicalError as e:
-						self.Abort("Found a lexical error in the '%s' script." % name)
-					extends = []
-					functions = {}
-					properties = {}
-					states = {}
-					statements = []
-					try:
-						for line in lines:
-							stat = self.syn.Process(line)
-							if stat:
-								statements.append(stat)
-					except SyntacticError as e:
-						self.Abort("Found a syntactic error in the '%s' script." % name)
-					header = False
-					if statements[0].type == self.STAT_SCRIPTHEADER:
-						if statements[0].data.parent:
-							header = True
-							extends = self.GetLineage(statements[0].data.parent)
-							parent = self.GetCachedScript(statements[0].data.parent)
-							functions.update(parent.functions)
-							properties.update(parent.properties)
-							states.update(parent.states)
-							functions["GOTOSTATE"] = Statement(self.STAT_FUNCTIONDEF, 0, FunctionDef(None, None, False, "GOTOSTATE", "GoToState", [ParameterDef(self.KW_STRING, "String", False, "ASNEWSTATE", "asNewState", None)], []))
-							functions["GETSTATE"] = Statement(self.STAT_FUNCTIONDEF, 0, FunctionDef(self.KW_STRING, "String", False, "GETSTATE", "GetState", [], []))
-							functions["ONINIT"] = Statement(self.STAT_EVENTDEF, 0, EventDef(None, "ONINIT", "OnInit", [], []))
-							functions["ONBEGINSTATE"] = Statement(self.STAT_EVENTDEF, 0, EventDef(None, "ONBEGINSTATE", "OnBeginState", [], []))
-							functions["ONENDSTATE"] = Statement(self.STAT_EVENTDEF, 0, EventDef(None, "ONENDSTATE", "OnEndState", [], []))
-					i = 0
-					while i < len(statements):
-						if statements[i].type == self.STAT_FUNCTIONDEF or statements[i].type == self.STAT_EVENTDEF:
-							start = statements[i]
-							functions[statements[i].data.name] = start
-							if not self.KW_NATIVE in statements[i].data.flags:
-								while i < len(statements) and not (statements[i].type == self.STAT_KEYWORD and (statements[i].data.type == self.KW_ENDFUNCTION or statements[i].data.type == self.KW_ENDEVENT)):
-									if start.type == self.STAT_FUNCTIONDEF and not start.data.docstring:
-										if statements[i].type == self.STAT_DOCUMENTATION:
-											start.data.docstring = statements[i]
-									i += 1
-							else:
-								if start.type == self.STAT_FUNCTIONDEF and i + 1 < len(statements) and statements[i + 1].type == self.STAT_DOCUMENTATION:
-									start.data.docstring = statements[i + 1]
-									i += 1
-						elif statements[i].type == self.STAT_PROPERTYDEF:
-							start = statements[i]
-							properties[statements[i].data.name] = start
-							if not self.KW_AUTO in statements[i].data.flags and not self.KW_AUTOREADONLY in statements[i].data.flags:
-								while i < len(statements) and not (statements[i].type == self.STAT_KEYWORD and statements[i].data.type == self.KW_ENDPROPERTY):
-									if not start.data.docstring:
-										if statements[i].type == self.STAT_DOCUMENTATION:
-											start.data.docstring = statements[i]
-									i += 1
-							else:
-								if i + 1 < len(statements) and statements[i + 1].type == self.STAT_DOCUMENTATION:
-									start.data.docstring = statements[i + 1]
-									i += 1
-						elif statements[i].type == self.STAT_STATEDEF:
-							start = statements[i]
-							states[statements[i].data.name] = start
-							while i < len(statements) and not (statements[i].type == self.STAT_KEYWORD and statements[i].data.type == self.KW_ENDSTATE):
+				scriptContents = ""
+				try:
+					with open(fullPath) as f:
+						scriptContents = f.read()
+				except UnicodeDecodeError:
+					with open(fullPath, encoding="utf8") as f:
+						scriptContents = f.read()
+				lines = []
+				tokens = []
+				try:
+					for token in self.lex.Process(scriptContents):
+						if token.type == self.lex.NEWLINE:
+							if tokens:
+								lines.append(tokens)
+							tokens = []
+						elif token.type != self.COMMENT_LINE and token.type != self.COMMENT_BLOCK:
+							tokens.append(token)
+				except LexicalError as e:
+					self.Abort("Found a lexical error in the '%s' script." % name)
+				extends = []
+				functions = {}
+				properties = {}
+				states = {}
+				statements = []
+				try:
+					for line in lines:
+						stat = self.syn.Process(line)
+						if stat:
+							statements.append(stat)
+				except SyntacticError as e:
+					self.Abort("Found a syntactic error in the '%s' script." % name)
+				header = False
+				if statements[0].type == self.STAT_SCRIPTHEADER:
+					if statements[0].data.parent:
+						header = True
+						extends = self.GetLineage(statements[0].data.parent)
+						parent = self.GetCachedScript(statements[0].data.parent)
+						functions.update(parent.functions)
+						properties.update(parent.properties)
+						states.update(parent.states)
+						functions["GOTOSTATE"] = Statement(self.STAT_FUNCTIONDEF, 0, FunctionDef(None, None, False, "GOTOSTATE", "GoToState", [ParameterDef(self.KW_STRING, "String", False, "ASNEWSTATE", "asNewState", None)], []))
+						functions["GETSTATE"] = Statement(self.STAT_FUNCTIONDEF, 0, FunctionDef(self.KW_STRING, "String", False, "GETSTATE", "GetState", [], []))
+						functions["ONINIT"] = Statement(self.STAT_EVENTDEF, 0, EventDef(None, "ONINIT", "OnInit", [], []))
+						functions["ONBEGINSTATE"] = Statement(self.STAT_EVENTDEF, 0, EventDef(None, "ONBEGINSTATE", "OnBeginState", [], []))
+						functions["ONENDSTATE"] = Statement(self.STAT_EVENTDEF, 0, EventDef(None, "ONENDSTATE", "OnEndState", [], []))
+				i = 0
+				while i < len(statements):
+					if statements[i].type == self.STAT_FUNCTIONDEF or statements[i].type == self.STAT_EVENTDEF:
+						start = statements[i]
+						functions[statements[i].data.name] = start
+						if not self.KW_NATIVE in statements[i].data.flags:
+							while i < len(statements) and not (statements[i].type == self.STAT_KEYWORD and (statements[i].data.type == self.KW_ENDFUNCTION or statements[i].data.type == self.KW_ENDEVENT)):
+								if start.type == self.STAT_FUNCTIONDEF and not start.data.docstring:
+									if statements[i].type == self.STAT_DOCUMENTATION:
+										start.data.docstring = statements[i]
 								i += 1
-						elif statements[i].type == self.STAT_SCRIPTHEADER:
-							if not header and statements[i].data.parent:
-								header = True
-								extends = self.GetLineage(statements[i].data.parent)
-						i += 1
+						else:
+							if start.type == self.STAT_FUNCTIONDEF and i + 1 < len(statements) and statements[i + 1].type == self.STAT_DOCUMENTATION:
+								start.data.docstring = statements[i + 1]
+								i += 1
+					elif statements[i].type == self.STAT_PROPERTYDEF:
+						start = statements[i]
+						properties[statements[i].data.name] = start
+						if not self.KW_AUTO in statements[i].data.flags and not self.KW_AUTOREADONLY in statements[i].data.flags:
+							while i < len(statements) and not (statements[i].type == self.STAT_KEYWORD and statements[i].data.type == self.KW_ENDPROPERTY):
+								if not start.data.docstring:
+									if statements[i].type == self.STAT_DOCUMENTATION:
+										start.data.docstring = statements[i]
+								i += 1
+						else:
+							if i + 1 < len(statements) and statements[i + 1].type == self.STAT_DOCUMENTATION:
+								start.data.docstring = statements[i + 1]
+								i += 1
+					elif statements[i].type == self.STAT_STATEDEF:
+						start = statements[i]
+						states[statements[i].data.name] = start
+						while i < len(statements) and not (statements[i].type == self.STAT_KEYWORD and statements[i].data.type == self.KW_ENDSTATE):
+							i += 1
+					elif statements[i].type == self.STAT_SCRIPTHEADER:
+						if not header and statements[i].data.parent:
+							header = True
+							extends = self.GetLineage(statements[i].data.parent)
+					i += 1
 
-					self.cache[name] = CachedScript(extends, properties, functions, states)
+				self.cache[name] = CachedScript(extends, properties, functions, states)
 		return True
 
 	def GetCachedScript(self, name, line = None):
