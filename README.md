@@ -225,6 +225,12 @@ Single file build system and a batch build variant.
 
 ## **Changelog**
 
+Version 2.6.2 - YYYY/MM/DD:
+
+**Skyrim**
+  - Added exception handling to the plugin and linter to catch UnicodeDecodeError errors raised when attempting to read scripts while using the default encoding of the operating system's locale.
+  - Added a confirmation dialog to the 'Generate completions' command when attempting to process more than 100 scripts.
+
 Version 2.6.1 - 2016/10/21:
 
 **Skyrim**
