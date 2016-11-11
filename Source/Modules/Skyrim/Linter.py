@@ -166,7 +166,7 @@ class Lexical(SharedResources):
 			(self.OP_MODULUS_ASSIGN, r"%="),
 			(self.OP_ASSIGN, r"="),
 			(self.IDENTIFIER, r"[a-z_][0-9a-z_]*"),
-			(self.FLOAT, r"(-\d+\.\d+)|(\d+\.\d+)"),
+			(self.FLOAT, r"(\d+\.\d+)"),
 			(self.INT, r"((0x(\d|[a-f])+)|((\d+))(?![a-z_]))"),
 			(self.OP_ADDITION, r"\+"),
 			(self.OP_SUBTRACTION, r"-"),
