@@ -185,6 +185,7 @@ Single file build system and a batch build variant.
 #### Commands
 - Generate completions
   - This command uses the linter to generate completions for functions, events, and script names. A panel with all the import folders is shown so that one can choose which set of script sources to process. If there are a lot of script sources in a particular folder, then it can take a while to finish processing.
+  - Do note that this command does not need to be run when using the intelligent completions system and has nothing to do with the aforementioned system. The command is intended as an option for situations where running the linter and the intelligent completion system is not feasible (e.g. on a low-power device with poor performance).
 
 - Valid key insertion
   - Information about this command can be found **[here](#valid-key-insertion-framework)**.
@@ -232,6 +233,18 @@ Version x.x.x - 2016/MM/DD:
 **Fallout 4**
   - Added syntax highlighting.
   - Added completions.
+
+Version 2.6.2 - 2016/11/05:
+
+**Skyrim**
+  - Added exception handling to the plugin and linter to catch UnicodeDecodeError errors raised when attempting to read scripts while using the default encoding of the operating system's locale.
+  - Added a confirmation dialog to the 'Generate completions' command when attempting to process more than 100 scripts.
+
+Version 2.6.1 - 2016/10/21:
+
+**Skyrim**
+  - Fixed issue that caused errors when attempting to call *Find* and *RFind* functions on arrays of base types.
+  - The name of the first argument in the completions for the *Find* and *RFind* functions of arrays now changes based on the array's element type (abElement, afElement, aiElement, asElement, or akElement).
 
 Version 2.6.0 - 2016/05/14:
 
