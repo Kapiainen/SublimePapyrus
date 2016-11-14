@@ -2155,8 +2155,18 @@ class Semantic(SharedResources):
 		if left == self.KW_NONE:
 			self.Abort("The left-hand side expression resolves to NONE.")
 		right = self.NodeVisitor(self.statements[self.statementsIndex].data.rightExpression)
-		if left.type != right.type and left.array != right.array and left.object != right.object and not self.CanAutoCast(right, left):
+		if left.type != right.type and not self.CanAutoCast(right, left):
 			self.Abort("The right-hand side expression does not resolve to the same type as the left-hand side expression and cannot be auto-cast.")
+		if left.array != right.array:
+			if left.array:
+				self.Abort("The left-hand side expression evaluates to an array, while right-hand side expression does not.")
+			else:
+				self.Abort("The right-hand side expression evaluates to an array, while left-hand side expression does not.")
+		if left.object != right.object:
+			if left.object:
+				self.Abort("The left-hand side expression evaluates to an instance, while the right-hand side expression does not.")
+			else:
+				self.Abort("The left-hand side expression evaluates to an instance, while the right-hand side expression does not.")
 		return True
 
 	def Expression(self):
