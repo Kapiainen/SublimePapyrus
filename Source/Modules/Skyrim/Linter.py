@@ -797,6 +797,7 @@ class Syntactic(SharedResources):
 		left = self.Pop()
 		if self.AcceptAssignment():
 			operator = self.GetPreviousToken()
+			self.AssignmentValidator(left)
 			self.Expression()
 			right = self.Pop()
 			self.stat = Statement(self.STAT_ASSIGNMENT, self.GetPreviousLine(), Assignment(operator, left, right))
@@ -804,6 +805,33 @@ class Syntactic(SharedResources):
 		elif self.token == None:
 			self.stat = Statement(self.STAT_EXPRESSION, self.GetPreviousLine(), Expression(left))
 			return True
+
+	def AssignmentValidator(self, node):
+		if node.type == self.NODE_EXPRESSION:
+			self.AssignmentValidator(node.data.child)
+		elif node.type == self.NODE_ARRAYATOM or node.type == self.NODE_ARRAYFUNCORID:
+			self.AssignmentValidator(node.data.child)
+		elif node.type == self.NODE_CONSTANT:
+			self.Abort("The left-hand side expression is a constant.")
+		elif node.type == self.NODE_FUNCTIONCALL:
+			pass
+		elif node.type == self.NODE_IDENTIFIER:
+			pass
+		elif node.type == self.NODE_LENGTH:
+			pass
+		elif node.type == self.NODE_ARRAYCREATION:
+			pass
+		elif node.type == self.NODE_BINARYOPERATOR:
+			if node.data.operator.type == self.OP_DOT:
+				self.AssignmentValidator(node.data.leftOperand)
+				self.AssignmentValidator(node.data.rightOperand)
+			else:
+				self.Abort("The left-hand side expression contains operators other than the dot operator.")
+		elif node.type == self.NODE_UNARYOPERATOR:
+			self.AssignmentValidator(node.data.operand)
+		else:
+			self.Abort("Unknown node type")
+		return True
 
 	def State(self):
 		if self.Accept(self.KW_AUTO):
