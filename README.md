@@ -226,6 +226,13 @@ Single file build system and a batch build variant.
 
 ## **Changelog**
 
+Version 2.x.x - YYYY/MM/DD:
+
+**Skyrim**
+  - Updated the validation of assigment statements in semantic analysis.
+  - Updated the validation of assigment statements in syntactic analysis.
+  - Updated the definition of float literals in lexical analysis.
+
 Version 2.6.2 - 2016/11/05:
 
 **Skyrim**
