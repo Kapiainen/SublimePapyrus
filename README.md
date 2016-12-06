@@ -24,6 +24,9 @@ The example above shows the syntax highlighting, code completion, and tooltips i
 - The *"\Data\Packages"* folder should now be open. Browse to *"\Data\Installed Packages"*.
 - Open the release archive that was downloaded and extract the *.sublime-package* files to *"\Data\Installed Packages"*.
 - Restart Sublime Text.
+- Open the default settings (*Preferences > Package Settings > SublimePapyrus > Settings - Default*) and copy the contents into the user settings (*Preferences > Package Settings > SublimePapyrus > Settings - Default*).
+- Set the paths of the *compiler*, *output*, and *import* settings of the game(s) you will be working with. **Note that the *import* setting is an array of strings. The contents of earlier entries override the contents of later entries when the compiler looks for a script.**
+- Modify the remaining settings to your liking. See the *[Settings](#settings)* section for more information on what each setting does.
 
 Enabling Sublime Text's ***auto_complete_with_fields*** setting is highly recommended in order to get the best experience.
 
@@ -56,7 +59,7 @@ Certain functions have a limited pool of valid values that can be used as the ar
 Settings are located in *Preferences* > *Package Settings* > *SublimePapyrus*.
 
 - All modules
-  - ***linter_on_save***: Run the linter whenever a script is saved. Default: True
+  - ***linter_on_save***: Run the linter whenever a script is saved. This setting also needs to be enabled for automatic cache invalidation of the linter and intelligent code completion systems. If this setting is disabled, then from time to time you may have to manually run the command to clear the cache to update e.g. the completions. Default: True
 
   - ***linter_on_modified***: Run the linter whenever a script is modified. Default: True
 
@@ -225,6 +228,7 @@ Single file build system and a batch build variant.
     - SKSE mod event names
 
 ## **Changelog**
+<<<<<<< HEAD
 Version x.x.x - 2016/MM/DD:
 
 **Core**
@@ -233,6 +237,11 @@ Version x.x.x - 2016/MM/DD:
 **Fallout 4**
   - Added syntax highlighting.
   - Added completions.
+=======
+Version 2.6.3 - 2016/12/06:  
+**Core**
+  - Updated readme to clarify certain aspects of installing and setting up the package.
+>>>>>>> refs/remotes/origin/master
 
 Version 2.6.2 - 2016/11/05:
 
