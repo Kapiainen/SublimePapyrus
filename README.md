@@ -24,7 +24,7 @@ The example above shows the syntax highlighting, code completion, and tooltips i
 - The *"\Data\Packages"* folder should now be open. Browse to *"\Data\Installed Packages"*.
 - Open the release archive that was downloaded and extract the *.sublime-package* files to *"\Data\Installed Packages"*.
 - Restart Sublime Text.
-- Open the default settings (*Preferences > Package Settings > SublimePapyrus > Settings - Default*) and copy the contents into the user settings (*Preferences > Package Settings > SublimePapyrus > Settings - Default*).
+- Open the default settings (*Preferences > Package Settings > SublimePapyrus > Settings - Default*) and copy the contents into the user settings (*Preferences > Package Settings > SublimePapyrus > Settings - User*).
 - Set the paths of the *compiler*, *output*, and *import* settings of the game(s) you will be working with. **Note that the *import* setting is an array of strings. The contents of earlier entries override the contents of later entries when the compiler looks for a script.**
 - Modify the remaining settings to your liking. See the *[Settings](#settings)* section for more information on what each setting does.
 
