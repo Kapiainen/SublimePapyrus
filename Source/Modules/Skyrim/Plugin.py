@@ -475,7 +475,9 @@ h1 {
 						self.linterErrors[self.bufferID][e.message] = e
 						SublimePapyrus.SetStatus(view, "sublimepapyrus-linter", "Error on line %d: %s" % (e.line, e.message)) 
 						if settings.get("linter_panel_error_messages", False):
-							view.window().show_quick_panel([[e.message, "Line %d" % e.line]], None)
+							window = view.window()
+							if window: # Has to be checked in ST2 due to only active views returning values other than None.
+								window.show_quick_panel([[e.message, "Line %d" % e.line]], None)
 					return Exit()
 				#print("Linter: Finished semantic in %f milliseconds..." % ((time.time()-semStart)*1000.0)) #DEBUG
 				if view:
