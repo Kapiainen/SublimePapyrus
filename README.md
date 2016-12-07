@@ -229,10 +229,12 @@ Single file build system and a batch build variant.
 
 ## **Changelog**
 Version 2.6.4 - 2016/12/07:
+
 **Skyrim**
   - Fixed a bug that caused the plugin to crash in Sublime Text 2 when the linter processed multiple scripts with lexical, syntactic or semantic issues and the *linter_panel_error_messages* setting was enabled.
 
-Version 2.6.3 - 2016/12/06:  
+Version 2.6.3 - 2016/12/06:
+
 **Core**
   - Updated readme to clarify certain aspects of installing and setting up the package.
 
