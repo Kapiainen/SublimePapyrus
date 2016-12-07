@@ -24,7 +24,7 @@ The example above shows the syntax highlighting, code completion, and tooltips i
 - The *"\Data\Packages"* folder should now be open. Browse to *"\Data\Installed Packages"*.
 - Open the release archive that was downloaded and extract the *.sublime-package* files to *"\Data\Installed Packages"*.
 - Restart Sublime Text.
-- Open the default settings (*Preferences > Package Settings > SublimePapyrus > Settings - Default*) and copy the contents into the user settings (*Preferences > Package Settings > SublimePapyrus > Settings - Default*).
+- Open the default settings (*Preferences > Package Settings > SublimePapyrus > Settings - Default*) and copy the contents into the user settings (*Preferences > Package Settings > SublimePapyrus > Settings - User*).
 - Set the paths of the *compiler*, *output*, and *import* settings of the game(s) you will be working with. **Note that the *import* setting is an array of strings. The contents of earlier entries override the contents of later entries when the compiler looks for a script.**
 - Modify the remaining settings to your liking. See the *[Settings](#settings)* section for more information on what each setting does.
 
@@ -228,99 +228,103 @@ Single file build system and a batch build variant.
     - SKSE mod event names
 
 ## **Changelog**
-<<<<<<< HEAD
-Version x.x.x - 2016/MM/DD:
+**Version x.x.x - 2016/MM/DD:**
 
-**Core**
+- **Core**
   - Added support for nested folders in *Open script* command.
 
-**Fallout 4**
+- **Fallout 4**
   - Added syntax highlighting.
   - Added completions.
-=======
-Version 2.6.3 - 2016/12/06:  
-**Core**
+
+**Version 2.6.4 - 2016/12/07:**
+
+- **Skyrim**
+  - Fixed a bug that caused the plugin to crash in Sublime Text 2 when the linter processed multiple scripts with lexical, syntactic or semantic issues and the *linter_panel_error_messages* setting was enabled.
+
+**Version 2.6.3 - 2016/12/06:**
+
+- **Core**
   - Updated readme to clarify certain aspects of installing and setting up the package.
->>>>>>> refs/remotes/origin/master
 
-Version 2.6.2 - 2016/11/05:
+**Version 2.6.2 - 2016/11/05:**
 
-**Skyrim**
+- **Skyrim**
   - Added exception handling to the plugin and linter to catch UnicodeDecodeError errors raised when attempting to read scripts while using the default encoding of the operating system's locale.
   - Added a confirmation dialog to the 'Generate completions' command when attempting to process more than 100 scripts.
 
-Version 2.6.1 - 2016/10/21:
+**Version 2.6.1 - 2016/10/21:**
 
-**Skyrim**
+- **Skyrim**
   - Fixed issue that caused errors when attempting to call *Find* and *RFind* functions on arrays of base types.
   - The name of the first argument in the completions for the *Find* and *RFind* functions of arrays now changes based on the array's element type (abElement, afElement, aiElement, asElement, or akElement).
 
-Version 2.6.0 - 2016/05/14:
+**Version 2.6.0 - 2016/05/14:**
 
-**Core**
+- **Core**
   - Added a boolean setting for displaying docstrings in function/event call tooltips.
   - Added a warning to the build system framework for when an import path defined in a module's settings does not actually exist on the filesystem.
 
-**Skyrim**
+- **Skyrim**
   - Added docstring support to classes representing scriptheaders, functions, events, and properties in the linter.
   - Added support for displaying docstrings in tooltips for function/event calls.
 
-Version 2.5.0 - 2016/05/05:
+**Version 2.5.0 - 2016/05/05:**
 
-**Skyrim**
+- **Skyrim**
   - Added indentation and comment rules with a .tmPreferences file.
   - Fixed a bug in the linter. The bug caused accessing the *Length* property of bool, float, int, and string arrays to throw a semantic error.
 
-Version 2.4.0 - 2016/04/30:
+**Version 2.4.0 - 2016/04/30:**
 
-**Core**
+- **Core**
   - Added setting for splitting the full paths to scripts into filenames and folder paths in the *Open script* command.
 
-**Skyrim**
+- **Skyrim**
   - Shortened descriptions in definition completions (e.g. state, function).
   - Updated syntax highlighting to support whitespace between function/event identifiers and left parentheses in function/event definitions.
   - Fixed incorrect syntax highlighting when passing '\<identifier\> == \<expression\>' as an argument. It was previously highlighted as if one were passing an argument while specifying the corresponding parameter identifier.
 
-**Fallout 4**
+- **Fallout 4**
   - This module has been removed until further notice. The changes made in the latest version of Papyrus, which is used in Fallout 4, are extensive and incompatible with e.g. the build system framework. The package provided by Bethesda on the official Fallout 4 Creation Kit wiki should be used while this module is being developed.
 
-Version 2.3.0 - 2016/04/27:
+**Version 2.3.0 - 2016/04/27:**
 
-**Core**
-- Added support for "arguments" setting in build systems.
+- **Core**
+  - Added support for "arguments" setting in build systems.
 
-**Fallout 4**
-- Added "Release" and "Final" build systems to Fallout 4.
+- **Fallout 4**
+  - Added "Release" and "Final" build systems to Fallout 4.
 
-Version 2.2.0 - 2016/04/27:
+**Version 2.2.0 - 2016/04/27:**
 
-**Core**
+- **Core**
   - Added the ability to use the *Open script* command in views that do not have a compatible syntax. An additional panel, which allows you to select which module's *import* paths should be used, opens up after you enter the (partial) name of the script to look for.
   - Added support for listing all scripts with the *Open script* command by typing in an asterisk (\*) as the only character.
   - Added an optional *title* setting to module settings. The string value is used when listing modules by name. If this setting does not exist, then the module's key is used instead in listings.
 
-**Fallout 4**
+- **Fallout 4**
   - Added syntax highlighting.
   - Added basic completions.
   - Added build systems.
   - Added module settings.
 
-Version 2.1.1 - 2016/04/22:
+**Version 2.1.1 - 2016/04/22:**
 
-**Skyrim**
+- **Skyrim**
   - Code completion
     - Added completions for imported global functions when defining arguments in function/event calls.
   - Tooltips
     - Refactored tooltips for function/event parameters in order to reduce the amount of work that is done.
     - Added parameter tooltips for imported global functions.
 
-Version 2.1.0 - 2016/04/19:
+**Version 2.1.0 - 2016/04/19:**
 
-**Core**
+- **Core**
   - Added new settings for toggling tooltips and customizing the looks of tooltips.
   - Added a setting to toggle function/event parameters in function/event call completions.
 
-**Skyrim**
+- **Skyrim**
   - Added an optional tooltip that shows the name of the function/event and its parameters when typing inside of a function/event call (Sublime Text 3 build 3070 or newer only).
   - Linter
     - Fixed validation of explicit casting.
@@ -332,15 +336,15 @@ Version 2.1.0 - 2016/04/19:
     - Added completions for parameters of the function/event that is being called.
     - Added back completions for inherited functions/events that had been missing since the previous version.
 
-Version 2.0.0 - 2016/04/16:
+**Version 2.0.0 - 2016/04/16:**
 
-**Core**
+- **Core**
   - The build system now places the compiled script one folder above the script's source file (*"\Scripts\Source\Example.psc"* is compiled to *"\Scripts\Example.pex"*) if no output folder has been specified in the user settings.
   - Updated function, event, and property completions to always include the source (i.e. the script) that the completions are from.
   - The *Open script* command automatically uses the first selection, if a piece of text has been selected, as the initial value.
   - Added a new setting (***linter_error_line_threshold***) that defines how many lines a linter error can move up or down by between passes before it is considered a new error that should be centered.
 
-**Skyrim**
+- **Skyrim**
   - Added a command to manually clear the various caches relevant to the linter and code completion without needing to restart Sublime Text. It is useful when modifying the contents of the *import* setting in the user settings or one of the folders specified in that setting.
   - Linter
     - Switched from using filenames to using a view's buffer ID for identification purposes. Scripts no longer have to have been saved to a file for the linter, and subsequently the code completion, to work.
@@ -376,32 +380,32 @@ Version 2.0.0 - 2016/04/16:
     - More scenarios are now supported (e.g. keywords in script headers, variable declarations, property declarations, function/event declarations).
     - The source (the current script, the parent script, or another script) of the completion is specified.
 
-Version 1.0.7 - 2016/03/10:
+**Version 1.0.7 - 2016/03/10:**
   - Fixed a bug in the 'Generate completions' command.
   - Linter optimizations.
 
-Version 1.0.6 - 2016/03/09:
+**Version 1.0.6 - 2016/03/09:**
   - Fixed an issue that produced incorrect completions for array parameters in function and event completions.
 
-Version 1.0.5 - 2016/03/08:
+**Version 1.0.5 - 2016/03/08:**
   - Fixed string literal regex in the linter.
 
-Version 1.0.4 - 2016/03/05:
+**Version 1.0.4 - 2016/03/05:**
   - Fixed a bug in the linter related to casting from arrays to other types.
   - Fixed a bug that caused certain completions to be suggested outside of function/event definitions when they should not.
 
-Version 1.0.3 - 2016/03/05:
+**Version 1.0.3 - 2016/03/05:**
   - Added completions for Find and RFind functions for arrays.
   - Added missing return type in the description of the GetState function's completion.
 
-Version 1.0.2 - 2016/03/05:
+**Version 1.0.2 - 2016/03/05:**
   - Fixed a bug in the linter involving validation of array arguments and array parameters in function calls.
 
-Version 1.0.1 - 2016/03/05:
+**Version 1.0.1 - 2016/03/05:**
   - Implemented support in the linter for Find and RFind functions for arrays.
   - Implemented support in the linter for documentation strings for functions and events with the Native keyword.
 
-Version 1.0.0 - 2016/03/04:
+**Version 1.0.0 - 2016/03/04:**
   - Major rewrite
   - Introduction of version numbers
 
