@@ -250,7 +250,9 @@ class Lexical(SharedResources):
 				if temp in self.keywords:
 					t = temp
 			elif t == self.DOCUMENTATION_STRING or t == self.STRING:
-				yield Token(t, v[1:-1], line, match.start()-column)
+				if t == self.DOCUMENTATION_STRING:
+					v = v[1:-1]
+				yield Token(t, v, line, match.start()-column)
 				i = v.count("\n")
 				if i > 0:
 					line += i

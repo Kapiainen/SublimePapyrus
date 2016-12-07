@@ -231,6 +231,7 @@ Single file build system and a batch build variant.
 **Version 2.x.x - YYYY/MM/DD:**
 
 - **Skyrim**
+  - Updated string literal token so that it includes quotation marks in its value, which also fixes completions that include string literals as e.g. default values of function arguments.
   - Updated the validation of assigment statements in semantic analysis.
   - Updated the validation of assigment statements in syntactic analysis.
   - Updated the definition of float literals in lexical analysis.
