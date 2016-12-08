@@ -2215,7 +2215,7 @@ class Semantic(SharedResources):
 			self.ArrayAssignmentValidator(node.data.child)
 		elif node.type == self.NODE_ARRAYATOM or node.type == self.NODE_ARRAYFUNCORID:
 			if node.data.expression:
-				self.Abort("Only the simple assignment operator '=' can be used when assigning to an array element.")
+				self.Abort("Only the simple assignment operator ('=') can be used when assigning to an array element.")
 			self.ArrayAssignmentValidator(node.data.child)
 		elif node.type == self.NODE_CONSTANT:
 			pass
