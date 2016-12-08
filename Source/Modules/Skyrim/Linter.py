@@ -1191,6 +1191,13 @@ class Syntactic(SharedResources):
 			if not self.Accept(self.INT):
 				self.Abort("Expected an int literal.")
 			size = self.GetPreviousToken()
+			#if RefComp
+			elementCount = int(size.value)
+			if elementCount < 1:
+				self.Abort("Arrays must be initialized with at least one element.")
+			elif elementCount > 128:
+				self.Abort("Arrays cannot be initialized with more than 128 elements.")
+			#endif RefComp
 			self.Expect(self.RIGHT_BRACKET)
 			self.Shift(Node(self.NODE_ARRAYCREATION, ArrayCreationNode(typ, size)))
 			return True
@@ -2182,6 +2189,10 @@ class Semantic(SharedResources):
 
 	def Assignment(self):
 		left = self.NodeVisitor(self.statements[self.statementsIndex].data.leftExpression)
+		#if RefComp
+		if self.statements[self.statementsIndex].data.operator.type != self.OP_ASSIGN:
+			self.ArrayAssignmentValidator(self.statements[self.statementsIndex].data.leftExpression)
+		#endif RefComp
 		if left == self.KW_NONE:
 			self.Abort("The left-hand side expression resolves to NONE.")
 		right = self.NodeVisitor(self.statements[self.statementsIndex].data.rightExpression)
@@ -2197,6 +2208,32 @@ class Semantic(SharedResources):
 				self.Abort("The left-hand side expression evaluates to an instance, while the right-hand side expression does not.")
 			else:
 				self.Abort("The left-hand side expression evaluates to an instance, while the right-hand side expression does not.")
+		return True
+
+	def ArrayAssignmentValidator(self, node):
+		if node.type == self.NODE_EXPRESSION:
+			self.ArrayAssignmentValidator(node.data.child)
+		elif node.type == self.NODE_ARRAYATOM or node.type == self.NODE_ARRAYFUNCORID:
+			if node.data.expression:
+				self.Abort("Only the simple assignment operator '=' can be used when assigning to an array element.")
+			self.ArrayAssignmentValidator(node.data.child)
+		elif node.type == self.NODE_CONSTANT:
+			pass
+		elif node.type == self.NODE_FUNCTIONCALL:
+			pass
+		elif node.type == self.NODE_IDENTIFIER:
+			pass
+		elif node.type == self.NODE_LENGTH:
+			pass
+		elif node.type == self.NODE_ARRAYCREATION:
+			pass
+		elif node.type == self.NODE_BINARYOPERATOR:
+			self.ArrayAssignmentValidator(node.data.leftOperand)
+			self.ArrayAssignmentValidator(node.data.rightOperand)
+		elif node.type == self.NODE_UNARYOPERATOR:
+			self.ArrayAssignmentValidator(node.data.operand)
+		else:
+			self.Abort("Unknown node type")
 		return True
 
 	def Expression(self):
