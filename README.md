@@ -231,6 +231,8 @@ Single file build system and a batch build variant.
 **Version 2.x.x - YYYY/MM/DD:**
 
 - **Skyrim**
+  - Added validation of the size of the int literal used to initialize an array.
+  - Added validation of the assignment operator used to assign to an array element.
   - Updated string literal token so that it includes quotation marks in its value, which also fixes completions that include string literals as e.g. default values of function arguments.
   - Updated the validation of assigment statements in semantic analysis.
   - Updated the validation of assigment statements in syntactic analysis.
