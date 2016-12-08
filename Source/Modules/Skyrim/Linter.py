@@ -2244,8 +2244,19 @@ class Semantic(SharedResources):
 		if self.statements[self.statementsIndex].data.expression:
 			expr = self.NodeVisitor(self.statements[self.statementsIndex].data.expression)
 			if self.statements[0].data.type:
-				if expr.type != self.statements[0].data.type and expr.array != self.statements[0].data.array and not self.CanAutoCast(expr, self.statements[0].data):
-					self.Abort("The returned value's type does not match the function's return type.")
+				if expr.array != self.statements[0].data.array or not expr.type:
+					if not self.statements[0].data.array:
+						self.Abort("Expected a(n) %s value to be returned." % self.statements[0].data.type)
+					else:
+						self.Abort("Expected a(n) %s[ ] value to be returned." % self.statements[0].data.type)
+				elif expr.type != self.statements[0].data.type and not self.CanAutoCast(expr, self.statements[0].data):
+					self.Abort("The returned value's type does not match the function's return type and auto-casting is not possible.")
+		else:
+			if self.statements[0].data.type:
+				if not self.statements[0].data.array:
+					self.Abort("Expected a(n) %s value to be returned." % self.statements[0].data.type)
+				else:
+					self.Abort("Expected a(n) %s[ ] value to be returned." % self.statements[0].data.type)
 		return True
 
 	def NodeVisitor(self, node, expected = None):
