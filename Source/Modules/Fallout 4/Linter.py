@@ -2855,7 +2855,7 @@ class Semantic(object):
 				#print(token)
 		script = self.BuildScript()
 		script.parent = parent
-		self.cache[":".join(signature.name)] = script
+		self.cache[":".join(script.name)] = script
 		print(parent)
 		#if parent:
 
@@ -2888,8 +2888,9 @@ class Semantic(object):
 			if script.parent:
 				script.parent = self.GetCachedScript(script.parent, script.starts)
 			self.ValidateScript(script)
-			# Add to cache
+#			# Add to cache
+#			self.cache[":".join(script.name)] = script
 			print(self.cache)
 			return script
-		print(self.cache)
+#		print(self.cache)
 		return None
