@@ -2507,6 +2507,15 @@ class Semantic(object):
 		self.structs = [{}]
 		self.importedNamespaces = [] # List of strings
 		self.importedScripts = {} # Dict of Script objects
+		print("Starting to validate " + ":".join(aScript.name))
+		# Process parent scripts
+		if self.script.parent:
+			parent = self.script.parent
+			while parent:
+				print(":".join(parent.name))
+				parent = parent.parent
+		return
+
 		# Recursively process parent script(s)
 		if self.script.parent:
 #			self.script.parent = self.GetCachedScript(self.script.parent, self.script.starts)
@@ -2842,22 +2851,13 @@ class Semantic(object):
 			if tokenType == TokenEnum.NEWLINE:
 				if tokens:
 					stat = self.syn.Process(tokens)
-					#print(stat)
 					if stat:
-#						if not signature:
-#							signature = stat
-#							if signature.parent:
-#								parent = self.GetCachedScript(signature.parent, 0)
 						self.AssembleScript(stat)
 					tokens = []
 			elif tokenType != TokenEnum.COMMENTLINE and tokenType != TokenEnum.COMMENTBLOCK:
 				tokens.append(token)
-				#print(token)
 		script = self.BuildScript()
-		script.parent = parent
 		self.cache[":".join(script.name)] = script
-		print(parent)
-		#if parent:
 
 	def GetContext(self, aScript, aLine):
 		pass
@@ -2876,21 +2876,23 @@ class Semantic(object):
 			if token.type == TokenEnum.NEWLINE:
 				if tokens:
 					stat = aSyn.Process(tokens)
-					#print(stat)
 					if stat:
 						self.AssembleScript(stat)
 					tokens = []
 			elif token.type != TokenEnum.COMMENTLINE and token.type != TokenEnum.COMMENTBLOCK:
 				tokens.append(token)
-				#print(token)
 		script = self.BuildScript()
 		if script:
 			if script.parent:
 				script.parent = self.GetCachedScript(script.parent, script.starts)
+				parent = script.parent
+				while parent.parent:
+					if isinstance(parent.parent, list):
+						parent.parent = self.GetCachedScript(parent.parent, parent.starts)
+					parent = parent.parent
 			self.ValidateScript(script)
 #			# Add to cache
 #			self.cache[":".join(script.name)] = script
 			print(self.cache)
 			return script
-#		print(self.cache)
 		return None
