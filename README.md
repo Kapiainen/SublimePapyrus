@@ -228,7 +228,7 @@ Single file build system and a batch build variant.
     - SKSE mod event names
 
 ## **Changelog**
-**Version 2.x.x - YYYY/MM/DD:**
+**Version 2.6.5 - 2016/12/10:**
 
 - **Skyrim**
   - Updated some error messages.
