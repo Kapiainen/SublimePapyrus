@@ -832,7 +832,7 @@ class Syntactic(SharedResources):
 		elif node.type == self.NODE_UNARYOPERATOR:
 			self.AssignmentValidator(node.data.operand)
 		else:
-			self.Abort("Unknown node type")
+			self.Abort("DEBUG: Unknown node type")
 		return True
 
 	def State(self):
@@ -1378,7 +1378,7 @@ class Semantic(SharedResources):
 		if len(self.variables) > 2:
 			self.variables.pop()
 		else:
-			self.Abort("Popping too many scopes from self.variables.")
+			self.Abort("DEBUG: Popping too many scopes from self.variables.")
 
 	def AddVariable(self, stat):
 		if stat.type == self.STAT_VARIABLEDEF or stat.type == self.STAT_PROPERTYDEF:
@@ -1440,13 +1440,13 @@ class Semantic(SharedResources):
 		if len(self.functions) < 3:
 			self.functions.append({})
 		else:
-			self.Abort("Pushing too many scopes to self.functions")
+			self.Abort("DEBUG: Pushing too many scopes to self.functions")
 
 	def PopFunctionScope(self):
 		if len(self.functions) > 2:
 			self.functions.pop()
 		else:
-			self.Abort("Popping too many scopes from self.functions")
+			self.Abort("DEBUG: Popping too many scopes from self.functions")
 
 	def AddFunction(self, stat):
 		if stat.type == self.STAT_FUNCTIONDEF or stat.type == self.STAT_EVENTDEF:
@@ -1737,7 +1737,7 @@ class Semantic(SharedResources):
 				if stat.data.value:
 					if stat.data.array:
 						if stat.data.value.type != self.KW_NONE:
-							self.Abort("Array properties can only be initialized with NONE.", stat.line)
+							self.Abort("Array properties can only be initialized with 'None'.", stat.line)
 					else:
 						if stat.data.type != stat.data.value.type and not self.CanAutoCast(NodeResult(stat.data.value.type, False, True), NodeResult(stat.data.type, False, True)):
 							self.Abort("Initialization of a(n) '%s' property with a(n) '%s' literal." % (stat.data.type, stat.data.value.type), stat.line)
@@ -1761,7 +1761,7 @@ class Semantic(SharedResources):
 				if stat.data.value:
 					if stat.data.array:
 						if self.GetLiteral(stat.data.value) != self.KW_NONE:
-							self.Abort("Array variables can only be initialized with NONE when defined outside of functions/events.", stat.line)
+							self.Abort("Array variables can only be initialized with 'None' when defined outside of functions/events.", stat.line)
 					else:
 						value = self.GetLiteral(stat.data.value)
 						if not value:
@@ -2177,7 +2177,7 @@ class Semantic(SharedResources):
 						val = self.GetLiteral(self.statements[self.statementsIndex].data.value)
 						if val:
 							if val != self.KW_NONE:
-								self.Abort("Array variables can only be initialized with NONE.")
+								self.Abort("Array variables can only be initialized with 'None'.")
 						else:
 							self.Abort("The expression does not resolve to a(n) '%s' array." % self.statements[self.statementsIndex].data.type)
 					elif self.statements[self.statementsIndex].data.type != expr.type:
@@ -2194,7 +2194,7 @@ class Semantic(SharedResources):
 			self.ArrayAssignmentValidator(self.statements[self.statementsIndex].data.leftExpression)
 		#endif RefComp
 		if left == self.KW_NONE:
-			self.Abort("The left-hand side expression resolves to NONE.")
+			self.Abort("The left-hand side expression resolves to 'None'.")
 		right = self.NodeVisitor(self.statements[self.statementsIndex].data.rightExpression)
 		if left.type != right.type and not self.CanAutoCast(right, left):
 			self.Abort("The right-hand side expression does not resolve to the same type as the left-hand side expression and cannot be auto-cast.")
@@ -2233,7 +2233,7 @@ class Semantic(SharedResources):
 		elif node.type == self.NODE_UNARYOPERATOR:
 			self.ArrayAssignmentValidator(node.data.operand)
 		else:
-			self.Abort("Unknown node type")
+			self.Abort("DEBUG: Unknown node type")
 		return True
 
 	def Expression(self):
@@ -2274,9 +2274,9 @@ class Semantic(SharedResources):
 				self.Abort("'%s' is not a variable that exists in this scope." % node.data.child.data.token.value)
 			if node.data.expression:
 				if result.type == self.KW_NONE:
-					self.Abort("Expected an array object instead of NONE.")
+					self.Abort("Expected an array object instead of 'None'.")
 				elif not result.array:
-					self.Abort("Expected an array object.")
+					self.Abort("Attempting to access an element of an object that is not an array.")
 				expr = self.NodeVisitor(node.data.expression)
 				if expr.type != self.KW_INT or expr.array:
 					self.Abort("Expected an expression that resolves to INT when accessing an array element.")
@@ -2293,7 +2293,7 @@ class Semantic(SharedResources):
 			elif node.data.token.type == self.KW_NONE:
 				result = NodeResult(self.KW_NONE, False, True)
 			else:
-				self.Abort("Unknown literal type.")
+				self.Abort("DEBUG: Unknown literal type.")
 		elif node.type == self.NODE_FUNCTIONCALL:
 			globalFunction = self.KW_GLOBAL in self.statements[0].data.flags
 			func = None
@@ -2651,13 +2651,13 @@ class Semantic(SharedResources):
 			elif node.data.operator.type == self.LOG_NOT:
 				result = NodeResult(self.KW_BOOL, False, True)
 		else:
-			self.Abort("Unknown node type")
+			self.Abort("DEBUG: Unknown node type")
 		#print("\nExiting node: %s" % node.type)
 		#print("Returning type: %s" % result)
 		if result:
 			return result
 		else:
-			self.Abort("NodeVisitor returning NONE.")
+			self.Abort("DEBUG: NodeVisitor returning NONE.")
 
 	def CanAutoCast(self, src, dest):
 		if not src or not dest:
@@ -2724,7 +2724,7 @@ class Semantic(SharedResources):
 					elif temp.data.token.type == self.KW_NONE:
 						return self.KW_NONE
 					else:
-						self.Abort("Unknown literal type.")
+						self.Abort("DEBUG: Unknown literal type.")
 			elif temp.type == self.NODE_UNARYOPERATOR:
 				if temp.data.operator.type == self.OP_SUBTRACTION:
 					if temp.data.operand.type == self.NODE_CONSTANT:
