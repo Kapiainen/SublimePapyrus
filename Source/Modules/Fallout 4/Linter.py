@@ -2000,7 +2000,7 @@ class Semantic(object):
 		#	6 = Struct
 		#	7 = StructMember
 		self.paths = None
-		self.scriptExtension = "psc"
+		self.scriptExtension = ".psc"
 		self.cache = {}
 		self.scope = [0]
 		self.definition = [[]]
@@ -2462,12 +2462,12 @@ class Semantic(object):
 		self.properties = [{}]
 		self.variables = [{}]
 		self.structs = [{}]
-		self.importedNamespaces = [] # List of strings
+		self.states = [{}]
+		self.importedNamespaces = [] # List of list of strings
 		self.importedScripts = {} # Dict of Script objects
 		print("Starting to validate " + ":".join(aScript.name))
 		# Recursively process parent script(s)
 		if self.script.parent:
-#			self.script.parent = self.GetCachedScript(self.script.parent, self.script.starts)
 			# Start building a list of dicts of available functions, events, properties, and structs
 			parent = self.script.parent
 			while parent:
@@ -2506,16 +2506,45 @@ class Semantic(object):
 		print(list(self.events[-1]))
 		print(list(self.properties[-1]))
 		print(list(self.structs[-1]))
+
+		self.functions.append(self.script.functions)
+		self.events.append(self.script.events)
+		self.properties.append(self.script.properties)
+		self.variables.append(self.script.variables)
+		self.structs.append(self.script.structs)
+		print("Imports", self.script.imports)
+		for key, value in self.script.imports.items():
+			isFile = False
+			isDir = False
+			for impPath in self.paths:
+#				path = "%s%s" % (os.path.join(impPath, *(value.name)), self.scriptExtension)
+				path = "%s" % os.path.join(impPath, *(value.name))
+				if os.path.isdir(path):
+					self.importedNamespaces.append(os.path.join(*(value.name)))
+					isDir = True
+					print(key, "Directory")
+					break
+				elif os.path.isfile(path + self.scriptExtension):
+#					result = self.CacheScript(path + self.scriptExtension)
+#					self.importedScripts[key] = result
+					isFile = True
+					print(key, "File")
+					break
+			if not isFile and not isDir:
+				raise SemanticError("'%s' is neither a script nor a valid namespace." % key, value.line)
+		print(self.importedScripts)
+		print(self.importedNamespaces)
+		#self.importedNamespaces = []
+		#self.importedScripts = {}
+
+#		self.imports = aImports
+#		self.customEvents = aCustomEvents
+#		self.groups = aGroups
+#		self.states = aStates
 		return
 		
 		# Imports - Namespaces and/or scripts
 #		for imp in self.script.imports:
-
-		self.functions.append({})
-		self.events.append({})
-		self.properties.append({})
-		self.variables.append({})
-		self.structs.append({})
 
 		# Properties
 		if self.properties[0]:
@@ -2779,10 +2808,10 @@ class Semantic(object):
 			return result
 		print("Caching %s" % key)
 		for impPath in self.paths:
-			path = "%s.%s" % (os.path.join(impPath, *aType), self.scriptExtension)
+			path = "%s%s" % (os.path.join(impPath, *aType), self.scriptExtension)
 			if os.path.isfile(path):
-				self.CacheScript(path)
-				result = self.cache.get(key, None)
+				result = self.CacheScript(path)
+				#= self.cache.get(key, None)
 				if result:
 					return result
 				else:
@@ -2810,6 +2839,7 @@ class Semantic(object):
 				tokens.append(token)
 		script = self.BuildScript()
 		self.cache[":".join(script.name)] = script
+		return script
 
 	def GetContext(self, aScript, aLine):
 		pass
