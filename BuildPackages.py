@@ -11,6 +11,7 @@ PACKGE_PREFIX = "SublimePapyrus"
 PACKAGE_EXTENSION = ".sublime-package"
 
 def main():
+	print("Building .sublime-package files...")
 	global ROOT
 	licenseFile = os.path.join(ROOT, "LICENSE.md")
 	if not os.path.isfile(licenseFile):
