@@ -45,8 +45,10 @@ def main():
 		print("There is no 'Core' folder in '%s'." % src)
 		return
 	modules = os.path.join(src, "Modules")
+	print("Building modules:\n\tCore")
 	if os.path.isdir(modules):
 		for moduleName in os.listdir(modules):
+			print("\t" + moduleName)
 			modulePath = os.path.join(modules, moduleName)
 			if os.path.isdir(modulePath):
 				moduleFiles = []
