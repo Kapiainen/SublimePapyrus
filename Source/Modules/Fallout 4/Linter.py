@@ -2517,18 +2517,15 @@ class Semantic(object):
 			isFile = False
 			isDir = False
 			for impPath in self.paths:
-#				path = "%s%s" % (os.path.join(impPath, *(value.name)), self.scriptExtension)
 				path = "%s" % os.path.join(impPath, *(value.name))
 				if os.path.isdir(path):
 					self.importedNamespaces.append(os.path.join(*(value.name)))
 					isDir = True
-					print(key, "Directory")
 					break
 				elif os.path.isfile(path + self.scriptExtension):
-#					result = self.CacheScript(path + self.scriptExtension)
-#					self.importedScripts[key] = result
+					result = self.GetCachedScript(value.name, value.line)
+					self.importedScripts[key] = result
 					isFile = True
-					print(key, "File")
 					break
 			if not isFile and not isDir:
 				raise SemanticError("'%s' is neither a script nor a valid namespace." % key, value.line)
@@ -2810,7 +2807,12 @@ class Semantic(object):
 		for impPath in self.paths:
 			path = "%s%s" % (os.path.join(impPath, *aType), self.scriptExtension)
 			if os.path.isfile(path):
-				result = self.CacheScript(path)
+				try:
+					result = self.CacheScript(path)
+				except LexicalError as e:
+					raise LexicalError("Lexical error in '%s' script." % key, self.line, 0)
+				except SyntacticError as e:
+					raise SyntacticError("Syntactic error in '%s' script." % key, self.line)
 				#= self.cache.get(key, None)
 				if result:
 					return result
