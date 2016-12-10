@@ -2465,20 +2465,13 @@ class Semantic(object):
 		self.importedNamespaces = [] # List of strings
 		self.importedScripts = {} # Dict of Script objects
 		print("Starting to validate " + ":".join(aScript.name))
-		# Process parent scripts
-		if self.script.parent:
-			parent = self.script.parent
-			while parent:
-				print(":".join(parent.name))
-				parent = parent.parent
-		return
-
 		# Recursively process parent script(s)
 		if self.script.parent:
 #			self.script.parent = self.GetCachedScript(self.script.parent, self.script.starts)
 			# Start building a list of dicts of available functions, events, properties, and structs
 			parent = self.script.parent
 			while parent:
+				print("Merging resources from " + ":".join(parent.name))
 				# Functions
 				if parent.functions:
 					for key, value in parent.functions.items():
@@ -2509,7 +2502,10 @@ class Semantic(object):
 						if not self.structs[-1].get(key, None):
 							self.structs[-1][key] = value
 				parent = parent.parent
-
+		print(list(self.functions[-1]))
+		print(list(self.events[-1]))
+		print(list(self.properties[-1]))
+		print(list(self.structs[-1]))
 		return
 		
 		# Imports - Namespaces and/or scripts
