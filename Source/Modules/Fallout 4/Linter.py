@@ -937,11 +937,6 @@ class Syntactic(object):
 	def Abort(self, aMessage):
 		if self.tokenIndex >= self.tokenCount and self.tokenCount > 0:
 			self.tokenIndex -= 1
-#		if self.stack:
-#			print(self.stack)
-#			for s in self.stack:
-#				print(TokenDescription[s.type])
-#		print(TokenDescription[self.tokens[self.tokenIndex].type])
 		raise SyntacticError(aMessage, self.tokens[self.tokenIndex].line)
 
 	def Accept(self, aToken):
@@ -982,7 +977,6 @@ class Syntactic(object):
 
 	def AcceptFlags(self, aFlags):
 		if aFlags:
-#			print("Looking for the following flags on line %d: %s" % (self.line, ", ".join([TokenDescription[f] for f in aFlags])))
 			successfulFlags = []
 			attempts = len(aFlags)
 			while attempts > 0:
@@ -994,16 +988,12 @@ class Syntactic(object):
 						break
 					i += 1
 				if attempts == len(aFlags):
-#					print("No flags were accepted on line %d" % self.line)
-#					print("Remaining attempts: %d" % attempts)
 					if successfulFlags:
 						return successfulFlags
 					else:
 						return None
 				attempts -= 1
-#			print("Found following flags on line %d: %s" % (self.line, ", ".join([TokenDescription[f] for f in successfulFlags])))
 			return successfulFlags
-#		print("No flags were given to test for on line %d" % self.line)
 		return None
 
 	def AcceptType(self, aBaseTypes):
@@ -1123,7 +1113,6 @@ class Syntactic(object):
 		self.Shift(UnaryOperatorNode(operator, operand))
 
 	def Expression(self):
-#		print(1)
 		def Reduce():
 			self.Shift(ExpressionNode(self.Pop()))
 
@@ -1136,7 +1125,6 @@ class Syntactic(object):
 		return True
 
 	def AndExpression(self):
-#		print(2)
 		self.BoolExpression()
 		while self.Accept(TokenEnum.AND):
 			self.Shift()
@@ -1145,7 +1133,6 @@ class Syntactic(object):
 		return True
 
 	def BoolExpression(self):
-#		print(3)
 		self.AddExpression()
 		while self.Accept(TokenEnum.EQUAL) or self.Accept(TokenEnum.NOTEQUAL) or self.Accept(TokenEnum.GREATERTHANOREQUAL) or self.Accept(TokenEnum.LESSTHANOREQUAL) or self.Accept(TokenEnum.GREATERTHAN) or self.Accept(TokenEnum.LESSTHAN):
 			self.Shift()
@@ -1154,7 +1141,6 @@ class Syntactic(object):
 		return True
 
 	def AddExpression(self):
-#		print(4)
 		self.MultExpression()
 		while self.Accept(TokenEnum.ADDITION) or self.Accept(TokenEnum.SUBTRACTION):
 			self.Shift()
@@ -1163,7 +1149,6 @@ class Syntactic(object):
 		return True
 
 	def MultExpression(self):
-#		print(5)
 		self.UnaryExpression()
 		while self.Accept(TokenEnum.MULTIPLICATION) or self.Accept(TokenEnum.DIVISION) or self.Accept(TokenEnum.MODULUS):
 			self.Shift()
@@ -1172,7 +1157,6 @@ class Syntactic(object):
 		return True
 
 	def UnaryExpression(self):
-#		print(6)
 		unaryOp = False
 		if self.Accept(TokenEnum.SUBTRACTION) or self.Accept(TokenEnum.NOT):
 			self.Shift()
@@ -1183,7 +1167,6 @@ class Syntactic(object):
 		return True
 
 	def CastAtom(self):
-#		print(7)
 		self.DotAtom()
 		if self.Accept(TokenEnum.kAS) or self.Accept(TokenEnum.kIS):
 			self.Shift()
@@ -1196,8 +1179,6 @@ class Syntactic(object):
 		return True
 
 	def DotAtom(self):
-#		print(8)
-		#if self.AcceptLiteral():
 		if self.Accept(TokenEnum.kFALSE) or self.Accept(TokenEnum.kTRUE) or self.Accept(TokenEnum.FLOAT) or self.Accept(TokenEnum.INT) or self.Accept(TokenEnum.STRING) or self.Accept(TokenEnum.kNONE):
 			self.Shift(ConstantNode(self.PeekBackwards()))
 			return True
@@ -1212,7 +1193,6 @@ class Syntactic(object):
 			return True
 
 	def ArrayAtom(self):
-#		print(9)
 		def Reduce():
 			temp = self.Pop()
 			self.Shift(ArrayAtomNode(self.Pop(), temp))
@@ -1225,7 +1205,6 @@ class Syntactic(object):
 		return True
 
 	def Atom(self):
-#		print(10)
 		if self.Accept(TokenEnum.kNEW):
 			nextToken = self.Peek()
 			if nextToken and nextToken.type == TokenEnum.LEFTBRACKET:
@@ -1251,7 +1230,6 @@ class Syntactic(object):
 			return True
 
 	def ArrayFuncOrId(self):
-#		print(11)
 		def Reduce():
 			temp = self.Pop()
 			self.Shift(ArrayFuncOrIdNode(self.Pop(), temp))
@@ -1264,7 +1242,6 @@ class Syntactic(object):
 		return True
 
 	def FuncOrId(self):
-#		print(12)
 		nextToken = self.Peek()
 		if nextToken and nextToken.type == TokenEnum.LEFTPARENTHESIS:
 			self.FunctionCall()
@@ -1279,7 +1256,6 @@ class Syntactic(object):
 			self.Abort("Expected a function call, and identifier, or the LENGTH keyword")
 
 	def FunctionCall(self):
-#		print(13)
 		def Reduce():
 			arguments = []
 			temp = self.Pop() # Right parenthesis
@@ -1330,7 +1306,6 @@ class Syntactic(object):
 			return Expression(self.line, left)
 
 	def Variable(self, aType):
-#		print("Variable def")
 		self.Expect(TokenEnum.IDENTIFIER)
 		name = self.PeekBackwards()
 		value = None
@@ -1423,7 +1398,6 @@ class Syntactic(object):
 							nextToken = self.Peek()
 							self.Consume()
 							if nextToken:
-#								print(nextToken)
 								if nextToken.type == TokenEnum.kFUNCTION:
 									self.Consume()
 									result = self.Function(typ)
@@ -1781,16 +1755,12 @@ class Script(object):
 		self.starts = aStarts
 		self.flags = aFlags
 		commonParent = "SCRIPTOBJECT"
-#		print(aName)
-#		print(aParent)
 		if not aParent and not (len(aName) == 1 and aName[0] == commonParent):
 			self.parent = [commonParent]
 		elif aParent:
 			self.parent = aParent
 		else:
 			self.parent = None
-#		print(aParent)
-#		print(self.parent)
 		self.docstring = aDocstring
 		self.imports = aImports
 		self.customEvents = aCustomEvents
@@ -2108,7 +2078,6 @@ class Semantic(object):
 						raise SemanticError("A function called '%s' has already been declared in the '%s' state on line %d." % (s.name, signature.name, existing.starts), s.starts)
 					events[name] = s
 		self.definition[-1].append(State(signature.name, signature.auto, functions, events, signature.line, aStat.line))
-#		print(self.definition[-1])
 		self.scope.pop()
 
 	def FunctionEventScope(self, aStat):
@@ -2131,8 +2100,6 @@ class Semantic(object):
 			if typ == StatementEnum.ASSIGNMENT:
 				self.definition[-1].append(aStat)
 			elif typ == StatementEnum.DOCSTRING:
-				print(self.scope[-1])
-				print(self.definition[-1][-1])
 				if self.scope[-1] == 2 and self.definition[-1][-1].statementType != StatementEnum.FUNCTIONSIGNATURE:
 					raise SemanticError("Docstrings may only follow immediately after the function signature in function definitions.", aStat.line)
 				elif self.scope[-1] == 3 and self.definition[-1][-1].statementType != StatementEnum.EVENTSIGNATURE:
@@ -2180,14 +2147,11 @@ class Semantic(object):
 			self.definition[-1].append(Function(signature.name, signature.flags, signature.type, signature.parameters, docstring, body, signature.line, aEndLine))
 		else:
 			self.definition[-1].append(Event(signature.name, signature.flags, signature.remote, signature.parameters, docstring, body, signature.line, aEndLine))
-			#aName, aFlags, aRemote, aParameters, aDocstring, aBody, aStarts, aEnds
-#		print(self.definition[-1])
 		self.scope.pop()
 
 	def PropertyScope(self, aStat):
 		typ = aStat.statementType
 		signature = self.definition[-1][0]
-#		print(signature)
 		if signature.flags and (TokenEnum.kAUTO in signature.flags or TokenEnum.kAUTOREADONLY in signature.flags):
 			if typ == StatementEnum.DOCSTRING:
 				if len(self.definition[-1]) == 1:
@@ -2242,7 +2206,6 @@ class Semantic(object):
 			self.definition[-1].append(Property(signature.name, signature.flags, signature.type, signature.value, docstring, getFunc, setFunc, signature.line, aEndLine))
 		else:
 			self.definition[-1].append(Property(signature.name, signature.flags, signature.type, signature.value, docstring, getFunc, setFunc, signature.line, signature.line))
-#		print(self.definition[-1])
 		self.scope.pop()
 
 	def GroupScope(self, aStat):
@@ -2280,7 +2243,6 @@ class Semantic(object):
 		if not properties:
 			raise SemanticError("The '%s' group does not have any properties." % signature.name, signature.line)
 		self.definition[-1].append(Group(signature.name, signature.flags, properties, signature.line, aStat.line))
-#		print(self.definition[-1])
 		self.scope.pop()
 
 	def StructScope(self, aStat):
@@ -2318,7 +2280,6 @@ class Semantic(object):
 		if not members:
 			raise SemanticError("The '%s' struct does not have any members." % signature.name, signature.line)
 		self.definition[-1].append(Struct(signature.name, members, signature.line, aStat.line))
-#		print(self.definition[-1])
 		self.scope.pop()
 
 	def StructMemberScope(self, aStat):
@@ -2340,7 +2301,6 @@ class Semantic(object):
 		if structMemberDef:
 			docstring = structMemberDef.pop(0)
 		self.definition[-1].append(StructMember(signature.line, signature.name, signature.flags, signature.type, signature.value, docstring))
-#		print(self.definition[-1])
 		self.scope.pop()
 
 	def AssembleScript(self, aStat):
@@ -2363,7 +2323,6 @@ class Semantic(object):
 
 	def BuildScript(self):
 		"""Checks for duplicate definitions and returns a Script object."""
-		print(self.scope)
 		if len(self.scope) != 1 and self.scope[-1] != 0:
 			line = self.definition[-1][0].line
 			if self.scope[-1] == 1:
@@ -2409,7 +2368,6 @@ class Semantic(object):
 			if scriptDef and isinstance(scriptDef[0], Statement) and scriptDef[0].statementType == StatementEnum.DOCSTRING:
 				docstring = scriptDef.pop(0)
 			for obj in scriptDef:
-				print(obj)
 				if isinstance(obj, Statement):
 					if obj.statementType == StatementEnum.IMPORT:
 						key = ":".join(obj.name)
@@ -2476,7 +2434,6 @@ class Semantic(object):
 						key = None
 						if obj.remote:
 							key = "%s.%s" % (":".join(obj.remote), obj.name.upper())
-							print(key)
 						else:
 							key = obj.name.upper()
 						existing = events.get(key, None)
@@ -2557,7 +2514,6 @@ class Semantic(object):
 		
 		# Imports - Namespaces and/or scripts
 #		for imp in self.script.imports:
-#			print(imp)
 
 		self.functions.append({})
 		self.events.append({})
@@ -2863,7 +2819,6 @@ class Semantic(object):
 		pass
 
 	def Process(self, aLex, aSyn, aSource, aPaths):
-		print(self.cache)
 		self.lex = aLex
 		self.syn = aSyn
 		self.scope = [0]
