@@ -1,0 +1,2 @@
+@python BuildPackages.py
+@pause

@@ -12,6 +12,9 @@ RELEASE_EXTENSION = ".zip"
 PACKAGE_EXTENSION = ".sublime-package"
 
 def main():
+	print("Input version number: ")
+	releaseVersion = input()
+	print("Building a release archive...")
 	global ROOT
 	licenseFile = os.path.join(ROOT, "LICENSE.md")
 	if not os.path.isfile(licenseFile):
@@ -31,7 +34,7 @@ def main():
 		print("Could not find 'Packages' folder in '%s'." % ROOT)
 		return
 	packages = [os.path.join(pkg, p) for p in os.listdir(pkg) if PACKAGE_EXTENSION in p]
-	with zipfile.ZipFile(os.path.join(rls, "%s - %s%s" % (RELEASE_PREFIX, time.strftime("%Y-%m-%d %H-%M-%S", time.gmtime()), RELEASE_EXTENSION)), "w") as releaseZip:
+	with zipfile.ZipFile(os.path.join(rls, "%s - %s%s" % (RELEASE_PREFIX, releaseVersion, RELEASE_EXTENSION)), "w") as releaseZip:
 		releaseZip.write(licenseFile, licenseRelPath)
 		releaseZip.write(readmeFile, readmeRelPath)
 		for package in packages:
