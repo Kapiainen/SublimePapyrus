@@ -1170,11 +1170,15 @@ class Syntactic(object):
 		self.DotAtom()
 		if self.Accept(TokenEnum.kAS) or self.Accept(TokenEnum.kIS):
 			self.Shift()
-			if self.tokens[self.tokenIndex].type == TokenEnum.IDENTIFIER or self.tokens[self.tokenIndex].type == TokenEnum.kBOOL or self.tokens[self.tokenIndex].type == TokenEnum.kFLOAT or self.tokens[self.tokenIndex].type == TokenEnum.kINT or self.tokens[self.tokenIndex].type == TokenEnum.kSTRING:
-				self.Consume()
+			nextToken = self.Peek()
+			if nextToken and nextToken.type == TokenEnum.COLON:
+				self.Shift(IdentifierNode(self.ExpectType(False)))
 			else:
-				self.Abort("Expected a type.")
-			self.Shift(IdentifierNode(self.PeekBackwards()))
+				if self.tokens[self.tokenIndex].type == TokenEnum.IDENTIFIER or self.tokens[self.tokenIndex].type == TokenEnum.kBOOL or self.tokens[self.tokenIndex].type == TokenEnum.kFLOAT or self.tokens[self.tokenIndex].type == TokenEnum.kINT or self.tokens[self.tokenIndex].type == TokenEnum.kSTRING:
+					self.Consume()
+				else:
+					self.Abort("Expected a type.")
+				self.Shift(IdentifierNode(self.PeekBackwards().value.upper()))
 			self.ReduceBinaryOperator()
 		return True
 
@@ -1250,7 +1254,7 @@ class Syntactic(object):
 			self.Shift(LengthNode())
 			return True
 		elif self.Accept(TokenEnum.IDENTIFIER) or self.Accept(TokenEnum.kSELF) or self.Accept(TokenEnum.kPARENT):
-			self.Shift(IdentifierNode(self.PeekBackwards()))
+			self.Shift(IdentifierNode(self.PeekBackwards().value.upper()))
 			return True
 		else:
 			self.Abort("Expected a function call, and identifier, or the LENGTH keyword")
@@ -1668,7 +1672,10 @@ class IdentifierNode(Node):
 	__slots__ = ["value"]
 	def __init__(self, aValue):
 		super(IdentifierNode, self).__init__(NodeEnum.IDENTIFIER)
-		self.value = aValue
+		if isinstance(aValue, list):
+			self.value = aValue
+		else:
+			self.value = [aValue]
 
 	def __str__(self):
 		return """
@@ -2043,7 +2050,8 @@ class Semantic(object):
 	def StateScope(self, aStat):
 		typ = aStat.statementType
 		if typ == StatementEnum.ENDSTATE:
-			self.scope.pop()
+			#self.scope.pop()
+			self.EndStateScope(aStat.line)
 		elif typ == StatementEnum.EVENTSIGNATURE:
 			self.scope.append(3)
 			self.definition.append([aStat])
@@ -2054,7 +2062,7 @@ class Semantic(object):
 			signature = self.definition[-1][0]
 			raise SemanticError("Illegal statement in a state definition called '%s' that starts on line %d." % (signature.name, signature.line), aStat.line)
 
-	def EndStateScope(self, aStat):
+	def EndStateScope(self, aEndLine):
 		stateDef = self.definition.pop()
 		signature = stateDef.pop(0)
 		functions = None
@@ -2077,7 +2085,7 @@ class Semantic(object):
 					if existing:
 						raise SemanticError("A function called '%s' has already been declared in the '%s' state on line %d." % (s.name, signature.name, existing.starts), s.starts)
 					events[name] = s
-		self.definition[-1].append(State(signature.name, signature.auto, functions, events, signature.line, aStat.line))
+		self.definition[-1].append(State(signature.name, signature.auto, functions, events, signature.line, aEndLine))
 		self.scope.pop()
 
 	def FunctionEventScope(self, aStat):
@@ -2459,6 +2467,7 @@ class Semantic(object):
 		self.script = aScript
 		self.functions = [{}]
 		self.events = [{}]
+		self.groups = [{}]
 		self.properties = [{}]
 		self.variables = [{}]
 		self.structs = [{}]
@@ -2489,29 +2498,49 @@ class Semantic(object):
 					for key, value in parent.properties.items():
 						if not self.properties[-1].get(key, None):
 							self.properties[-1][key] = value
-				for key, value in self.script.properties.items():
+						# Additional check and possible SemanticError?
+				for key, value in self.script.properties.items(): # Check if attempting to declare a property with the same name as a property declared in a parent script.
 					if self.properties[-1].get(key, None):
-						raise SemanticError("A property called '%s' already exists in a parent script.", value.starts)
-				for key, value in self.script.variables.items():
+						raise SemanticError("A property called '%s' already exists in a parent script ('%s')." % (key, ":".join(parent.name)), value.starts)
+				for key, value in self.script.variables.items(): # Check if attempting to declare a scriptwide variable with the same name as a property declared in a parent script.
 					if self.properties[-1].get(key, None):
-						raise SemanticError("A property called '%s' already exists in a parent script.", value.starts)
+						raise SemanticError("A property called '%s' already exists in a parent script ('%s')." % (key, ":".join(parent.name)), value.starts)
 
 				# Structs
 				if parent.structs:
 					for key, value in parent.structs.items():
 						if not self.structs[-1].get(key, None):
 							self.structs[-1][key] = value
+
+				# States
+				if parent.states:
+					for key, value in parent.states.items():
+						if not self.states[-1].get(key, None):
+							self.states[-1][key] = value
 				parent = parent.parent
-		print(list(self.functions[-1]))
-		print(list(self.events[-1]))
-		print(list(self.properties[-1]))
-		print(list(self.structs[-1]))
+		print("Inherited")
+		print("Functions", list(self.functions[-1]))
+		print("Events", list(self.events[-1]))
+		print("Groups", list(self.groups[-1]))
+		print("Properties", list(self.properties[-1]))
+		print("Structs", list(self.structs[-1]))
+		print("States", list(self.states[-1]))
 
 		self.functions.append(self.script.functions)
 		self.events.append(self.script.events)
 		self.properties.append(self.script.properties)
 		self.variables.append(self.script.variables)
 		self.structs.append(self.script.structs)
+		self.states.append(self.script.states)
+		self.groups.append(self.script.groups)
+
+		print("Current script")
+		print("Functions", list(self.functions[-1]))
+		print("Events", list(self.events[-1]))
+		print("Groups", list(self.groups[-1]))
+		print("Properties", list(self.properties[-1]))
+		print("Structs", list(self.structs[-1]))
+		print("States", list(self.states[-1]))
 		print("Imports", self.script.imports)
 		for key, value in self.script.imports.items():
 			isFile = False
@@ -2529,8 +2558,8 @@ class Semantic(object):
 					break
 			if not isFile and not isDir:
 				raise SemanticError("'%s' is neither a script nor a valid namespace." % key, value.line)
-		print(self.importedScripts)
-		print(self.importedNamespaces)
+		print("Imported scripts", self.importedScripts)
+		print("Imported namespaces", self.importedNamespaces)
 		#self.importedNamespaces = []
 		#self.importedScripts = {}
 
