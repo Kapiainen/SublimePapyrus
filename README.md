@@ -228,6 +228,17 @@ Single file build system and a batch build variant.
     - SKSE mod event names
 
 ## **Changelog**
+**Version 2.x.x - YYYY/MM/DD:**
+
+- **Skyrim**
+  - Updated some error messages.
+  - Fixed validation of function return types and return statements.
+  - Fixed missing quotation marks in the default values of string arguments in function completions.
+  - Added validation of the size of the int literal used to initialize an array.
+  - Added validation of the assignment operator used to assign to an array element.
+  - Updated the validation of assigment statements.
+  - Updated the definition of float literals in lexical analysis.
+
 **Version 2.6.4 - 2016/12/07:**
 
 - **Skyrim**
