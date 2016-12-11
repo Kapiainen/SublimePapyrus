@@ -630,7 +630,8 @@ class ParameterSignature(object):#Statement):
 	def __init__(self, aLine, aName, aType, aValue):
 		#super(Parameter, self).__init__(StatementEnum.PARAMETER, aLine)
 		self.line = aLine
-		self.name = aName # String
+		print(aName, type(aName))
+		self.name = aName.value.upper() # String
 		self.type = aType # Instance of Type
 		self.value = aValue # Literal expression
 
@@ -1059,7 +1060,7 @@ class Syntactic(object):
 			self.Expect(TokenEnum.RIGHTBRACKET)
 			array = True
 		typ = Type(typ, array, False)
-		name = self.Expect(TokenEnum.IDENTIFIER).value
+		name = self.Expect(TokenEnum.IDENTIFIER)
 		value = None
 		if self.Accept(TokenEnum.ASSIGN):
 			value = self.ExpectExpression()
@@ -1075,7 +1076,7 @@ class Syntactic(object):
 			value = None
 			if self.Accept(TokenEnum.ASSIGN):
 				value = self.ExpectExpression()
-			parameters.append(ParameterSignature(self.line, name.value, typ, value))
+			parameters.append(ParameterSignature(self.line, name, typ, value))
 		return parameters
 
 	def EventParameters(self, aRemote):
@@ -1091,7 +1092,7 @@ class Syntactic(object):
 			if ":".join(typ) != ":".join(aRemote):
 				self.Abort("The first parameter in a remote/custom event has to have the same type as the script that emits the event.")
 		typ = Type(typ, array, False)
-		name = self.Expect(TokenEnum.IDENTIFIER).value
+		name = self.Expect(TokenEnum.IDENTIFIER)
 		parameters.append(ParameterSignature(self.line, name, typ, None))
 		while self.Accept(TokenEnum.COMMA):
 			typ = self.ExpectType(True)
@@ -1101,7 +1102,7 @@ class Syntactic(object):
 				array = True
 			typ = Type(typ, array, False)
 			name = self.Expect(TokenEnum.IDENTIFIER)
-			parameters.append(ParameterSignature(self.line, name.value, typ, None))
+			parameters.append(ParameterSignature(self.line, name, typ, None))
 		return parameters
 
 	def Function(self, aType):
@@ -2564,11 +2565,13 @@ class Semantic(object):
 
 		self.functions.append({})
 		if self.script.functions:
+			print("Processing script functions")
 			for name, obj in self.script.functions.items():
 				existingFunction = self.functions[0].get(name, None)
+				print("Function: ", name, existingFunction)
 				if existingFunction:
 					for parent in self.parentsToProcess:
-						if parent.structs.get(name, None):
+						if parent.functions.get(name, None):
 							# Check return type
 							if existingFunction.type and obj.type:
 								if existingFunction.type.array != obj.type.array or ":".join(existingFunction.type.name) != ":".join(obj.type.name):
@@ -2594,12 +2597,21 @@ class Semantic(object):
 									while i < paramCount:
 										existingParam = existingFunction.parameters[i]
 										overridingParam = obj.parameters[i]
+#										print("Existing param:", existingParam)
+#										print("Overriding param:", overridingParam)
 										if existingParam.type.array != overridingParam.type.array:
-											raise SemanticError("Expected the '%s' parameter to be an array." % (":".join(overridingParam.name)), obj.starts)
+											raise SemanticError("Expected the '%s' parameter to be an array." % (overridingParam.name), obj.starts)
 										elif ":".join(existingParam.type.name) != ":".join(overridingParam.type.name):
-											raise SemanticError("Expected the '%s' parameter's type to be '%s'." % (":".join(overridingParam.name), ":".join(overridingParam.type.name)), obj.starts)
-										elif existingParam.value.type != overridingParam.value.type or str(existingParam.value.value).upper() != str(overridingParam.value.value).upper():
-											raise SemanticError("Expected the default value of the '%s' parameter to be '%s'." % (":".join(overridingParam.name), overridingParam.value.value), obj.starts)
+											raise SemanticError("Expected the '%s' parameter's type to be '%s'." % (overridingParam.name, ":".join(overridingParam.type.name)), obj.starts)
+										else:
+											if existingParam.value and overridingParam.value:
+												pass # TODO: Use the NodeVisitor to get the default value's type and actual value
+#												if existingParam.value.type != overridingParam.value.type or str(existingParam.value.value).upper() != str(overridingParam.value.value).upper():
+#													raise SemanticError("Expected the default value of the '%s' parameter to be '%s'." % (overridingParam.name, overridingParam.value.value), obj.starts)
+											elif existingParam.value:
+												raise SemanticError("Expected the '%s' parameter to have a default value." % (overridingParam.name), obj.starts)
+											elif overridingParam.value:
+												raise SemanticError("Expected the '%s' parameter to not have a default value." % (overridingParam.name), obj.starts)
 										i += 1
 							elif existingFunction.parameters:
 								raise SemanticError("The function header inherited from '%s' requires that '%s' has %d parameters." % (":".join(parent.name), name, len(existingFunction.parameters)), obj.starts)
