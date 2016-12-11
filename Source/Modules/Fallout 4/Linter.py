@@ -303,7 +303,7 @@ class Lexical(object):
 					(TokenEnum.kVAR, r"\bvar\b"),
 					(TokenEnum.kWHILE, r"\bwhile\b"),
 					(TokenEnum.IDENTIFIER, r"[a-z_][0-9a-z_]*"),
-					(TokenEnum.FLOAT, r"(-\d+\.\d+)|(\d+\.\d+)"),
+					(TokenEnum.FLOAT, r"(-\d+\.\d+)|(\d+\.\d+)"), # TODO: Revisit this definition
 					(TokenEnum.INT, r"((0x(\d|[a-f])+)|((\d+))(?![a-z_]))"),
 					(TokenEnum.ADDITION, r"\+"),
 					(TokenEnum.SUBTRACTION, r"-"),
@@ -440,7 +440,7 @@ class KeywordExpression(Statement):
 class Type(object):
 	__slots__ = ["name", "array", "struct"]
 	def __init__(self, aName, aArray, aStruct):
-		self.name = aName # String
+		self.name = aName # List of strings
 		self.array = aArray # Bool
 		self.struct = aStruct # Bool
 
@@ -1059,10 +1059,18 @@ class Syntactic(object):
 			self.Expect(TokenEnum.RIGHTBRACKET)
 			array = True
 		typ = Type(typ, array, False)
-		name = self.Expect(TokenEnum.IDENTIFIER)
+		name = self.Expect(TokenEnum.IDENTIFIER) # Should be accessing the 'name' attribute
 		value = None
 		if self.Accept(TokenEnum.ASSIGN):
-			value = self.ExpectExpression()
+			if array:
+				if self.Accept(TokenEnum.kNONE):
+					value = self.PeekBackwards()
+				else:
+					raise SyntacticError("The default value of array parameter '%s' can only be 'None'." % (name), self.line)
+			if self.Accept(TokenEnum.kNONE) or self.Accept(TokenEnum.kTRUE) or self.Accept(TokenEnum.kFALSE) or self.Accept(TokenEnum.FLOAT) or self.Accept(TokenEnum.INT) or self.Accept(TokenEnum.STRING):
+				value = self.PeekBackwards()
+			else:
+				raise SyntacticError("The default values of parameters can only be literals.")
 		parameters.append(ParameterSignature(self.line, name, typ, value))
 		while self.Accept(TokenEnum.COMMA):
 			typ = self.ExpectType(True)
@@ -2555,7 +2563,7 @@ class Semantic(object):
 #
 		isNative = False
 		if self.script.flags:
-			isNative = KeywordEnum.kNATIVE in self.script.flags
+			isNative = TokenEnum.kNATIVE in self.script.flags
 
 		self.properties.append({})
 #		if self.script.properties:
@@ -2565,10 +2573,46 @@ class Semantic(object):
 		self.functions.append({})
 		if self.script.functions:
 			for name, obj in self.script.functions.items():
-				if self.functions[0].get(name, None):
-					pass # Overriding, check that the signature is the same
-				else:
-					self.functions[-1][name] = obj
+				existingFunction = self.functions[0].get(name, None)
+				if existingFunction:
+					for parent in self.parentsToProcess:
+						if parent.structs.get(name, None):
+							# Check return type
+							if existingFunction.type and obj.type:
+								if existingFunction.type.array != obj.type.array or ":".join(existingFunction.type.name) != ":".join(obj.type.name):
+									returnType = ":".join(existingFunction.type.name)
+									if existingFunction.type.array:
+										returnType = returnType + "[]"
+									raise SemanticError("The function header inherited from '%s' requires that '%s' returns a(n) '%s' value." % (":".join(parent.name), name, returnType), obj.starts)
+							elif existingFunction.type:
+								returnType = ":".join(existingFunction.type.name)
+								if existingFunction.type.array:
+									returnType = returnType + "[]"
+								raise SemanticError("The function header inherited from '%s' requires that '%s' returns a(n) '%s' value." % (":".join(parent.name), name, returnType), obj.starts)
+							elif obj.type:
+								raise SemanticError("The function header inherited from '%s' requires that '%s' does not return a value." % (":".join(parent.name), name), obj.starts)
+
+							# Check argument types and defaults
+							if existingFunction.parameters and obj.parameters:
+								if len(existingFunction.parameters) != len(obj.parameters):
+									raise SemanticError("The function header inherited from '%s' requires that '%s' has %d parameters." % (":".join(parent.name), name, len(existingFunction.parameters)), obj.starts)
+								else:
+									i = 0
+									paramCount = len(existingFunction.parameters)
+									while i < paramCount:
+										existingParam = existingFunction.parameters[i]
+										overridingParam = obj.parameters[i]
+										if existingParam.type.array != overridingParam.type.array:
+											raise SemanticError("Expected the '%s' parameter to be an array." % (":".join(overridingParam.name)), obj.starts)
+										elif ":".join(existingParam.type.name) != ":".join(overridingParam.type.name):
+											raise SemanticError("Expected the '%s' parameter's type to be '%s'." % (":".join(overridingParam.name), ":".join(overridingParam.type.name)), obj.starts)
+										elif 
+										i += 1
+							elif existingFunction.parameters:
+								raise SemanticError("The function header inherited from '%s' requires that '%s' has %d parameters." % (":".join(parent.name), name, len(existingFunction.parameters)), obj.starts)
+							elif obj.parameters:
+								raise SemanticError("The function header inherited from '%s' requires that '%s' does not have any parameters." % (":".join(parent.name), name), obj.starts)
+				self.functions[-1][name] = obj
 
 		self.events.append({})
 		if self.script.events:
@@ -2600,6 +2644,7 @@ class Semantic(object):
 							raise SemanticError("A CustomEvent called '%s' has already been inherited from '%s'." % (name, ":".join(parent.name)), obj.line)
 				else:
 					self.customEvents[-1][name] = obj
+
 		self.states.append({})
 #		if self.script.states:
 #			for name, obj in self.script.states.items():
