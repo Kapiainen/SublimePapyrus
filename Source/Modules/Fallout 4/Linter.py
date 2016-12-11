@@ -2475,94 +2475,170 @@ class Semantic(object):
 		self.importedNamespaces = [] # List of list of strings
 		self.importedScripts = {} # Dict of Script objects
 		self.customEvents = [{}]
+		self.parentsToProcess = []
 		print("Starting to validate " + ":".join(aScript.name))
-		# Recursively process parent script(s)
 		if self.script.parent:
-			# Start building a list of dicts of available functions, events, properties, and structs
-#			processedParents = []
+			# Get a list of parents, reverse the order, and start processing from ScriptObject
 			parent = self.script.parent
-			
 			while parent:
-				print("Merging resources from " + ":".join(parent.name))
-				# Functions
-				if parent.functions:
-					for key, value in parent.functions.items():
-						if not self.functions[-1].get(key, None):
-							self.functions[-1][key] = value
-
-				# Events
-				if parent.events:
-					for key, value in parent.events.items():
-						if not self.events[-1].get(key, None):
-							self.events[-1][key] = value
-
-				# Properties
-				if parent.properties:
-					for key, value in parent.properties.items():
-						if not self.properties[-1].get(key, None):
-							self.properties[-1][key] = value
-						# Additional check and possible SemanticError?
-				for key, value in self.script.properties.items(): # Check if attempting to declare a property with the same name as a property declared in a parent script.
-					if self.properties[-1].get(key, None):
-						raise SemanticError("A property called '%s' already exists in a parent script ('%s')." % (key, ":".join(parent.name)), value.starts)
-				for key, value in self.script.variables.items(): # Check if attempting to declare a scriptwide variable with the same name as a property declared in a parent script.
-					if self.properties[-1].get(key, None):
-						raise SemanticError("A property called '%s' already exists in a parent script ('%s')." % (key, ":".join(parent.name)), value.starts)
-
-				# Structs
-				if parent.structs:
-					for key, value in parent.structs.items():
-						if not self.structs[-1].get(key, None):
-							self.structs[-1][key] = value
-
-				# States
-				if parent.states:
-					for key, value in parent.states.items():
-						if not self.states[-1].get(key, None):
-							self.states[-1][key] = value
-
-				# Groups
-				if parent.groups:
-					for key, value in parent.groups.items():
-						if not self.groups[-1].get(key, None):
-							self.groups[-1][key] = value
-
-				# CustomEvents
-				if parent.customEvents:
-					for key, value in parent.customEvents.items():
-						if not self.customEvents[-1].get(key, None):
-							self.customEvents[-1][key] = value
-						else:
-							raise SemanticError("", value.line)
-
-#				processedParents.append(parent)
+				self.parentsToProcess.insert(0, parent)
 				parent = parent.parent
-		print("Inherited")
-		print("Functions", list(self.functions[-1]))
-		print("Events", list(self.events[-1]))
-		print("Groups", list(self.groups[-1]))
-		print("Properties", list(self.properties[-1]))
-		print("Structs", list(self.structs[-1]))
-		print("States", list(self.states[-1]))
-		print("CustomEvents", list(self.customEvents[-1]))
+			print(self.parentsToProcess)
+			for parent in self.parentsToProcess:
+				print("Merging resources from " + ":".join(parent.name))
+				isNative = False
+				if parent.flags:
+					isNative = TokenEnum.kNATIVE in parent.flags
+				# Properties - Cannot be overridden.
+#				if parent.properties:
+#					for key, value in parent.properties.items():
+#						if not self.properties[-1].get(key, None):
+#							self.properties[-1][key] = value
+#						# Additional check and possible SemanticError?
+#				for key, value in self.script.properties.items(): # Check if attempting to declare a property with the same name as a property declared in a parent script.
+#					if self.properties[-1].get(key, None):
+#						raise SemanticError("A property called '%s' already exists in a parent script ('%s')." % (key, ":".join(parent.name)), value.starts)
+#				for key, value in self.script.variables.items(): # Check if attempting to declare a scriptwide variable with the same name as a property declared in a parent script.
+#					if self.properties[-1].get(key, None):
+#						raise SemanticError("A property called '%s' already exists in a parent script ('%s')." % (key, ":".join(parent.name)), value.starts)
 
-		self.functions.append(self.script.functions)
-		self.events.append(self.script.events)
-		self.properties.append(self.script.properties)
-		self.variables.append(self.script.variables)
-		self.structs.append(self.script.structs)
-		self.states.append(self.script.states)
-		self.groups.append(self.script.groups)
-		self.customEvents.append(self.script.customEvents)
+				# Functions - Can be overridden.
+				if parent.functions:
+					for name, obj in parent.functions.items():
+						if self.functions[-1].get(name, None):
+							pass # Overriding
+						else:
+							self.functions[-1][name] = obj
 
-		print("Current script")
-		print("Functions", list(self.functions[-1]))
-		print("Events", list(self.events[-1]))
-		print("Groups", list(self.groups[-1]))
-		print("Properties", list(self.properties[-1]))
-		print("Structs", list(self.structs[-1]))
-		print("States", list(self.states[-1]))
-		print("CustomEvents", list(self.customEvents[-1]))
+				# Events - New events require the script to have the 'Native' keyword, otherwise the event has to be overriding an event declared in a parent script.
+				if parent.events:
+					for name, obj in parent.events.items():
+						if self.events[-1].get(name, None):
+							pass # Overriding
+						else:
+							if isNative:
+								self.events[-1][name] = obj
+							else:
+								raise SemanticError("Attempt to declare a new event '%s' in '%s' without the 'Native' keyword in the script header." % (name, ":".join(parent.name)), self.script.starts)
+
+				# Structs - Cannot be overridden.
+				if parent.structs:
+					for name, obj in parent.structs.items():
+						if self.structs[-1].get(name, None):
+							for otherParent in self.parentsToProcess:
+								if otherParent.structs.get(name, None):
+									raise SemanticError("Attempt to declare a struct '%s' in '%s' that has already been declared in '%s'." % (name, ":".join(parent.name), ":".join(otherParent.name)), self.script.starts)
+						else:
+							self.structs[-1][name] = obj
+
+				# CustomEvents - Cannot be overridden.
+				if parent.customEvents:
+					for name, obj in parent.customEvents.items():
+						if self.customEvents[-1].get(name, None):
+							for otherParent in self.parentsToProcess:
+								if otherParent.customEvents.get(name, None):
+									raise SemanticError("Attempt to declare a CustomEvent '%s' in '%s' that has already been declared in '%s'." % (name, ":".join(parent.name), ":".join(otherParent.name)), self.script.starts)
+						else:
+							self.customEvents[-1][name] = obj
+
+				# States - Merged with states inherited from parents, functions and events have to have been declared in the empty state of the current script or a parent script.
+#				if parent.states:
+#					for key, value in parent.states.items():
+#						if not self.states[-1].get(key, None):
+#							self.states[-1][key] = value
+#
+				# Groups - Merged with groups inherited from parents, inherited properties cannot be overridden.
+#				if parent.groups:
+#					for key, value in parent.groups.items():
+#						if not self.groups[-1].get(key, None):
+#							self.groups[-1][key] = value
+#
+		isNative = False
+		if self.script.flags:
+			isNative = KeywordEnum.kNATIVE in self.script.flags
+
+		self.properties.append({})
+#		if self.script.properties:
+#			for name, obj in self.script.properties.items():
+#				if
+
+		self.functions.append({})
+		if self.script.functions:
+			for name, obj in self.script.functions.items():
+				if self.functions[0].get(name, None):
+					pass # Overriding, check that the signature is the same
+				else:
+					self.functions[-1][name] = obj
+
+		self.events.append({})
+		if self.script.events:
+			for name, obj in self.script.events.items():
+				if self.events[0].get(name, None):
+					pass # Overriding, check that the signature is the same
+				else:
+					if isNative:
+						self.events[-1][name] = obj
+					else:
+						raise SemanticError("Attempting to declare a new event in a script that does not have the 'Native' keyword in its header.", obj.starts)
+
+		self.structs.append({})
+		if self.script.structs:
+			for name, obj in self.script.structs.items():
+				if self.structs[0].get(name, None):
+					for parent in self.parentsToProcess:
+						if parent.structs.get(name, None):
+							raise SemanticError("A struct called '%s' has already been inherited from '%s'." % (name, ":".join(parent.name)), obj.starts)
+				else:
+					self.structs[-1][name] = obj
+
+		self.customEvents.append({})
+		if self.script.customEvents:
+			for name, obj in self.script.customEvents.items():
+				if self.customEvents[0].get(name, None):
+					for parent in self.parentsToProcess:
+						if parent.customEvents.get(name, None):
+							raise SemanticError("A CustomEvent called '%s' has already been inherited from '%s'." % (name, ":".join(parent.name)), obj.line)
+				else:
+					self.customEvents[-1][name] = obj
+		self.states.append({})
+#		if self.script.states:
+#			for name, obj in self.script.states.items():
+
+		self.groups.append({})
+#		if self.script.groups:
+#			for name, obj in self.script.groups.items():
+
+		self.variables.append({})
+#		if self.script.variables:
+#			for name, obj in self.script.variables.items():
+#		else:
+#			self.functions.append(self.script.functions)
+#			self.events.append(self.script.events)
+#			self.properties.append(self.script.properties)
+#			self.variables.append(self.script.variables)
+#			self.structs.append(self.script.structs)
+#			self.states.append(self.script.states)
+#			self.groups.append(self.script.groups)
+#			self.customEvents.append(self.script.customEvents)
+		print("\n========== Inherited ==========")
+		print("Functions", list(self.functions[0]))
+		print("Events", list(self.events[0]))
+		print("Groups", list(self.groups[0]))
+		print("Properties", list(self.properties[0]))
+		print("Structs", list(self.structs[0]))
+		print("States", list(self.states[0]))
+		print("CustomEvents", list(self.customEvents[0]))
+		print("\n\n========== Current script ==========")
+		print("Functions", list(self.functions[1]))
+		print("Events", list(self.events[1]))
+		print("Groups", list(self.groups[1]))
+		print("Properties", list(self.properties[1]))
+		print("Structs", list(self.structs[1]))
+		print("States", list(self.states[1]))
+		print("CustomEvents", list(self.customEvents[1]))
+		print("")
+
+		# Imported scripts and namespaces
 		for key, value in self.script.imports.items():
 			isFile = False
 			isDir = False
@@ -2581,7 +2657,6 @@ class Semantic(object):
 				raise SemanticError("'%s' is neither a script nor a valid namespace." % key, value.line)
 		print("Imported scripts", self.importedScripts)
 		print("Imported namespaces", self.importedNamespaces)		
-#		self.customEvents = aCustomEvents
 		return
 		
 		# Imports - Namespaces and/or scripts
