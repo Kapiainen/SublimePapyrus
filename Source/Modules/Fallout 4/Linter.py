@@ -2474,11 +2474,14 @@ class Semantic(object):
 		self.states = [{}]
 		self.importedNamespaces = [] # List of list of strings
 		self.importedScripts = {} # Dict of Script objects
+		self.customEvents = [{}]
 		print("Starting to validate " + ":".join(aScript.name))
 		# Recursively process parent script(s)
 		if self.script.parent:
 			# Start building a list of dicts of available functions, events, properties, and structs
+#			processedParents = []
 			parent = self.script.parent
+			
 			while parent:
 				print("Merging resources from " + ":".join(parent.name))
 				# Functions
@@ -2517,6 +2520,22 @@ class Semantic(object):
 					for key, value in parent.states.items():
 						if not self.states[-1].get(key, None):
 							self.states[-1][key] = value
+
+				# Groups
+				if parent.groups:
+					for key, value in parent.groups.items():
+						if not self.groups[-1].get(key, None):
+							self.groups[-1][key] = value
+
+				# CustomEvents
+				if parent.customEvents:
+					for key, value in parent.customEvents.items():
+						if not self.customEvents[-1].get(key, None):
+							self.customEvents[-1][key] = value
+						else:
+							raise SemanticError("", value.line)
+
+#				processedParents.append(parent)
 				parent = parent.parent
 		print("Inherited")
 		print("Functions", list(self.functions[-1]))
@@ -2525,6 +2544,7 @@ class Semantic(object):
 		print("Properties", list(self.properties[-1]))
 		print("Structs", list(self.structs[-1]))
 		print("States", list(self.states[-1]))
+		print("CustomEvents", list(self.customEvents[-1]))
 
 		self.functions.append(self.script.functions)
 		self.events.append(self.script.events)
@@ -2533,6 +2553,7 @@ class Semantic(object):
 		self.structs.append(self.script.structs)
 		self.states.append(self.script.states)
 		self.groups.append(self.script.groups)
+		self.customEvents.append(self.script.customEvents)
 
 		print("Current script")
 		print("Functions", list(self.functions[-1]))
@@ -2541,7 +2562,7 @@ class Semantic(object):
 		print("Properties", list(self.properties[-1]))
 		print("Structs", list(self.structs[-1]))
 		print("States", list(self.states[-1]))
-		print("Imports", self.script.imports)
+		print("CustomEvents", list(self.customEvents[-1]))
 		for key, value in self.script.imports.items():
 			isFile = False
 			isDir = False
@@ -2559,14 +2580,8 @@ class Semantic(object):
 			if not isFile and not isDir:
 				raise SemanticError("'%s' is neither a script nor a valid namespace." % key, value.line)
 		print("Imported scripts", self.importedScripts)
-		print("Imported namespaces", self.importedNamespaces)
-		#self.importedNamespaces = []
-		#self.importedScripts = {}
-
-#		self.imports = aImports
+		print("Imported namespaces", self.importedNamespaces)		
 #		self.customEvents = aCustomEvents
-#		self.groups = aGroups
-#		self.states = aStates
 		return
 		
 		# Imports - Namespaces and/or scripts
