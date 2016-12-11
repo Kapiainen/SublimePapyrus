@@ -633,29 +633,6 @@ class ParameterSignature(object):#Statement):
 		self.name = aName # String
 		self.type = aType # Instance of Type
 		self.value = aValue # Literal expression
-		if aValue:
-			if aType.array:
-				if aValue.type != TokenEnum.kNONE:
-					raise SyntacticError("The default value of array parameter '%s' can only be 'None'." % (name), self.line)
-			else:
-				typeString = ":".join(aType.name)
-				if typeString == "BOOL":
-					if aValue.type != TokenEnum.kTRUE and aValue.type != TokenEnum.kFALSE:
-						raise SyntacticError("Bool parameters can only have a bool literal as the default value.", self.line)
-				elif typeString == "FLOAT":
-					if aValue.type != TokenEnum.FLOAT:
-						raise SyntacticError("Float parameters can only have a float literal as the default value.", self.line)
-				elif typeString == "INT":
-					if aValue.type != TokenEnum.INT:
-						raise SyntacticError("Int parameters can only have an int literal as the default value.", self.line)
-				elif typeString == "STRING":
-					if aValue.type != TokenEnum.STRING:
-						raise SyntacticError("String parameters can only have a string literal as the default value.", self.line)
-				else:
-					if aValue.type != TokenEnum.kNONE:
-						raise SyntacticError("Non-base type parameters can only have 'None' as the default value.", self.line)
-#				else:
-#					raise SyntacticError("The default values of parameters can only be literals.")
 
 	def __str__(self):
 		return """
@@ -1085,32 +1062,7 @@ class Syntactic(object):
 		name = self.Expect(TokenEnum.IDENTIFIER).value
 		value = None
 		if self.Accept(TokenEnum.ASSIGN):
-			if self.Accept(TokenEnum.kNONE) or self.Accept(TokenEnum.kFALSE) or self.Accept(TokenEnum.kTRUE) or self.Accept(TokenEnum.FLOAT) or self.Accept(TokenEnum.INT) or self.Accept(TokenEnum.STRING):
-				value = self.PeekBackwards()
-			else:
-				raise SyntacticError("The default value of a parameter has to be a literal.", self.line)
-#			if array:
-#				if self.Accept(TokenEnum.kNONE):
-#					value = self.PeekBackwards()
-#				else:
-#					raise SyntacticError("The default value of array parameter '%s' can only be 'None'." % (name), self.line)
-#			else:
-#				typeString = ":".join(typ.type)
-#				if typeString == "BOOL" and not self.Accept(TokenEnum.kTRUE):
-#					raise SyntacticError("Bool parameters can only have a bool literal as the default value.", self.line)
-#				elif typeString == "BOOL" and not self.Accept(TokenEnum.kFALSE):
-#					raise SyntacticError("Bool parameters can only have a bool literal as the default value.", self.line)
-#				elif typeString == "FLOAT" and not self.Accept(TokenEnum.FLOAT):
-#					raise SyntacticError("Float parameters can only have a float literal as the default value.", self.line)
-#				elif typeString == "INT" and not self.Accept(TokenEnum.INT):
-#					raise SyntacticError("Int parameters can only have an int literal as the default value.", self.line)
-#				elif typeString == "STRING" and not self.Accept(TokenEnum.STRING):
-#					raise SyntacticError("String parameters can only have a string literal as the default value.", self.line)
-#				elif not self.Accept(TokenEnum.kNONE):
-#					raise SyntacticError("Non-base type parameters can only have 'None' as the default value.", self.line)
-#				value = self.PeekBackwards()
-#			else:
-#				raise SyntacticError("The default values of parameters can only be literals.")
+			value = self.ExpectExpression()
 		parameters.append(ParameterSignature(self.line, name, typ, value))
 		while self.Accept(TokenEnum.COMMA):
 			typ = self.ExpectType(True)
@@ -1122,11 +1074,7 @@ class Syntactic(object):
 			name = self.Expect(TokenEnum.IDENTIFIER)
 			value = None
 			if self.Accept(TokenEnum.ASSIGN):
-				if self.Accept(TokenEnum.kNONE) or self.Accept(TokenEnum.kFALSE) or self.Accept(TokenEnum.kTRUE) or self.Accept(TokenEnum.FLOAT) or self.Accept(TokenEnum.INT) or self.Accept(TokenEnum.STRING):
-					value = self.PeekBackwards()
-				else:
-					raise SyntacticError("The default value of a parameter has to be a literal.", self.line)
-				#value = self.ExpectExpression()
+				value = self.ExpectExpression()
 			parameters.append(ParameterSignature(self.line, name.value, typ, value))
 		return parameters
 
