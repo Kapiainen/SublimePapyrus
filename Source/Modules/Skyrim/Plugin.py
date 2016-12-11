@@ -603,9 +603,9 @@ h1 {
 								return completions
 							except Linter.ExpectedKeywordError as f:
 								# Mandatory property flags when initializing a property with a literal
-								if syn.KW_AUTO in e.keywords:
+								if syn.KW_AUTO in f.keywords:
 									completions.append(("auto\tkeyword", "Auto",))
-								if syn.KW_AUTOREADONLY in e.keywords:
+								if syn.KW_AUTOREADONLY in f.keywords:
 									completions.append(("autoreadonly\tkeyword", "AutoReadOnly",))
 								return completions
 							except Linter.ExpectedLiteralError as f:

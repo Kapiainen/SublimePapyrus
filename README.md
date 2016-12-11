@@ -228,6 +228,10 @@ Single file build system and a batch build variant.
     - SKSE mod event names
 
 ## **Changelog**
+**Version 2.6.6 - 2016/12/11**
+- **Skyrim**
+  - Fixed a typo that caused the plugin to crash under certain circumstances.
+
 **Version 2.6.5 - 2016/12/10:**
 
 - **Skyrim**
