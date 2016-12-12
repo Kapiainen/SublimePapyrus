@@ -228,6 +228,7 @@ Single file build system and a batch build variant.
     - SKSE mod event names
 
 ## **Changelog**
+
 **Version x.x.x - YYYY/MM/DD:**
 
 - **Core**
@@ -236,6 +237,11 @@ Single file build system and a batch build variant.
 - **Fallout 4**
   - Added syntax highlighting.
   - Added completions.
+
+**Version 2.6.7 - 2016/12/12:**
+
+- **Skyrim**
+  - Added support for completions, which had previously been omitted, directly after the **Return** keyword in functions with a defined return type.
 
 **Version 2.6.6 - 2016/12/11:**
 
