@@ -812,6 +812,58 @@ h1 {
 								elif stat.type == syn.STAT_EXPRESSION:
 									completions.append(self.completionKeywordAs)
 									return completions
+								elif stat.type == syn.STAT_RETURN:
+									if e.signature.data.type:
+										for name, obj in e.functions[0].items():
+											if obj.type == syn.STAT_FUNCTIONDEF:
+												completions.append(SublimePapyrus.MakeFunctionCompletion(obj, sem, True, "parent", parameters=settingFunctionEventParameters))
+											elif obj.type == syn.STAT_EVENTDEF:
+												completions.append(SublimePapyrus.MakeEventCompletion(obj, sem, True, "parent", parameters=settingFunctionEventParameters))
+										for name, obj in e.functions[1].items():
+											if obj.type == syn.STAT_FUNCTIONDEF:
+												completions.append(SublimePapyrus.MakeFunctionCompletion(obj, sem, True, "self", parameters=settingFunctionEventParameters))
+											elif obj.type == syn.STAT_EVENTDEF:
+												completions.append(SublimePapyrus.MakeEventCompletion(obj, sem, True, "self", parameters=settingFunctionEventParameters))
+										for name, obj in e.variables[0].items():
+											if obj.type == syn.STAT_PROPERTYDEF:
+												completions.append(SublimePapyrus.MakePropertyCompletion(obj, "parent"))
+										for name, obj in e.variables[1].items():
+											if obj.type == syn.STAT_PROPERTYDEF:
+												completions.append(SublimePapyrus.MakePropertyCompletion(obj, "self"))
+											elif obj.type == syn.STAT_VARIABLEDEF:
+												completions.append(SublimePapyrus.MakeVariableCompletion(obj))
+										for scope in e.variables[2:]:
+											for name, obj in scope.items():
+												if obj.type == syn.STAT_VARIABLEDEF:
+													completions.append(SublimePapyrus.MakeVariableCompletion(obj))
+												elif obj.type == syn.STAT_PARAMETER:
+													completions.append(SublimePapyrus.MakeParameterCompletion(obj))
+										completions.extend(self.GetTypeCompletions(view, False))
+										completions.append(self.completionKeywordFalse)
+										completions.append(self.completionKeywordTrue)
+										completions.append(self.completionKeywordNone)
+										if not sem.KW_GLOBAL in e.signature.data.flags:
+											completions.append(self.completionKeywordSelf)
+											completions.append(self.completionKeywordParent)
+
+										# Imported global functions
+										for imp in e.imports:
+											functions = self.GetFunctionCompletions(imp, True)
+											if not functions:
+												try:
+													script = sem.GetCachedScript(imp)
+													if script:
+														functions = []
+														impLower = imp.lower()
+														for name, obj in script.functions.items():
+															if lex.KW_GLOBAL in obj.data.flags:
+																functions.append(SublimePapyrus.MakeFunctionCompletion(obj, sem, True, impLower, parameters=settingFunctionEventParameters))
+														self.SetFunctionCompletions(imp, functions, True)
+												except:
+													return
+											if functions:
+												completions.extend(functions)
+										return completions
 							except Linter.ExpectedTypeError as f:
 								completions.extend(self.GetTypeCompletions(view, f.baseTypes))
 								return completions
