@@ -2622,6 +2622,14 @@ class Semantic(object):
 				# Also check that the default values of parameters are actually literals (unary minus is allowed to precede ints and floats).
 				self.functions[1][name] = obj
 
+		# If remote
+		#	First parameter has to be of the same type as the remote script
+		#	If actually remote
+		#		Then the remaining parameters should be the same as in the remote event's signature
+		#	Elif CustomEvent
+		#		The second, and final, parameter is Var[] akParams
+		# Else
+		#	Check parameters
 		self.events.append({})
 		if self.script.events:
 			for name, obj in self.script.events.items():
@@ -2669,16 +2677,7 @@ class Semantic(object):
 			self.variables.append(self.script.variables)
 		else:
 			self.variables.append({})
-#			for name, obj in self.script.variables.items():
-#		else:
-#			self.functions.append(self.script.functions)
-#			self.events.append(self.script.events)
-#			self.properties.append(self.script.properties)
-#			self.variables.append(self.script.variables)
-#			self.structs.append(self.script.structs)
-#			self.states.append(self.script.states)
-#			self.groups.append(self.script.groups)
-#			self.customEvents.append(self.script.customEvents)
+
 		print("\n========== Inherited ==========")
 		print("Functions", list(self.functions[0]))
 		print("Events", list(self.events[0]))
