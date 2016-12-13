@@ -2496,7 +2496,7 @@ class Semantic(object):
 						if self.properties[0].get(name, None):
 							for otherParent in self.parentsToProcess:
 								if otherParent.properties.get(name, None):
-									raise SemanticError("Attempt to declare a property '%s' in '%s' that has already been declared in '%s'." % (name, ":".join(parent.name), ":".join(otherParent.name)), self.script.starts)
+									raise SemanticError("A property called '%s' in '%s' has already been declared in '%s'." % (name, ":".join(parent.name), ":".join(otherParent.name)), self.script.starts)
 						else:
 							self.properties[0][name] = obj
 
@@ -2525,7 +2525,7 @@ class Semantic(object):
 						if self.structs[0].get(name, None):
 							for otherParent in self.parentsToProcess:
 								if otherParent.structs.get(name, None):
-									raise SemanticError("Attempt to declare a struct '%s' in '%s' that has already been declared in '%s'." % (name, ":".join(parent.name), ":".join(otherParent.name)), self.script.starts)
+									raise SemanticError("A struct called '%s' in '%s' has already been declared in '%s'." % (name, ":".join(parent.name), ":".join(otherParent.name)), self.script.starts)
 						else:
 							self.structs[0][name] = obj
 
@@ -2535,7 +2535,7 @@ class Semantic(object):
 						if self.customEvents[0].get(name, None):
 							for otherParent in self.parentsToProcess:
 								if otherParent.customEvents.get(name, None):
-									raise SemanticError("Attempt to declare a CustomEvent '%s' in '%s' that has already been declared in '%s'." % (name, ":".join(parent.name), ":".join(otherParent.name)), self.script.starts)
+									raise SemanticError("A CustomEvent called '%s' in '%s' has already been declared in '%s'." % (name, ":".join(parent.name), ":".join(otherParent.name)), self.script.starts)
 						else:
 							self.customEvents[0][name] = obj
 
@@ -2561,7 +2561,7 @@ class Semantic(object):
 				if self.properties[0].get(name, None):
 					for parent in self.parentsToProcess:
 						if parent.properties.get(name, None):
-							raise SemanticError("The '%s' property has already been declared in '%s'." % (name, ":".join(parent.name)), obj.starts)
+							raise SemanticError("A property called '%s' has already been declared in '%s'." % (name, ":".join(parent.name)), obj.starts)
 				else:
 					self.properties[1][name] = obj
 
@@ -2639,7 +2639,7 @@ class Semantic(object):
 					if isNative:
 						self.events[1][name] = obj
 					else:
-						raise SemanticError("Attempting to declare a new event in a script that does not have the 'Native' keyword in its header.", obj.starts)
+						raise SemanticError("The ability to declare new events requires the script header to have the 'Native' flag.", obj.starts)
 
 		self.structs.append({})
 		if self.script.structs:
@@ -2647,7 +2647,7 @@ class Semantic(object):
 				if self.structs[0].get(name, None):
 					for parent in self.parentsToProcess:
 						if parent.structs.get(name, None):
-							raise SemanticError("A struct called '%s' has already been inherited from '%s'." % (name, ":".join(parent.name)), obj.starts)
+							raise SemanticError("A struct called '%s' has already been declared in '%s'." % (name, ":".join(parent.name)), obj.starts)
 				else:
 					self.structs[1][name] = obj
 
@@ -2657,7 +2657,7 @@ class Semantic(object):
 				if self.customEvents[0].get(name, None):
 					for parent in self.parentsToProcess:
 						if parent.customEvents.get(name, None):
-							raise SemanticError("A CustomEvent called '%s' has already been inherited from '%s'." % (name, ":".join(parent.name)), obj.line)
+							raise SemanticError("A CustomEvent called '%s' has already been declared in '%s'." % (name, ":".join(parent.name)), obj.line)
 				else:
 					self.customEvents[1][name] = obj
 
@@ -2672,11 +2672,16 @@ class Semantic(object):
 		else:
 			self.groups.append({})
 
-		
-		if self.script.variables:
-			self.variables.append(self.script.variables)
-		else:
-			self.variables.append({})
+		self.variables.append({})
+		for name, obj in self.script.variables.items():
+			if self.properties[0].get(name, None):
+				for parent in self.parentsToProcess:
+					if parent.properties.get(name, None):
+						raise SemanticError("A property called '%s' has already been declared in '%s'." % (name, ":".join(parent.name)), obj.line)
+			elif self.properties[1].get(name, None):
+				raise SemanticError("A property called '%s' has already been declared in this script." % name, obj.line)
+			else:
+				self.variables[1][name] = obj
 
 		print("\n========== Inherited ==========")
 		print("Functions", list(self.functions[0]))
