@@ -193,6 +193,10 @@ class Token(object):
 	"""Token objects."""
 	__slots__ = ["type", "line", "column", "value"]
 	def __init__(self, aType, aValue, aLine, aColumn):
+	# aType: TokenEnum
+	# aValue: string
+	# aLine: int
+	# aColumn: int
 		self.type = aType
 		self.line = aLine
 		self.column = aColumn
@@ -215,6 +219,9 @@ Column: %d
 class LexicalError(Exception):
 	"""Lexical error."""
 	def __init__(self, aMessage, aLine, aColumn):
+	# aMessage: string
+	# aLine: int
+	# aColumn: int
 		self.message = aMessage
 		self.line = aLine
 		self.column = aColumn
@@ -320,11 +327,12 @@ class Lexical(object):
 			re.IGNORECASE
 		)
 
-	def Process(self, asString):
+	def Process(self, aString):
 		"""Generates tokens from a string."""
+		# aString: string
 		line = 1
 		column = -1
-		for match in self.regex.finditer(asString):
+		for match in self.regex.finditer(aString):
 			t = match.lastgroup
 			v = match.group(t)
 			t = int(match.lastgroup[1:])
@@ -423,31 +431,44 @@ StatementDescription = [
 class Statement(object):
 	__slots__ = ["statementType", "line"]
 	def __init__(self, aStatementType, aLine):
+	# aStatementType: StatementEnum
+	# aLine: int
 		self.statementType = aStatementType
 		self.line = aLine
 
 class Keyword(Statement):
 	__slots__ = []
 	def __init__(self, aStat, aLine):
+	# aStat: StatementEnum
+	# aLine: int
 		super(Keyword, self).__init__(aStat, aLine)
 
 class KeywordExpression(Statement):
 	__slots__ = ["expression"]
 	def __init__(self, aStat, aLine, aExpression):
+	# aStat: StatementEnum
+	# aLine: int
+	# aExpression: Expression
 		super(KeywordExpression, self).__init__(aStat, aLine)
 		self.expression = aExpression
 
 class Type(object):
 	__slots__ = ["name", "array", "struct", "identifier"]
 	def __init__(self, aName, aArray, aStruct):
-		self.name = [e.upper() for e in aName] # List of strings
+	# aName: List of string
+	# aArray: bool
+	# aStruct: bool
+		self.name = [e.upper() for e in aName]
 		self.identifier = aName
-		self.array = aArray # Bool
-		self.struct = aStruct # Bool
+		self.array = aArray
+		self.struct = aStruct
 
 class Assignment(Statement):
 	__slots__ = ["leftExpression", "rightExpression"]
 	def __init__(self, aLine, aLeftExpression, aRightExpression):
+	# aLine: int
+	# aLeftExpression: Expression
+	# aRightExpression: Expression
 		super(Assignment, self).__init__(StatementEnum.ASSIGNMENT, aLine)
 		self.leftExpression = aLeftExpression
 		self.rightExpression = aRightExpression
@@ -462,6 +483,8 @@ Line: %d
 class CustomEvent(Keyword):
 	__slots__ = ["name", "identifier"]
 	def __init__(self, aLine, aName):
+	# aLine: int
+	# aName: Token
 		super(CustomEvent, self).__init__(StatementEnum.CUSTOMEVENT, aLine)
 		self.name = aName.value.upper()
 		self.identifier = aName.value
@@ -479,8 +502,9 @@ Line: %d
 
 class Docstring(Statement):
 	__slots__ = ["value"]
-	# Value: Token
 	def __init__(self, aLine, aValue):
+	# aLine: int
+	# aValue: Token
 		super(Docstring, self).__init__(StatementEnum.DOCSTRING, aLine)
 		self.value = aValue.value
 
@@ -498,6 +522,7 @@ Line: %d
 class Else(Keyword):
 	__slots__ = []
 	def __init__(self, aLine):
+	# aLine: int
 		super(Else, self).__init__(StatementEnum.ELSE, aLine)
 
 	def __str__(self):
@@ -510,6 +535,7 @@ Line: %d
 class EndGroup(Keyword):
 	__slots__ = []
 	def __init__(self, aLine):
+	# aLine: int
 		super(EndGroup, self).__init__(StatementEnum.ENDGROUP, aLine)
 
 	def __str__(self):
@@ -522,6 +548,8 @@ Line: %d
 class ElseIf(KeywordExpression):
 	__slots__ = []
 	def __init__(self, aLine, aExpression):
+	# aLine: int
+	# aExpression: Expression
 		super(ElseIf, self).__init__(StatementEnum.ELSEIF, aLine, aExpression)
 
 	def __str__(self):
@@ -534,6 +562,7 @@ Line: %d
 class EndEvent(Keyword):
 	__slots__ = []
 	def __init__(self, aLine):
+	# aLine: int
 		super(EndEvent, self).__init__(StatementEnum.ENDEVENT, aLine)
 
 	def __str__(self):
@@ -546,6 +575,7 @@ Line: %d
 class EndFunction(Keyword):
 	__slots__ = []
 	def __init__(self, aLine):
+	# aLine: int
 		super(EndFunction, self).__init__(StatementEnum.ENDFUNCTION, aLine)
 
 	def __str__(self):
@@ -558,6 +588,7 @@ Line: %d
 class EndIf(Keyword):
 	__slots__ = []
 	def __init__(self, aLine):
+	# aLine: int
 		super(EndIf, self).__init__(StatementEnum.ENDIF, aLine)
 
 	def __str__(self):
@@ -570,6 +601,7 @@ Line: %d
 class EndProperty(Keyword):
 	__slots__ = []
 	def __init__(self, aLine):
+	# aLine: int
 		super(EndProperty, self).__init__(StatementEnum.ENDPROPERTY, aLine)
 
 	def __str__(self):
@@ -582,6 +614,7 @@ Line: %d
 class EndState(Keyword):
 	__slots__ = []
 	def __init__(self, aLine):
+	# aLine: int
 		super(EndState, self).__init__(StatementEnum.ENDSTATE, aLine)
 
 	def __str__(self):
@@ -594,6 +627,7 @@ Line: %d
 class EndStruct(Keyword):
 	__slots__ = []
 	def __init__(self, aLine):
+	# aLine: int
 		super(EndStruct, self).__init__(StatementEnum.ENDSTRUCT, aLine)
 
 	def __str__(self):
@@ -606,6 +640,7 @@ Line: %d
 class EndWhile(Keyword):
 	__slots__ = []
 	def __init__(self, aLine):
+	# aLine: int
 		super(EndWhile, self).__init__(StatementEnum.ENDWHILE, aLine)
 
 	def __str__(self):
@@ -618,6 +653,8 @@ Line: %d
 class Expression(Statement):
 	__slots__ = ["expression"]
 	def __init__(self, aLine, aExpression):
+	# aLine: int
+	# aExpression: Expression
 		super(Expression, self).__init__(StatementEnum.EXPRESSION, aLine)
 		self.expression = aExpression
 
@@ -628,15 +665,18 @@ Type: Expression
 Line: %d
 """ % (self.line)
 
-class ParameterSignature(object):#Statement):
+class ParameterSignature(object):
 	__slots__ = ["line", "name", "type", "value", "identifier"]
 	def __init__(self, aLine, aName, aType, aValue):
-		#super(Parameter, self).__init__(StatementEnum.PARAMETER, aLine)
+	# aLine: int
+	# aName: Token
+	# aType: Type
+	# aValue: Expression
 		self.line = aLine
-		self.name = aName.value.upper() # String
+		self.name = aName.value.upper()
 		self.identifier = aName.value
-		self.type = aType # Instance of Type
-		self.value = aValue # Literal expression
+		self.type = aType
+		self.value = aValue
 
 	def __str__(self):
 		return """
@@ -656,6 +696,11 @@ Line: %d
 class FunctionSignature(Statement):
 	__slots__ = ["name", "type", "flags", "parameters", "identifier"]
 	def __init__(self, aLine, aName, aType, aFlags, aParameters):
+	# aLine: int
+	# aName: Token
+	# aType: Type
+	# aFlags: List of TokenEnum
+	# aParameters: List of ParameterSignature
 		super(FunctionSignature, self).__init__(StatementEnum.FUNCTIONSIGNATURE, aLine)
 		self.name = aName.value.upper()
 		self.identifier = aName.value
@@ -697,6 +742,9 @@ Line: %d
 class GroupSignature(Statement):
 	__slots__ = ["name", "flags", "identifier"]
 	def __init__(self, aLine, aName, aFlags):
+	# aLine: int
+	# aName: Token
+	# aFlags: List of TokenEnum
 		super(GroupSignature, self).__init__(StatementEnum.GROUPSIGNATURE, aLine)
 		self.name = aName.value.upper()
 		self.identifier = aName.value
@@ -719,14 +767,23 @@ Line: %d
 	)
 
 class EventSignature(Statement):
-	__slots__ = ["remote", "name", "flags", "parameters", "identifier"]
+	__slots__ = ["remote", "name", "flags", "parameters", "identifier", "remoteIdentifier"]
 	def __init__(self, aLine, aRemote, aName, aFlags, aParameters):
+	# aLine: int
+	# aRemote: List of string
+	# aName: Token
+	# aFlags: List of TokenEnum
+	# aParameters = List of ParameterSignature
 		super(EventSignature, self).__init__(StatementEnum.EVENTSIGNATURE, aLine)
 		self.name = aName.value.upper()
 		self.identifier = aName.value
 		self.flags = aFlags
 		self.parameters = aParameters
-		self.remote = aRemote
+		if aRemote:
+			self.remote = [e.upper() for e in aRemote]
+		else:
+			self.remote = None
+		self.remoteIdentifier = aRemote
 
 	def __str__(self):
 		flags = self.flags
@@ -757,6 +814,8 @@ Line: %d
 class If(KeywordExpression):
 	__slots__ = []
 	def __init__(self, aLine, aExpression):
+	# aLine: int
+	# aExpression: Expression
 		super(If, self).__init__(StatementEnum.IF, aLine, aExpression)
 
 	def __str__(self):
@@ -769,6 +828,8 @@ Line: %d
 class Import(Statement):
 	__slots__ = ["name", "identifier"]
 	def __init__(self, aLine, aName):
+	# aLine: int
+	# aName: List of string
 		super(Import, self).__init__(StatementEnum.IMPORT, aLine)
 		self.name = [e.upper() for e in aName]
 		self.identifier = aName
@@ -787,12 +848,17 @@ Line: %d
 class PropertySignature(Statement):
 	__slots__ = ["name", "type", "flags", "value", "identifier"]
 	def __init__(self, aLine, aName, aType, aFlags, aValue):
+	# aLine: int
+	# aName: Token
+	# aType: Type
+	# aFlags: List of TokenEnum
+	# aValue: Expression
 		super(PropertySignature, self).__init__(StatementEnum.PROPERTYSIGNATURE, aLine)
-		self.name = aName.value.upper() # String
+		self.name = aName.value.upper()
 		self.identifier = aName.value
-		self.type = aType # Instance of Type
-		self.flags = aFlags # List of Lex.KeywordEnum properties
-		self.value = aValue # Literal expression
+		self.type = aType
+		self.flags = aFlags
+		self.value = aValue
 
 	def __str__(self):
 		flags = self.flags
@@ -817,6 +883,8 @@ Line: %d
 class Return(KeywordExpression):
 	__slots__ = []
 	def __init__(self, aLine, aExpression):
+	# aLine: int
+	# aExpression: Expression
 		super(Return, self).__init__(StatementEnum.RETURN, aLine, aExpression)
 
 	def __str__(self):
@@ -831,11 +899,14 @@ Line: %d
 	)
 
 class ScriptSignature(Statement):
-	__slots__ = ["name", "parent", "flags", "identifier", "identifier"]
+	__slots__ = ["name", "parent", "flags"]
 	def __init__(self, aLine, aName, aParent, aFlags):
+	# aLine: int
+	# aName: List of string
+	# aParent: List of string
+	# aFlags: List of TokenEnum
 		super(ScriptSignature, self).__init__(StatementEnum.SCRIPTSIGNATURE, aLine)
-		self.name = [e.upper() for e in aName]
-		self.identifier = aName
+		self.name = aName
 		self.parent = aParent
 		self.flags = aFlags
 
@@ -860,6 +931,9 @@ Line: %d
 class StateSignature(Statement):
 	__slots__ = ["name", "auto", "identifier"]
 	def __init__(self, aLine, aName, aAuto):
+	# aLine: int
+	# aName: Token
+	# aAuto: bool
 		super(StateSignature, self).__init__(StatementEnum.STATESIGNATURE, aLine)
 		self.name = aName.value.upper()
 		self.identifier = aName.value
@@ -881,6 +955,8 @@ Line: %d
 class StructSignature(Statement):
 	__slots__ = ["name", "auto", "identifier"]
 	def __init__(self, aLine, aName):
+	# aLine: int
+	# aName: Token
 		super(StructSignature, self).__init__(StatementEnum.STRUCTSIGNATURE, aLine)
 		self.name = aName.value.upper()
 		self.identifier = aName.value
@@ -899,12 +975,17 @@ Line: %d
 class Variable(Statement):
 	__slots__ = ["name", "type", "flags", "value", "identifier"]
 	def __init__(self, aLine, aName, aType, aFlags, aValue):
+	# aLine: int
+	# aName: Token
+	# aType: Type
+	# aFlags: List of TokenEnum
+	# aValue: Expression
 		super(Variable, self).__init__(StatementEnum.VARIABLE, aLine)
-		self.name = aName.value.upper() # String
+		self.name = aName.value.upper()
 		self.identifier = aName.value
-		self.type = aType # Instance of Type
-		self.flags = aFlags # List of Lex.KeywordEnum properties
-		self.value = aValue # Expression
+		self.type = aType
+		self.flags = aFlags
+		self.value = aValue
 
 	def __str__(self):
 		flags = self.flags
@@ -929,6 +1010,8 @@ Line: %d
 class While(KeywordExpression):
 	__slots__ = []
 	def __init__(self, aLine, aExpression):
+	# aLine: int
+	# aExpression: Expression
 		super(While, self).__init__(StatementEnum.WHILE, aLine, aExpression)
 
 	def __str__(self):
@@ -940,6 +1023,8 @@ Line: %d
 
 class SyntacticError(Exception):
 	def __init__(self, aMessage, aLine):
+	# aMessage: string
+	# aLine: int
 		self.message = aMessage
 		self.line = aLine
 
@@ -1575,11 +1660,15 @@ NodeDescription = [
 class Node(object):
 	__slots__ = ["type"]
 	def __init__(self, aType):
+	# aType: NodeEnum
 		self.type = aType
 
 class BinaryOperatorNode(Node):
 	__slots__ = ["operator", "leftOperand", "rightOperand"]
 	def __init__(self, aOperator, aLeftOperand, aRightOperand):
+	# aOperator: Token
+	# aLeftOperand: Instance of a class that inherits from Node
+	# aRightOperand: Instance of a class that inherits from Node
 		super(BinaryOperatorNode, self).__init__(NodeEnum.BINARYOPERATOR)
 		self.operator = aOperator
 		self.leftOperand = aLeftOperand
