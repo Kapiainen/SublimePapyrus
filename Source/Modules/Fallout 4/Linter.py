@@ -438,9 +438,10 @@ class KeywordExpression(Statement):
 		self.expression = aExpression
 
 class Type(object):
-	__slots__ = ["name", "array", "struct"]
+	__slots__ = ["name", "array", "struct", "identifier"]
 	def __init__(self, aName, aArray, aStruct):
-		self.name = aName # List of strings
+		self.name = [e.upper() for e in aName] # List of strings
+		self.identifier = aName
 		self.array = aArray # Bool
 		self.struct = aStruct # Bool
 
@@ -459,10 +460,11 @@ Line: %d
 """ % (self.line)
 
 class CustomEvent(Keyword):
-	__slots__ = ["name"]
+	__slots__ = ["name", "identifier"]
 	def __init__(self, aLine, aName):
 		super(CustomEvent, self).__init__(StatementEnum.CUSTOMEVENT, aLine)
-		self.name = aName
+		self.name = aName.value.upper()
+		self.identifier = aName.value
 
 	def __str__(self):
 		return """
@@ -477,9 +479,10 @@ Line: %d
 
 class Docstring(Statement):
 	__slots__ = ["value"]
+	# Value: Token
 	def __init__(self, aLine, aValue):
 		super(Docstring, self).__init__(StatementEnum.DOCSTRING, aLine)
-		self.value = aValue
+		self.value = aValue.value
 
 	def __str__(self):
 		return """
@@ -626,12 +629,12 @@ Line: %d
 """ % (self.line)
 
 class ParameterSignature(object):#Statement):
-	__slots__ = ["line", "name", "type", "value"]
+	__slots__ = ["line", "name", "type", "value", "identifier"]
 	def __init__(self, aLine, aName, aType, aValue):
 		#super(Parameter, self).__init__(StatementEnum.PARAMETER, aLine)
 		self.line = aLine
-#		print(aName, type(aName))
 		self.name = aName.value.upper() # String
+		self.identifier = aName.value
 		self.type = aType # Instance of Type
 		self.value = aValue # Literal expression
 
@@ -651,10 +654,11 @@ Line: %d
 	)
 
 class FunctionSignature(Statement):
-	__slots__ = ["name", "type", "flags", "parameters"]
+	__slots__ = ["name", "type", "flags", "parameters", "identifier"]
 	def __init__(self, aLine, aName, aType, aFlags, aParameters):
 		super(FunctionSignature, self).__init__(StatementEnum.FUNCTIONSIGNATURE, aLine)
-		self.name = aName
+		self.name = aName.value.upper()
+		self.identifier = aName.value
 		self.type = aType
 		self.flags = aFlags
 		self.parameters = aParameters
@@ -691,10 +695,11 @@ Line: %d
 	)
 
 class GroupSignature(Statement):
-	__slots__ = ["name", "flags"]
+	__slots__ = ["name", "flags", "identifier"]
 	def __init__(self, aLine, aName, aFlags):
 		super(GroupSignature, self).__init__(StatementEnum.GROUPSIGNATURE, aLine)
-		self.name = aName
+		self.name = aName.value.upper()
+		self.identifier = aName.value
 		self.flags = aFlags
 
 	def __str__(self):
@@ -714,10 +719,11 @@ Line: %d
 	)
 
 class EventSignature(Statement):
-	__slots__ = ["remote", "name", "flags", "parameters"]
+	__slots__ = ["remote", "name", "flags", "parameters", "identifier"]
 	def __init__(self, aLine, aRemote, aName, aFlags, aParameters):
 		super(EventSignature, self).__init__(StatementEnum.EVENTSIGNATURE, aLine)
-		self.name = aName
+		self.name = aName.value.upper()
+		self.identifier = aName.value
 		self.flags = aFlags
 		self.parameters = aParameters
 		self.remote = aRemote
@@ -761,10 +767,11 @@ Line: %d
 """ % (self.line)
 
 class Import(Statement):
-	__slots__ = ["name"]
+	__slots__ = ["name", "identifier"]
 	def __init__(self, aLine, aName):
 		super(Import, self).__init__(StatementEnum.IMPORT, aLine)
-		self.name = aName
+		self.name = [e.upper() for e in aName]
+		self.identifier = aName
 
 	def __str__(self):
 		return """
@@ -778,10 +785,11 @@ Line: %d
 	)
 
 class PropertySignature(Statement):
-	__slots__ = ["name", "type", "flags", "value"]
+	__slots__ = ["name", "type", "flags", "value", "identifier"]
 	def __init__(self, aLine, aName, aType, aFlags, aValue):
 		super(PropertySignature, self).__init__(StatementEnum.PROPERTYSIGNATURE, aLine)
-		self.name = aName # String
+		self.name = aName.value.upper() # String
+		self.identifier = aName.value
 		self.type = aType # Instance of Type
 		self.flags = aFlags # List of Lex.KeywordEnum properties
 		self.value = aValue # Literal expression
@@ -823,10 +831,11 @@ Line: %d
 	)
 
 class ScriptSignature(Statement):
-	__slots__ = ["name", "parent", "flags"]
+	__slots__ = ["name", "parent", "flags", "identifier", "identifier"]
 	def __init__(self, aLine, aName, aParent, aFlags):
 		super(ScriptSignature, self).__init__(StatementEnum.SCRIPTSIGNATURE, aLine)
-		self.name = aName
+		self.name = [e.upper() for e in aName]
+		self.identifier = aName
 		self.parent = aParent
 		self.flags = aFlags
 
@@ -849,10 +858,11 @@ Line: %d
 	)
 
 class StateSignature(Statement):
-	__slots__ = ["name", "auto"]
+	__slots__ = ["name", "auto", "identifier"]
 	def __init__(self, aLine, aName, aAuto):
 		super(StateSignature, self).__init__(StatementEnum.STATESIGNATURE, aLine)
-		self.name = aName
+		self.name = aName.value.upper()
+		self.identifier = aName.value
 		self.auto = aAuto
 
 	def __str__(self):
@@ -869,10 +879,11 @@ Line: %d
 	)
 
 class StructSignature(Statement):
-	__slots__ = ["name", "auto"]
+	__slots__ = ["name", "auto", "identifier"]
 	def __init__(self, aLine, aName):
 		super(StructSignature, self).__init__(StatementEnum.STRUCTSIGNATURE, aLine)
-		self.name = aName
+		self.name = aName.value.upper()
+		self.identifier = aName.value
 
 	def __str__(self):
 		return """
@@ -886,10 +897,11 @@ Line: %d
 	)
 
 class Variable(Statement):
-	__slots__ = ["name", "type", "flags", "value"]
+	__slots__ = ["name", "type", "flags", "value", "identifier"]
 	def __init__(self, aLine, aName, aType, aFlags, aValue):
 		super(Variable, self).__init__(StatementEnum.VARIABLE, aLine)
-		self.name = aName # String
+		self.name = aName.value.upper() # String
+		self.identifier = aName.value
 		self.type = aType # Instance of Type
 		self.flags = aFlags # List of Lex.KeywordEnum properties
 		self.value = aValue # Expression
@@ -1000,26 +1012,25 @@ class Syntactic(object):
 	def AcceptType(self, aBaseTypes):
 		result = None
 		if self.Accept(TokenEnum.IDENTIFIER):
-			result = [self.PeekBackwards().value.upper()]
+			result = [self.PeekBackwards().value]
 			while self.Accept(TokenEnum.COLON):
-				result.append(self.PeekBackwards().value.upper())
+				result.append(self.PeekBackwards().value)
 			return result
 		elif aBaseTypes and (self.Accept(TokenEnum.kBOOL) or self.Accept(TokenEnum.kFLOAT) or self.Accept(TokenEnum.kINT) or self.Accept(TokenEnum.kSTRING) or self.Accept(TokenEnum.kVAR)):
-			result = [self.PeekBackwards()]
+			result = [self.PeekBackwards().value]
 			return result
 		else:
 			return None
 
 	def ExpectType(self, aBaseTypes):
 		if self.Accept(TokenEnum.IDENTIFIER):
-			result = [self.PeekBackwards().value.upper()]
+			result = [self.PeekBackwards().value]
 			while self.Accept(TokenEnum.COLON):
 				self.Expect(TokenEnum.IDENTIFIER)
-				result.append(self.PeekBackwards().value.upper())
+				result.append(self.PeekBackwards().value)
 			return result
 		elif aBaseTypes and (self.Accept(TokenEnum.kBOOL) or self.Accept(TokenEnum.kFLOAT) or self.Accept(TokenEnum.kINT) or self.Accept(TokenEnum.kSTRING) or self.Accept(TokenEnum.kVAR)):
-			return [self.PeekBackwards().value.upper()]
-			#return [self.PeekBackwards().type]
+			return [self.PeekBackwards().value]
 		else:
 			raise SyntacticError("Expected a type identifier.", self.line)
 
@@ -1050,7 +1061,7 @@ class Syntactic(object):
 					self.Abort("Only AUTO properties can have the CONDITIONAL flag.")
 				elif TokenEnum.kCONST in flags:
 					self.Abort("Only AUTO properties can have the CONST flag.")
-		return PropertySignature(self.line, name.value, aType, flags, value)
+		return PropertySignature(self.line, name, aType, flags, value)
 
 	def FunctionParameters(self):
 		parameters = []
@@ -1114,7 +1125,7 @@ class Syntactic(object):
 		if nextToken and nextToken.type != TokenEnum.RIGHTPARENTHESIS:
 			parameters = self.FunctionParameters()
 		self.Expect(TokenEnum.RIGHTPARENTHESIS)
-		return FunctionSignature(self.line, name.value, aType, self.AcceptFlags([TokenEnum.kNATIVE, TokenEnum.kGLOBAL, TokenEnum.kDEBUGONLY, TokenEnum.kBETAONLY]), parameters)
+		return FunctionSignature(self.line, name, aType, self.AcceptFlags([TokenEnum.kNATIVE, TokenEnum.kGLOBAL, TokenEnum.kDEBUGONLY, TokenEnum.kBETAONLY]), parameters)
 
 	def Shift(self, aItem = None):
 		if aItem:
@@ -1205,7 +1216,7 @@ class Syntactic(object):
 					self.Consume()
 				else:
 					self.Abort("Expected a type.")
-				self.Shift(IdentifierNode(self.PeekBackwards().value.upper()))
+				self.Shift(IdentifierNode(self.PeekBackwards()))
 			self.ReduceBinaryOperator()
 		return True
 
@@ -1281,7 +1292,7 @@ class Syntactic(object):
 			self.Shift(LengthNode())
 			return True
 		elif self.Accept(TokenEnum.IDENTIFIER) or self.Accept(TokenEnum.kSELF) or self.Accept(TokenEnum.kPARENT):
-			self.Shift(IdentifierNode(self.PeekBackwards().value.upper()))
+			self.Shift(IdentifierNode(self.PeekBackwards()))
 			return True
 		else:
 			self.Abort("Expected a function call, and identifier, or the LENGTH keyword")
@@ -1343,7 +1354,7 @@ class Syntactic(object):
 		if self.Accept(TokenEnum.ASSIGN):
 			self.Expression()
 			value = self.Pop()
-		return Variable(self.line, name.value, aType, self.AcceptFlags([TokenEnum.kCONDITIONAL, TokenEnum.kCONST, TokenEnum.kHIDDEN]), value)
+		return Variable(self.line, name, aType, self.AcceptFlags([TokenEnum.kCONDITIONAL, TokenEnum.kCONST, TokenEnum.kHIDDEN]), value)
 
 	def ExpectExpression(self):
 		if not self.Expression():
@@ -1369,7 +1380,7 @@ class Syntactic(object):
 			if self.Accept(TokenEnum.LEFTBRACKET):
 				self.Expect(TokenEnum.RIGHTBRACKET)
 				array = True
-			typ = Type([typ.value.upper()], array, False)
+			typ = Type([typ.value], array, False)
 			if self.Accept(TokenEnum.kPROPERTY):
 				result = self.Property(typ)
 			elif self.Accept(TokenEnum.kFUNCTION):
@@ -1398,7 +1409,7 @@ class Syntactic(object):
 					nextToken = self.Peek(2)
 					if nextToken:
 						if nextToken.type == TokenEnum.RIGHTBRACKET:
-							typ = Type([self.Expect(TokenEnum.IDENTIFIER).value.upper()], True, False)
+							typ = Type([self.Expect(TokenEnum.IDENTIFIER).value], True, False)
 							self.Consume()
 							nextToken = self.Peek()
 							self.Consume()
@@ -1414,15 +1425,15 @@ class Syntactic(object):
 						else:
 							result = self.ExpressionOrAssignment()
 				elif nextToken.type == TokenEnum.kPROPERTY:
-					typ = Type([self.Expect(TokenEnum.IDENTIFIER).value.upper()], False, False)
+					typ = Type([self.Expect(TokenEnum.IDENTIFIER).value], False, False)
 					self.Consume()
 					result = self.Property(typ)
 				elif nextToken.type == TokenEnum.kFUNCTION:
-					typ = Type([self.Expect(TokenEnum.IDENTIFIER).value.upper()], False, False)
+					typ = Type([self.Expect(TokenEnum.IDENTIFIER).value], False, False)
 					self.Consume()
 					result = self.Function(typ)
 				elif nextToken.type == TokenEnum.IDENTIFIER:
-					result = self.Variable(Type([self.Expect(TokenEnum.IDENTIFIER).value.upper()], False, False))
+					result = self.Variable(Type([self.Expect(TokenEnum.IDENTIFIER).value], False, False))
 				else:
 					result = self.ExpressionOrAssignment()
 			else:
@@ -1473,7 +1484,7 @@ class Syntactic(object):
 			if remote and not parameters:
 				self.Abort("Remote/custom events have to have a parameter defining the script that emits the event.")
 			self.Expect(TokenEnum.RIGHTPARENTHESIS)
-			result = EventSignature(self.line, remote, name.value, self.AcceptFlags([TokenEnum.kNATIVE]), parameters)
+			result = EventSignature(self.line, remote, name, self.AcceptFlags([TokenEnum.kNATIVE]), parameters)
 		elif tokenType == TokenEnum.kENDEVENT:
 			self.Consume()
 			result = EndEvent(self.line)
@@ -1482,27 +1493,27 @@ class Syntactic(object):
 			result = EndProperty(self.line)
 		elif tokenType == TokenEnum.kCUSTOMEVENT:
 			self.Consume()
-			result = CustomEvent(self.line, self.Expect(TokenEnum.IDENTIFIER).value)
+			result = CustomEvent(self.line, self.Expect(TokenEnum.IDENTIFIER))
 		elif tokenType == TokenEnum.kGROUP:
 			self.Consume()
 			name = self.Expect(TokenEnum.IDENTIFIER)
-			result = GroupSignature(self.line, name.value, self.AcceptFlags([TokenEnum.kCOLLAPSED, TokenEnum.kCOLLAPSEDONBASE, TokenEnum.kCOLLAPSEDONREF]))
+			result = GroupSignature(self.line, name, self.AcceptFlags([TokenEnum.kCOLLAPSED, TokenEnum.kCOLLAPSEDONBASE, TokenEnum.kCOLLAPSEDONREF]))
 		elif tokenType == TokenEnum.kENDGROUP:
 			self.Consume()
 			result = EndGroup(self.line)
 		elif tokenType == TokenEnum.kSTRUCT:
 			self.Consume()
-			result = StructSignature(self.line, self.Expect(TokenEnum.IDENTIFIER).value)
+			result = StructSignature(self.line, self.Expect(TokenEnum.IDENTIFIER))
 		elif tokenType == TokenEnum.kENDSTRUCT:
 			self.Consume()
 			result = EndStruct(self.line)
 		elif tokenType == TokenEnum.kSTATE:
 			self.Consume()
-			result = StateSignature(self.line, self.Expect(TokenEnum.IDENTIFIER).value, False)
+			result = StateSignature(self.line, self.Expect(TokenEnum.IDENTIFIER), False)
 		elif tokenType == TokenEnum.kAUTO:
 			self.Consume()
 			self.Expect(TokenEnum.kSTATE)
-			result = StateSignature(self.line, self.Expect(TokenEnum.IDENTIFIER).value, True)
+			result = StateSignature(self.line, self.Expect(TokenEnum.IDENTIFIER), True)
 		elif tokenType == TokenEnum.kENDSTATE:
 			self.Consume()
 			result = EndState(self.line)
@@ -1519,7 +1530,7 @@ class Syntactic(object):
 			result = ScriptSignature(self.line, name, parent, flags)
 		elif tokenType == TokenEnum.DOCSTRING:
 			self.Consume()
-			result = Docstring(self.line, self.PeekBackwards().value)
+			result = Docstring(self.line, self.PeekBackwards())
 		else:
 			result = self.ExpressionOrAssignment()
 		if self.tokenIndex < self.tokenCount:
@@ -1644,10 +1655,11 @@ Type: Constant
 """
 
 class FunctionCallNode(Node):
-	__slots__ = ["name", "arguments"]
+	__slots__ = ["name", "arguments", "identifier"]
 	def __init__(self, aName, aArguments):
 		super(FunctionCallNode, self).__init__(NodeEnum.FUNCTIONCALL)
-		self.name = aName
+		self.name = aName.value.upper()
+		self.identifier = aName.value
 		self.arguments = aArguments
 
 	def __str__(self):
@@ -1657,10 +1669,15 @@ Type: Function call
 """
 
 class FunctionCallArgument(Node):
-	__slots__ = ["name", "expression"]
+	__slots__ = ["name", "expression", "identifier"]
 	def __init__(self, aName, aExpression):
 		super(FunctionCallArgument, self).__init__(NodeEnum.FUNCTIONCALLARGUMENT)
-		self.name = aName
+		if aName:
+			self.name = aName.value.upper()
+			self.identifier = aName.value
+		else:
+			self.name = None
+			self.identifier = None
 		self.expression = aExpression
 
 	def __str__(self):
@@ -1670,13 +1687,22 @@ Type: Function call argument
 """
 
 class IdentifierNode(Node):
-	__slots__ = ["value"]
-	def __init__(self, aValue):
+	__slots__ = ["name", "identifier"]
+	def __init__(self, aName):
 		super(IdentifierNode, self).__init__(NodeEnum.IDENTIFIER)
-		if isinstance(aValue, list):
-			self.value = aValue
+		if isinstance(aName, list):
+			self.name = [e.upper() for e in aName]
+			self.identifier = aName
 		else:
-			self.value = [aValue]
+			self.name = [aName.value.upper()]
+			self.identifier = [aName.value]
+#	__slots__ = ["value"]
+#	def __init__(self, aValue):
+#		super(IdentifierNode, self).__init__(NodeEnum.IDENTIFIER)
+#		if isinstance(aValue, list):
+#			self.value = aValue
+#		else:
+#			self.value = [aValue]
 
 	def __str__(self):
 		return """
@@ -1757,18 +1783,22 @@ class SemanticError(Exception):
 #			.states
 #				Dict of State
 class Script(object):
-	__slots__ = ["name", "starts", "flags", "parent", "docstring", "imports", "customEvents", "variables", "properties",  "groups", "functions", "events", "states", "structs"]
+	__slots__ = ["name", "starts", "flags", "parent", "docstring", "imports", "customEvents", "variables", "properties",  "groups", "functions", "events", "states", "structs", "identifier", "parentIdentifier"]
 	def __init__(self, aName, aStarts, aFlags, aParent, aDocstring, aImports, aCustomEvents, aVariables, aProperties, aGroups, aFunctions, aEvents, aStates, aStructs):
-		self.name = aName
+		self.name = [e.upper() for e in aName]
+		self.identifier = aName
 		self.starts = aStarts
 		self.flags = aFlags
 		commonParent = "SCRIPTOBJECT"
 		if not aParent and not (len(aName) == 1 and aName[0] == commonParent):
 			self.parent = [commonParent]
+			self.parentIdentifier = ["ScriptObject"]
 		elif aParent:
-			self.parent = aParent
+			self.parent = [e.upper() for e in aParent]
+			self.parentIdentifier = aParent
 		else:
 			self.parent = None
+			self.parentIdentifier = None
 		self.docstring = aDocstring
 		self.imports = aImports
 		self.customEvents = aCustomEvents
@@ -1800,9 +1830,10 @@ class Script(object):
 #			.functions
 #				List of Function
 class Property(object):
-	__slots__ = ["name", "flags", "type", "value", "docstring", "getFunction", "setFunction", "starts", "ends"]
-	def __init__(self, aName, aFlags, aType, aValue, aDocstring, aGetFunction, aSetFunction, aStarts, aEnds):
+	__slots__ = ["name", "flags", "type", "value", "docstring", "getFunction", "setFunction", "starts", "ends", "identifier"]
+	def __init__(self, aName, aIdentifier, aFlags, aType, aValue, aDocstring, aGetFunction, aSetFunction, aStarts, aEnds):
 		self.name = aName
+		self.identifier = aIdentifier
 		self.flags = aFlags
 		self.type = aType
 		self.value = aValue
@@ -1825,9 +1856,10 @@ class Property(object):
 #			.ends
 #				Int
 class Group(object):
-	__slots__ = ["name", "flags", "properties", "starts", "ends"]
-	def __init__(self, aName, aFlags, aProperties, aStarts, aEnds):
+	__slots__ = ["name", "flags", "properties", "starts", "ends", "identifier"]
+	def __init__(self, aName, aIdentifier, aFlags, aProperties, aStarts, aEnds):
 		self.name = aName
+		self.identifier = aIdentifier
 		self.flags = aFlags
 		self.properties = aProperties
 		self.starts = aStarts
@@ -1846,10 +1878,11 @@ class Group(object):
 #				ExpressionNode (has to be a constant)
 #			
 class StructMember(object):
-	__slots__ = ["line", "name", "flags", "type", "value", "docstring"]
-	def __init__(self, aLine, aName, aFlags, aType, aValue, aDocstring):
+	__slots__ = ["line", "name", "flags", "type", "value", "docstring", "identifier"]
+	def __init__(self, aLine, aIdentifier, aName, aFlags, aType, aValue, aDocstring):
 		self.line = aLine
 		self.name = aName
+		self.identifier = aIdentifier
 		self.flags = aFlags
 		self.type = aType
 		self.value = aValue
@@ -1860,9 +1893,10 @@ class StructMember(object):
 #			.members
 #				Dict of StructMember
 class Struct(object):
-	__slots__ = ["name", "members", "starts", "ends"]
-	def __init__(self, aName, aMembers, aStarts, aEnds):
+	__slots__ = ["name", "members", "starts", "ends", "identifier"]
+	def __init__(self, aName, aIdentifier, aMembers, aStarts, aEnds):
 		self.name = aName
+		self.identifier = aIdentifier
 		self.members = aMembers
 		self.starts = aStarts
 		self.ends = aEnds
@@ -1909,9 +1943,10 @@ Ends: %d
 #			.ends
 #				Int
 class Function(object):
-	__slots__ = ["name", "flags", "type", "parameters", "docstring", "body", "starts", "ends"]
-	def __init__(self, aName, aFlags, aType, aParameters, aDocstring, aBody, aStarts, aEnds):
+	__slots__ = ["name", "flags", "type", "parameters", "docstring", "body", "starts", "ends", "identifier"]
+	def __init__(self, aName, aIdentifier, aFlags, aType, aParameters, aDocstring, aBody, aStarts, aEnds):
 		self.name = aName
+		self.identifier = aIdentifier
 		self.flags = aFlags
 		self.type = aType
 		self.parameters = aParameters
@@ -1940,9 +1975,10 @@ class Function(object):
 #			.ends
 #				Int
 class Event(object):
-	__slots__ = ["name", "flags", "remote", "parameters", "docstring", "body", "starts", "ends"]
-	def __init__(self, aName, aFlags, aRemote, aParameters, aDocstring, aBody, aStarts, aEnds):
+	__slots__ = ["name", "flags", "remote", "parameters", "docstring", "body", "starts", "ends", "identifier"]
+	def __init__(self, aName, aIdentifier, aFlags, aRemote, aParameters, aDocstring, aBody, aStarts, aEnds):
 		self.name = aName
+		self.identifier = aIdentifier
 		self.flags = aFlags
 		self.remote = aRemote
 		self.parameters = aParameters
@@ -1962,9 +1998,10 @@ class Event(object):
 #			.events
 #				Dict of Event
 class State(object):
-	__slots__ = ["name", "auto", "functions", "events", "starts", "ends"]
+	__slots__ = ["name", "auto", "functions", "events", "starts", "ends", "identifier"]
 	def __init__(self, aName, aAuto, aFunctions, aEvents, aStarts, aEnds):
-		self.name = aName
+		self.name = aName.value.upper()
+		self.identifier = aName.value
 		self.auto = aAuto
 		self.functions = aFunctions
 		self.events = aEvents
@@ -2153,9 +2190,10 @@ class Semantic(object):
 		if body:
 			body = functionEventDef
 		if signature.statementType == StatementEnum.FUNCTIONSIGNATURE:
-			self.definition[-1].append(Function(signature.name, signature.flags, signature.type, signature.parameters, docstring, body, signature.line, aEndLine))
+			self.definition[-1].append(Function(signature.name, signature.identifier, signature.flags, signature.type, signature.parameters, docstring, body, signature.line, aEndLine))
 		else:
-			self.definition[-1].append(Event(signature.name, signature.flags, signature.remote, signature.parameters, docstring, body, signature.line, aEndLine))
+			print("Name", signature.name)
+			self.definition[-1].append(Event(signature.name, signature.identifier, signature.flags, signature.remote, signature.parameters, docstring, body, signature.line, aEndLine))
 		self.scope.pop()
 
 	def PropertyScope(self, aStat):
@@ -2212,9 +2250,9 @@ class Semantic(object):
 			if not setFunc and not getFunc:
 				raise SemanticError("The '%s' property has to at least have a GET or a SET function." % signature.name, signature.line)
 		if aFullProperty:
-			self.definition[-1].append(Property(signature.name, signature.flags, signature.type, signature.value, docstring, getFunc, setFunc, signature.line, aEndLine))
+			self.definition[-1].append(Property(signature.name, signature.identifier, signature.flags, signature.type, signature.value, docstring, getFunc, setFunc, signature.line, aEndLine))
 		else:
-			self.definition[-1].append(Property(signature.name, signature.flags, signature.type, signature.value, docstring, getFunc, setFunc, signature.line, signature.line))
+			self.definition[-1].append(Property(signature.name, signature.identifier, signature.flags, signature.type, signature.value, docstring, getFunc, setFunc, signature.line, signature.line))
 		self.scope.pop()
 
 	def GroupScope(self, aStat):
@@ -2251,7 +2289,7 @@ class Semantic(object):
 				properties[name] = s
 		if not properties:
 			raise SemanticError("The '%s' group does not have any properties." % signature.name, signature.line)
-		self.definition[-1].append(Group(signature.name, signature.flags, properties, signature.line, aStat.line))
+		self.definition[-1].append(Group(signature.name, signature.identifier, signature.flags, properties, signature.line, aStat.line))
 		self.scope.pop()
 
 	def StructScope(self, aStat):
@@ -2288,7 +2326,7 @@ class Semantic(object):
 				members[name] = s
 		if not members:
 			raise SemanticError("The '%s' struct does not have any members." % signature.name, signature.line)
-		self.definition[-1].append(Struct(signature.name, members, signature.line, aStat.line))
+		self.definition[-1].append(Struct(signature.name, signature.identifier, members, signature.line, aStat.line))
 		self.scope.pop()
 
 	def StructMemberScope(self, aStat):
@@ -2309,7 +2347,7 @@ class Semantic(object):
 		docstring = None
 		if structMemberDef:
 			docstring = structMemberDef.pop(0)
-		self.definition[-1].append(StructMember(signature.line, signature.name, signature.flags, signature.type, signature.value, docstring))
+		self.definition[-1].append(StructMember(signature.line, signature.name, signature.identifier, signature.flags, signature.type, signature.value, docstring))
 		self.scope.pop()
 
 	def AssembleScript(self, aStat):
@@ -2633,13 +2671,23 @@ class Semantic(object):
 		self.events.append({})
 		if self.script.events:
 			for name, obj in self.script.events.items():
-				if self.events[0].get(name, None):
-					pass # Overriding, check that the signature is the same
-				else:
-					if isNative:
-						self.events[1][name] = obj
+				print("Looking for event", name, obj.name)
+				if obj.remote: # Remote or CustomEvent
+					remote = self.GetCachedScript(obj.remote, obj.starts)
+					if remote.events.get(name, None):
+						print("Remote event", name)
+					elif remote.customEvents.get(name, None):
+							print("CustomEvent", name)
 					else:
-						raise SemanticError("The ability to declare new events requires the script header to have the 'Native' flag.", obj.starts)
+						raise SemanticError("No event or CustomEvent declaration exists for '%s' in '%s'." % (name, ":".join(obj.remote)), obj.starts)
+				else: # Regular event
+					if self.events[0].get(name, None): # Overriding, check that the signature is the same
+						pass
+					else:
+						if isNative: # Script header has the 'Native' flag
+							self.events[1][name] = obj
+						else: # Illegal event declaration
+							raise SemanticError("The ability to declare new events requires the script header to have the 'Native' flag.", obj.starts)
 
 		self.structs.append({})
 		if self.script.structs:
@@ -2984,6 +3032,8 @@ class Semantic(object):
 	def GetCachedScript(self, aType, aLine):
 		self.line = aLine
 		key = ":".join(aType)
+		print("Caching", aType)
+		print(self.cache)
 		result = self.cache.get(key, None)
 		if result:
 			return result
