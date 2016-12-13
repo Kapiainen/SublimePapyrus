@@ -1879,7 +1879,7 @@ class Script(object):
 		self.starts = aStarts
 		self.flags = aFlags
 		commonParent = "SCRIPTOBJECT"
-		if not aParent and not (len(aName) == 1 and aName[0] == commonParent):
+		if not aParent and not (len(self.name) == 1 and self.name[0] == commonParent):
 			self.parent = [commonParent]
 			self.parentIdentifier = ["ScriptObject"]
 		elif aParent:
@@ -2281,7 +2281,6 @@ class Semantic(object):
 		if signature.statementType == StatementEnum.FUNCTIONSIGNATURE:
 			self.definition[-1].append(Function(signature.name, signature.identifier, signature.flags, signature.type, signature.parameters, docstring, body, signature.line, aEndLine))
 		else:
-			print("Name", signature.name)
 			self.definition[-1].append(Event(signature.name, signature.identifier, signature.flags, signature.remote, signature.parameters, docstring, body, signature.line, aEndLine))
 		self.scope.pop()
 
@@ -2763,12 +2762,12 @@ class Semantic(object):
 				print("Looking for event", name, obj.name)
 				if obj.remote: # Remote or CustomEvent
 					remote = self.GetCachedScript(obj.remote, obj.starts)
-					if remote.events.get(name, None):
-						print("Remote event", name)
-					elif remote.customEvents.get(name, None):
-							print("CustomEvent", name)
+					if remote.events.get(obj.name, None):
+						print("Remote event", obj.name)
+					elif remote.customEvents.get(obj.name, None):
+							print("CustomEvent", obj.name)
 					else:
-						raise SemanticError("No event or CustomEvent declaration exists for '%s' in '%s'." % (name, ":".join(obj.remote)), obj.starts)
+						raise SemanticError("No event or CustomEvent declaration exists for '%s' in '%s'." % (obj.name, ":".join(obj.remote)), obj.starts)
 				else: # Regular event
 					if self.events[0].get(name, None): # Overriding, check that the signature is the same
 						pass
@@ -3121,12 +3120,9 @@ class Semantic(object):
 	def GetCachedScript(self, aType, aLine):
 		self.line = aLine
 		key = ":".join(aType)
-		print("Caching", aType)
-		print(self.cache)
 		result = self.cache.get(key, None)
 		if result:
 			return result
-		print("Caching %s" % key)
 		for impPath in self.paths:
 			path = "%s%s" % (os.path.join(impPath, *aType), self.scriptExtension)
 			if os.path.isfile(path):
