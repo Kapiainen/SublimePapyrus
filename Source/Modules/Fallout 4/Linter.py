@@ -2586,25 +2586,23 @@ class Semantic(object):
 	def ValidateScript(self, aScript):
 		"""Validates a Script object when taking into account e.g. the contents of other scripts."""
 		self.script = aScript
-		self.functions = [{}]
-		self.events = [{}]
-		self.groups = [{}]
-		self.properties = [{}]
-		self.variables = [{}]
-		self.structs = [{}]
-		self.states = [{}]
+		self.functions = [{}] # List of dictionaries of Function
+		self.events = [{}] # List of dictionaries of Event
+		self.groups = [{}] # List of dictionaries of Group
+		self.properties = [{}] # List of dictionaries of Property
+		self.variables = [{}] # List of dictionaries of Variable
+		self.structs = [{}] # List of dictionaries of Struct
+		self.states = [{}] # List of dictionaries of State
 		self.importedNamespaces = [] # List of list of strings
-		self.importedScripts = {} # Dict of Script objects
-		self.customEvents = [{}]
-		self.parentsToProcess = []
+		self.importedScripts = {} # Dictionary of Script
+		self.customEvents = [{}] # List of dictionaries of CustomEvent
+		self.parentsToProcess = [] # List of list of string
 		print("Starting to validate " + ":".join(aScript.name))
 		if self.script.parent:
-			# Get a list of parents, reverse the order, and start processing from ScriptObject
 			parent = self.script.parent
 			while parent:
 				self.parentsToProcess.insert(0, parent)
 				parent = parent.parent
-#			print(self.parentsToProcess)
 			for parent in self.parentsToProcess:
 				print("Merging resources from " + ":".join(parent.name))
 				isNative = False
@@ -2685,12 +2683,10 @@ class Semantic(object):
 				else:
 					self.properties[1][name] = obj
 
-		self.functions.append({})
+		self.functions.append({}) # Check if duplicate declarations have been inherited and handle overrides appropriately, duplicate declarations in the same script have already been checked by this point
 		if self.script.functions:
-#			print("Processing script functions")
 			for name, obj in self.script.functions.items():
 				existingFunction = self.functions[0].get(name, None)
-#				print("Function: ", name, existingFunction)
 				if existingFunction:
 					for parent in self.parentsToProcess:
 						if parent.functions.get(name, None):
@@ -2719,8 +2715,6 @@ class Semantic(object):
 									while i < paramCount:
 										existingParam = existingFunction.parameters[i]
 										overridingParam = obj.parameters[i]
-#										print("Existing param:", existingParam)
-#										print("Overriding param:", overridingParam)
 										if existingParam.type.array != overridingParam.type.array:
 											if existingParam.type.array:
 												raise SemanticError("Expected the '%s' parameter to be an array." % (overridingParam.identifier), obj.starts)
@@ -2731,8 +2725,6 @@ class Semantic(object):
 										else:
 											if existingParam.value and overridingParam.value:
 												pass # TODO: Use the NodeVisitor to get the default value's type and actual value
-#												if existingParam.value.type != overridingParam.value.type or str(existingParam.value.value).upper() != str(overridingParam.value.value).upper():
-#													raise SemanticError("Expected the default value of the '%s' parameter to be '%s'." % (overridingParam.name, overridingParam.value.value), obj.starts)
 											elif existingParam.value:
 												raise SemanticError("Expected the '%s' parameter to have a default value." % (overridingParam.name), obj.starts)
 											elif overridingParam.value:
@@ -2743,18 +2735,10 @@ class Semantic(object):
 							elif obj.parameters:
 								raise SemanticError("The function header inherited from '%s' requires that '%s' does not have any parameters." % (":".join(parent.identifier), name), obj.starts)
 							break
-				# Also check that the default values of parameters are actually literals (unary minus is allowed to precede ints and floats).
+				# TODO: Also check that the default values of parameters are actually literals (unary minus is allowed to precede ints and floats).
 				self.functions[1][name] = obj
 
-		# If remote
-		#	First parameter has to be of the same type as the remote script
-		#	If actually remote
-		#		Then the remaining parameters should be the same as in the remote event's signature
-		#	Elif CustomEvent
-		#		The second, and final, parameter is Var[] akParams
-		# Else
-		#	Check parameters
-		self.events.append({})
+		self.events.append({}) # Check if duplicate declarations have been inherited and handle overrides appropriately, duplicate declarations in the same script have already been checked by this point
 		if self.script.events:
 			for name, obj in self.script.events.items():
 				print("Looking for event", name, obj.name)
@@ -2821,7 +2805,7 @@ class Semantic(object):
 						else: # Illegal event declaration
 							raise SemanticError("The ability to declare new events requires the script header to have the 'Native' flag.", obj.starts)
 
-		self.structs.append({})
+		self.structs.append({}) # Check if duplicate declarations have been inherited, duplicate declarations in the same script have already been checked by this point
 		if self.script.structs:
 			for name, obj in self.script.structs.items():
 				if self.structs[0].get(name, None):
@@ -2831,7 +2815,7 @@ class Semantic(object):
 				else:
 					self.structs[1][name] = obj
 
-		self.customEvents.append({})
+		self.customEvents.append({}) # Check if duplicate declarations have been inherited, duplicate declarations in the same script have already been checked by this point
 		if self.script.customEvents:
 			for name, obj in self.script.customEvents.items():
 				if self.customEvents[0].get(name, None):
@@ -2842,17 +2826,17 @@ class Semantic(object):
 					self.customEvents[1][name] = obj
 
 		
-		if self.script.states:
+		if self.script.states: # States are merged, duplicate declarations in the same script have already been checked by this point
 			self.states.append(self.script.states)
 		else:
 			self.states.append({})
 
-		if self.script.groups:
+		if self.script.groups: # Groups are merged, duplicate declarations in the same script have already been checked by this point
 			self.groups.append(self.script.groups)
 		else:
 			self.groups.append({})
 
-		self.variables.append({})
+		self.variables.append({}) # Check if variable names conflict with property names, duplicate declarations in the same script have already been checked by this point
 		for name, obj in self.script.variables.items():
 			if self.properties[0].get(name, None):
 				for parent in self.parentsToProcess:
