@@ -2945,6 +2945,32 @@ class Semantic(object):
 #			print(obj.body)
 		return
 
+	def NodeVisitor(self):
+		if aNode.type == NodeEnum.ARRAYATOM:
+			pass
+		elif aNode.type == NodeEnum.ARRAYCREATION:
+			pass
+		elif aNode.type == NodeEnum.ARRAYFUNCORID:
+			pass
+		elif aNode.type == NodeEnum.BINARYOPERATOR:
+			pass
+		elif aNode.type == NodeEnum.CONSTANT:
+			pass
+		elif aNode.type == NodeEnum.EXPRESSION:
+			pass
+		elif aNode.type == NodeEnum.FUNCTIONCALL:
+			pass
+		elif aNode.type == NodeEnum.FUNCTIONCALLARGUMENT:
+			pass
+		elif aNode.type == NodeEnum.IDENTIFIER:
+			pass
+		elif aNode.type == NodeEnum.LENGTH:
+			pass
+		elif aNode.type == NodeEnum.STRUCTCREATION:
+			pass
+		elif aNode.type == NodeEnum.UNARYOPERATOR:
+			pass
+
 	def GetCachedScript(self, aType, aLine):
 		self.line = aLine
 		key = ":".join(aType)
