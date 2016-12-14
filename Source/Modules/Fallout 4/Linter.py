@@ -1580,7 +1580,7 @@ class Syntactic(object):
 			if nextToken and nextToken.type != TokenEnum.RIGHTPARENTHESIS:
 				parameters = self.EventParameters(remote)
 			if remote and not parameters:
-				self.Abort("Remote/custom events have to have a parameter defining the script that emits the event.")
+				self.Abort("Remote events and CustomEvents have to have a parameter defining the script that emits the event.")
 			self.Expect(TokenEnum.RIGHTPARENTHESIS)
 			result = EventSignature(self.line, remote, name, self.AcceptFlags([TokenEnum.kNATIVE]), parameters)
 		elif tokenType == TokenEnum.kENDEVENT:
@@ -2758,8 +2758,24 @@ class Semantic(object):
 					remote = self.GetCachedScript(obj.remote, obj.starts)
 					if remote.events.get(obj.name, None):
 						print("Remote event", obj.name)
+						remoteEvent = remote.events[obj.name]
+						# First parameter: Type has to be the same as the script containing the Event declaration
+						# Remaining parameters, if any: Same types as the parameters in the Event declaration
 					elif remote.customEvents.get(obj.name, None):
-							print("CustomEvent", obj.name)
+						print("CustomEvent", obj.name)
+						#customEvent = remote.customEvents[obj.name]
+						if len(obj.parameters) == 2:
+						# First parameter: Type has to be the same as the script containing the CustomEvent declaration
+						# Second, and final, parameter: Type is Var[]
+							obj.parameters[0]
+							if obj.parameters[1].type.array and ":".join(obj.parameters[1].type.name) == "VAR":
+								pass
+							elif not obj.parameters[1].type.array:
+								raise SemanticError("Expected the second parameter to be an array.", obj.starts)
+							else:
+								raise SemanticError("Expected the second parameter's type to be 'Var'.", obj.starts)
+						else:
+							raise SemanticError("Incorrect amount of parameters. Expected two parameters.", obj.starts)
 					else:
 						raise SemanticError("No event or CustomEvent declaration exists for '%s' in '%s'." % (obj.name, ":".join(obj.remote)), obj.starts)
 				else: # Regular event
