@@ -2910,47 +2910,20 @@ class Semantic(object):
 				print("\nEvent", name)
 			for statement in obj.body:
 				print("\t", statement)
+				# TODO: Arrange in the optimal order
 #				if statement.statementType == StatementEnum.ASSIGNMENT:
-#					pass # TODO: Implement
-#				elif statement.statementType == StatementEnum.CUSTOMEVENT:
-#					pass # TODO: Implement
-#				elif statement.statementType == StatementEnum.DOCSTRING:
 #					pass # TODO: Implement
 #				elif statement.statementType == StatementEnum.ELSE:
 #					pass # TODO: Implement
 #				elif statement.statementType == StatementEnum.ELSEIF:
 #					pass # TODO: Implement
-#				elif statement.statementType == StatementEnum.ENDEVENT:
-#					pass # TODO: Implement
-#				elif statement.statementType == StatementEnum.ENDFUNCTION:
-#					pass # TODO: Implement
-#				elif statement.statementType == StatementEnum.ENDGROUP:
-#					pass # TODO: Implement
 #				elif statement.statementType == StatementEnum.ENDIF:
-#					pass # TODO: Implement
-#				elif statement.statementType == StatementEnum.ENDPROPERTY:
-#					pass # TODO: Implement
-#				elif statement.statementType == StatementEnum.ENDSTATE:
-#					pass # TODO: Implement
-#				elif statement.statementType == StatementEnum.ENDSTRUCT:
 #					pass # TODO: Implement
 #				elif statement.statementType == StatementEnum.ENDWHILE:
 #					pass # TODO: Implement
-#				elif statement.statementType == StatementEnum.EVENTSIGNATURE:
-#					pass # TODO: Implement
 #				elif statement.statementType == StatementEnum.EXPRESSION:
 #					pass # TODO: Implement
-#				elif statement.statementType == StatementEnum.FUNCTIONSIGNATURE:
-#					pass # TODO: Implement
-#				elif statement.statementType == StatementEnum.GROUPSIGNATURE:
-#					pass # TODO: Implement
 #				elif statement.statementType == StatementEnum.IF:
-#					pass # TODO: Implement
-#				elif statement.statementType == StatementEnum.IMPORT:
-#					pass # TODO: Implement
-#				elif statement.statementType == StatementEnum.PARAMETER:
-#					pass # TODO: Implement
-#				elif statement.statementType == StatementEnum.PROPERTYSIGNATURE:
 #					pass # TODO: Implement
 				if statement.statementType == StatementEnum.RETURN:
 					if statement.expression and returnsValue:
@@ -2962,12 +2935,6 @@ class Semantic(object):
 							raise SemanticError("Events cannot return values.", statement.line)
 					elif not statement.expression and returnsValue:
 						raise SemanticError("This function has to return a value.", statement.line)
-#				elif statement.statementType == StatementEnum.SCRIPTSIGNATURE:
-#					pass # TODO: Implement
-#				elif statement.statementType == StatementEnum.STATESIGNATURE:
-#					pass # TODO: Implement
-#				elif statement.statementType == StatementEnum.STRUCTSIGNATURE:
-#					pass # TODO: Implement
 #				elif statement.statementType == StatementEnum.VARIABLE:
 #					pass # TODO: Implement
 #				elif statement.statementType == StatementEnum.WHILE:
