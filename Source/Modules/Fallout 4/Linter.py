@@ -2759,15 +2759,26 @@ class Semantic(object):
 					if remote.events.get(obj.name, None):
 						print("Remote event", obj.name)
 						remoteEvent = remote.events[obj.name]
-						# First parameter: Type has to be the same as the script containing the Event declaration
+						# First parameter: Type has to be the same as the script containing the Event declaration (already checked earlier)
 						# Remaining parameters, if any: Same types as the parameters in the Event declaration
+						if len(obj.parameters) == len(remoteEvent.parameters) + 1:
+							i = 0
+							while i < len(remoteEvent.parameters):
+								if obj.parameters[i + 1].type.array != remoteEvent.parameters[i].type.array:
+									if remoteEvent.parameters[i].type.array:
+										raise SemanticError("Expected the parameter called '%s' to be an array." % (obj.parameters[i + 1].identifier), obj.starts)
+									else:
+										raise SemanticError("Expected the parameter called '%s' to not be an array." % (obj.parameters[i + 1].identifier), obj.starts)
+								elif ":".join(obj.parameters[i + 1].type.name) != ":".join(remoteEvent.parameters[i].type.name):
+									raise SemanticError("Expected the parameter called '%s' to have the type '%s'." % (obj.parameters[i + 1].identifier, ":".join(remoteEvent.parameters[i].type.identifier)), obj.starts)
+								i += 1
+						else:
+							raise SemanticError("The event header in '%s' requires there to be %d parameters in addition to the sender parameter." % (":".join(remote.identifier), len(remoteEvent.parameters)), obj.starts)
 					elif remote.customEvents.get(obj.name, None):
 						print("CustomEvent", obj.name)
-						#customEvent = remote.customEvents[obj.name]
 						if len(obj.parameters) == 2:
-						# First parameter: Type has to be the same as the script containing the CustomEvent declaration
+						# First parameter: Type has to be the same as the script containing the CustomEvent declaration (already checked earlier)
 						# Second, and final, parameter: Type is Var[]
-							obj.parameters[0]
 							if obj.parameters[1].type.array and ":".join(obj.parameters[1].type.name) == "VAR":
 								pass
 							elif not obj.parameters[1].type.array:
