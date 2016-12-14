@@ -2709,7 +2709,7 @@ class Semantic(object):
 							elif obj.type:
 								raise SemanticError("The function header inherited from '%s' requires that '%s' does not return a value." % (":".join(parent.name), name), obj.starts)
 
-							# Check argument types and defaults
+							# Check parameter types and defaults
 							if existingFunction.parameters and obj.parameters:
 								if len(existingFunction.parameters) != len(obj.parameters):
 									raise SemanticError("The function header inherited from '%s' requires that '%s' has %d parameters." % (":".join(parent.name), name, len(existingFunction.parameters)), obj.starts)
@@ -2722,9 +2722,12 @@ class Semantic(object):
 #										print("Existing param:", existingParam)
 #										print("Overriding param:", overridingParam)
 										if existingParam.type.array != overridingParam.type.array:
-											raise SemanticError("Expected the '%s' parameter to be an array." % (overridingParam.name), obj.starts)
+											if existingParam.type.array:
+												raise SemanticError("Expected the '%s' parameter to be an array." % (overridingParam.identifier), obj.starts)
+											else:
+												raise SemanticError("Expected the '%s' parameter to not be an array." % (overridingParam.identifier), obj.starts)
 										elif ":".join(existingParam.type.name) != ":".join(overridingParam.type.name):
-											raise SemanticError("Expected the '%s' parameter's type to be '%s'." % (overridingParam.name, ":".join(overridingParam.type.name)), obj.starts)
+											raise SemanticError("Expected the '%s' parameter's type to be '%s'." % (overridingParam.identifier, ":".join(existingParam.type.identifier)), obj.starts)
 										else:
 											if existingParam.value and overridingParam.value:
 												pass # TODO: Use the NodeVisitor to get the default value's type and actual value
@@ -2736,9 +2739,10 @@ class Semantic(object):
 												raise SemanticError("Expected the '%s' parameter to not have a default value." % (overridingParam.name), obj.starts)
 										i += 1
 							elif existingFunction.parameters:
-								raise SemanticError("The function header inherited from '%s' requires that '%s' has %d parameters." % (":".join(parent.name), name, len(existingFunction.parameters)), obj.starts)
+								raise SemanticError("The function header inherited from '%s' requires that '%s' has %d parameters." % (":".join(parent.identifier), name, len(existingFunction.parameters)), obj.starts)
 							elif obj.parameters:
-								raise SemanticError("The function header inherited from '%s' requires that '%s' does not have any parameters." % (":".join(parent.name), name), obj.starts)
+								raise SemanticError("The function header inherited from '%s' requires that '%s' does not have any parameters." % (":".join(parent.identifier), name), obj.starts)
+							break
 				# Also check that the default values of parameters are actually literals (unary minus is allowed to precede ints and floats).
 				self.functions[1][name] = obj
 
@@ -2791,7 +2795,26 @@ class Semantic(object):
 						raise SemanticError("No event or CustomEvent declaration exists for '%s' in '%s'." % (obj.name, ":".join(obj.remote)), obj.starts)
 				else: # Regular event
 					if self.events[0].get(name, None): # Overriding, check that the signature is the same
-						pass
+						for parent in self.parentsToProcess:
+							if parent.events.get(name, None):
+								event = parent.events[name]
+								if obj.parameters and event.parameters and len(obj.parameters) == len(event.parameters):
+									i = 0
+									while i < len(event.parameters):
+										if obj.parameters[i].type.array != event.parameters[i].type.array:
+											if event.parameters[i].type.array:
+												raise SemanticError("Expected the parameter called '%s' to be an array." % (obj.parameters[i].identifier), obj.starts)
+											else:
+												raise SemanticError("Expected the parameter called '%s' to not be an array." % (obj.parameters[i].identifier), obj.starts)
+										elif ":".join(obj.parameters[i].type.name) != ":".join(event.parameters[i].type.name):
+											raise SemanticError("Expected the parameter called '%s' to have the type '%s'." % (obj.parameters[i].identifier, ":".join(event.parameters[i].type.identifier)), obj.starts)
+										i += 1
+								else:
+									if not event.parameters and obj.parameters:
+										raise SemanticError("The event header inherited from '%s' requires that '%s' does not have any parameters." % (":".join(parent.identifier), name), obj.starts)
+									elif event.parameters:
+										raise SemanticError("The event header inherited from '%s' requires that '%s' has %d parameters." % (":".join(parent.identifier, name, len(event.parameters)), obj.starts))
+								break
 					else:
 						if isNative: # Script header has the 'Native' flag
 							self.events[1][name] = obj
