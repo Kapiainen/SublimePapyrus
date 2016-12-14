@@ -1833,7 +1833,7 @@ class ArrayCreationNode(Node):
 	__slots__ = ["arrayType", "size"]
 	def __init__(self, aArrayType, aSize):
 	# aArrayType: 
-	# aSize: 
+	# aSize: int
 		super(ArrayCreationNode, self).__init__(NodeEnum.ARRAYCREATION)
 		self.arrayType = aArrayType
 		self.size = aSize
@@ -1847,7 +1847,7 @@ Type: Array creation
 class StructCreationNode(Node):
 	__slots__ = ["structType"]
 	def __init__(self, aStructType):
-	# aStructType: 
+	# aStructType: List of string
 		super(StructCreationNode, self).__init__(NodeEnum.STRUCTCREATION)
 		self.structType = aStructType
 
@@ -2894,23 +2894,31 @@ class Semantic(object):
 		print("Imported scripts", self.importedScripts)
 		print("Imported namespaces", self.importedNamespaces)
 
-		# Process statements inside of functions and event
-		functionsAndEvents = {}
-		functionsAndEvents.update(self.functions[1])
-		functionsAndEvents.update(self.events[1])
-		for name, obj in functionsAndEvents.items():
-			returnsValue = False
-			isFunction = False
-			if isinstance(obj, Function):
-				print("\nFunction", name, obj.type)
-				if obj.type:
-					returnsValue = True
-				isFunction = True
-			elif isinstance(obj, Event):
-				print("\nEvent", name)
-			for statement in obj.body:
-				print("\t", statement)
-				# TODO: Arrange in the optimal order
+		# Process statements inside of functions and events
+		for name, obj in self.functions[1].items():
+			self.FunctionValidator(obj)
+		for name, obj in self.events[1].items():
+			self.FunctionValidator(obj)
+		for name, obj in self.properties[1].items():
+			if obj.getFunction:
+				self.FunctionValidator(obj.getFunction)
+			if obj.setFunction:
+				self.FunctionValidator(obj.setFunction)
+		return
+
+	def FunctionValidator(self, aFunction):
+		returnsValue = False
+		isFunction = False
+		if isinstance(aFunction, Function):
+			print("\nFunction", name, aFunction.type)
+			if aFunction.type:
+				returnsValue = True
+			isFunction = True
+		elif isinstance(aFunction, Event):
+			print("\nEvent", name)
+		for statement in aFunction.body:
+			print("\t", statement)
+			# TODO: Arrange in the optimal order
 #				if statement.statementType == StatementEnum.ASSIGNMENT:
 #					pass # TODO: Implement
 #				elif statement.statementType == StatementEnum.ELSE:
@@ -2925,51 +2933,71 @@ class Semantic(object):
 #					pass # TODO: Implement
 #				elif statement.statementType == StatementEnum.IF:
 #					pass # TODO: Implement
-				if statement.statementType == StatementEnum.RETURN:
-					if statement.expression and returnsValue:
-						pass # TODO: Check that the expression returns the same type of value as the function is supposed to return
-					elif statement.expression and not returnsValue:
-						if isFunction:
-							raise SemanticError("This function does not return a value.", statement.line)
-						else:
-							raise SemanticError("Events cannot return values.", statement.line)
-					elif not statement.expression and returnsValue:
-						raise SemanticError("This function has to return a value.", statement.line)
+			if statement.statementType == StatementEnum.RETURN:
+				if statement.expression and returnsValue:
+					pass # TODO: Check that the expression returns the same type of value as the function is supposed to return
+				elif statement.expression and not returnsValue:
+					if isFunction:
+						raise SemanticError("This function does not return a value.", statement.line)
+					else:
+						raise SemanticError("Events cannot return values.", statement.line)
+				elif not statement.expression and returnsValue:
+					raise SemanticError("This function has to return a value.", statement.line)
 #				elif statement.statementType == StatementEnum.VARIABLE:
 #					pass # TODO: Implement
 #				elif statement.statementType == StatementEnum.WHILE:
 #					pass # TODO: Implement
-				else:
-					raise SemanticError("This statement type is not yet supported: %s" % StatementDescription[statement.statementType], statement.line)
-				
-#			print(obj.body)
-		return
+			else:
+				raise SemanticError("This statement type is not yet supported: %s" % StatementDescription[statement.statementType], statement.line)
 
 	def NodeVisitor(self):
+		#self.type
 		if aNode.type == NodeEnum.ARRAYATOM:
 			pass
+			#self.child
+			#self.expression
 		elif aNode.type == NodeEnum.ARRAYCREATION:
 			pass
+			#self.arrayType
+			#self.size
 		elif aNode.type == NodeEnum.ARRAYFUNCORID:
 			pass
+			#self.child
+			#self.expression
 		elif aNode.type == NodeEnum.BINARYOPERATOR:
 			pass
+			#self.operator
+			#self.leftOperand
+			#self.rightOperand
 		elif aNode.type == NodeEnum.CONSTANT:
 			pass
+			#self.value
 		elif aNode.type == NodeEnum.EXPRESSION:
 			pass
+			#self.child
 		elif aNode.type == NodeEnum.FUNCTIONCALL:
 			pass
+			#self.name
+			#self.identifier
+			#self.arguments
 		elif aNode.type == NodeEnum.FUNCTIONCALLARGUMENT:
 			pass
+			#self.name
+			#self.identifier
+			#self.expression
 		elif aNode.type == NodeEnum.IDENTIFIER:
 			pass
+			#self.name
+			#self.identifier
 		elif aNode.type == NodeEnum.LENGTH:
 			pass
 		elif aNode.type == NodeEnum.STRUCTCREATION:
 			pass
+			#self.structType
 		elif aNode.type == NodeEnum.UNARYOPERATOR:
 			pass
+			#self.operator
+			#self.operand
 
 	def GetCachedScript(self, aType, aLine):
 		self.line = aLine
