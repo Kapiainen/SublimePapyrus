@@ -329,7 +329,7 @@ class Lexical(object):
 
 	def Process(self, aString):
 		"""Generates tokens from a string."""
-		# aString: string
+	# aString: string
 		line = 1
 		column = -1
 		for match in self.regex.finditer(aString):
@@ -1033,11 +1033,13 @@ class Syntactic(object):
 		self.stack = None
 
 	def Abort(self, aMessage):
+	# aMessage: string
 		if self.tokenIndex >= self.tokenCount and self.tokenCount > 0:
 			self.tokenIndex -= 1
 		raise SyntacticError(aMessage, self.tokens[self.tokenIndex].line)
 
 	def Accept(self, aToken):
+	# aToken: Token
 		if self.tokenIndex < self.tokenCount:
 			if self.tokens[self.tokenIndex].type == aToken:
 				self.tokenIndex += 1
@@ -1045,6 +1047,7 @@ class Syntactic(object):
 		return False
 
 	def Expect(self, aToken):
+	# aToken: Token
 		if self.tokenIndex < self.tokenCount:
 			if self.tokens[self.tokenIndex].type == aToken:
 				self.tokenIndex += 1
@@ -1056,12 +1059,14 @@ class Syntactic(object):
 		self.Abort("Expected a %s symbol but no tokens remain." % (TokenDescription[aToken]))
 
 	def Peek(self, aN = 1):
+	# aN: int
 		i = self.tokenIndex + aN
 		if i < self.tokenCount:
 			return self.tokens[i]
 		return None
 
 	def PeekBackwards(self, aN = 1):
+	# aN: int
 		i = self.tokenIndex - aN
 		if i >= 0:
 			return self.tokens[i]
@@ -1074,6 +1079,7 @@ class Syntactic(object):
 		self.Abort("No tokens remain.")
 
 	def AcceptFlags(self, aFlags):
+	# aFlags: List of TokenEnum
 		if aFlags:
 			successfulFlags = []
 			attempts = len(aFlags)
@@ -1095,6 +1101,7 @@ class Syntactic(object):
 		return None
 
 	def AcceptType(self, aBaseTypes):
+	# aBaseTypes: bool
 		result = None
 		if self.Accept(TokenEnum.IDENTIFIER):
 			result = [self.PeekBackwards().value]
@@ -1108,6 +1115,7 @@ class Syntactic(object):
 			return None
 
 	def ExpectType(self, aBaseTypes):
+	# aBaseTypes: bool
 		if self.Accept(TokenEnum.IDENTIFIER):
 			result = [self.PeekBackwards().value]
 			while self.Accept(TokenEnum.COLON):
@@ -1120,7 +1128,7 @@ class Syntactic(object):
 			raise SyntacticError("Expected a type identifier.", self.line)
 
 	def Property(self, aType):
-		#self.Expect(TokenEnum.kPROPERTY)
+	# aType: Type
 		self.Expect(TokenEnum.IDENTIFIER)
 		name = self.PeekBackwards()
 		value = None
@@ -1176,6 +1184,7 @@ class Syntactic(object):
 		return parameters
 
 	def EventParameters(self, aRemote):
+	# aRemote: List of string
 		parameters = []
 		typ = self.ExpectType(True)
 		array = False
@@ -1202,6 +1211,7 @@ class Syntactic(object):
 		return parameters
 
 	def Function(self, aType):
+	# aType: Type
 		self.Expect(TokenEnum.IDENTIFIER)
 		name = self.PeekBackwards()
 		parameters = None
@@ -1213,6 +1223,7 @@ class Syntactic(object):
 		return FunctionSignature(self.line, name, aType, self.AcceptFlags([TokenEnum.kNATIVE, TokenEnum.kGLOBAL, TokenEnum.kDEBUGONLY, TokenEnum.kBETAONLY]), parameters)
 
 	def Shift(self, aItem = None):
+	# aItem: Instance of a class that inherits from Node
 		if aItem:
 			self.stack.append(aItem)
 		else:
@@ -1433,6 +1444,7 @@ class Syntactic(object):
 			return Expression(self.line, left)
 
 	def Variable(self, aType):
+	# aType: Type
 		self.Expect(TokenEnum.IDENTIFIER)
 		name = self.PeekBackwards()
 		value = None
@@ -1447,6 +1459,7 @@ class Syntactic(object):
 		return self.Pop()
 
 	def Process(self, aTokens):
+	# aTokens: List of Token
 		if not aTokens:
 			return
 		
@@ -1683,6 +1696,8 @@ Type: Binary operator
 class UnaryOperatorNode(Node):
 	__slots__ = ["operator", "operand"]
 	def __init__(self, aOperator, aOperand):
+	# aOperator: Token
+	# aOperand: Instance of a class that inherits from Node
 		super(UnaryOperatorNode, self).__init__(NodeEnum.UNARYOPERATOR)
 		self.operator = aOperator
 		self.operand = aOperand
@@ -1696,6 +1711,7 @@ Type: Unary operator
 class ExpressionNode(Node):
 	__slots__ = ["child"]
 	def __init__(self, aChild):
+	# aChild: Instance of a class that inherits from Node
 		super(ExpressionNode, self).__init__(NodeEnum.EXPRESSION)
 		self.child = aChild
 
@@ -1708,6 +1724,8 @@ Type: Expression
 class ArrayAtomNode(Node):
 	__slots__ = ["child", "expression"]
 	def __init__(self, aChild, aExpression):
+	# aChild: Instance of a class that inherits from Node
+	# aExpression: Expression
 		super(ArrayAtomNode, self).__init__(NodeEnum.ARRAYATOM)
 		self.child = aChild
 		self.expression = aExpression
@@ -1721,6 +1739,8 @@ Type: Array atom
 class ArrayFuncOrIdNode(Node):
 	__slots__ = ["child", "expression"]
 	def __init__(self, aChild, aExpression):
+	# aChild: Instance of a class that inherits from Node
+	# aExpression: Expression
 		super(ArrayFuncOrIdNode, self).__init__(NodeEnum.ARRAYFUNCORID)
 		self.child = aChild
 		self.expression = aExpression
@@ -1734,6 +1754,7 @@ Type: Array, function, or identifier
 class ConstantNode(Node):
 	__slots__ = ["value"]
 	def __init__(self, aValue):
+	# aValue: Token
 		super(ConstantNode, self).__init__(NodeEnum.CONSTANT)
 		self.value = aValue
 
@@ -1746,6 +1767,8 @@ Type: Constant
 class FunctionCallNode(Node):
 	__slots__ = ["name", "arguments", "identifier"]
 	def __init__(self, aName, aArguments):
+	# aName: Token
+	# aArguments: List of FunctionCallArgument
 		super(FunctionCallNode, self).__init__(NodeEnum.FUNCTIONCALL)
 		self.name = aName.value.upper()
 		self.identifier = aName.value
@@ -1760,6 +1783,8 @@ Type: Function call
 class FunctionCallArgument(Node):
 	__slots__ = ["name", "expression", "identifier"]
 	def __init__(self, aName, aExpression):
+	# aName: Token
+	# aExpression: Expression
 		super(FunctionCallArgument, self).__init__(NodeEnum.FUNCTIONCALLARGUMENT)
 		if aName:
 			self.name = aName.value.upper()
@@ -1778,6 +1803,7 @@ Type: Function call argument
 class IdentifierNode(Node):
 	__slots__ = ["name", "identifier"]
 	def __init__(self, aName):
+	# aName: List of string
 		super(IdentifierNode, self).__init__(NodeEnum.IDENTIFIER)
 		if isinstance(aName, list):
 			self.name = [e.upper() for e in aName]
@@ -1785,13 +1811,6 @@ class IdentifierNode(Node):
 		else:
 			self.name = [aName.value.upper()]
 			self.identifier = [aName.value]
-#	__slots__ = ["value"]
-#	def __init__(self, aValue):
-#		super(IdentifierNode, self).__init__(NodeEnum.IDENTIFIER)
-#		if isinstance(aValue, list):
-#			self.value = aValue
-#		else:
-#			self.value = [aValue]
 
 	def __str__(self):
 		return """
@@ -1813,6 +1832,8 @@ Type: Length
 class ArrayCreationNode(Node):
 	__slots__ = ["arrayType", "size"]
 	def __init__(self, aArrayType, aSize):
+	# aArrayType: 
+	# aSize: 
 		super(ArrayCreationNode, self).__init__(NodeEnum.ARRAYCREATION)
 		self.arrayType = aArrayType
 		self.size = aSize
@@ -1826,6 +1847,7 @@ Type: Array creation
 class StructCreationNode(Node):
 	__slots__ = ["structType"]
 	def __init__(self, aStructType):
+	# aStructType: 
 		super(StructCreationNode, self).__init__(NodeEnum.STRUCTCREATION)
 		self.structType = aStructType
 
@@ -1839,41 +1861,28 @@ Type: Struct creation
 
 class SemanticError(Exception):
 	def __init__(self, aMessage, aLine):
+	# aMessage: string
+	# aLine: int
 		self.message = aMessage
 		self.line = aLine
 
-#	Objects
-#
-#		Script
-#			.name
-#			.flags
-#				List of KeywordEnum
-#			.parent
-#				Script
-#			.docstring
-#				String
-#			.imports
-#				List of String
-#			.customEvents
-#				List of String
-#			.variables
-#				Dict of Variable
-#			.properties
-#				Dict of Property
-#			.groups
-#				Dict of Group
-#					Dict of Property
-#			.structs
-#				Dict of Struct
-#			.functions
-#				Dict of Function
-#			.events
-#				Dict of Event
-#			.states
-#				Dict of State
 class Script(object):
 	__slots__ = ["name", "starts", "flags", "parent", "docstring", "imports", "customEvents", "variables", "properties",  "groups", "functions", "events", "states", "structs", "identifier", "parentIdentifier"]
 	def __init__(self, aName, aStarts, aFlags, aParent, aDocstring, aImports, aCustomEvents, aVariables, aProperties, aGroups, aFunctions, aEvents, aStates, aStructs):
+	# aName: List of string
+	# aStarts: int
+	# aFlags: List of TokenEnum
+	# aParent: List of string
+	# aDocstring: string
+	# aImports: List of string
+	# aCustomEvents: Dictionary of CustomEvent
+	# aVariables: Dictionary of Variable
+	# aProperties: Dictionary of Property
+	# aGroups: Dictionary of Group
+	# aFunctions: Dictionary of Function
+	# aEvents: Dictionary of Event
+	# aStates: Dictionary of State
+	# aStructs: Dictionary of Struct
 		self.name = [e.upper() for e in aName]
 		self.identifier = aName
 		self.starts = aStarts
@@ -1899,28 +1908,19 @@ class Script(object):
 		self.states = aStates
 		self.structs = aStructs
 
-#
-#		Property
-#			.name
-#				String
-#			.flags
-#				List of KeywordEnum
-#			.type
-#				.namespace
-#					List of Token
-#				.name
-#					Token
-#				.array
-#					Bool
-#			.value
-#				ExpressionNode
-#			.docstring
-#				String
-#			.functions
-#				List of Function
 class Property(object):
 	__slots__ = ["name", "flags", "type", "value", "docstring", "getFunction", "setFunction", "starts", "ends", "identifier"]
 	def __init__(self, aName, aIdentifier, aFlags, aType, aValue, aDocstring, aGetFunction, aSetFunction, aStarts, aEnds):
+	# aName: string
+	# aIdentifier: string
+	# aFlags: List of TokenEnum
+	# aType: Type
+	# aValue: Expression
+	# aDocstring: string
+	# aGetFunction: Function
+	# aSetFunction: Function
+	# aStarts: int
+	# aEnd: int
 		self.name = aName
 		self.identifier = aIdentifier
 		self.flags = aFlags
@@ -1932,21 +1932,15 @@ class Property(object):
 		self.starts = aStarts
 		self.ends = aEnds
 
-#
-#		Group
-#			.name
-#				String
-#			.flags
-#				List of KeywordEnum
-#			.properties
-#				Dict of Property
-#			.starts
-#				Int
-#			.ends
-#				Int
 class Group(object):
 	__slots__ = ["name", "flags", "properties", "starts", "ends", "identifier"]
 	def __init__(self, aName, aIdentifier, aFlags, aProperties, aStarts, aEnds):
+	# aName: string
+	# aIdentifier: string
+	# aFlags: List of TokenEnum
+	# aProperties: Dictionary of Property
+	# aStarts: int
+	# aEnds: int
 		self.name = aName
 		self.identifier = aIdentifier
 		self.flags = aFlags
