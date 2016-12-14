@@ -2269,9 +2269,7 @@ class Semantic(object):
 		docstring = None
 		if functionEventDef and functionEventDef[0].statementType == StatementEnum.DOCSTRING:
 			docstring = functionEventDef.pop(0)
-		body = None
-		if body:
-			body = functionEventDef
+		body = functionEventDef
 		if signature.statementType == StatementEnum.FUNCTIONSIGNATURE:
 			self.definition[-1].append(Function(signature.name, signature.identifier, signature.flags, signature.type, signature.parameters, docstring, body, signature.line, aEndLine))
 		else:
@@ -2735,6 +2733,10 @@ class Semantic(object):
 							elif obj.parameters:
 								raise SemanticError("The function header inherited from '%s' requires that '%s' does not have any parameters." % (":".join(parent.identifier), name), obj.starts)
 							break
+				if self.events[0].get(name, None):
+					for parent in self.parentsToProcess:
+						if parent.events.get(name, None):
+							raise SemanticError("An event called '%s' has been inherited from '%s'." % (name, ":".join(parent.identifier)), obj.starts)
 				# TODO: Also check that the default values of parameters are actually literals (unary minus is allowed to precede ints and floats).
 				self.functions[1][name] = obj
 
@@ -2762,6 +2764,7 @@ class Semantic(object):
 								i += 1
 						else:
 							raise SemanticError("The event header in '%s' requires there to be %d parameters in addition to the sender parameter." % (":".join(remote.identifier), len(remoteEvent.parameters)), obj.starts)
+						self.events[1][name] = obj
 					elif remote.customEvents.get(obj.name, None):
 						print("CustomEvent", obj.name)
 						if len(obj.parameters) == 2:
@@ -2775,6 +2778,7 @@ class Semantic(object):
 								raise SemanticError("Expected the second parameter's type to be 'Var'.", obj.starts)
 						else:
 							raise SemanticError("Incorrect amount of parameters. Expected two parameters.", obj.starts)
+						self.events[1][name] = obj
 					else:
 						raise SemanticError("No event or CustomEvent declaration exists for '%s' in '%s'." % (obj.name, ":".join(obj.remote)), obj.starts)
 				else: # Regular event
@@ -2798,7 +2802,11 @@ class Semantic(object):
 										raise SemanticError("The event header inherited from '%s' requires that '%s' does not have any parameters." % (":".join(parent.identifier), name), obj.starts)
 									elif event.parameters:
 										raise SemanticError("The event header inherited from '%s' requires that '%s' has %d parameters." % (":".join(parent.identifier, name, len(event.parameters)), obj.starts))
+								self.events[1][name] = obj
 								break
+					elif self.functions[0].get(name, None):
+						for parent in self.parentsToProcess:
+							raise SemanticError("A function called '%s' has been inherited from '%s'." % (name, ":".join(parent.identifier)), obj.starts)
 					else:
 						if isNative: # Script header has the 'Native' flag
 							self.events[1][name] = obj
@@ -2824,7 +2832,6 @@ class Semantic(object):
 							raise SemanticError("A CustomEvent called '%s' has already been declared in '%s'." % (name, ":".join(parent.name)), obj.line)
 				else:
 					self.customEvents[1][name] = obj
-
 		
 		if self.script.states: # States are merged, duplicate declarations in the same script have already been checked by this point
 			self.states.append(self.script.states)
@@ -2886,6 +2893,17 @@ class Semantic(object):
 				raise SemanticError("'%s' is neither a script nor a valid namespace." % key, value.line)
 		print("Imported scripts", self.importedScripts)
 		print("Imported namespaces", self.importedNamespaces)
+
+		# Process statements inside of functions and event
+		functionsAndEvents = {}
+		functionsAndEvents.update(self.functions[1])
+		functionsAndEvents.update(self.events[1])
+		for name, obj in functionsAndEvents.items():
+			if isinstance(obj, Function):
+				print("\nFunction", name)
+			elif isinstance(obj, Event):
+				print("\nEvent", name)
+			print(obj.body)
 		return
 
 	def GetCachedScript(self, aType, aLine):
@@ -2966,6 +2984,6 @@ class Semantic(object):
 			self.ValidateScript(script)
 #			# Add to cache
 #			self.cache[":".join(script.name)] = script
-			print(self.cache)
+			print("Cached scripts", self.cache)
 			return script
 		return None
