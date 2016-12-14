@@ -2899,11 +2899,35 @@ class Semantic(object):
 		functionsAndEvents.update(self.functions[1])
 		functionsAndEvents.update(self.events[1])
 		for name, obj in functionsAndEvents.items():
+			returnsValue = False
+			isFunction = False
 			if isinstance(obj, Function):
-				print("\nFunction", name)
+				print("\nFunction", name, obj.type)
+				if obj.type:
+					returnsValue = True
+				isFunction = True
 			elif isinstance(obj, Event):
 				print("\nEvent", name)
-			print(obj.body)
+			for statement in obj.body:
+				print("\t", statement)
+				if statement.statementType == StatementEnum.RETURN:
+					if statement.expression and not returnsValue:
+						if isFunction:
+							raise SemanticError("This function does not return a value.", statement.line)
+						else:
+							raise SemanticError("Events cannot return values.", statement.line)
+					elif not statement.expression and returnsValue:
+						raise SemanticError("This function has to return a value.", statement.line)
+#				elif statement.statementType == StatementEnum.:
+#					pass
+#				elif statement.statementType == StatementEnum.:
+#					pass
+#				elif statement.statementType == StatementEnum.:
+#					pass
+				else:
+					raise SemanticError("This statement type is not yet supported", statement.line)
+				
+#			print(obj.body)
 		return
 
 	def GetCachedScript(self, aType, aLine):
