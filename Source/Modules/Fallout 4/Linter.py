@@ -2910,32 +2910,39 @@ class Semantic(object):
 		returnsValue = False
 		isFunction = False
 		if isinstance(aFunction, Function):
-			print("\nFunction", name, aFunction.type)
+			print("\nFunction", aFunction.name, aFunction.type)
 			if aFunction.type:
 				returnsValue = True
 			isFunction = True
 		elif isinstance(aFunction, Event):
-			print("\nEvent", name)
+			print("\nEvent", aFunction.name)
 		for statement in aFunction.body:
 			print("\t", statement)
 			# TODO: Arrange in the optimal order
-#				if statement.statementType == StatementEnum.ASSIGNMENT:
-#					pass # TODO: Implement
-#				elif statement.statementType == StatementEnum.ELSE:
-#					pass # TODO: Implement
-#				elif statement.statementType == StatementEnum.ELSEIF:
-#					pass # TODO: Implement
-#				elif statement.statementType == StatementEnum.ENDIF:
-#					pass # TODO: Implement
-#				elif statement.statementType == StatementEnum.ENDWHILE:
-#					pass # TODO: Implement
-#				elif statement.statementType == StatementEnum.EXPRESSION:
-#					pass # TODO: Implement
-#				elif statement.statementType == StatementEnum.IF:
-#					pass # TODO: Implement
-			if statement.statementType == StatementEnum.RETURN:
+			if statement.statementType == StatementEnum.ASSIGNMENT:
+				# TODO: Implement
+				print(self.NodeVisitor(statement.leftExpression))
+				print(self.NodeVisitor(statement.rightExpression))
+			elif statement.statementType == StatementEnum.ELSE:
+				self.PopVariableScope()
+				self.AppendVariableScope()
+			elif statement.statementType == StatementEnum.ELSEIF:
+				self.PopVariableScope()
+				self.AppendVariableScope()
+				print(self.NodeVisitor(statement.expression))
+			elif statement.statementType == StatementEnum.ENDIF:
+				self.PopVariableScope()
+			elif statement.statementType == StatementEnum.ENDWHILE:
+				self.PopVariableScope()
+			elif statement.statementType == StatementEnum.EXPRESSION:
+				#pass # TODO: Implement
+				print(self.NodeVisitor(statement.expression))
+			elif statement.statementType == StatementEnum.IF:
+				self.AppendVariableScope()
+				print(self.NodeVisitor(statement.expression))
+			elif statement.statementType == StatementEnum.RETURN:
 				if statement.expression and returnsValue:
-					pass # TODO: Check that the expression returns the same type of value as the function is supposed to return
+					print(self.NodeVisitor(statement.expression)) # TODO: Check that the expression returns the same type of value as the function is supposed to return
 				elif statement.expression and not returnsValue:
 					if isFunction:
 						raise SemanticError("This function does not return a value.", statement.line)
@@ -2943,61 +2950,158 @@ class Semantic(object):
 						raise SemanticError("Events cannot return values.", statement.line)
 				elif not statement.expression and returnsValue:
 					raise SemanticError("This function has to return a value.", statement.line)
-#				elif statement.statementType == StatementEnum.VARIABLE:
-#					pass # TODO: Implement
-#				elif statement.statementType == StatementEnum.WHILE:
-#					pass # TODO: Implement
+			elif statement.statementType == StatementEnum.VARIABLE:
+				if statement.value:
+					print(self.NodeVisitor(statement.value))
+					# TODO: Check if expression returns the same type as the variable.
+			elif statement.statementType == StatementEnum.WHILE:
+				self.AppendVariableScope()
+				print(self.NodeVisitor(statement.expression))
 			else:
 				raise SemanticError("This statement type is not yet supported: %s" % StatementDescription[statement.statementType], statement.line)
 
-	def NodeVisitor(self):
-		#self.type
+	def AppendVariableScope(self):
+		self.variables.append({})
+
+	def PopVariableScope(self):
+		if len(self.variables) > 2:
+			self.variables.pop()
+		else:
+			raise Exception("DEBUG: Attempting to pop the variable scope once too many.")
+
+	def NodeVisitor(self, aNode, aExpected = None):
+		print("aNode", aNode)
+		print("aExpected", aExpected)
+		result = None
+		# Node
+		# self.type
 		if aNode.type == NodeEnum.ARRAYATOM:
-			pass
-			#self.child
-			#self.expression
+			# aNode.child
+			# aNode.expression
+			pass #
 		elif aNode.type == NodeEnum.ARRAYCREATION:
-			pass
-			#self.arrayType
-			#self.size
+			# aNode.arrayType
+			# aNode.size
+			print("Array creation node", aNode.arrayType, aNode.size)
+			pass # Return type, array, possibly struct
 		elif aNode.type == NodeEnum.ARRAYFUNCORID:
-			pass
-			#self.child
-			#self.expression
+			# aNode.child
+			# aNode.expression
+			pass #
 		elif aNode.type == NodeEnum.BINARYOPERATOR:
-			pass
-			#self.operator
-			#self.leftOperand
-			#self.rightOperand
+			# aNode.operator
+			# aNode.leftOperand
+			# aNode.rightOperand
+			print(aNode.operator)
+			leftResult = self.NodeVisitor(aNode.leftOperand)
+			print("leftResult", leftResult)
+			rightResult = self.NodeVisitor(aNode.rightOperand)
+			print("rightResult", rightResult)
+			if aNode.operator.type == TokenEnum.EQUAL or aNode.operator.type == TokenEnum.NOTEQUAL or aNode.operator.type == TokenEnum.GREATERTHAN or aNode.operator.type == TokenEnum.GREATERTHANOREQUAL or aNode.operator.type == TokenEnum.LESSTHAN or aNode.operator.type == TokenEnum.LESSTHANOREQUAL or aNode.operator.type == TokenEnum.NOT or aNode.operator.type == TokenEnum.OR or aNode.operator.type == TokenEnum.AND or aNode.operator.type == TokenEnum.kIS: # Logical operators
+				result = NodeResult(Type(["Bool"], False, False), True)
+			elif aNode.operator.type == TokenEnum.DOT: # Function, event, property, struct, struct member
+				pass
+			elif aNode.operator.type == TokenEnum.ADDITION or aNode.operator.type == TokenEnum.SUBTRACTION or aNode.operator.type == TokenEnum.MULTIPLICATION or aNode.operator.type == TokenEnum.DIVISION or aNode.operator.type == TokenEnum.MODULUS: # Arithmetic operators
+				# Check that the operand types support the operator
+				pass
+			elif aNode.operator.type == TokenEnum.ASSIGN or aNode.operator.type == TokenEnum.ASSIGNADDITION or aNode.operator.type == TokenEnum.ASSIGNSUBTRACTION or aNode.operator.type == TokenEnum.ASSIGNMULTIPLICATION or aNode.operator.type == TokenEnum.ASSIGNDIVISION or aNode.operator.type == TokenEnum.ASSIGNMODULUS: # Assignment operators
+				# Check that the operand types match or can be auto-cast
+				pass
+			elif aNode.operator.type == TokenEnum.kAS: # Cast as right operand
+				if result.object:
+					raise SemanticError("'%s' is an object and not a type." % (":".join(result.type.identifier)), self.line)
+				elif not self.GetCachedScript(result.type.name):
+					raise SemanticError("'%s' is not a type that exists." % (":".join(result.type.identifier)))
+				result = rightResult
+			# Check for valid use of operators with types
 		elif aNode.type == NodeEnum.CONSTANT:
-			pass
-			#self.value
+			# aNode.value
+			print(aNode.value)
+			if aNode.value.type == TokenEnum.kTRUE or aNode.value.type == TokenEnum.kFALSE:
+				result = NodeResult(Type(["Bool"], False, False), True)
+			elif aNode.value.type == TokenEnum.kNONE:
+				result = NodeResult(Type(["None"], False, False), True)
+			elif aNode.value.type == TokenEnum.FLOAT:
+				result = NodeResult(Type(["Float"], False, False), True)
+			elif aNode.value.type == TokenEnum.INT:
+				result = NodeResult(Type(["Int"], False, False), True)
+			elif aNode.value.type == TokenEnum.STRING:
+				result = NodeResult(Type(["String"], False, False), True)
+			else:
+				raise SemanticError("Unknown literal type", aNode.value.line)
 		elif aNode.type == NodeEnum.EXPRESSION:
-			pass
-			#self.child
+			result = self.NodeVisitor(aNode.child)
+			#if aNode.child.type == NodeEnum.IDENTIFIER and result and not result.object:
+			#	raise SemanticError("'%s' is not a variable that exists in this scope.", self.line)
 		elif aNode.type == NodeEnum.FUNCTIONCALL:
-			pass
-			#self.name
-			#self.identifier
-			#self.arguments
+			# aNode.name
+			# aNode.identifier
+			# aNode.arguments
+			print("Function call node", aNode.identifier)
+			pass # Return function's return type (type, array, not struct)
 		elif aNode.type == NodeEnum.FUNCTIONCALLARGUMENT:
-			pass
-			#self.name
-			#self.identifier
-			#self.expression
+			# aNode.name
+			# aNode.identifier
+			# aNode.expression
+			print("Function call argument node", aNode.identifier)			
 		elif aNode.type == NodeEnum.IDENTIFIER:
-			pass
-			#self.name
-			#self.identifier
+			# aNode.name
+			# aNode.identifier
+			print("Identifier node", aNode.name)
+#			if len(aNode.name) > 1:
+#
+#			else:
+#
+#			for scope in self.variables:
+#				if scope.get(, None)
+#			if not result:
+#				for scope in self.properties:
+#					if scope.get(, None)
+#			if not result:
+#				raise SemanticError("'%s' is not a variable or property that exists in this scope.")
+			# Check if identifier exists (variable, property, etc.), use aExpected when needed
+			
 		elif aNode.type == NodeEnum.LENGTH:
-			pass
+			result = NodeResult(Type(["Int"], False, False), True)
 		elif aNode.type == NodeEnum.STRUCTCREATION:
-			pass
-			#self.structType
+			# aNode.structType
+			print("Struct creation node", aNode.structType)
+			pass # Return type, not array, struct
+			
 		elif aNode.type == NodeEnum.UNARYOPERATOR:
-			pass
-			#self.operator
-			#self.operand
+			# aNode.operator
+			# aNode.operand
+			print("Unary operator node")
+			print(aNode.operator)
+			print(aNode.operand)
+			result = self.NodeVisitor(aNode.operand)
+			if aNode.operator.type == TokenEnum.NOT:
+				result = NodeResult(Type(["Bool"], False, False), True)
+			elif aNode.operator.type == TokenEnum.SUBTRACTION:
+				if result.type.array:
+					raise SemanticError("Arrays do not support the unary minus operator.", self.line)
+				elif result.type.struct:
+					raise SemanticError("Structs do not support the unary minus operator.", self.line)
+				elif not result.object:
+					raise SemanticError("Non-object values do not support the unary minus operator.", self.line)
+				if len(result.type.name) == 1:
+					if result.type.name[0] == "FLOAT":
+						result = NodeResult(Type(["Float"], False, False), True)
+					elif result.type.name[0] == "INT":
+						result = NodeResult(Type(["Int"], False, False), True)
+					else:
+						raise SemanticError("Only 'Float' and 'Int' support the unary minus operator.", self.line)
+			else:
+				raise Exception("DEBUG: Unsupported unary operator.")
+		return result
+		# NodeResult
+		# aType: Type
+		# aObject: bool
+
+	def CanAutoCast(self, aFrom, aTo):
+		pass
+	# aFrom: 
+	# aTo: 
 
 	def GetCachedScript(self, aType, aLine):
 		self.line = aLine
@@ -3080,3 +3184,21 @@ class Semantic(object):
 			print("Cached scripts", self.cache)
 			return script
 		return None
+
+class NodeResult(object):
+	__slots__ = ["type", "object"]
+	def __init__(self, aType, aObject):
+	# aType: Type
+	# aObject: bool
+		self.type = aType
+		self.object = aObject
+
+	def __str__(self):
+		return """
+===== NodeResult =====
+Type name: %s
+Type identifier: %s
+Array: %s
+Struct: %s
+Object: %s
+""" % (":".join(self.type.name), ":".join(self.type.identifier), self.type.array, self.type.struct, self.object)
