@@ -2925,10 +2925,10 @@ class Semantic(object):
 				print(self.NodeVisitor(statement.rightExpression))
 			elif statement.statementType == StatementEnum.ELSE:
 				self.PopVariableScope()
-				self.AppendVariableScope()
+				self.PushVariableScope()
 			elif statement.statementType == StatementEnum.ELSEIF:
 				self.PopVariableScope()
-				self.AppendVariableScope()
+				self.PushVariableScope()
 				print(self.NodeVisitor(statement.expression))
 			elif statement.statementType == StatementEnum.ENDIF:
 				self.PopVariableScope()
@@ -2938,7 +2938,7 @@ class Semantic(object):
 				#pass # TODO: Implement
 				print(self.NodeVisitor(statement.expression))
 			elif statement.statementType == StatementEnum.IF:
-				self.AppendVariableScope()
+				self.PushVariableScope()
 				print(self.NodeVisitor(statement.expression))
 			elif statement.statementType == StatementEnum.RETURN:
 				if statement.expression and returnsValue:
@@ -2955,12 +2955,12 @@ class Semantic(object):
 					print(self.NodeVisitor(statement.value))
 					# TODO: Check if expression returns the same type as the variable.
 			elif statement.statementType == StatementEnum.WHILE:
-				self.AppendVariableScope()
+				self.PushVariableScope()
 				print(self.NodeVisitor(statement.expression))
 			else:
 				raise SemanticError("This statement type is not yet supported: %s" % StatementDescription[statement.statementType], statement.line)
 
-	def AppendVariableScope(self):
+	def PushVariableScope(self):
 		self.variables.append({})
 
 	def PopVariableScope(self):
