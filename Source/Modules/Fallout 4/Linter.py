@@ -2983,11 +2983,44 @@ class Semantic(object):
 			# aNode.arrayType
 			# aNode.size
 			print("Array creation node", aNode.arrayType, aNode.size)
-			pass # Return type, array, possibly struct
+			# Check if aNode.arrayType is a script or a struct
+			name = ":".join(aNode.arrayType).upper()
+			if len(aNode.arrayType) == 1: # Struct in the current script or a script
+				print("Local struct?", aNode.arrayType)
+				for scope in self.structs:
+					if scope.get(name, None):
+						result = NodeResult(Type(aNode.arrayType, True, True), True)
+						break
+				if not result: # Check for script
+					print("Script?", aNode.arrayType)
+					if self.GetCachedScript(aNode.arrayType, self.line):
+						result = NodeResult(Type(aNode.arrayType, True, False), True)
+			else:
+				try: # Script
+					print("Script?", aNode.arrayType)
+					script = self.GetCachedScript(aNode.arrayType, self.line)
+					result = NodeResult(Type(aNode.arrayType, True, False), True)
+				except MissingScript:
+					print("Struct?", aNode.arrayType)
+					try: # Struct in another script
+						script = self.GetCachedScript(aNode.arrayType[0:-1], self.line)
+						if script.structs.get(name, None):
+							result = NodeResult(Type(aNode.arrayType, True, True), True)
+						else:
+							raise SemanticError("'%s' does not have a struct called '%s'." % (":".join(aNode.arrayType[0:-1]), aNode.arrayType[-1]), self.line)
+					except MissingScript:
+						raise SemanticError("'%s' is neither a type nor a struct.", self.line)
 		elif aNode.type == NodeEnum.ARRAYFUNCORID:
 			# aNode.child
 			# aNode.expression
-			pass #
+			result = self.NodeVisitor(aNode.child)
+			if result and result.type.array and aNode.expression:
+				exprResult = self.NodeVisitor(aNode.expression)
+				if ":".join(exprResult.type.name) != "INT":
+					raise SemanticError("ARRAY EXPRESSION IS NOT INT", self.line) # TODO: Finalize error message
+				elif exprResult.type.array:
+					raise SemanticError("ARRAY EXPRESSION IS AN ARRAY", self.line) # TODO: Finalize error message
+				result = NodeResult(Type(result.type.identifier, False, result.type.struct), True)
 		elif aNode.type == NodeEnum.BINARYOPERATOR:
 			# aNode.operator
 			# aNode.leftOperand
@@ -3033,12 +3066,12 @@ class Semantic(object):
 			result = self.NodeVisitor(aNode.child)
 			#if aNode.child.type == NodeEnum.IDENTIFIER and result and not result.object:
 			#	raise SemanticError("'%s' is not a variable that exists in this scope.", self.line)
-		elif aNode.type == NodeEnum.FUNCTIONCALL:
+		elif aNode.type == NodeEnum.FUNCTIONCALL: # Return function's return type (type, array, struct, object)
 			# aNode.name
 			# aNode.identifier
 			# aNode.arguments
 			print("Function call node", aNode.identifier)
-			pass # Return function's return type (type, array, not struct)
+			print("Expected", aExpected)
 		elif aNode.type == NodeEnum.FUNCTIONCALLARGUMENT:
 			# aNode.name
 			# aNode.identifier
@@ -3065,15 +3098,14 @@ class Semantic(object):
 			result = NodeResult(Type(["Int"], False, False), True)
 		elif aNode.type == NodeEnum.STRUCTCREATION:
 			# aNode.structType
-			print("Struct creation node", aNode.structType)
-			pass # Return type, not array, struct
-			
+#			print("Struct creation node", aNode.structType)
+			result = NodeResult(Type(aNode.structType, False, True), True)
 		elif aNode.type == NodeEnum.UNARYOPERATOR:
 			# aNode.operator
 			# aNode.operand
-			print("Unary operator node")
-			print(aNode.operator)
-			print(aNode.operand)
+#			print("Unary operator node")
+#			print(aNode.operator)
+#			print(aNode.operand)
 			result = self.NodeVisitor(aNode.operand)
 			if aNode.operator.type == TokenEnum.NOT:
 				result = NodeResult(Type(["Bool"], False, False), True)
@@ -3093,6 +3125,8 @@ class Semantic(object):
 						raise SemanticError("Only 'Float' and 'Int' support the unary minus operator.", self.line)
 			else:
 				raise Exception("DEBUG: Unsupported unary operator.")
+		else:
+			raise Exception("DEBUG: Unsupported node type.")
 		return result
 		# NodeResult
 		# aType: Type
@@ -3105,7 +3139,7 @@ class Semantic(object):
 
 	def GetCachedScript(self, aType, aLine):
 		self.line = aLine
-		key = ":".join(aType)
+		key = ":".join(aType).upper()
 		result = self.cache.get(key, None)
 		if result:
 			return result
@@ -3123,7 +3157,7 @@ class Semantic(object):
 					return result
 				else:
 					break
-		raise SemanticError("Cannot find a script called '%s'." % key, self.line)
+		raise MissingScript("Cannot find a script called '%s'." % key, self.line)
 
 	def CacheScript(self, aPath):
 		signature = None
@@ -3202,3 +3236,10 @@ Array: %s
 Struct: %s
 Object: %s
 """ % (":".join(self.type.name), ":".join(self.type.identifier), self.type.array, self.type.struct, self.object)
+
+class MissingScript(Exception):
+	def __init__(self, aMessage, aLine):
+	# aMessage: string
+	# aLine: int
+		self.message = aMessage
+		self.line = aLine

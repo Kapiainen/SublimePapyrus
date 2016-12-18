@@ -224,6 +224,12 @@ class EventListener(sublime_plugin.EventListener):
 					SublimePapyrus.SetStatus(aView, "sublimepapyrus-linter", "Error on line %d: %s" % (e.line, e.message))
 					SublimePapyrus.HighlightLinter(aView, e.line)
 				return False
+			except Linter.MissingScript as e:
+				print(e.message)
+				if aView:
+					SublimePapyrus.SetStatus(aView, "sublimepapyrus-linter", "Error on line %d: %s" % (e.line, e.message))
+					SublimePapyrus.HighlightLinter(aView, e.line)
+				return False
 			return True
 
 		if Run():
