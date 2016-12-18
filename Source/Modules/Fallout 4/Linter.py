@@ -3133,9 +3133,9 @@ class Semantic(object):
 		# aObject: bool
 
 	def CanAutoCast(self, aFrom, aTo):
-		pass
-	# aFrom: 
-	# aTo: 
+	# aFrom: NodeResult
+	# aTo: NodeResult
+		pass 
 
 	def GetCachedScript(self, aType, aLine):
 		self.line = aLine
