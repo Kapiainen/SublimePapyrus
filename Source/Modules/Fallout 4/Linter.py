@@ -1,5 +1,7 @@
 import re, os
 
+PLATFORM_WINDOWS = os.name == "nt"
+
 #1: Lexical analysis
 class TokenEnum(object):
 	"""Types of tokens."""
@@ -3143,20 +3145,50 @@ class Semantic(object):
 		result = self.cache.get(key, None)
 		if result:
 			return result
-		for impPath in self.paths:
-			path = "%s%s" % (os.path.join(impPath, *aType), self.scriptExtension)
-			if os.path.isfile(path):
-				try:
-					result = self.CacheScript(path)
-				except LexicalError as e:
-					raise LexicalError("Lexical error in '%s' script." % key, self.line, 0)
-				except SyntacticError as e:
-					raise SyntacticError("Syntactic error in '%s' script." % key, self.line)
-				#= self.cache.get(key, None)
-				if result:
-					return result
-				else:
-					break
+		if PLATFORM_WINDOWS:
+			for impPath in self.paths:
+				path = "%s%s" % (os.path.join(impPath, *aType), self.scriptExtension)
+				if os.path.isfile(path):
+					try:
+						result = self.CacheScript(path)
+					except LexicalError as e:
+						raise LexicalError("Lexical error in '%s' script." % key, self.line, 0)
+					except SyntacticError as e:
+						raise SyntacticError("Syntactic error in '%s' script." % key, self.line)
+					#= self.cache.get(key, None)
+					if result:
+						return result
+					else:
+						break
+		# Unix - Implemented to enable development of package on Unix-based OSes. Is a bit slow.
+		else:
+			fileName = (aType.pop()+self.scriptExtension).upper()
+			for impPath in self.paths:
+				subFolders = [f.upper() for f in aType]
+				def getFolder(aRoot):
+					if len(subFolders) > 0:
+						for element in os.listdir(aRoot):
+							if element.upper() == subFolders[0]:
+								subFolders.pop(0)
+								return getFolder(os.path.join(aRoot, element))
+					else:
+						for element in os.listdir(aRoot):
+							print(element.upper())
+							if element.upper() == fileName:
+								return os.path.join(aRoot, element)
+				finalPath = getFolder(impPath)
+				if finalPath:
+					try:
+						result = self.CacheScript(finalPath)
+					except LexicalError as e:
+						raise LexicalError("Lexical error in '%s' script." % key, self.line, 0)
+					except SyntacticError as e:
+						raise SyntacticError("Syntactic error in '%s' script." % key, self.line)
+					if result:
+						return result
+					else:
+						break
+		# EndUnix
 		raise MissingScript("Cannot find a script called '%s'." % key, self.line)
 
 	def CacheScript(self, aPath):
