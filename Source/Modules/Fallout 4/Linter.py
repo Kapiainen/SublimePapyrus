@@ -2921,6 +2921,7 @@ class Semantic(object):
 		elif isinstance(aFunction, Event):
 			print("\nEvent", aFunction.name)
 		for statement in aFunction.body:
+			self.line = statement.line
 			print("\t", statement)
 			# TODO: Arrange in the optimal order
 			if statement.statementType == StatementEnum.ASSIGNMENT:
@@ -3154,6 +3155,35 @@ class Semantic(object):
 			# aNode.name
 			# aNode.identifier
 			print("Identifier node", aNode.name)
+			if not aExpected:
+				if len(aNode.name) == 1:
+					name = aNode.name[0]
+					if name == "SELF":
+						result = NodeResult(Type(["SELF"], False, False), True)
+					elif name == "PARENT":
+						if not self.script.parent:
+							raise SemanticError("This script does not have a parent script.", self.line)
+						result = NodeResult(Type([self.script.parent.name], False, False), True)
+					else:
+						for scope in reversed(self.variables):
+							var = scope.get(name, None)
+							if var:
+								print("Found a variable with matching name")
+								result = NodeResult(var.type, True)
+								break
+						if not result:
+							for scope in reversed(self.properties):
+								prop = scope.get(name, None)
+								if prop:
+									print("Found a property with matching name")
+									result = NodeResult(prop.type, True)
+									break
+						if not result:
+							raise SemanticError("'%s' is not a variable that exists in this scope." % (":".join(aNode.identifier)), self.line)
+				else:
+					print("Identifier refers to another script")
+			else:
+				pass
 			# Check if identifier exists (variable, property, struct member, etc.), use aExpected when needed
 			
 		elif aNode.type == NodeEnum.LENGTH:
