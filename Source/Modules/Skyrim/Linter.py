@@ -1591,6 +1591,8 @@ class Semantic(SharedResources):
 				except UnicodeDecodeError:
 					with open(fullPath, encoding="utf8") as f:
 						scriptContents = f.read()
+				if not scriptContents or len(scriptContents) == 0:
+					self.Abort("The '%s' script contains nothing." % name)
 				lines = []
 				tokens = []
 				try:
@@ -1603,6 +1605,8 @@ class Semantic(SharedResources):
 							tokens.append(token)
 				except LexicalError as e:
 					self.Abort("Found a lexical error in the '%s' script." % name)
+				if not lines:
+					self.Abort("The '%s' script has no lines of code that are not comments." % name)
 				extends = []
 				functions = {}
 				properties = {}
@@ -1615,6 +1619,8 @@ class Semantic(SharedResources):
 							statements.append(stat)
 				except SyntacticError as e:
 					self.Abort("Found a syntactic error in the '%s' script." % name)
+				if not statements:
+					self.Abort("No statements to process in the '%s' script." % name)
 				header = False
 				if statements[0].type == self.STAT_SCRIPTHEADER:
 					if statements[0].data.parent:
