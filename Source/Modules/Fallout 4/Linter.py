@@ -2909,6 +2909,8 @@ class Semantic(object):
 		return
 
 	def FunctionValidator(self, aFunction):
+	# aFunction: Function
+	# TODO: Implement a check that makes sure that functions that return a value actually have a return statement somewhere(?)
 		returnsValue = False
 		isFunction = False
 		if isinstance(aFunction, Function):
@@ -2923,42 +2925,42 @@ class Semantic(object):
 			# TODO: Arrange in the optimal order
 			if statement.statementType == StatementEnum.ASSIGNMENT:
 				# TODO: Implement
-				print(self.NodeVisitor(statement.leftExpression))
-				print(self.NodeVisitor(statement.rightExpression))
+				print("Assignment, left side", self.NodeVisitor(statement.leftExpression))
+				print("Assignment, right side", self.NodeVisitor(statement.rightExpression))
 			elif statement.statementType == StatementEnum.ELSE:
 				self.PopVariableScope()
 				self.PushVariableScope()
 			elif statement.statementType == StatementEnum.ELSEIF:
 				self.PopVariableScope()
 				self.PushVariableScope()
-				print(self.NodeVisitor(statement.expression))
+				print("ElseIf statement", self.NodeVisitor(statement.expression))
 			elif statement.statementType == StatementEnum.ENDIF:
 				self.PopVariableScope()
 			elif statement.statementType == StatementEnum.ENDWHILE:
 				self.PopVariableScope()
 			elif statement.statementType == StatementEnum.EXPRESSION:
 				#pass # TODO: Implement
-				print(self.NodeVisitor(statement.expression))
+				print("Expression statement", self.NodeVisitor(statement.expression))
 			elif statement.statementType == StatementEnum.IF:
 				self.PushVariableScope()
-				print(self.NodeVisitor(statement.expression))
+				print("If statement", self.NodeVisitor(statement.expression))
 			elif statement.statementType == StatementEnum.RETURN:
 				if statement.expression and returnsValue:
-					print(self.NodeVisitor(statement.expression)) # TODO: Check that the expression returns the same type of value as the function is supposed to return
+					print("Return statement", self.NodeVisitor(statement.expression)) # TODO: Check that the expression returns the same type of value as the function is supposed to return
 				elif statement.expression and not returnsValue:
 					if isFunction:
 						raise SemanticError("This function does not return a value.", statement.line)
 					else:
 						raise SemanticError("Events cannot return values.", statement.line)
 				elif not statement.expression and returnsValue:
-					raise SemanticError("This function has to return a value.", statement.line)
+					raise SemanticError("This function has to return a(n) '%s' value." % (":".join(aFunction.type.identifier)), statement.line)
 			elif statement.statementType == StatementEnum.VARIABLE:
 				if statement.value:
-					print(self.NodeVisitor(statement.value))
+					print("Variable declaration default value", self.NodeVisitor(statement.value))
 					# TODO: Check if expression returns the same type as the variable.
 			elif statement.statementType == StatementEnum.WHILE:
 				self.PushVariableScope()
-				print(self.NodeVisitor(statement.expression))
+				print("While statement", self.NodeVisitor(statement.expression))
 			else:
 				raise SemanticError("This statement type is not yet supported: %s" % StatementDescription[statement.statementType], statement.line)
 
@@ -3035,23 +3037,91 @@ class Semantic(object):
 			if aNode.operator.type == TokenEnum.EQUAL or aNode.operator.type == TokenEnum.NOTEQUAL or aNode.operator.type == TokenEnum.GREATERTHAN or aNode.operator.type == TokenEnum.GREATERTHANOREQUAL or aNode.operator.type == TokenEnum.LESSTHAN or aNode.operator.type == TokenEnum.LESSTHANOREQUAL or aNode.operator.type == TokenEnum.NOT or aNode.operator.type == TokenEnum.OR or aNode.operator.type == TokenEnum.AND or aNode.operator.type == TokenEnum.kIS: # Logical operators
 				result = NodeResult(Type(["Bool"], False, False), True)
 			elif aNode.operator.type == TokenEnum.DOT: # Function, event, property, struct, struct member
-				pass
+				print("Dot operator")
+				if aExpected:
+					print("Expected", ":".join(aExpected.type.identifier))
 			elif aNode.operator.type == TokenEnum.ADDITION or aNode.operator.type == TokenEnum.SUBTRACTION or aNode.operator.type == TokenEnum.MULTIPLICATION or aNode.operator.type == TokenEnum.DIVISION or aNode.operator.type == TokenEnum.MODULUS: # Arithmetic operators
 				# Check that the operand types support the operator
-				pass
+				if not leftResult.object:
+					raise SemanticError("The left-hand side expression evaluates to a type instead of a value.", self.line)
+				elif not rightResult.object:
+					raise SemanticError("The right-hand side expression evaluates to a type instead of a value.", self.line)
+				elif leftResult.type.array:
+					raise SemanticError("The left-hand side expression evaluates to an array, which do not support arithmetic operators.", self.line)
+				elif rightResult.type.array:
+					raise SemanticError("The right-hand side expression evaluates to an array, which do not support arithmetic operators.", self.line)
+				elif leftResult.type.struct:
+					raise SemanticError("The left-hand side expression evaluates to a struct, which do not support arithmetic operators.", self.line)
+				elif rightResult.type.struct:
+					raise SemanticError("The right-hand side expression evaluates to a struct, which do not support arithmetic operators.", self.line)
+				else:
+					leftResultKey = ":".join(leftResult.type.name)
+					rightResultKey = ":".join(rightResult.type.name)
+					if leftResultKey == rightResultKey:
+						result = rightResult
+					else:
+						if leftResultKey == "STRING":
+							result = leftResult
+						elif rightResultKey == "STRING":
+							result = rightResult
+						else:
+							if self.CanAutoCast(leftResult, rightResult):
+								result = rightResult
+							elif self.CanAutoCast(rightResult, leftResult):
+								result = leftResult
+							else:
+								raise SemanticError("'%s' cannot be auto-cast to '%s' nor vice versa." % (":".join(leftResult.type.identifier), ":".join(rightResult.type.identifier)), self.line)
+					if result:
+						resultKey = ":".join(result.type.name)
+						if resultKey == "BOOL":
+							pass
+						elif resultKey == "FLOAT":
+							if aNode.operator.type == TokenEnum.MODULUS:
+								raise SemanticError("'Float' does not support the modulus operator.", self.line)
+						elif resultKey == "INT":
+							pass
+						elif resultKey == "STRING":
+							if aNode.operator.type != TokenEnum.ADDITION:
+								raise SemanticError("The only arithmetic operator supported by 'String' is the addition operator.", self.line)
+#						elif resultKey == "VAR":
+#							raise SemanticError("'Var' does not support any arithmetic operators.", self.line)
+						else:
+							raise SemanticError("'%s' does not support any arithmetic operators." % (":".join(result.type.identifier)), self.line)
 			elif aNode.operator.type == TokenEnum.ASSIGN or aNode.operator.type == TokenEnum.ASSIGNADDITION or aNode.operator.type == TokenEnum.ASSIGNSUBTRACTION or aNode.operator.type == TokenEnum.ASSIGNMULTIPLICATION or aNode.operator.type == TokenEnum.ASSIGNDIVISION or aNode.operator.type == TokenEnum.ASSIGNMODULUS: # Assignment operators
 				# Check that the operand types match or can be auto-cast
-				pass
+				if leftResult.type.array != rightResult.type.array:
+					if leftResult.type.array:
+						raise SemanticError("The left-hand expression evaluates to an array, but the right-hand expression does not.", self.line)
+					else:
+						raise SemanticError("The left-hand expression does not evaluate to an array, but the right-hand expression does.", self.line)
+				elif leftResult.type.struct != rightResult.type.struct:
+					if leftResult.type.struct:
+						raise SemanticError("The left-hand expression evaluates to a struct, but the right-hand expression does not.", self.line)
+					else:
+						raise SemanticError("The left-hand expression does not evaluate to a struct, but the right-hand expression does.", self.line)
+				elif leftResult.object != rightResult.object:
+					if leftResult.object:
+						raise SemanticError("The left-hand expression evaluates to a value, but the right-hand expression evaluates to a type.", self.line)
+					else:
+						raise SemanticError("The left-hand expression evaluates to a type, but the right-hand expression evaluates to a value.", self.line)
+				if ":".join(leftResult.type.name) == ":".join(rightResult.type.name) or self.CanAutoCast(rightResult, leftResult):
+					result = leftResult
+				else:
+					raise SemanticError("'%s' cannot be auto-cast to '%s'." % (":".join(rightResult.type.identifier), ":".join(leftResult.type.identifier)), self.line)
 			elif aNode.operator.type == TokenEnum.kAS: # Cast as right operand
+				result = rightResult
 				if result.object:
 					raise SemanticError("'%s' is an object and not a type." % (":".join(result.type.identifier)), self.line)
+				elif result.type.struct:
+					raise SemanticError("'%s' is a struct." % (":".join(result.type.identifier)), self.line)
+				elif result.type.array:
+					raise SemanticError("", self.line)
 				elif not self.GetCachedScript(result.type.name):
 					raise SemanticError("'%s' is not a type that exists." % (":".join(result.type.identifier)))
-				result = rightResult
 			# Check for valid use of operators with types
 		elif aNode.type == NodeEnum.CONSTANT:
 			# aNode.value
-			print(aNode.value)
+#			print(aNode.value)
 			if aNode.value.type == TokenEnum.kTRUE or aNode.value.type == TokenEnum.kFALSE:
 				result = NodeResult(Type(["Bool"], False, False), True)
 			elif aNode.value.type == TokenEnum.kNONE:
@@ -3074,6 +3144,7 @@ class Semantic(object):
 			# aNode.arguments
 			print("Function call node", aNode.identifier)
 			print("Expected", aExpected)
+			#result = NodeResult(function.type, True)
 		elif aNode.type == NodeEnum.FUNCTIONCALLARGUMENT:
 			# aNode.name
 			# aNode.identifier
@@ -3083,18 +3154,7 @@ class Semantic(object):
 			# aNode.name
 			# aNode.identifier
 			print("Identifier node", aNode.name)
-#			if len(aNode.name) > 1:
-#
-#			else:
-#
-#			for scope in self.variables:
-#				if scope.get(, None)
-#			if not result:
-#				for scope in self.properties:
-#					if scope.get(, None)
-#			if not result:
-#				raise SemanticError("'%s' is not a variable or property that exists in this scope.")
-			# Check if identifier exists (variable, property, etc.), use aExpected when needed
+			# Check if identifier exists (variable, property, struct member, etc.), use aExpected when needed
 			
 		elif aNode.type == NodeEnum.LENGTH:
 			result = NodeResult(Type(["Int"], False, False), True)
@@ -3117,7 +3177,7 @@ class Semantic(object):
 				elif result.type.struct:
 					raise SemanticError("Structs do not support the unary minus operator.", self.line)
 				elif not result.object:
-					raise SemanticError("Non-object values do not support the unary minus operator.", self.line)
+					raise SemanticError("Only values support the unary minus operator.", self.line)
 				if len(result.type.name) == 1:
 					if result.type.name[0] == "FLOAT":
 						result = NodeResult(Type(["Float"], False, False), True)
@@ -3137,7 +3197,40 @@ class Semantic(object):
 	def CanAutoCast(self, aFrom, aTo):
 	# aFrom: NodeResult
 	# aTo: NodeResult
-		pass 
+		if not aFrom:
+			raise Exception("DEBUG: CanAutoCast's aFrom parameter is None.")
+		elif not aTo:
+			raise Exception("DEBUG: CanAutoCast's aTo parameter is None.")
+		if aTo.type.array:
+			raise SemanticError("Cannot auto-cast to an array.", self.line)
+		elif aTo.type.struct and toKey != "VAR":
+			raise SemanticError("Cannot auto-cast to a struct.", self.line)
+		elif not aTo.object:
+			raise SemanticError("Cannot auto-cast to a type/non-value.", self.line)
+		elif not aFrom.object:
+			raise SemanticError("Cannot auto-cast from a type/non-value.", self.line)
+		toKey = ":".join(aTo.type.name)
+		if toKey == "BOOL": # Anything
+			return True
+		elif toKey == "FLOAT": # Int only
+			if ":".join(aFrom.type.name) == "INT":
+				return True
+			else:
+				return False
+		elif toKey == "INT": # Nothing
+			return False
+		elif toKey == "STRING": # Anything
+			return True
+		elif toKey == "VAR": # Anything but arrays
+			if aFrom.type.array:
+				return False
+			else:
+				return True
+		else: # From child objects
+			print("Auto-cast object", aFrom.type.name, aTo.type.name)
+			raise Exception("Auto-cast object")
+			raise SemanticError("Auto-cast object", self.line)
+			return False
 
 	def GetCachedScript(self, aType, aLine):
 		self.line = aLine
@@ -3173,7 +3266,6 @@ class Semantic(object):
 								return getFolder(os.path.join(aRoot, element))
 					else:
 						for element in os.listdir(aRoot):
-							print(element.upper())
 							if element.upper() == fileName:
 								return os.path.join(aRoot, element)
 				finalPath = getFolder(impPath)
