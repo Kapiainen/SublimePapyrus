@@ -1635,7 +1635,9 @@ class Semantic(SharedResources):
 						functions["ONINIT"] = Statement(self.STAT_EVENTDEF, 0, EventDef(None, "ONINIT", "OnInit", [], []))
 						functions["ONBEGINSTATE"] = Statement(self.STAT_EVENTDEF, 0, EventDef(None, "ONBEGINSTATE", "OnBeginState", [], []))
 						functions["ONENDSTATE"] = Statement(self.STAT_EVENTDEF, 0, EventDef(None, "ONENDSTATE", "OnEndState", [], []))
-				i = 0
+				else:
+					self.Abort("The first statement in '%s' is not a script header." % name)
+				i = 1
 				while i < len(statements):
 					if statements[i].type == self.STAT_FUNCTIONDEF or statements[i].type == self.STAT_EVENTDEF:
 						start = statements[i]
@@ -1668,10 +1670,6 @@ class Semantic(SharedResources):
 						states[statements[i].data.name] = start
 						while i < len(statements) and not (statements[i].type == self.STAT_KEYWORD and statements[i].data.type == self.KW_ENDSTATE):
 							i += 1
-					elif statements[i].type == self.STAT_SCRIPTHEADER:
-						if not header and statements[i].data.parent:
-							header = True
-							extends = self.GetLineage(statements[i].data.parent)
 					i += 1
 
 				self.cache[name] = CachedScript(extends, properties, functions, states)
