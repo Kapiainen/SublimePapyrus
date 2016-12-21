@@ -230,6 +230,10 @@ class EventListener(sublime_plugin.EventListener):
 					SublimePapyrus.SetStatus(aView, "sublimepapyrus-linter", "Error on line %d: %s" % (e.line, e.message))
 					SublimePapyrus.HighlightLinter(aView, e.line)
 				return False
+			except Exception as e:
+				print("SublimePapyrus - Fallout 4 - %s" % e)
+				if aView:
+					SublimePapyrus.SetStatus(aView, "sublimepapyrus-linter", "Fallout 4 - %s" % e)
 			return True
 
 		if Run():
