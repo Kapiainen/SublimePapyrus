@@ -144,7 +144,7 @@ Requirements:
 
 The linter performs lexical, syntactic, and semantic analysis on the source code of scripts as they are being edited and/or when they are saved. Lines that cause errors are highlighted and the error messages are shown as status messages (bottom left corner of Sublime Text).
 
-Caching is used by the linter in order to improve performance and cache invalidation only occurs in a few scenarios. Modifications to the import folders setting (e.g. changing the order of paths) requires a restart of Sublime Text in order to clear the cache and ensure that the right scripts are being used.
+Caching is used by the linter in order to improve performance and cache invalidation only occurs in a few scenarios. Modifications to the import folders setting (e.g. changing the order of paths) requires either restarting Sublime Text or running the ***Clear cache*** command in order to clear the cache and ensure that the right scripts are being used.
 
 The linter does work in Sublime Text 2, but error messages and highlighting is not possible when the linter is triggered by editing a script due to technical limitations in the API of Sublime Text 2. Error messages and highlighting is possible in Sublime Text 2 when the linter is triggered by saving a script.
 
