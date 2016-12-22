@@ -902,14 +902,15 @@ Line: %d
 	)
 
 class ScriptSignature(Statement):
-	__slots__ = ["name", "parent", "flags"]
+	__slots__ = ["name", "identifier", "parent", "flags"]
 	def __init__(self, aLine, aName, aParent, aFlags):
 	# aLine: int
 	# aName: List of string
 	# aParent: List of string
 	# aFlags: List of TokenEnum
 		super(ScriptSignature, self).__init__(StatementEnum.SCRIPTSIGNATURE, aLine)
-		self.name = aName
+		self.name = [f.upper() for f in aName]
+		self.identifier = aName
 		self.parent = aParent
 		self.flags = aFlags
 
@@ -1311,7 +1312,7 @@ class Syntactic(object):
 			if nextToken and nextToken.type == TokenEnum.COLON:
 				self.Shift(IdentifierNode(self.ExpectType(False)))
 			else:
-				if self.tokens[self.tokenIndex].type == TokenEnum.IDENTIFIER or self.tokens[self.tokenIndex].type == TokenEnum.kBOOL or self.tokens[self.tokenIndex].type == TokenEnum.kFLOAT or self.tokens[self.tokenIndex].type == TokenEnum.kINT or self.tokens[self.tokenIndex].type == TokenEnum.kSTRING:
+				if self.tokens[self.tokenIndex].type == TokenEnum.IDENTIFIER or self.tokens[self.tokenIndex].type == TokenEnum.kBOOL or self.tokens[self.tokenIndex].type == TokenEnum.kFLOAT or self.tokens[self.tokenIndex].type == TokenEnum.kINT or self.tokens[self.tokenIndex].type == TokenEnum.kSTRING or self.tokens[self.tokenIndex].type == TokenEnum.kVAR:
 					self.Consume()
 				else:
 					self.Abort("Expected a type.")
@@ -1349,8 +1350,7 @@ class Syntactic(object):
 		if self.Accept(TokenEnum.kNEW):
 			typ = self.ExpectType(True)
 			if self.Accept(TokenEnum.LEFTBRACKET):
-				self.ExpectExpression()
-				size = self.Pop()
+				size = self.ExpectExpression()
 				self.Expect(TokenEnum.RIGHTBRACKET)
 				self.Shift(ArrayCreationNode(typ, size))
 			else:
@@ -1359,18 +1359,6 @@ class Syntactic(object):
 				typUpper = typ.upper()
 				if typUpper == "BOOL" or typUpper == "FLOAT" or typUpper == "INT" or typUpper == "STRING" or typUpper == "VAR":
 					raise SyntacticError("'%s' is a type, not a struct." % typ, self.line)
-#			# TODO: Fix the section below, as the current peek does not work when the type includes namespaces (e.g. SOME:OTHER:TYPE)
-#			nextToken = self.Peek()
-#			if nextToken and nextToken.type == TokenEnum.LEFTBRACKET:
-#				typ = self.ExpectType(True)
-#				self.Expect(TokenEnum.LEFTBRACKET)
-#				self.ExpectExpression()
-#				size = self.Pop()
-#				self.Expect(TokenEnum.RIGHTBRACKET)
-#				self.Shift(ArrayCreationNode(typ, size))
-#			else:
-#				typ = self.ExpectType(False)
-#				self.Shift(StructCreationNode(typ))
 			return True
 		elif self.Accept(TokenEnum.LEFTPARENTHESIS):
 			self.Shift()
@@ -2943,6 +2931,7 @@ class Semantic(object):
 	def FunctionValidator(self, aFunction):
 	# aFunction: Function
 	# TODO: Implement a check that makes sure that functions that return a value actually have a return statement somewhere(?)
+		self.line = aFunction.starts
 		returnsValue = False
 		isFunction = False
 		if isinstance(aFunction, Function):
@@ -2996,6 +2985,12 @@ class Semantic(object):
 					raise SemanticError("There is no open 'While' scope to terminate.", self.line)
 				# TODO: Implement Caprica extensions
 
+		# Function/event parameters
+		self.PushVariableScope()
+		if aFunction.parameters:
+			for parameter in aFunction.parameters:
+				self.AddVariableToScope(parameter)
+
 		for statement in aFunction.body:
 			self.line = statement.line
 			print("\t", statement)
@@ -3021,7 +3016,23 @@ class Semantic(object):
 				print("If statement", self.NodeVisitor(statement.expression))
 			elif statement.statementType == StatementEnum.RETURN:
 				if statement.expression and returnsValue:
-					print("Return statement", self.NodeVisitor(statement.expression)) # TODO: Check that the expression returns the same type of value as the function is supposed to return
+					value = self.NodeVisitor(statement.expression)
+					print("Return statement", value) # TODO: Check that the expression returns the same type of value as the function is supposed to return
+					if aFunction.type.array != value.type.array:
+						if aFunction.type.array:
+							raise SemanticError("Expected a(n) '%s' array to be returned." % (":".join(aFunction.type.identifier)), self.line)
+						else:
+							raise SemanticError("Expected a '%s' value to be returned." % (":".join(aFunction.type.identifier)), self.line)
+					elif aFunction.type.struct != value.type.struct:
+						if aFunction.type.struct:
+							raise SemanticError("Expected a(n) '%s' struct to be returned." % (":".join(aFunction.type.identifier)), self.line)
+						else:
+							raise SemanticError("Expected a non-struct value to be returned.", self.line)
+					elif ":".join(aFunction.type.name) != ":".join(value.type.name):
+						if aFunction.type.array:
+							raise SemanticError("Expected a(n) '%s' array to be returned." % (":".join(aFunction.type.identifier)), self.line)
+						else:
+							raise SemanticError("Expected a(n) '%s' value to be returned." % (":".join(aFunction.type.identifier)), self.line)
 				elif statement.expression and not returnsValue:
 					if isFunction:
 						raise SemanticError("This function does not return a value.", statement.line)
@@ -3052,6 +3063,7 @@ class Semantic(object):
 			# TODO: Implement Caprica extensions
 			else:
 				raise Exception("Unterminated unknown scope.")
+		self.PopVariableScope()
 
 	def AddVariableToScope(self, aStatement):
 		for scope in reversed(self.variables): # Variable declared in current script
@@ -3102,49 +3114,60 @@ class Semantic(object):
 			print("Array creation node", aNode.arrayType, aNode.size)
 			# Check if aNode.arrayType is a script or a struct
 			name = ":".join(aNode.arrayType).upper()
-			if len(aNode.arrayType) == 1:
-				pass
-#				for scope in reversed(self.structs):
-#					if scope.get(name, None):
-#						result = NodeResult(Type(aNode.arrayType, True, True), True)
-#						print("Array of local or inherited struct", aNode.arrayType)
-#						break
-#				if not result: # Check for script
-#					if self.GetCachedScript(aNode.arrayType, self.line):
-#						result = NodeResult(Type(aNode.arrayType, True, False), True)
-#						print("Array of script", aNode.arrayType)
-#				if not result: # Structs in imported scripts
-#					for name, script in self.importedScripts.items():
-#						struct = script.structs.get(name, None)
-#						if struct:
-#							result = NodeResult(Type(script.identifier[:].extend(struct.identifier), True, True), True)
-#							print("Array of struct from imported script")
-#							break
-#				if not result: # Scripts in imported namespaces
-#					for namespace in self.importedNamespaces:
-#						nameArray = namespace[:].extend(aNode.arrayType)
-#						print("Looking for imported namespace script", nameArray)
-#						script = self.GetCachedScript(nameArray, self.line)
-#						if script:
-#							result = NodeResult(Type(nameArray, True, False), True)
-#							print("Array of script from imported namespace")
-#							break
+			if name == "BOOL":
+				result = NodeResult(Type(["Bool"], True, False), True)
+			elif name == "FLOAT":
+				result = NodeResult(Type(["Float"], True, False), True)
+			elif name == "INT":
+				result = NodeResult(Type(["Int"], True, False), True)
+			elif name == "STRING":
+				result = NodeResult(Type(["String"], True, False), True)
+			elif name == "VAR":
+				result = NodeResult(Type(["Var"], True, False), True)
 			else:
-				pass
-#				try: # Script
-#					print("Script in a specific namespace", aNode.arrayType)
-#					script = self.GetCachedScript(aNode.arrayType, self.line)
-#					result = NodeResult(Type(aNode.arrayType, True, False), True)
-#				except MissingScript:
-#					print("Struct in another script", aNode.arrayType)
-#					try: # Struct in another script
-#						script = self.GetCachedScript(aNode.arrayType[0:-1], self.line)
-#						if script.structs.get(name, None):
-#							result = NodeResult(Type(aNode.arrayType, True, True), True)
-#						else:
-#							raise SemanticError("'%s' does not have a struct called '%s'." % (":".join(aNode.arrayType[0:-1]), aNode.arrayType[-1]), self.line)
-#					except MissingScript:
-#						pass
+				if len(aNode.arrayType) == 1:
+					pass
+	#				for scope in reversed(self.structs):
+	#					if scope.get(name, None):
+	#						result = NodeResult(Type(aNode.arrayType, True, True), True)
+	#						print("Array of local or inherited struct", aNode.arrayType)
+	#						break
+	#				if not result: # Check for script
+	#					if self.GetCachedScript(aNode.arrayType, self.line):
+	#						result = NodeResult(Type(aNode.arrayType, True, False), True)
+	#						print("Array of script", aNode.arrayType)
+	#				if not result: # Structs in imported scripts
+	#					for name, script in self.importedScripts.items():
+	#						struct = script.structs.get(name, None)
+	#						if struct:
+	#							result = NodeResult(Type(script.identifier[:].extend(struct.identifier), True, True), True)
+	#							print("Array of struct from imported script")
+	#							break
+	#				if not result: # Scripts in imported namespaces
+	#					for namespace in self.importedNamespaces:
+	#						nameArray = namespace[:].extend(aNode.arrayType)
+	#						print("Looking for imported namespace script", nameArray)
+	#						script = self.GetCachedScript(nameArray, self.line)
+	#						if script:
+	#							result = NodeResult(Type(nameArray, True, False), True)
+	#							print("Array of script from imported namespace")
+	#							break
+				else:
+					pass
+	#				try: # Script
+	#					print("Script in a specific namespace", aNode.arrayType)
+	#					script = self.GetCachedScript(aNode.arrayType, self.line)
+	#					result = NodeResult(Type(aNode.arrayType, True, False), True)
+	#				except MissingScript:
+	#					print("Struct in another script", aNode.arrayType)
+	#					try: # Struct in another script
+	#						script = self.GetCachedScript(aNode.arrayType[0:-1], self.line)
+	#						if script.structs.get(name, None):
+	#							result = NodeResult(Type(aNode.arrayType, True, True), True)
+	#						else:
+	#							raise SemanticError("'%s' does not have a struct called '%s'." % (":".join(aNode.arrayType[0:-1]), aNode.arrayType[-1]), self.line)
+	#					except MissingScript:
+	#						pass
 			if not result:
 				raise SemanticError("'%s' is not a known type nor a struct." % (name), self.line)
 		elif aNode.type == NodeEnum.ARRAYFUNCORID:
@@ -3483,7 +3506,7 @@ class Semantic(object):
 				return True
 		else: # From child objects
 			print("Auto-cast object", aFrom.type.name, aTo.type.name)
-			raise Exception("Auto-cast object")
+			raise Exception("Auto-cast object") # TODO: Clean this up
 			raise SemanticError("Auto-cast object", self.line)
 			return False
 
@@ -3623,4 +3646,12 @@ class MissingScript(Exception):
 		self.message = aMessage
 		self.line = aLine
 
-# TODO: Replace ":".join(*) functions with a __cmp__ function in affected classes
+# TODO: Replace ":".join(*) functions by overriding the __eq__ function in affected classes
+#	class Type(object):
+#		def __eq__(self, aOther):
+#			if isinstance(other, Type):
+#				# return True or False based on comparisons made here
+#				return (self.nameJoined == other.nameJoined and self.array == other.array and self.struct == other.array)
+#			return NotImplemented
+# TODO: Implement Caprica extensions
+# TODO: Investigate if Caprica extensions can be toggleable with minimal performance impact
