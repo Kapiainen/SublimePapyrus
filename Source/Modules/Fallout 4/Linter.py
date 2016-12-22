@@ -2182,7 +2182,20 @@ class Semantic(object):
 		elif typ == StatementEnum.VARIABLE:
 			self.definition[-1].append(aStat)
 		else:
-			raise SemanticError("Illegal statement in the empty state.", aStat.line)
+			if typ == StatementEnum.ENDEVENT:
+				raise SemanticError("There is no open 'Event' scope to terminate.", aStat.line)
+			elif typ == StatementEnum.ENDFUNCTION:
+				raise SemanticError("There is no open 'Function' scope to terminate.", aStat.line)
+			elif typ == StatementEnum.ENDGROUP:
+				raise SemanticError("There is no open 'Group' scope to terminate.", aStat.line)
+			elif typ == StatementEnum.ENDPROPERTY:
+				raise SemanticError("There is no open 'Property' scope to terminate.", aStat.line)
+			elif typ == StatementEnum.ENDSTATE:
+				raise SemanticError("There is no open 'State' scope to terminate.", aStat.line)
+			elif typ == StatementEnum.ENDSTRUCT:
+				raise SemanticError("There is no open 'Struct' scope to terminate.", aStat.line)
+			else:
+				raise SemanticError("Illegal statement in the empty state.", aStat.line)
 
 	def StateScope(self, aStat):
 		typ = aStat.statementType
@@ -2197,7 +2210,12 @@ class Semantic(object):
 			self.definition.append([aStat])
 		else:
 			signature = self.definition[-1][0]
-			raise SemanticError("Illegal statement in a state definition called '%s' that starts on line %d." % (signature.name, signature.line), aStat.line)
+			if typ == StatementEnum.ENDEVENT:
+				raise SemanticError("There is no open 'Event' scope to terminate.", aStat.line)
+			elif typ == StatementEnum.ENDFUNCTION:
+				raise SemanticError("There is no open 'Function' scope to terminate.", aStat.line)
+			else:
+				raise SemanticError("Illegal statement in a state definition called '%s' that starts on line %d." % (signature.name, signature.line), aStat.line)
 
 	def EndStateScope(self, aEndLine):
 		stateDef = self.definition.pop()
@@ -2936,12 +2954,30 @@ class Semantic(object):
 			print("\nEvent", aFunction.name)
 		localScopes = []
 		def AppendLocalScope(aStat):
+			newType = aStat.statementType
+			if len(localScopes) > 0:
+				currentType = localScopes[-1].statementType
+				if newType == StatementEnum.ELSEIF or newType == StatementEnum.ELSE:
+					if not (currentType == StatementEnum.IF or currentType == StatementEnum.ELSEIF):
+						if newType == StatementEnum.ELSEIF:
+							raise SemanticError("Illegal declaration of an 'ElseIf' scope.", self.line)
+						else:
+							raise SemanticError("Illegal declaration of an 'Else' scope.", self.line)
+					else:
+						localScopes.pop()
+						self.PopVariableScope()
+			else:
+				if newType == StatementEnum.ELSEIF:
+					raise SemanticError("Illegal declaration of an 'ElseIf' scope.", self.line)
+				elif newType == StatementEnum.ELSE:
+					raise SemanticError("Illegal declaration of an 'Else' scope.", self.line)
 			localScopes.append(aStat)
+			self.PushVariableScope()
 
 		def PopLocalScope(aStat):
+			endType = aStat.statementType
 			if len(localScopes) > 0:
 				startType = localScopes[-1].statementType
-				endType = aStat.statementType
 				if startType == StatementEnum.WHILE and not endType == StatementEnum.ENDWHILE:
 					raise SemanticError("Expected 'EndWhile'.", self.line)
 				elif startType == StatementEnum.IF and not (endType == StatementEnum.ELSEIF or endType == StatementEnum.ELSE or endType == StatementEnum.ENDIF):
@@ -2952,8 +2988,13 @@ class Semantic(object):
 					raise SemanticError("Expected 'EndIf'.", self.line)
 				# TODO: Implement Caprica extensions
 				localScopes.pop()
+				self.PopVariableScope()
 			else:
-				raise Exception("DEBUG: Attempted to pop localScope too many times.")
+				if endType == StatementEnum.ENDIF:
+					raise SemanticError("There is no open 'If', 'ElseIf', or 'Else' scope to terminate.", self.line)
+				elif endType == StatementEnum.ENDWHILE:
+					raise SemanticError("There is no open 'While' scope to terminate.", self.line)
+				# TODO: Implement Caprica extensions
 
 		for statement in aFunction.body:
 			self.line = statement.line
@@ -2964,27 +3005,18 @@ class Semantic(object):
 				print("Assignment, left side", self.NodeVisitor(statement.leftExpression))
 				print("Assignment, right side", self.NodeVisitor(statement.rightExpression))
 			elif statement.statementType == StatementEnum.ELSE:
-				self.PopVariableScope()
-				self.PushVariableScope()
-				PopLocalScope(statement)
 				AppendLocalScope(statement)
 			elif statement.statementType == StatementEnum.ELSEIF:
-				self.PopVariableScope()
-				self.PushVariableScope()
-				PopLocalScope(statement)
 				AppendLocalScope(statement)
 				print("ElseIf statement", self.NodeVisitor(statement.expression))
 			elif statement.statementType == StatementEnum.ENDIF:
-				self.PopVariableScope()
 				PopLocalScope(statement)
 			elif statement.statementType == StatementEnum.ENDWHILE:
-				self.PopVariableScope()
 				PopLocalScope(statement)
 			elif statement.statementType == StatementEnum.EXPRESSION:
 				#pass # TODO: Implement
 				print("Expression statement", self.NodeVisitor(statement.expression))
 			elif statement.statementType == StatementEnum.IF:
-				self.PushVariableScope()
 				AppendLocalScope(statement)
 				print("If statement", self.NodeVisitor(statement.expression))
 			elif statement.statementType == StatementEnum.RETURN:
@@ -3003,7 +3035,6 @@ class Semantic(object):
 					print("Variable declaration default value", self.NodeVisitor(statement.value))
 					# TODO: Check if expression returns the same type as the variable.
 			elif statement.statementType == StatementEnum.WHILE:
-				self.PushVariableScope()
 				AppendLocalScope(statement)
 				print("While statement", self.NodeVisitor(statement.expression))
 			else:
