@@ -312,7 +312,8 @@ class Lexical(object):
 					(TokenEnum.kVAR, r"\bvar\b"),
 					(TokenEnum.kWHILE, r"\bwhile\b"),
 					(TokenEnum.IDENTIFIER, r"[a-z_][0-9a-z_]*"),
-					(TokenEnum.FLOAT, r"(-\d+\.\d+)|(\d+\.\d+)"), # TODO: Revisit this definition
+					(TokenEnum.FLOAT, r"(\d+\.\d+)"),
+#					(TokenEnum.FLOAT, r"(-\d+\.\d+)|(\d+\.\d+)"), # TODO: Revisit this definition
 					(TokenEnum.INT, r"((0x(\d|[a-f])+)|((\d+))(?![a-z_]))"),
 					(TokenEnum.ADDITION, r"\+"),
 					(TokenEnum.SUBTRACTION, r"-"),
@@ -1346,17 +1347,30 @@ class Syntactic(object):
 
 	def Atom(self):
 		if self.Accept(TokenEnum.kNEW):
-			nextToken = self.Peek()
-			if nextToken and nextToken.type == TokenEnum.LEFTBRACKET:
-				typ = self.ExpectType(True)
-				self.Expect(TokenEnum.LEFTBRACKET)
+			typ = self.ExpectType(True)
+			if self.Accept(TokenEnum.LEFTBRACKET):
 				self.ExpectExpression()
 				size = self.Pop()
 				self.Expect(TokenEnum.RIGHTBRACKET)
 				self.Shift(ArrayCreationNode(typ, size))
 			else:
-				typ = self.ExpectType(False)
 				self.Shift(StructCreationNode(typ))
+				typ = ":".join(typ)
+				typUpper = typ.upper()
+				if typUpper == "BOOL" or typUpper == "FLOAT" or typUpper == "INT" or typUpper == "STRING" or typUpper == "VAR":
+					raise SyntacticError("'%s' is a type, not a struct." % typ, self.line)
+#			# TODO: Fix the section below, as the current peek does not work when the type includes namespaces (e.g. SOME:OTHER:TYPE)
+#			nextToken = self.Peek()
+#			if nextToken and nextToken.type == TokenEnum.LEFTBRACKET:
+#				typ = self.ExpectType(True)
+#				self.Expect(TokenEnum.LEFTBRACKET)
+#				self.ExpectExpression()
+#				size = self.Pop()
+#				self.Expect(TokenEnum.RIGHTBRACKET)
+#				self.Shift(ArrayCreationNode(typ, size))
+#			else:
+#				typ = self.ExpectType(False)
+#				self.Shift(StructCreationNode(typ))
 			return True
 		elif self.Accept(TokenEnum.LEFTPARENTHESIS):
 			self.Shift()
@@ -2983,38 +2997,67 @@ class Semantic(object):
 		if aNode.type == NodeEnum.ARRAYATOM:
 			# aNode.child
 			# aNode.expression
-			pass #
+			if aNode.expression:
+				childResult = self.NodeVisitor(aNode.child)
+				exprResult = self.NodeVisitor(aNode.expression)
+				# TODO: If exprResult is an 'Int', then result is not an array
+				if ":".join(exprResult.type.name) == "INT":
+					result = NodeResult(Type(childResult.type.identifier, False, childResult.type.struct), childResult.object)
+				else:
+					raise SemanticError("Array elements can only be accessed with expressions that evaluate to 'Int'.", self.line)
+			else:
+				result = childResult
 		elif aNode.type == NodeEnum.ARRAYCREATION:
 			# aNode.arrayType
 			# aNode.size
 			print("Array creation node", aNode.arrayType, aNode.size)
 			# Check if aNode.arrayType is a script or a struct
 			name = ":".join(aNode.arrayType).upper()
-			if len(aNode.arrayType) == 1: # Struct in the current script or a script
-				print("Local struct?", aNode.arrayType)
-				for scope in self.structs:
-					if scope.get(name, None):
-						result = NodeResult(Type(aNode.arrayType, True, True), True)
-						break
-				if not result: # Check for script
-					print("Script?", aNode.arrayType)
-					if self.GetCachedScript(aNode.arrayType, self.line):
-						result = NodeResult(Type(aNode.arrayType, True, False), True)
+			if len(aNode.arrayType) == 1:
+				pass
+#				for scope in reversed(self.structs):
+#					if scope.get(name, None):
+#						result = NodeResult(Type(aNode.arrayType, True, True), True)
+#						print("Array of local or inherited struct", aNode.arrayType)
+#						break
+#				if not result: # Check for script
+#					if self.GetCachedScript(aNode.arrayType, self.line):
+#						result = NodeResult(Type(aNode.arrayType, True, False), True)
+#						print("Array of script", aNode.arrayType)
+#				if not result: # Structs in imported scripts
+#					for name, script in self.importedScripts.items():
+#						struct = script.structs.get(name, None)
+#						if struct:
+#							result = NodeResult(Type(script.identifier[:].extend(struct.identifier), True, True), True)
+#							print("Array of struct from imported script")
+#							break
+#				if not result: # Scripts in imported namespaces
+#					for namespace in self.importedNamespaces:
+#						nameArray = namespace[:].extend(aNode.arrayType)
+#						print("Looking for imported namespace script", nameArray)
+#						script = self.GetCachedScript(nameArray, self.line)
+#						if script:
+#							result = NodeResult(Type(nameArray, True, False), True)
+#							print("Array of script from imported namespace")
+#							break
 			else:
-				try: # Script
-					print("Script?", aNode.arrayType)
-					script = self.GetCachedScript(aNode.arrayType, self.line)
-					result = NodeResult(Type(aNode.arrayType, True, False), True)
-				except MissingScript:
-					print("Struct?", aNode.arrayType)
-					try: # Struct in another script
-						script = self.GetCachedScript(aNode.arrayType[0:-1], self.line)
-						if script.structs.get(name, None):
-							result = NodeResult(Type(aNode.arrayType, True, True), True)
-						else:
-							raise SemanticError("'%s' does not have a struct called '%s'." % (":".join(aNode.arrayType[0:-1]), aNode.arrayType[-1]), self.line)
-					except MissingScript:
-						raise SemanticError("'%s' is neither a type nor a struct.", self.line)
+				pass
+#				try: # Script
+#					print("Script in a specific namespace", aNode.arrayType)
+#					script = self.GetCachedScript(aNode.arrayType, self.line)
+#					result = NodeResult(Type(aNode.arrayType, True, False), True)
+#				except MissingScript:
+#					print("Struct in another script", aNode.arrayType)
+#					try: # Struct in another script
+#						script = self.GetCachedScript(aNode.arrayType[0:-1], self.line)
+#						if script.structs.get(name, None):
+#							result = NodeResult(Type(aNode.arrayType, True, True), True)
+#						else:
+#							raise SemanticError("'%s' does not have a struct called '%s'." % (":".join(aNode.arrayType[0:-1]), aNode.arrayType[-1]), self.line)
+#					except MissingScript:
+#						pass
+			if not result:
+				raise SemanticError("'%s' is not a known type nor a struct." % (name), self.line)
 		elif aNode.type == NodeEnum.ARRAYFUNCORID:
 			# aNode.child
 			# aNode.expression
@@ -3033,15 +3076,20 @@ class Semantic(object):
 			print(aNode.operator)
 			leftResult = self.NodeVisitor(aNode.leftOperand)
 			print("leftResult", leftResult)
-			rightResult = self.NodeVisitor(aNode.rightOperand)
-			print("rightResult", rightResult)
 			if aNode.operator.type == TokenEnum.EQUAL or aNode.operator.type == TokenEnum.NOTEQUAL or aNode.operator.type == TokenEnum.GREATERTHAN or aNode.operator.type == TokenEnum.GREATERTHANOREQUAL or aNode.operator.type == TokenEnum.LESSTHAN or aNode.operator.type == TokenEnum.LESSTHANOREQUAL or aNode.operator.type == TokenEnum.NOT or aNode.operator.type == TokenEnum.OR or aNode.operator.type == TokenEnum.AND or aNode.operator.type == TokenEnum.kIS: # Logical operators
+				rightResult = self.NodeVisitor(aNode.rightOperand)
+				print("rightResult", rightResult)
 				result = NodeResult(Type(["Bool"], False, False), True)
 			elif aNode.operator.type == TokenEnum.DOT: # Function, event, property, struct, struct member
 				print("Dot operator")
-				if aExpected:
-					print("Expected", ":".join(aExpected.type.identifier))
+				rightResult = self.NodeVisitor(aNode.rightOperand, leftResult)
+				print("rightResult", rightResult)
+				result = rightResult
+#				if aExpected:
+#					print("Expected", ":".join(aExpected.type.identifier))
 			elif aNode.operator.type == TokenEnum.ADDITION or aNode.operator.type == TokenEnum.SUBTRACTION or aNode.operator.type == TokenEnum.MULTIPLICATION or aNode.operator.type == TokenEnum.DIVISION or aNode.operator.type == TokenEnum.MODULUS: # Arithmetic operators
+				rightResult = self.NodeVisitor(aNode.rightOperand)
+				print("rightResult", rightResult)
 				# Check that the operand types support the operator
 				if not leftResult.object:
 					raise SemanticError("The left-hand side expression evaluates to a type instead of a value.", self.line)
@@ -3089,6 +3137,8 @@ class Semantic(object):
 						else:
 							raise SemanticError("'%s' does not support any arithmetic operators." % (":".join(result.type.identifier)), self.line)
 			elif aNode.operator.type == TokenEnum.ASSIGN or aNode.operator.type == TokenEnum.ASSIGNADDITION or aNode.operator.type == TokenEnum.ASSIGNSUBTRACTION or aNode.operator.type == TokenEnum.ASSIGNMULTIPLICATION or aNode.operator.type == TokenEnum.ASSIGNDIVISION or aNode.operator.type == TokenEnum.ASSIGNMODULUS: # Assignment operators
+				rightResult = self.NodeVisitor(aNode.rightOperand)
+				print("rightResult", rightResult)
 				# Check that the operand types match or can be auto-cast
 				if leftResult.type.array != rightResult.type.array:
 					if leftResult.type.array:
@@ -3110,6 +3160,8 @@ class Semantic(object):
 				else:
 					raise SemanticError("'%s' cannot be auto-cast to '%s'." % (":".join(rightResult.type.identifier), ":".join(leftResult.type.identifier)), self.line)
 			elif aNode.operator.type == TokenEnum.kAS: # Cast as right operand
+				rightResult = self.NodeVisitor(aNode.rightOperand)
+				print("rightResult", rightResult)
 				result = rightResult
 				if result.object:
 					raise SemanticError("'%s' is an object and not a type." % (":".join(result.type.identifier)), self.line)
@@ -3122,7 +3174,6 @@ class Semantic(object):
 			# Check for valid use of operators with types
 		elif aNode.type == NodeEnum.CONSTANT:
 			# aNode.value
-#			print(aNode.value)
 			if aNode.value.type == TokenEnum.kTRUE or aNode.value.type == TokenEnum.kFALSE:
 				result = NodeResult(Type(["Bool"], False, False), True)
 			elif aNode.value.type == TokenEnum.kNONE:
@@ -3137,14 +3188,89 @@ class Semantic(object):
 				raise SemanticError("Unknown literal type", aNode.value.line)
 		elif aNode.type == NodeEnum.EXPRESSION:
 			result = self.NodeVisitor(aNode.child)
-			#if aNode.child.type == NodeEnum.IDENTIFIER and result and not result.object:
-			#	raise SemanticError("'%s' is not a variable that exists in this scope.", self.line)
 		elif aNode.type == NodeEnum.FUNCTIONCALL: # Return function's return type (type, array, struct, object)
 			# aNode.name
 			# aNode.identifier
 			# aNode.arguments
-			print("Function call node", aNode.identifier)
+			print("Function call node", aNode.name)
 			print("Expected", aExpected)
+			if aExpected:
+				# TODO: Special cases for SELF and PARENT
+				expectedKey = ":".join(aExpected.type.name)
+				if expectedKey == "SELF":
+					function = self.functions[-1].get(aNode.name, None)
+					if function:
+						pass # TODO: Implement
+					else:
+						event = self.events[-1].get(aNode.name, None)
+						if event:
+							pass # TODO: Implement
+				elif expectedKey == "PARENT":
+					function = self.functions[0].get(aNode.name, None)
+					if function:
+						pass # TODO: Implement
+					else:
+						event = self.events[0].get(aNode.name, None)
+						if event:
+							pass # TODO: Implement
+				else:
+					if aExpected.type.array:
+						raise SemanticError("Cannot call function/event on an array.", self.line)
+					elif aExpected.type.struct:
+						raise SemanticError("Cannot call function/event on a struct.", self.line)
+					if aExpected.object:
+						pass # TODO: Implement
+					else: # Referencing the script name directly, can only call global functions
+						script = self.GetCachedScript(aExpected.type.identifier, self.line)
+						if script:
+							function = script.functions.get(aNode.name, None)
+							if function:
+								if TokenEnum.kGLOBAL in function.flags:
+									# TODO: Validate arguments against the function's parameters
+									if function.type:
+										isStruct = function.type.struct
+										# TODO: Figure out if function returns a struct
+										result = NodeResult(Type(function.type.identifier, function.type.array, isStruct), True)
+									else:
+										result = NodeResult(Type(["None"], False, False), True)
+								else:
+									raise SemanticError("Can only call global functions when referencing a type by its name.", self.line)
+							else:
+								raise SemanticError("'%s' does not have a global function called '%s'." % (":".join(aExpected.type.identifier), aNode.identifier), self.line)
+			else: # Local, inherited, or imported function
+				for scope in reversed(self.functions): # Local or inherited function
+					function = scope.get(aNode.name, None)
+					if function:
+						# TODO: Validate arguments against the function's parameters
+						if function.type:
+							isStruct = function.type.struct
+							# TODO: Figure out if function returns a struct
+							result = NodeResult(Type(function.type.identifier, function.type.array, isStruct), True)
+						else:
+							result = NodeResult(Type(["None"], False, False), True)
+						break
+				if not result:
+					for scope in reversed(self.events):
+						event = scope.get(aNode.name, None)
+						if event:
+							# TODO: Validate arguments agains the event's parameters
+							result = NodeResult(Type(["None"], False, False), True)
+							break
+				if not result: # Imported function
+					for script in self.importedScripts:
+						function = script.functions.get(aNode.name, None)
+						if function:
+							if TokenEnum.kGLOBAL in function.flags:
+								# TODO: Validate arguments against the function's parameters
+								if function.type:
+									isStruct = function.type.struct
+									# TODO: Figure out if function returns a struct
+									result = NodeResult(Type(function.type.identifier, function.type.array, isStruct), True)
+								else:
+									result = NodeResult(Type(["None"], False, False), True)
+							break
+				if not result:
+					raise SemanticError("'%s' is not a function or event that exists in this scope." % aNode.identifier, self.line)
 			#result = NodeResult(function.type, True)
 		elif aNode.type == NodeEnum.FUNCTIONCALLARGUMENT:
 			# aNode.name
@@ -3179,7 +3305,18 @@ class Semantic(object):
 									result = NodeResult(prop.type, True)
 									break
 						if not result:
-							raise SemanticError("'%s' is not a variable that exists in this scope." % (":".join(aNode.identifier)), self.line)
+							script = self.GetCachedScript(aNode.identifier, self.line)
+							if script:
+								print("Found a script with matching name")
+								result = NodeResult(Type(script.identifier, False, False), False)
+						if not result:
+							for namespace in self.importedNamespaces:
+								script = self.GetCachedScript(namespace[:].extend(aNode.identifier), self.line)
+								if script:
+									print("Found a script with matching name in an imported namespace")
+									result = NodeResult(Type(script.identifier, False, False), False)
+						if not result:
+							raise SemanticError("'%s' is not a variable that exists in this scope nor a type." % (":".join(aNode.identifier)), self.line)
 				else:
 					print("Identifier refers to another script")
 			else:
@@ -3191,13 +3328,11 @@ class Semantic(object):
 		elif aNode.type == NodeEnum.STRUCTCREATION:
 			# aNode.structType
 #			print("Struct creation node", aNode.structType)
+			# TODO: Check if aNode.structType conflicts with identifiers
 			result = NodeResult(Type(aNode.structType, False, True), True)
 		elif aNode.type == NodeEnum.UNARYOPERATOR:
 			# aNode.operator
 			# aNode.operand
-#			print("Unary operator node")
-#			print(aNode.operator)
-#			print(aNode.operand)
 			result = self.NodeVisitor(aNode.operand)
 			if aNode.operator.type == TokenEnum.NOT:
 				result = NodeResult(Type(["Bool"], False, False), True)
@@ -3219,6 +3354,8 @@ class Semantic(object):
 				raise Exception("DEBUG: Unsupported unary operator.")
 		else:
 			raise Exception("DEBUG: Unsupported node type.")
+		if not result:
+			raise Exception("DEBUG: NodeVisitor returns None.")
 		return result
 		# NodeResult
 		# aType: Type
