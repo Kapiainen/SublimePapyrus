@@ -228,6 +228,11 @@ Single file build system and a batch build variant.
     - SKSE mod event names
 
 ## **Changelog**
+**Version 2.6.8 - 2016/12/22:**
+
+- **Skyrim**
+  - Fixed bugs that caused the linter to crash when attempting to cache scripts under certain circumstances.
+
 **Version 2.6.7 - 2016/12/12:**
 
 - **Skyrim**
