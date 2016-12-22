@@ -2934,6 +2934,27 @@ class Semantic(object):
 			isFunction = True
 		elif isinstance(aFunction, Event):
 			print("\nEvent", aFunction.name)
+		localScopes = []
+		def AppendLocalScope(aStat):
+			localScopes.append(aStat)
+
+		def PopLocalScope(aStat):
+			if len(localScopes) > 0:
+				startType = localScopes[-1].statementType
+				endType = aStat.statementType
+				if startType == StatementEnum.WHILE and not endType == StatementEnum.ENDWHILE:
+					raise SemanticError("Expected 'EndWhile'.", self.line)
+				elif startType == StatementEnum.IF and not (endType == StatementEnum.ELSEIF or endType == StatementEnum.ELSE or endType == StatementEnum.ENDIF):
+					raise SemanticError("Expected 'ElseIf', 'Else', or 'EndIf'.", self.line)
+				elif startType == StatementEnum.ELSEIF and not (endType == StatementEnum.ELSEIF or endType == StatementEnum.ELSE or endType == StatementEnum.ENDIF):
+					raise SemanticError("Expected 'ElseIf', 'Else', or 'EndIf'.", self.line)
+				elif startType == StatementEnum.ELSE and not endType == StatementEnum.END:
+					raise SemanticError("Expected 'EndIf'.", self.line)
+				# TODO: Implement Caprica extensions
+				localScopes.pop()
+			else:
+				raise Exception("DEBUG: Attempted to pop localScope too many times.")
+
 		for statement in aFunction.body:
 			self.line = statement.line
 			print("\t", statement)
@@ -2945,19 +2966,26 @@ class Semantic(object):
 			elif statement.statementType == StatementEnum.ELSE:
 				self.PopVariableScope()
 				self.PushVariableScope()
+				PopLocalScope(statement)
+				AppendLocalScope(statement)
 			elif statement.statementType == StatementEnum.ELSEIF:
 				self.PopVariableScope()
 				self.PushVariableScope()
+				PopLocalScope(statement)
+				AppendLocalScope(statement)
 				print("ElseIf statement", self.NodeVisitor(statement.expression))
 			elif statement.statementType == StatementEnum.ENDIF:
 				self.PopVariableScope()
+				PopLocalScope(statement)
 			elif statement.statementType == StatementEnum.ENDWHILE:
 				self.PopVariableScope()
+				PopLocalScope(statement)
 			elif statement.statementType == StatementEnum.EXPRESSION:
 				#pass # TODO: Implement
 				print("Expression statement", self.NodeVisitor(statement.expression))
 			elif statement.statementType == StatementEnum.IF:
 				self.PushVariableScope()
+				AppendLocalScope(statement)
 				print("If statement", self.NodeVisitor(statement.expression))
 			elif statement.statementType == StatementEnum.RETURN:
 				if statement.expression and returnsValue:
@@ -2970,14 +2998,45 @@ class Semantic(object):
 				elif not statement.expression and returnsValue:
 					raise SemanticError("This function has to return a(n) '%s' value." % (":".join(aFunction.type.identifier)), statement.line)
 			elif statement.statementType == StatementEnum.VARIABLE:
+				self.AddVariableToScope(statement)
 				if statement.value:
 					print("Variable declaration default value", self.NodeVisitor(statement.value))
 					# TODO: Check if expression returns the same type as the variable.
 			elif statement.statementType == StatementEnum.WHILE:
 				self.PushVariableScope()
+				AppendLocalScope(statement)
 				print("While statement", self.NodeVisitor(statement.expression))
 			else:
 				raise SemanticError("This statement type is not yet supported: %s" % StatementDescription[statement.statementType], statement.line)
+		if len(localScopes) > 0:
+			scopeStart = localScopes.pop()
+			if scopeStart.statementType == StatementEnum.IF:
+				raise SemanticError("Unterminated 'If' scope.", scopeStart.line)
+			elif scopeStart.statementType == StatementEnum.ELSEIF:
+				raise SemanticError("Unterminated 'ElseIf' scope.", scopeStart.line)
+			elif scopeStart.statementType == StatementEnum.ELSE:
+				raise SemanticError("Unterminated 'Else' scope.", scopeStart.line)
+			elif scopeStart.statementType == StatementEnum.WHILE:
+				raise SemanticError("Unterminated 'While' scope.", scopeStart.line)
+			# TODO: Implement Caprica extensions
+			else:
+				raise Exception("Unterminated unknown scope.")
+
+	def AddVariableToScope(self, aStatement):
+		for scope in reversed(self.variables): # Variable declared in current script
+			var = scope.get(aStatement.name, None)
+			if var:
+				raise SemanticError("A variable called '%s' has already been declared on line %d." % (var.identifier, var.line), self.line)
+		prop = self.properties[-1].get(aStatement.name, None) # Property declared in current script
+		if prop:
+			raise SemanticError("A property called '%s' has already been declared on line %d." % (prop.identifier, prop.line), self.line)
+		prop = self.properties[0].get(aStatement.name, None) # Property declared in a parent script
+		if prop:
+			for parent in self.parentsToProcess:
+				prop = parent.properties.get(aStatement.name, None)
+				if prop:
+					raise SemanticError("A property called '%s' has already been declared in '%s' on line %d." % (prop.identifier, ":".join(parent.identifier), prop.line), self.line)
+		self.variables[-1][aStatement.name] = aStatement
 
 	def PushVariableScope(self):
 		self.variables.append({})
@@ -2998,10 +3057,9 @@ class Semantic(object):
 			# aNode.child
 			# aNode.expression
 			if aNode.expression:
-				childResult = self.NodeVisitor(aNode.child)
-				exprResult = self.NodeVisitor(aNode.expression)
-				# TODO: If exprResult is an 'Int', then result is not an array
-				if ":".join(exprResult.type.name) == "INT":
+				childResult = self.NodeVisitor(aNode.child, aExpected)
+				exprResult = self.NodeVisitor(aNode.expression, aExpected)
+				if ":".join(exprResult.type.name) == "INT" and exprResult.object and not exprResult.type.array and not exprResult.type.struct:
 					result = NodeResult(Type(childResult.type.identifier, False, childResult.type.struct), childResult.object)
 				else:
 					raise SemanticError("Array elements can only be accessed with expressions that evaluate to 'Int'.", self.line)
@@ -3061,9 +3119,9 @@ class Semantic(object):
 		elif aNode.type == NodeEnum.ARRAYFUNCORID:
 			# aNode.child
 			# aNode.expression
-			result = self.NodeVisitor(aNode.child)
+			result = self.NodeVisitor(aNode.child, aExpected)
 			if result and result.type.array and aNode.expression:
-				exprResult = self.NodeVisitor(aNode.expression)
+				exprResult = self.NodeVisitor(aNode.expression, aExpected)
 				if ":".join(exprResult.type.name) != "INT":
 					raise SemanticError("ARRAY EXPRESSION IS NOT INT", self.line) # TODO: Finalize error message
 				elif exprResult.type.array:
@@ -3073,22 +3131,21 @@ class Semantic(object):
 			# aNode.operator
 			# aNode.leftOperand
 			# aNode.rightOperand
-			print(aNode.operator)
-			leftResult = self.NodeVisitor(aNode.leftOperand)
+			print("Binary operator", aNode.operator)
+			leftResult = self.NodeVisitor(aNode.leftOperand, aExpected)
 			print("leftResult", leftResult)
 			if aNode.operator.type == TokenEnum.EQUAL or aNode.operator.type == TokenEnum.NOTEQUAL or aNode.operator.type == TokenEnum.GREATERTHAN or aNode.operator.type == TokenEnum.GREATERTHANOREQUAL or aNode.operator.type == TokenEnum.LESSTHAN or aNode.operator.type == TokenEnum.LESSTHANOREQUAL or aNode.operator.type == TokenEnum.NOT or aNode.operator.type == TokenEnum.OR or aNode.operator.type == TokenEnum.AND or aNode.operator.type == TokenEnum.kIS: # Logical operators
-				rightResult = self.NodeVisitor(aNode.rightOperand)
+				rightResult = self.NodeVisitor(aNode.rightOperand, aExpected)
 				print("rightResult", rightResult)
 				result = NodeResult(Type(["Bool"], False, False), True)
 			elif aNode.operator.type == TokenEnum.DOT: # Function, event, property, struct, struct member
 				print("Dot operator")
-				rightResult = self.NodeVisitor(aNode.rightOperand, leftResult)
+				aExpected = leftResult
+				rightResult = self.NodeVisitor(aNode.rightOperand, aExpected)
 				print("rightResult", rightResult)
 				result = rightResult
-#				if aExpected:
-#					print("Expected", ":".join(aExpected.type.identifier))
 			elif aNode.operator.type == TokenEnum.ADDITION or aNode.operator.type == TokenEnum.SUBTRACTION or aNode.operator.type == TokenEnum.MULTIPLICATION or aNode.operator.type == TokenEnum.DIVISION or aNode.operator.type == TokenEnum.MODULUS: # Arithmetic operators
-				rightResult = self.NodeVisitor(aNode.rightOperand)
+				rightResult = self.NodeVisitor(aNode.rightOperand, aExpected)
 				print("rightResult", rightResult)
 				# Check that the operand types support the operator
 				if not leftResult.object:
@@ -3137,7 +3194,7 @@ class Semantic(object):
 						else:
 							raise SemanticError("'%s' does not support any arithmetic operators." % (":".join(result.type.identifier)), self.line)
 			elif aNode.operator.type == TokenEnum.ASSIGN or aNode.operator.type == TokenEnum.ASSIGNADDITION or aNode.operator.type == TokenEnum.ASSIGNSUBTRACTION or aNode.operator.type == TokenEnum.ASSIGNMULTIPLICATION or aNode.operator.type == TokenEnum.ASSIGNDIVISION or aNode.operator.type == TokenEnum.ASSIGNMODULUS: # Assignment operators
-				rightResult = self.NodeVisitor(aNode.rightOperand)
+				rightResult = self.NodeVisitor(aNode.rightOperand, aExpected)
 				print("rightResult", rightResult)
 				# Check that the operand types match or can be auto-cast
 				if leftResult.type.array != rightResult.type.array:
@@ -3160,7 +3217,7 @@ class Semantic(object):
 				else:
 					raise SemanticError("'%s' cannot be auto-cast to '%s'." % (":".join(rightResult.type.identifier), ":".join(leftResult.type.identifier)), self.line)
 			elif aNode.operator.type == TokenEnum.kAS: # Cast as right operand
-				rightResult = self.NodeVisitor(aNode.rightOperand)
+				rightResult = self.NodeVisitor(aNode.rightOperand, aExpected)
 				print("rightResult", rightResult)
 				result = rightResult
 				if result.object:
@@ -3187,7 +3244,7 @@ class Semantic(object):
 			else:
 				raise SemanticError("Unknown literal type", aNode.value.line)
 		elif aNode.type == NodeEnum.EXPRESSION:
-			result = self.NodeVisitor(aNode.child)
+			result = self.NodeVisitor(aNode.child, aExpected)
 		elif aNode.type == NodeEnum.FUNCTIONCALL: # Return function's return type (type, array, struct, object)
 			# aNode.name
 			# aNode.identifier
@@ -3276,7 +3333,7 @@ class Semantic(object):
 			# aNode.name
 			# aNode.identifier
 			# aNode.expression
-			print("Function call argument node", aNode.identifier)			
+			print("Function call argument node", aNode.identifier)
 		elif aNode.type == NodeEnum.IDENTIFIER:
 			# aNode.name
 			# aNode.identifier
@@ -3333,7 +3390,7 @@ class Semantic(object):
 		elif aNode.type == NodeEnum.UNARYOPERATOR:
 			# aNode.operator
 			# aNode.operand
-			result = self.NodeVisitor(aNode.operand)
+			result = self.NodeVisitor(aNode.operand, aExpected)
 			if aNode.operator.type == TokenEnum.NOT:
 				result = NodeResult(Type(["Bool"], False, False), True)
 			elif aNode.operator.type == TokenEnum.SUBTRACTION:
@@ -3534,3 +3591,5 @@ class MissingScript(Exception):
 	# aLine: int
 		self.message = aMessage
 		self.line = aLine
+
+# TODO: Replace ":".join(*) functions with a __cmp__ function in affected classes
