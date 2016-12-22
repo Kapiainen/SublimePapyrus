@@ -1686,12 +1686,12 @@ class Semantic(SharedResources):
 		return None
 
 	def Process(self, statements, paths): # Return True if successful, False if failed
+		# Reset properties
+		self.statements = None
 		if not statements:
 			self.Abort("No statements were given to process.")
 		if not paths:
-			self.Abort("No paths were given to process.")
-		# Reset properties
-		self.statements = None
+			self.Abort("No import paths were given to process. Check the user settings.")
 		self.paths = paths
 		self.cancel = None # This is != None only when called by the code completion system
 		self.variables = [{}]
