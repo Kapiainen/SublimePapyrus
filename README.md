@@ -228,6 +228,12 @@ Single file build system and a batch build variant.
     - SKSE mod event names
 
 ## **Changelog**
+**Version 2.6.9 - 2016/12/22:**
+
+- **Skyrim**
+  - Fixed a bug that caused an exception to not be handled properly.
+  - Updated an error message regarding undefined import paths in the user settings.
+
 **Version 2.6.8 - 2016/12/22:**
 
 - **Skyrim**
