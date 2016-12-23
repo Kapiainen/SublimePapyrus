@@ -226,6 +226,7 @@ class LexicalError(Exception):
 		self.line = aLine
 		self.column = aColumn
 
+# Using regex is faster than e.g. grouping characters by splitting an input string.
 class Lexical(object):
 	"""Lexical analysis."""
 	__slots__ = ["regex"]
