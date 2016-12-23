@@ -108,6 +108,7 @@ class TokenEnum(object):
 	kLOOPWHILE = 99
 	kSWITCH = 100
 	kTO = 101
+	kIN = 102
 
 TokenDescription = [
 	"COLON",
@@ -212,7 +213,8 @@ TokenDescription = [
 	"kFOREACH",
 	"kLOOPWHILE",
 	"kSWITCH",
-	"kTO"
+	"kTO",
+	"kIN"
 ]
 
 class Token(object):
@@ -373,7 +375,8 @@ class Lexical(object):
 						(TokenEnum.kFOREACH, r"\bforeach\b"),
 						(TokenEnum.kLOOPWHILE, r"\bloopwhile\b"),
 						(TokenEnum.kSWITCH, r"\bswitch\b"),
-						(TokenEnum.kTO, r"\bto\b")
+						(TokenEnum.kTO, r"\bto\b"),
+						(TokenEnum.kIN, r"\bin\b")
 					]
 				)
 			self.keywordRegex = re.compile("|".join("(?P<t%s>%s)" % pair for pair in keywordSpecifications), re.IGNORECASE) # Papyrus is case-insensitive.
