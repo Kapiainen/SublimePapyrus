@@ -1007,13 +1007,13 @@ repository:
     patterns:
     - comment: Keywords
       name: keyword.other.papyrus
-      match: (?i)\b(as|auto|autoreadonly|betaonly|collapsed|collapsedonref|collapsedonbase|const|customevent|debugonly|default|else|elseif|endevent|endfunction|endgroup|endif|endproperty|endstate|endstruct|endwhile|event|extends|false|function|global|group|if|import|length|mandatory|native|new|none|property|return|scriptname|state|struct|true|while|for|to|step|break|endfor|continue|foreach|endforeach|switch|case|endswitch|do|loopwhile)\b
+      match: (?i)\b(as|auto|autoreadonly|betaonly|collapsed|collapsedonref|collapsedonbase|const|customevent|debugonly|default|else|elseif|endevent|endfunction|endgroup|endif|endproperty|endstate|endstruct|endwhile|event|extends|false|function|global|group|if|import|length|mandatory|native|new|none|property|return|scriptname|state|struct|true|while|for|to|step|break|endfor|continue|foreach|in|endforeach|switch|case|endswitch|do|loopwhile)\b
 
   illegalKeywords:
     patterns:
     - comment: Keywords
       name: meta.invalid.papyrus
-      match: (?i)\b(as|auto|autoreadonly|betaonly|collapsed|collapsedonref|collapsedonbase|const|customevent|debugonly|default|else|elseif|endevent|endfunction|endgroup|endif|endproperty|endstate|endstruct|endwhile|event|extends|false|function|global|group|if|import|length|mandatory|native|new|none|property|return|scriptname|state|struct|true|while|for|to|step|break|endfor|continue|foreach|endforeach|switch|case|endswitch|do|loopwhile)\b
+      match: (?i)\b(as|auto|autoreadonly|betaonly|collapsed|collapsedonref|collapsedonbase|const|customevent|debugonly|default|else|elseif|endevent|endfunction|endgroup|endif|endproperty|endstate|endstruct|endwhile|event|extends|false|function|global|group|if|import|length|mandatory|native|new|none|property|return|scriptname|state|struct|true|while|for|to|step|break|endfor|continue|foreach|in|endforeach|switch|case|endswitch|do|loopwhile)\b
 
   specialVariables:
     patterns:
