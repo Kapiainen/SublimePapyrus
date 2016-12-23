@@ -3280,6 +3280,18 @@ class Semantic(object):
 					raise SemanticError("'%s' is a struct." % (":".join(result.type.identifier)), self.line)
 				elif result.type.array:
 					raise SemanticError("", self.line)
+				else:
+					name = ":".join(result.type.name)
+					if name == "BOOL":
+						result = NodeResult(Type(["Bool"], False, False), True)
+					elif name == "FlOAT":
+						result = NodeResult(Type(["Float"], False, False), True)
+					elif name == "INT":
+						result = NodeResult(Type(["Int"], False, False), True)
+					elif name == "STRING":
+						result = NodeResult(Type(["String"], False, False), True)
+					elif name == "VAR":
+						result = NodeResult(Type(["Var"], False, False), True)
 				elif not self.GetCachedScript(result.type.name):
 					raise SemanticError("'%s' is not a type that exists." % (":".join(result.type.identifier)))
 			# Check for valid use of operators with types
