@@ -379,7 +379,7 @@ class Lexical(object):
 						(TokenEnum.kSWITCH, r"\bswitch\b"),
 						(TokenEnum.kTO, r"\bto\b"),
 						(TokenEnum.kIN, r"\bin\b"),
-						(TokenEnum.KSTEP, r"\bstep\b"),
+						(TokenEnum.kSTEP, r"\bstep\b"),
 					]
 				)
 			self.keywordRegex = re.compile("|".join("(?P<t%s>%s)" % pair for pair in keywordSpecifications), re.IGNORECASE) # Papyrus is case-insensitive.
