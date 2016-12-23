@@ -109,6 +109,7 @@ class TokenEnum(object):
 	kSWITCH = 100
 	kTO = 101
 	kIN = 102
+	kSTEP = 103
 
 TokenDescription = [
 	"COLON",
@@ -214,7 +215,8 @@ TokenDescription = [
 	"kLOOPWHILE",
 	"kSWITCH",
 	"kTO",
-	"kIN"
+	"kIN",
+	"kSTEP"
 ]
 
 class Token(object):
@@ -358,7 +360,7 @@ class Lexical(object):
 				(TokenEnum.kSTRUCT, r"\bstruct\b"),
 				(TokenEnum.kTRUE, r"\btrue\b"),
 				(TokenEnum.kVAR, r"\bvar\b"),
-				(TokenEnum.kWHILE, r"\bwhile\b")
+				(TokenEnum.kWHILE, r"\bwhile\b"),
 			]
 			#Caprica extensions
 			if self.capricaExtensions:
@@ -376,7 +378,8 @@ class Lexical(object):
 						(TokenEnum.kLOOPWHILE, r"\bloopwhile\b"),
 						(TokenEnum.kSWITCH, r"\bswitch\b"),
 						(TokenEnum.kTO, r"\bto\b"),
-						(TokenEnum.kIN, r"\bin\b")
+						(TokenEnum.kIN, r"\bin\b"),
+						(TokenEnum.KSTEP, r"\bstep\b"),
 					]
 				)
 			self.keywordRegex = re.compile("|".join("(?P<t%s>%s)" % pair for pair in keywordSpecifications), re.IGNORECASE) # Papyrus is case-insensitive.
