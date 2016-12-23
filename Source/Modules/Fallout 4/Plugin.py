@@ -119,9 +119,9 @@ class SublimePapyrusFallout4CompileScriptCommand(sublime_plugin.WindowCommand):
 LINTER_CACHE = {}
 COMPLETION_CACHE = {}
 CACHE_LOCK = threading.RLock()
-LEX = Linter.Lexical()
-SYN = Linter.Syntactic()
-SEM = Linter.Semantic()
+#LEX = Linter.Lexical()
+#SYN = Linter.Syntactic()
+#SEM = Linter.Semantic()
 
 class EventListener(sublime_plugin.EventListener):
 	def __init__(self):
@@ -182,16 +182,22 @@ class EventListener(sublime_plugin.EventListener):
 						lineNumber += 1
 						scriptContents = view.substr(sublime.Region(0, view.size()))						
 						args = None
+						caprica = "fallout4.caprica" in view.scope_name(0)
 						if PYTHON_VERSION[0] == 2:
-							args = {"aView": None, "aLineNumber": lineNumber, "aSource": scriptContents, "aPaths": sourcePaths}
+							args = {"aView": None, "aLineNumber": lineNumber, "aSource": scriptContents, "aPaths": sourcePaths, "aCaprica": caprica}
 						elif PYTHON_VERSION[0] >= 3:
-							args = {"aView": view, "aLineNumber": lineNumber, "aSource": scriptContents, "aPaths": sourcePaths}
+							args = {"aView": view, "aLineNumber": lineNumber, "aSource": scriptContents, "aPaths": sourcePaths, "aCaprica": caprica}
 						if args:
 							t = threading.Timer(delay, self.RunLinter, kwargs=args)
 							t.daemon = True
 							t.start()
 
-	def RunLinter(self, aView, aLineNumber, aSource, aPaths):
+	def RunLinter(self, aView, aLineNumber, aSource, aPaths, aCaprica):
+	# aView: A sublime.View object, possibly has the value None
+	# aLineNumber: Line that contains the cursor as an int
+	# aSource: Script to process as a string
+	# aPaths: List of paths to import folders
+	# aCaprica: True if Caprica extensions should be used, otherwise False
 		self.linterQueue -= 1 # Remove from queue
 		if self.linterQueue > 0: # If there is a queue, then cancel
 			return
@@ -201,11 +207,8 @@ class EventListener(sublime_plugin.EventListener):
 		start = time.time() #DEBUG
 		def Run():
 			print("Running linter")
-			global LEX
-			global SYN
-			global SEM
 			try:
-				script = SEM.Process(LEX, SYN, aSource, aPaths)
+				Linter.Process(aSource, aPaths, aCaprica)
 			except Linter.LexicalError as e:
 				print(e.message)
 				if aView:
@@ -230,11 +233,42 @@ class EventListener(sublime_plugin.EventListener):
 					SublimePapyrus.SetStatus(aView, "sublimepapyrus-linter", "Error on line %d: %s" % (e.line, e.message))
 					SublimePapyrus.HighlightLinter(aView, e.line)
 				return False
-			#except Exception as e:
-			#	print("SublimePapyrus - Fallout 4 - %s" % e)
-			#	if aView:
-			#		SublimePapyrus.SetStatus(aView, "sublimepapyrus-linter", "Fallout 4 - %s" % e)
 			return True
+
+#			global LEX
+#			global SYN
+#			global SEM
+#			try:
+#				script = SEM.Process(LEX, SYN, aSource, aPaths)
+#			except Linter.LexicalError as e:
+#				print(e.message)
+#				if aView:
+#					SublimePapyrus.SetStatus(aView, "sublimepapyrus-linter", "Error on line %d, column %d: %s" % (e.line, e.column, e.message))
+#					SublimePapyrus.HighlightLinter(aView, e.line, e.column)
+#				return False
+#			except Linter.SyntacticError as e:
+#				print(e.message)
+#				if aView:
+#					SublimePapyrus.SetStatus(aView, "sublimepapyrus-linter", "Error on line %d: %s" % (e.line, e.message))
+#					SublimePapyrus.HighlightLinter(aView, e.line)
+#				return False
+#			except Linter.SemanticError as e:
+#				print(e.message)
+#				if aView:
+#					SublimePapyrus.SetStatus(aView, "sublimepapyrus-linter", "Error on line %d: %s" % (e.line, e.message))
+#					SublimePapyrus.HighlightLinter(aView, e.line)
+#				return False
+#			except Linter.MissingScript as e:
+#				print(e.message)
+#				if aView:
+#					SublimePapyrus.SetStatus(aView, "sublimepapyrus-linter", "Error on line %d: %s" % (e.line, e.message))
+#					SublimePapyrus.HighlightLinter(aView, e.line)
+#				return False
+#			#except Exception as e:
+#			#	print("SublimePapyrus - Fallout 4 - %s" % e)
+#			#	if aView:
+#			#		SublimePapyrus.SetStatus(aView, "sublimepapyrus-linter", "Fallout 4 - %s" % e)
+#			return True
 
 		if Run():
 			if aView:
