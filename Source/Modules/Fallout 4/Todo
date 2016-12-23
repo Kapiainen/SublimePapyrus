@@ -1,0 +1,242 @@
+Phase 1
+	Line by line
+		String -> Lexical -> Tokens
+		Tokens -> Syntactic -> Statement
+		Statement -> Semantic -> Assemble scope object
+	Generate script object from scope objects
+
+Phase 2
+	Validate script object and its scope objects
+
+Lexical objects
+	Token
+		.type
+			TokenEnum member
+		.value
+			String
+		.line
+			Int
+		.column
+			Int
+
+Syntactic objects
+	Assignment
+
+	CustomEvent
+	Docstring
+	Else
+	ElseIf
+	EndEvent
+	EndFunction
+	EndGroup
+	EndIf
+	EndProperty
+	EndState
+	EndStruct
+	EndWhile
+	EventSignature
+	Expression
+	FunctionSignature
+	GroupSignature
+	If
+	Import
+	Parameter
+	PropertySignature
+	Return
+	ScriptSignature
+	StateSignature
+	StructSignature
+	Variable declaration
+	While
+	Break
+	Continue
+	Switch
+	Case
+	Default
+	Endswitch
+	For
+	Endfor
+	Foreach
+	Endforeach
+	Do
+	Loopwhile
+
+Semantic objects
+	Script
+		.signature
+			.identifier
+				Identifier
+			.flags
+				List of TokenEnum members
+			.parent
+				Identifier
+			.docstring
+				String
+		.imports
+			Dict of Import
+		.customEvents
+			Dict of CustomEvent
+		.variables
+			Dict of Variable
+		.properties
+			Dict of Property
+		.groups
+			Dict of Group
+		.functions
+			Dict of Function
+		.events
+			Dict of Event
+		.states
+			Dict of State
+		.structs
+			Dict of Struct
+
+	CustomEvent
+		.identifier
+			Identifier
+
+	Variable
+		.identifier
+			Identifier
+		.type
+			Type
+		.flags
+
+	Property
+		.identifier
+			Identifier
+		.type
+			Type
+		.flags
+			List of TokenEnum members
+
+	Group
+		.members
+			Dict of Property
+
+	Function
+		.identifier
+			Identifier
+		.returnType
+			Type
+		.parameters
+			List of FunctionParameter
+
+	FunctionParameter
+		.identifier
+			Identifier
+		.type
+			Type
+		.defaultValue
+			Expression
+
+	Event
+		.identifier
+			Identifier
+		.parameters
+			List of EventParameter
+
+	EventParameter
+		.identifier
+			Identifier
+		.type
+			Type
+
+	State
+		.identifier
+			Identifier
+		.auto
+			Bool
+		.functions
+			Dict of Function
+		.events
+			Dict of Event
+
+	Struct
+		.identifier
+			Identifier
+		.members
+			Dict of Variable
+
+	Type
+		.identifier
+			Identifier
+		.isArray
+			Bool
+		.isStruct
+			Bool
+
+	Identifier
+		.namespace
+			List of String
+		.name
+			String
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Caprica
+
+Seprate syntax highlighting file that invokes the linter with Caprica extensions enabled
+
+	Op-equals operations (+=, -=, etc.) on array elements are allowed.
+
+	Integer literals can be used as the default value for floats, so no more .0 on the end of those literals.
+
+	Local variables can be declared as Auto and their type will be inferred from the initializer expression.
+
+	Break/Continue statements with the same semantics as are present in C++, are allowed.
+
+	Switch-Case statements on Int and String values are allowed. Case values must be literals.
+
+	ForEach statements can be used to iterate over an array or Collection.
+
+	For statements can be used.
+
+	Do-LoopWhile statements can be used.
+
+	kBREAK
+	kCONTINUE
+	kDEFAULT
+	kSWITCH
+	kENDSWITCH
+	kCASE
+	kFOREACH
+	kENDFOREACH
+	kFOR
+	kENDFOR
+	kDO
+	kLOOPWHILE
+	kTO
+
+	BREAK
+	CONTINUE
+
+	SWITCH
+	CASE
+	DEFAULT
+	ENDSWITCH
+
+	FOR TO
+	ENDFOR
+
+	FOREACH IN
+	ENDFOREACH
+
+	DO
+	LOOPWHILE
