@@ -28,6 +28,18 @@ patterns:
 - include: '#elseif'
 - include: '#else'
 - include: '#endIf'
+- include: '#for'
+- include: '#endFor'
+- include: '#break'
+- include: '#continue'
+- include: '#forEach'
+- include: '#endForEach'
+- include: '#switch'
+- include: '#case'
+- include: '#default'
+- include: '#endSwitch'
+- include: '#do'
+- include: '#loopWhile'
 - include: '#while'
 - include: '#endWhile'
 - include: '#property'
@@ -501,6 +513,177 @@ repository:
       patterns:
       - include: '#endOfLine'
 
+  for:
+    patterns:
+    - comment: For statement
+      name: meta.for.papyrus
+      begin: (?i)^\s*(for)\s+(?:(?:(?:(int|float)|(auto))\s+))?([_a-z][0-9_a-z]*)\s*(\=)\s*
+      beginCaptures:
+        '1': {name: keyword.other.papyrus}
+        '2': {name: storage.type.papyrus}
+        '3': {name: keyword.other.papyrus}
+        '4': {name: variable.other.papyrus}
+        '5': {name: keyword.operator.papyrus}
+      end: ([\n\r])
+      patterns:
+      - name: keyword.other.papyrus
+        match: (?i)(?:\b(to)\b)
+      - name: keyword.other.papyrus
+        match: (?i)(?:\b(step)\b)
+      - include: '#expression'
+      - include: '#endOfLine'
+
+  endFor:
+    patterns:
+    - comment: EndFor statement
+      name: meta.endfor.papyrus
+      begin: (?i)^\s*(endfor)\b
+      beginCaptures:
+       '1': {name: keyword.other.papyrus}
+      end: ([\n\r])
+      patterns:
+      - include: '#endOfLine'
+
+  forEach:
+    patterns:
+    - comment: ForEach statement
+      name: meta.foreach.papyrus
+      begin: (?i)^\s*(foreach)\s+(?:(?:(?:([_a-z][0-9_a-z]*)(\:))?)(?:(?:([_a-z][0-9_a-z]*)(\:))?)(?:(?:([_a-z][0-9_a-z]*)(\:))?)(?:(?:([_a-z][0-9_a-z]*)(\:))?)(?:(?:([_a-z][0-9_a-z]*)(\:))?)(?:(?:([_a-z][0-9_a-z]*)(\:))?)(?:(?:([_a-z][0-9_a-z]*)(\:))?)(?:(?:([_a-z][0-9_a-z]*)(\:))?)(?:(?:([_a-z][0-9_a-z]*)(\:))?)(?:(?:([_a-z][0-9_a-z]*)(\:))?)([_a-z][0-9_a-z]*)|(auto))\s+([_a-z][0-9_a-z]*)\s+
+      beginCaptures:
+        '1': {name: keyword.other.papyrus}
+        '2': {name: storage.type.papyrus}
+        '3': {name: keyword.operator.papyrus}
+        '4': {name: storage.type.papyrus}
+        '5': {name: keyword.operator.papyrus}
+        '6': {name: storage.type.papyrus}
+        '7': {name: keyword.operator.papyrus}
+        '8': {name: storage.type.papyrus}
+        '9': {name: keyword.operator.papyrus}
+        '10': {name: storage.type.papyrus}
+        '11': {name: keyword.operator.papyrus}
+        '12': {name: storage.type.papyrus}
+        '13': {name: keyword.operator.papyrus}
+        '14': {name: storage.type.papyrus}
+        '15': {name: keyword.operator.papyrus}
+        '16': {name: storage.type.papyrus}
+        '17': {name: keyword.operator.papyrus}
+        '18': {name: storage.type.papyrus}
+        '19': {name: keyword.operator.papyrus}
+        '20': {name: storage.type.papyrus}
+        '21': {name: keyword.operator.papyrus}
+        '22': {name: storage.type.papyrus}
+        '23': {name: keyword.other.papyrus}
+        '24': {name: variable.other.papyrus}
+      end: ([\n\r])
+      patterns:
+      - name: keyword.other.papyrus
+        match: (?i)(?:\b(in)\b)
+      - include: '#expression'
+      - include: '#endOfLine'
+
+  endForEach:
+    patterns:
+    - comment: EndForEach statement
+      name: meta.endforeach.papyrus
+      begin: (?i)^\s*(endforeach)\b
+      beginCaptures:
+       '1': {name: keyword.other.papyrus}
+      end: ([\n\r])
+      patterns:
+      - include: '#endOfLine'
+
+  switch:
+    patterns:
+    - comment: Switch statement
+      name: meta.switch.papyrus
+      begin: (?i)^\s*(switch)\b
+      beginCaptures:
+       '1': {name: keyword.other.papyrus}
+      end: ([\n\r])
+      patterns:
+      - include: '#expression'
+      - include: '#endOfLine'
+
+  case:
+    patterns:
+    - comment: Case statement
+      name: meta.case.papyrus
+      begin: (?i)^\s*(case)\b
+      beginCaptures:
+        '1': {name: keyword.other.papyrus}
+      end: ([\n\r])
+      patterns:
+      - include: '#integer'
+      - include: '#string'
+      - include: '#endOfLine'
+
+  endSwitch:
+    patterns:
+    - comment: EndSwitch statement
+      name: meta.endswitch.papyrus
+      begin: (?i)^\s*(endswitch)\b
+      beginCaptures:
+       '1': {name: keyword.other.papyrus}
+      end: ([\n\r])
+      patterns:
+      - include: '#endOfLine'
+
+  do:
+    patterns:
+    - comment: Do statement
+      name: meta.do.papyrus
+      begin: (?i)^\s*(do)\b
+      beginCaptures:
+       '1': {name: keyword.other.papyrus}
+      end: ([\n\r])
+      patterns:
+      - include: '#endOfLine'
+
+  loopWhile:
+    patterns:
+    - comment: LoopWhile statement
+      name: meta.loopwhile.papyrus
+      begin: (?i)^\s*(loopwhile)\b
+      beginCaptures:
+       '1': {name: keyword.other.papyrus}
+      end: ([\n\r])
+      patterns:
+      - include: '#expression'
+      - include: '#endOfLine'
+
+  break:
+    patterns:
+    - comment: Break statement
+      name: meta.break.papyrus
+      begin: (?i)^\s*(break)\b
+      beginCaptures:
+       '1': {name: keyword.other.papyrus}
+      end: ([\n\r])
+      patterns:
+      - include: '#endOfLine'
+
+  continue:
+    patterns:
+    - comment: Continue statement
+      name: meta.continue.papyrus
+      begin: (?i)^\s*(continue)\b
+      beginCaptures:
+       '1': {name: keyword.other.papyrus}
+      end: ([\n\r])
+      patterns:
+      - include: '#endOfLine'
+
+  default:
+    patterns:
+    - comment: Default statement
+      name: meta.default.papyrus
+      begin: (?i)^\s*(default)\b
+      beginCaptures:
+       '1': {name: keyword.other.papyrus}
+      end: ([\n\r])
+      patterns:
+      - include: '#endOfLine'
+
   while:
     patterns:
     - comment: While statement
@@ -824,13 +1007,13 @@ repository:
     patterns:
     - comment: Keywords
       name: keyword.other.papyrus
-      match: (?i)\b(as|auto|autoreadonly|betaonly|collapsed|collapsedonref|collapsedonbase|const|customevent|debugonly|default|else|elseif|endevent|endfunction|endgroup|endif|endproperty|endstate|endstruct|endwhile|event|extends|false|function|global|group|if|import|length|mandatory|native|new|none|property|return|scriptname|state|struct|true|while)\b
+      match: (?i)\b(as|auto|autoreadonly|betaonly|collapsed|collapsedonref|collapsedonbase|const|customevent|debugonly|default|else|elseif|endevent|endfunction|endgroup|endif|endproperty|endstate|endstruct|endwhile|event|extends|false|function|global|group|if|import|length|mandatory|native|new|none|property|return|scriptname|state|struct|true|while|for|to|step|break|endfor|continue|foreach|endforeach|switch|case|endswitch|do|loopwhile)\b
 
   illegalKeywords:
     patterns:
     - comment: Keywords
       name: meta.invalid.papyrus
-      match: (?i)\b(as|auto|autoreadonly|betaonly|collapsed|collapsedonref|collapsedonbase|const|customevent|debugonly|default|else|elseif|endevent|endfunction|endgroup|endif|endproperty|endstate|endstruct|endwhile|event|extends|false|function|global|group|if|import|length|mandatory|native|new|none|property|return|scriptname|state|struct|true|while)\b
+      match: (?i)\b(as|auto|autoreadonly|betaonly|collapsed|collapsedonref|collapsedonbase|const|customevent|debugonly|default|else|elseif|endevent|endfunction|endgroup|endif|endproperty|endstate|endstruct|endwhile|event|extends|false|function|global|group|if|import|length|mandatory|native|new|none|property|return|scriptname|state|struct|true|while|for|to|step|break|endfor|continue|foreach|endforeach|switch|case|endswitch|do|loopwhile)\b
 
   specialVariables:
     patterns:
