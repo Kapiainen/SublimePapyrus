@@ -45,16 +45,17 @@ def Initialize():
 	SYN = Syntactic()
 	SEM = Semantic()
 
-def Process(aSource, aPaths):
+def Process(aSource, aPaths, aCaprica): # TODO: Implement Caprica parameter
 	global INITIALIZED
 	if not INITIALIZED:
 		Initialize()
 	global LEX
 	global SYN
 	global SEM
-	LEX.Reset(True)
-	SYN.Reset(True)
-	SEM.Reset(True)
+	print("Linting with Caprica extensions:", aCaprica)
+	LEX.Reset(aCaprica)
+	SYN.Reset(aCaprica)
+	SEM.Reset(aCaprica)
 	tokens = []
 	for token in LEX.Process(aSource):
 		if token.type == TokenEnum.NEWLINE:
