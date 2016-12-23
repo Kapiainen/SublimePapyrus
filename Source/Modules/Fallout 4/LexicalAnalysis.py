@@ -95,6 +95,19 @@ class TokenEnum(object):
 	kTRUE = 87
 	kVAR = 88
 	kWHILE = 89
+	#Caprica extensions
+	kBREAK = 90
+	kCASE = 91
+	kCONTINUE = 92
+	kDO = 93
+	kENDFOR = 94
+	kENDFOREACH = 95
+	kENDSWITCH = 96
+	kFOR = 97
+	kFOREACH = 98
+	kLOOPWHILE = 99
+	kSWITCH = 100
+	kTO = 101
 
 TokenDescription = [
 	"COLON",
@@ -186,7 +199,20 @@ TokenDescription = [
 	"kSTRUCT",
 	"kTRUE",
 	"kVAR",
-	"kWHILE"
+	"kWHILE",
+	#Caprica extensions
+	"kBREAK",
+	"kCASE",
+	"kCONTINUE",
+	"kDO",
+	"kENDFOR",
+	"kENDFOREACH",
+	"kENDSWITCH",
+	"kFOR",
+	"kFOREACH",
+	"kLOOPWHILE",
+	"kSWITCH",
+	"kTO"
 ]
 
 class Token(object):
@@ -229,117 +255,145 @@ class LexicalError(Exception):
 # Using regex is faster than e.g. grouping characters by splitting an input string.
 class Lexical(object):
 	"""Lexical analysis."""
-	__slots__ = ["regex"]
+	__slots__ = ["tokenRegex", "keywordRegex", "capricaExtensions"]
 	def __init__(self):
-		self.regex = re.compile(
-			"|".join(
-				"(?P<t%s>%s)" % pair for pair in [
-					(TokenEnum.COMMENTBLOCK, r";/[\S\s]*?(?=/;)/;"),
-					(TokenEnum.COMMENTLINE, r";[^\n]*"),
-					(TokenEnum.DOCSTRING, r"{[\S\s]*?(?=})}"),
-					(TokenEnum.LEFTPARENTHESIS, r"\("),
-					(TokenEnum.RIGHTPARENTHESIS, r"\)"),
-					(TokenEnum.LEFTBRACKET, r"\["),
-					(TokenEnum.RIGHTBRACKET, r"\]"),
-					(TokenEnum.MULTILINE, r"\\[^\n]*?(?=\n)\n"),
-					(TokenEnum.COMMA, r","),
-					(TokenEnum.DOT, r"\."),
-					(TokenEnum.EQUAL, r"=="),
-					(TokenEnum.NOTEQUAL, r"!="),
-					(TokenEnum.GREATERTHANOREQUAL, r">="),
-					(TokenEnum.LESSTHANOREQUAL, r"<="),
-					(TokenEnum.GREATERTHAN, r">"),
-					(TokenEnum.LESSTHAN, r"<"),
-					(TokenEnum.NOT, r"!"),
-					(TokenEnum.AND, r"&&"),
-					(TokenEnum.OR, r"\|\|"),
-					(TokenEnum.ASSIGNADDITION, r"\+="),
-					(TokenEnum.ASSIGNSUBTRACTION, r"-="),
-					(TokenEnum.ASSIGNMULTIPLICATION, r"\*="),
-					(TokenEnum.ASSIGNDIVISION, r"/="),
-					(TokenEnum.ASSIGNMODULUS, r"%="),
-					(TokenEnum.ASSIGN, r"="),
-					#Start of keywords
-					(TokenEnum.kAS, r"\bas\b"),
-					(TokenEnum.kAUTO, r"\bauto\b"),
-					(TokenEnum.kAUTOREADONLY, r"\bautoreadonly\b"),
-					(TokenEnum.kBETAONLY, r"\bbetaonly\b"),
-					(TokenEnum.kBOOL, r"\bbool\b"),
-					(TokenEnum.kCOLLAPSED, r"\bcollapsed\b"),
-					(TokenEnum.kCOLLAPSEDONBASE, r"\bcollapsedonbase\b"),
-					(TokenEnum.kCOLLAPSEDONREF, r"\bcollapsedonref\b"),
-					(TokenEnum.kCONDITIONAL, r"\bconditional\b"),
-					(TokenEnum.kCONST, r"\bconst\b"),
-					(TokenEnum.kCUSTOMEVENT, r"\bcustomevent\b"),
-					(TokenEnum.kDEBUGONLY, r"\bdebugonly\b"),
-					(TokenEnum.kDEFAULT, r"\bdefault\b"),
-					(TokenEnum.kELSE, r"\belse\b"),
-					(TokenEnum.kELSEIF, r"\belseif\b"),
-					(TokenEnum.kENDEVENT, r"\bendevent\b"),
-					(TokenEnum.kENDFUNCTION, r"\bendfunction\b"),
-					(TokenEnum.kENDGROUP, r"\bendgroup\b"),
-					(TokenEnum.kENDIF, r"\bendif\b"),
-					(TokenEnum.kENDPROPERTY, r"\bendproperty\b"),
-					(TokenEnum.kENDSTATE, r"\bendstate\b"),
-					(TokenEnum.kENDSTRUCT, r"\bendstruct\b"),
-					(TokenEnum.kENDWHILE, r"\bendwhile\b"),
-					(TokenEnum.kEVENT, r"\bevent\b"),
-					(TokenEnum.kEXTENDS, r"\bextends\b"),
-					(TokenEnum.kFALSE, r"\bfalse\b"),
-					(TokenEnum.kFLOAT, r"\bfloat\b"),
-					(TokenEnum.kFUNCTION, r"\bfunction\b"),
-					(TokenEnum.kGLOBAL, r"\bglobal\b"),
-					(TokenEnum.kGROUP, r"\bgroup\b"),
-					(TokenEnum.kHIDDEN, r"\bhidden\b"),
-					(TokenEnum.kIF, r"\bif\b"),
-					(TokenEnum.kIMPORT, r"\bimport\b"),
-					(TokenEnum.kINT, r"\bint\b"),
-					(TokenEnum.kIS, r"\bis\b"),
-					(TokenEnum.kLENGTH, r"\blength\b"),
-					(TokenEnum.kMANDATORY, r"\bmandatory\b"),
-					(TokenEnum.kNATIVE, r"\bnative\b"),
-					(TokenEnum.kNEW, r"\bnew\b"),
-					(TokenEnum.kNONE, r"\bnone\b"),
-					(TokenEnum.kPARENT, r"\bparent\b"),
-					(TokenEnum.kPROPERTY, r"\bproperty\b"),
-					(TokenEnum.kRETURN, r"\breturn\b"),
-					(TokenEnum.kSCRIPTNAME, r"\bscriptname\b"),
-					(TokenEnum.kSELF, r"\bself\b"),
-					(TokenEnum.kSTATE, r"\bstate\b"),
-					(TokenEnum.kSTRING, r"\bstring\b"),
-					(TokenEnum.kSTRUCT, r"\bstruct\b"),
-					(TokenEnum.kTRUE, r"\btrue\b"),
-					(TokenEnum.kVAR, r"\bvar\b"),
-					(TokenEnum.kWHILE, r"\bwhile\b"),
-					#End of keywords
-					(TokenEnum.IDENTIFIER, r"[a-z_][0-9a-z_]*"),
-					(TokenEnum.FLOAT, r"(\d+\.\d+)"),
-					(TokenEnum.INT, r"((0x(\d|[a-f])+)|((\d+))(?![a-z_]))"),
-					(TokenEnum.ADDITION, r"\+"),
-					(TokenEnum.SUBTRACTION, r"-"),
-					(TokenEnum.MULTIPLICATION, r"\*"),
-					(TokenEnum.DIVISION, r"/"),
-					(TokenEnum.MODULUS, r"%"),
-					(TokenEnum.STRING, r"\".*?(?:(?<=\\\\)\"|(?<!\\)\")"),
-					(TokenEnum.COLON, r"\:"),
-					(TokenEnum.NEWLINE, r"[\n\r]"),
-					(TokenEnum.WHITESPACE, r"[ \t]"),
-					(TokenEnum.UNMATCHED, r"."),
-				]
-			),
-			re.IGNORECASE # Papyrus is case-insensitive.
-		)
+		tokenSpecifications = [
+			(TokenEnum.COMMENTBLOCK, r";/[\S\s]*?(?=/;)/;"),
+			(TokenEnum.COMMENTLINE, r";[^\n]*"),
+			(TokenEnum.DOCSTRING, r"{[\S\s]*?(?=})}"),
+			(TokenEnum.LEFTPARENTHESIS, r"\("),
+			(TokenEnum.RIGHTPARENTHESIS, r"\)"),
+			(TokenEnum.LEFTBRACKET, r"\["),
+			(TokenEnum.RIGHTBRACKET, r"\]"),
+			(TokenEnum.MULTILINE, r"\\[^\n]*?(?=\n)\n"),
+			(TokenEnum.COMMA, r","),
+			(TokenEnum.DOT, r"\."),
+			(TokenEnum.EQUAL, r"=="),
+			(TokenEnum.NOTEQUAL, r"!="),
+			(TokenEnum.GREATERTHANOREQUAL, r">="),
+			(TokenEnum.LESSTHANOREQUAL, r"<="),
+			(TokenEnum.GREATERTHAN, r">"),
+			(TokenEnum.LESSTHAN, r"<"),
+			(TokenEnum.NOT, r"!"),
+			(TokenEnum.AND, r"&&"),
+			(TokenEnum.OR, r"\|\|"),
+			(TokenEnum.ASSIGNADDITION, r"\+="),
+			(TokenEnum.ASSIGNSUBTRACTION, r"-="),
+			(TokenEnum.ASSIGNMULTIPLICATION, r"\*="),
+			(TokenEnum.ASSIGNDIVISION, r"/="),
+			(TokenEnum.ASSIGNMODULUS, r"%="),
+			(TokenEnum.ASSIGN, r"="),
+			(TokenEnum.IDENTIFIER, r"[a-z_][0-9a-z_]*"),
+			(TokenEnum.FLOAT, r"(\d+\.\d+)"),
+			(TokenEnum.INT, r"((0x(\d|[a-f])+)|((\d+))(?![a-z_]))"),
+			(TokenEnum.ADDITION, r"\+"),
+			(TokenEnum.SUBTRACTION, r"-"),
+			(TokenEnum.MULTIPLICATION, r"\*"),
+			(TokenEnum.DIVISION, r"/"),
+			(TokenEnum.MODULUS, r"%"),
+			(TokenEnum.STRING, r"\".*?(?:(?<=\\\\)\"|(?<!\\)\")"),
+			(TokenEnum.COLON, r"\:"),
+			(TokenEnum.NEWLINE, r"[\n\r]"),
+			(TokenEnum.WHITESPACE, r"[ \t]"),
+			(TokenEnum.UNMATCHED, r"."),
+		]
+		self.tokenRegex = re.compile("|".join("(?P<t%s>%s)" % pair for pair in tokenSpecifications), re.IGNORECASE) # Papyrus is case-insensitive.
+		self.capricaExtensions = True
+		self.Reset(False)
+
+	def Reset(self, aCaprica):
+		# aCaprica: bool
+		if aCaprica != self.capricaExtensions:
+			self.capricaExtensions = aCaprica
+			keywordSpecifications = [
+				(TokenEnum.kAS, r"\bas\b"),
+				(TokenEnum.kAUTO, r"\bauto\b"),
+				(TokenEnum.kAUTOREADONLY, r"\bautoreadonly\b"),
+				(TokenEnum.kBETAONLY, r"\bbetaonly\b"),
+				(TokenEnum.kBOOL, r"\bbool\b"),
+				(TokenEnum.kCOLLAPSED, r"\bcollapsed\b"),
+				(TokenEnum.kCOLLAPSEDONBASE, r"\bcollapsedonbase\b"),
+				(TokenEnum.kCOLLAPSEDONREF, r"\bcollapsedonref\b"),
+				(TokenEnum.kCONDITIONAL, r"\bconditional\b"),
+				(TokenEnum.kCONST, r"\bconst\b"),
+				(TokenEnum.kCUSTOMEVENT, r"\bcustomevent\b"),
+				(TokenEnum.kDEBUGONLY, r"\bdebugonly\b"),
+				(TokenEnum.kDEFAULT, r"\bdefault\b"),
+				(TokenEnum.kELSE, r"\belse\b"),
+				(TokenEnum.kELSEIF, r"\belseif\b"),
+				(TokenEnum.kENDEVENT, r"\bendevent\b"),
+				(TokenEnum.kENDFUNCTION, r"\bendfunction\b"),
+				(TokenEnum.kENDGROUP, r"\bendgroup\b"),
+				(TokenEnum.kENDIF, r"\bendif\b"),
+				(TokenEnum.kENDPROPERTY, r"\bendproperty\b"),
+				(TokenEnum.kENDSTATE, r"\bendstate\b"),
+				(TokenEnum.kENDSTRUCT, r"\bendstruct\b"),
+				(TokenEnum.kENDWHILE, r"\bendwhile\b"),
+				(TokenEnum.kEVENT, r"\bevent\b"),
+				(TokenEnum.kEXTENDS, r"\bextends\b"),
+				(TokenEnum.kFALSE, r"\bfalse\b"),
+				(TokenEnum.kFLOAT, r"\bfloat\b"),
+				(TokenEnum.kFUNCTION, r"\bfunction\b"),
+				(TokenEnum.kGLOBAL, r"\bglobal\b"),
+				(TokenEnum.kGROUP, r"\bgroup\b"),
+				(TokenEnum.kHIDDEN, r"\bhidden\b"),
+				(TokenEnum.kIF, r"\bif\b"),
+				(TokenEnum.kIMPORT, r"\bimport\b"),
+				(TokenEnum.kINT, r"\bint\b"),
+				(TokenEnum.kIS, r"\bis\b"),
+				(TokenEnum.kLENGTH, r"\blength\b"),
+				(TokenEnum.kMANDATORY, r"\bmandatory\b"),
+				(TokenEnum.kNATIVE, r"\bnative\b"),
+				(TokenEnum.kNEW, r"\bnew\b"),
+				(TokenEnum.kNONE, r"\bnone\b"),
+				(TokenEnum.kPARENT, r"\bparent\b"),
+				(TokenEnum.kPROPERTY, r"\bproperty\b"),
+				(TokenEnum.kRETURN, r"\breturn\b"),
+				(TokenEnum.kSCRIPTNAME, r"\bscriptname\b"),
+				(TokenEnum.kSELF, r"\bself\b"),
+				(TokenEnum.kSTATE, r"\bstate\b"),
+				(TokenEnum.kSTRING, r"\bstring\b"),
+				(TokenEnum.kSTRUCT, r"\bstruct\b"),
+				(TokenEnum.kTRUE, r"\btrue\b"),
+				(TokenEnum.kVAR, r"\bvar\b"),
+				(TokenEnum.kWHILE, r"\bwhile\b")
+			]
+			#Caprica extensions
+			if self.capricaExtensions:
+				keywordSpecifications.extend(
+					[
+						(TokenEnum.kBREAK, r"\bbreak\b"),
+						(TokenEnum.kCASE, r"\bcase\b"),
+						(TokenEnum.kCONTINUE, r"\bcontinue\b"),
+						(TokenEnum.kDO, r"\bdo\b"),
+						(TokenEnum.kENDFOR, r"\bendfor\b"),
+						(TokenEnum.kENDFOREACH, r"\bendforeach\b"),
+						(TokenEnum.kENDSWITCH, r"\bendswitch\b"),
+						(TokenEnum.kFOR, r"\bfor\b"),
+						(TokenEnum.kFOREACH, r"\bforeach\b"),
+						(TokenEnum.kLOOPWHILE, r"\bloopwhile\b"),
+						(TokenEnum.kSWITCH, r"\bswitch\b"),
+						(TokenEnum.kTO, r"\bto\b")
+					]
+				)
+			self.keywordRegex = re.compile("|".join("(?P<t%s>%s)" % pair for pair in keywordSpecifications), re.IGNORECASE) # Papyrus is case-insensitive.
 
 	def Process(self, aString):
 		"""Generates tokens from a string."""
 	# aString: string (contains source code to tokenize)
 		line = 1
 		column = -1
-		for match in self.regex.finditer(aString):
+		for match in self.tokenRegex.finditer(aString):
 			t = match.lastgroup
 			v = match.group(t)
 			t = int(match.lastgroup[1:])
 			if t == TokenEnum.WHITESPACE:
+				continue
+			elif t == TokenEnum.IDENTIFIER:
+				keyword = self.keywordRegex.match(v)
+				if keyword:
+					t = int(keyword.lastgroup[1:])
+				yield Token(t, v, line, match.start()-column)
 				continue
 			elif t == TokenEnum.COMMENTLINE:
 				yield Token(TokenEnum.COMMENTLINE, None, line, match.start()-column)
@@ -355,8 +409,10 @@ class Lexical(object):
 				line += 1
 				column = match.end()-1
 				continue
-			if t == TokenEnum.DOCSTRING or t == TokenEnum.STRING:
-				yield Token(t, v[1:-1], line, match.start()-column)
+			elif t == TokenEnum.DOCSTRING or t == TokenEnum.STRING:
+				if t == TokenEnum.DOCSTRING:
+					v = v[1:-1]
+				yield Token(t, v, line, match.start()-column)
 				i = v.count("\n")
 				if i > 0:
 					line += i
