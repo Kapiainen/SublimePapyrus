@@ -828,7 +828,6 @@ class ForCounter(object):
 		self.type = aType
 		self.expression = aExpression
 
-#'For' ['Int'|'Float'|'Auto'] <identifier> '=' <expression> 'To' <expression> ['Step' <expression>]
 class ForStatement(object):
 	__slots__ = [
 		"counter", # ForCounter 
@@ -857,14 +856,37 @@ class EndForStatement(object):
 		assert isinstance(aLine, int) #Prune
 		self.line = aLine
 
-#FOREACH
-class (object):
+class ForEachElement(object):
 	__slots__ = [
+		"identifier", # Identifier
+		"type", # Type
+		"isAuto" # bool
+	]
+
+	def __init__(self, aIdentifier, aType, aAuto):
+		assert isinstance(aIdentifier, Identifier) #Prune
+		if aType: #Prune
+			assert isinstance(aType, Type) #Prune
+		else: #Prun
+			assert isinstance(aAuto, bool) #Prun
+		self.identifier = aIdentifier
+		self.type = aType
+		self.isAuto = aAuto
+
+class ForEachStatement(object):
+	__slots__ = [
+		"element", # ForEachElement
+		"expression", # ExpressionNode
 		"line" # int
 	]
 
-	def __init__(self):
-		pass
+	def __init__(self, aElement, aExpression, aLine):
+		assert isinstance(aElement, ForEachElement) #Prune
+		assert isinstance(aExpression, ExpressionNode) #Prune
+		assert isinstance(aLine, int) #Prune
+		self.element = aElement
+		self.expression = aExpression
+		self.line = aLine
 
 class EndForEachStatement(object):
 	__slots__ = [
