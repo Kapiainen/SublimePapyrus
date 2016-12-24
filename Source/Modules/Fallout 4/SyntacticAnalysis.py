@@ -595,124 +595,268 @@ class PropertySignatureStatement(object):
 		"identifier", # Identifier
 		"type", # Type
 		"defaultValue", # ExpressionNode
+		"flags", # PropertyFlags
 		"line" # int
 	]
 
-	def __init__(self):
-		pass
-#RETURN
-class (object):
+	def __init__(self, aIdentifier, aType, aDefaultValue, aFlags, aLine):
+		assert isinstance(aIdentifier, Identifier) #Prune
+		assert isinstance(aType, Type) #Prune
+		if aDefaultValue: #Prune
+			assert isinstance(aDefaultValue, ExpressionNode) #Prune
+		assert isinstance(aFlags, PropertyFlags) #Prune
+		assert isinstance(aLine, int) #Prune
+		self.identifier = aIdentifier
+		self.type = aType
+		self.defaultValue = aDefaultValue
+		self.flags = aFlags
+		self.line = aLine
+
+class ReturnStatement(object):
+	__slots__ = [
+		"expression", # ExpressionNode
+		"line" # int
+	]
+
+	def __init__(self, aExpression, aLine):
+		assert isinstance(aExpression, ExpressionNode) #Prune
+		assert isinstance(aLine, int) #Prune
+		self.expression = aExpression
+		self.line = aLine
+
+class ScriptFlags(object):
+	__slots__ = [
+		"isBetaOnly", # bool
+		"isConditional", # bool
+		"isConst", # bool
+		"isDebugOnly", # bool
+		"isDefault", # bool
+		"isHidden", # bool
+		"isNative" # bool
+	]
+
+	def __init__(self, aBetaOnly, aConditional, aConst, aDebugOnly, aDefault, aHidden, aNative):
+		assert isinstance(aBetaOnly, bool) #Prune
+		assert isinstance(aConditional, bool) #Prune
+		assert isinstance(aConst, bool) #Prune
+		assert isinstance(aDebugOnly, bool) #Prune
+		assert isinstance(aDefault, bool) #Prune
+		assert isinstance(aHidden, bool) #Prune
+		assert isinstance(aNative, bool) #Prune
+		self.isBetaOnly = aBetaOnly
+		self.isConditional = aConditional
+		self.isConst = aConst
+		self.isDebugOnly = aDebugOnly
+		self.isDefault = aDefault
+		self.isHidden = aHidden
+		self.isNative = aNative
+
+class ScriptSignatureStatement(object):
+	__slots__ = [
+		"identifier", # Identifier
+		"extends", # Identifier
+		"flags", # ScriptFlags
+		"line" # int
+	]
+
+	def __init__(self, aIdentifier, aExtends, aFlags, aLine):
+		assert isinstance(aIdentifier, Identifier) #Prune
+		assert isinstance(aExtends, Identifier) #Prune
+		assert isinstance(aFlags, ScriptFlags) #Prune
+		assert isinstance(aLine, int) #Prune
+		self.identifier = aIdentifier
+		self.extends = aExtends
+		self.flags = aFlags
+		self.line = aLine
+
+class StateFlags(object):
+	__slots__ = [
+		"isAuto", # bool
+	]
+
+	def __init__(self, aAuto):
+		assert isinstance(aAuto, bool)
+		self.isAuto = aAuto
+
+class StateSignatureStatement(object):
+	__slots__ = [
+		"identifier", # Identifier
+		"flags", # StateFlags
+		"line" # int
+	]
+
+	def __init__(self, aIdentifier, aFlags, aLine):
+		assert isinstance(aIdentifier, Identifier) #Prune
+		assert isinstance(aFlags, StateFlags) #Prune
+		assert isinstance(aLine, int) #Prune
+		self.identifier = aIdentifier
+		self.flags = aFlags
+		self.line = aLine
+
+class StructSignatureStatement(object):
+	__slots__ = [
+		"identifier", # Identifier
+		"line" # int
+	]
+
+	def __init__(self, aIdentifier, aLine):
+		assert isinstance(aIdentifier, Identifier) #Prune
+		assert isinstance(aLine, int) #Prune
+		self.identifier = aIdentifier
+		self.line = aLine
+
+class VariableFlags(object):
+	__slots__ = [
+		"isConditional", # bool
+		"isConst", # bool
+		"isHidden" # bool
+	]
+
+	def __init__(self, aConditional, aConst, aHidden):
+		assert isinstance(aConditional, bool) #Prune
+		assert isinstance(aConst, bool) #Prune
+		assert isinstance(aHidden, bool) #Prune
+		self.isConditional = aConditional
+		self.isConst = aConst
+		self.isHidden = aHidden
+
+class VariableStatement(object):
+	__slots__ = [
+		"identifier", # Identifier
+		"type", # Type
+		"value", # ExpressionNode
+		"flags", # VariableFlags
+		"line" # int
+	]
+
+	def __init__(self, aIdentifier, aType, aValue, aFlags, aLine):
+		assert isinstance(aIdentifier, Identifier) #Prune
+		assert isinstance(aType, Type) #Prune
+		if aValue: #Prune
+			assert isinstance(aValue, ExpressionNode) #Prune
+		assert isinstance(aFlags, VariableFlags) #Prune
+		assert isinstance(aLine, int) #Prune
+		self.identifier = aIdentifier
+		self.type = aType
+		self.value = aValue
+		self.flags = aFlags
+		self.line = aLine
+
+class WhileStatement(object):
 	__slots__ = [
 		"line" # int
 	]
 
-	def __init__(self):
-		pass
-#SCRIPTSIGNATURE
-class (object):
+	def __init__(self, aLine):
+		assert isinstance(aLine, int) #Prune
+		self.line = aLine
+
+#Caprica extensions
+class BreakStatement(object):
 	__slots__ = [
 		"line" # int
 	]
 
-	def __init__(self):
-		pass
-#STATESIGNATURE
-class (object):
+	def __init__(self, aLine):
+		assert isinstance(aLine, int) #Prune
+		self.line = aLine
+
+class ContinueStatement(object):
 	__slots__ = [
 		"line" # int
 	]
 
-	def __init__(self):
-		pass
-#STRUCTSIGNATURE
-class (object):
+	def __init__(self, aLine):
+		assert isinstance(aLine, int) #Prune
+		self.line = aLine
+
+class SwitchStatement(object):
+	__slots__ = [
+		"expression", # ExpressionNode
+		"line" # int
+	]
+
+	def __init__(self, aExpression, aLine):
+		assert isinstance(aExpression, ExpressionNode) #Prune
+		assert isinstance(aLine, int) #Prune
+		self.expression = aExpression
+		self.line = aLine
+
+class SwitchCaseStatement(object):
+	__slots__ = [
+		"expression", # ExpressionNode
+		"line" # int
+	]
+
+	def __init__(self, aExpression, aLine):
+		assert isinstance(aExpression, ExpressionNode) #Prune
+		assert isinstance(aLine, int) #Prune
+		self.expression = aExpression
+		self.line = aLine
+
+class SwitchDefaultStatement(object):
 	__slots__ = [
 		"line" # int
 	]
 
-	def __init__(self):
-		pass
-#VARIABLE
-class (object):
+	def __init__(self, aLine):
+		assert isinstance(aLine, int) #Prune
+		self.line = aLine
+
+class EndSwitchStatement(object):
 	__slots__ = [
 		"line" # int
 	]
 
-	def __init__(self):
-		pass
-#WHILE
-class (object):
+	def __init__(self, aLine):
+		assert isinstance(aLine, int) #Prune
+		self.line = aLine
+
+class ForCounter(object):
+	__slots__ = [
+		"identifier", # Identifier
+		"type", # Type
+		"expression" # ExpressionNode
+	]
+
+	def __init__(self, aIdentifier, aType, aExpression):
+		assert isinstance(aIdentifier, Identifier) #Prune
+		if aType: #Prune
+			assert isinstance(aType, Type) #Prune
+		assert isinstance(aExpression, ExpressionNode) #Prune
+		self.identifier = aIdentifier
+		self.type = aType
+		self.expression = aExpression
+
+#'For' ['Int'|'Float'|'Auto'] <identifier> '=' <expression> 'To' <expression> ['Step' <expression>]
+class ForStatement(object):
+	__slots__ = [
+		"counter", # ForCounter 
+		"toExpression", # ExpressionNode
+		"stepExpression", # ExpressionNode
+		"line" # int
+	]
+
+	def __init__(self, aCounter, aToExpression, aStepExpression, aLine):
+		assert isinstance(aCounter, ForCounter) #Prune
+		assert isinstance(aToExpression, ExpressionNode) #Prune
+		if aStepExpression: #Prune
+			assert isinstance(aStepExpression, ExpressionNode) #Prune
+		assert isinstance(aLine, int) #Prune
+		self.counter = aCounter
+		self.toExpression = aToExpression
+		self.stepExpression = aStepExpression
+		self.line = aLine
+
+class EndForStatement(object):
 	__slots__ = [
 		"line" # int
 	]
 
-	def __init__(self):
-		pass
-#	#Caprica extensions
-#BREAK
-class (object):
-	__slots__ = [
-		"line" # int
-	]
+	def __init__(self, aLine):
+		assert isinstance(aLine, int) #Prune
+		self.line = aLine
 
-	def __init__(self):
-		pass
-#CONTINUE
-class (object):
-	__slots__ = [
-		"line" # int
-	]
-
-	def __init__(self):
-		pass
-#SWITCH
-class (object):
-	__slots__ = [
-		"line" # int
-	]
-
-	def __init__(self):
-		pass
-#CASE
-class (object):
-	__slots__ = [
-		"line" # int
-	]
-
-	def __init__(self):
-		pass
-#DEFAULT
-class (object):
-	__slots__ = [
-		"line" # int
-	]
-
-	def __init__(self):
-		pass
-#ENDSWITCH
-class (object):
-	__slots__ = [
-		"line" # int
-	]
-
-	def __init__(self):
-		pass
-#FOR
-class (object):
-	__slots__ = [
-		"line" # int
-	]
-
-	def __init__(self):
-		pass
-#ENDFOR
-class (object):
-	__slots__ = [
-		"line" # int
-	]
-
-	def __init__(self):
-		pass
 #FOREACH
 class (object):
 	__slots__ = [
@@ -721,27 +865,34 @@ class (object):
 
 	def __init__(self):
 		pass
-#ENDFOREACH
-class (object):
+
+class EndForEachStatement(object):
 	__slots__ = [
 		"line" # int
 	]
 
-	def __init__(self):
-		pass
-#DO
-class (object):
+	def __init__(self, aLine):
+		assert isinstance(aLine, int) #Prune
+		self.line = aLine
+
+class DoStatement(object):
 	__slots__ = [
 		"line" # int
 	]
 
-	def __init__(self):
-		pass
-#LOOPWHILE
-class (object):
+	def __init__(self, aLine):
+		assert isinstance(aLine, int) #Prune
+		self.line = aLine
+
+class LoopWhileStatement(object):
 	__slots__ = [
+		"expression", # ExpressionNode
 		"line" # int
 	]
 
-	def __init__(self):
-		pass
+	def __init__(self, aExpression, aLine):
+		assert isinstance(aExpression, ExpressionNode) #Prune
+		assert isinstance(aLine, int) #Prune
+		self.expression = aExpression
+		self.line = aLine
+#End of Caprica extensions
