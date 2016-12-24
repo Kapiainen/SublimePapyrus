@@ -45,8 +45,8 @@ class TypeMap(object):
 	]
 
 	def __init__(self, aIdentifier, aPath):
-		assert(isinstance(aIdentifier, Identifier)) #Prune
-		assert(isinstance(aPath, str)) #Prune
+		assert isinstance(aIdentifier, Identifier) #Prune
+		assert isinstance(aPath, str) #Prune
 		self.identifier = aIdentifier
 		self.path = aPath
 
@@ -58,7 +58,7 @@ def ClearCache(aPath):
 
 def GetCachedScript(aIdentifier): # Pass this along to Semantic's constructor
 	"""Returns a Script object from the cache, and if necessary generates and caches the object."""
-	assert(isinstance(aIdentifier, Identifier)) #Prune
+	assert isinstance(aIdentifier, Identifier) #Prune
 	global LINTER_CACHE
 	key = None
 	if aIdentifier.namespace:
@@ -85,9 +85,9 @@ def MapType(aType, aImportedScripts, aImportedNamespaces):
 	"""Returns a Type object.
 
 All types go through this function to get validated and cached as TypeMap instances for later use."""
-	assert(isinstance(aType, Type)) #Prune
-	assert(isinstance(aImportedScripts, list)) #Prune
-	assert(isinstance(aImportedNamespaces, list)) #Prune
+	assert isinstance(aType, Type) #Prune
+	assert isinstance(aImportedScripts, list) #Prune
+	assert isinstance(aImportedNamespaces, list) #Prune
 	global TYPE_MAPS
 	key = None
 	if aType.identifier.namespace:
@@ -120,7 +120,7 @@ All types go through this function to get validated and cached as TypeMap instan
 	return
 
 def BuildScript(aSource):
-	assert(isinstance(aSource, str)) #Prune
+	assert isinstance(aSource, str) #Prune
 	global LEX
 	global SYN
 	global SEM
@@ -146,9 +146,9 @@ def Initialize():
 	SEM = Semantic()
 
 def Process(aSource, aPaths, aCaprica):
-	assert(isinstance(aSource, str)) #Prune
-	assert(isinstance(aPaths, list)) #Prune
-	assert(isinstance(aCaprica, bool)) #Prune
+	assert isinstance(aSource, str) #Prune
+	assert isinstance(aPaths, list) #Prune
+	assert isinstance(aCaprica, bool) #Prune
 	global INITIALIZED
 	if not INITIALIZED:
 		Initialize()
