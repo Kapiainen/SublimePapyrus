@@ -306,6 +306,7 @@ class Lexical(object):
 		self.Reset(False)
 
 	def Reset(self, aCaprica):
+		assert isinstance(aCaprica, bool) #Prune
 		# aCaprica: bool
 		if aCaprica != self.capricaExtensions:
 			self.capricaExtensions = aCaprica
@@ -386,6 +387,7 @@ class Lexical(object):
 
 	def Process(self, aString):
 		"""Generates tokens from a string."""
+		assert isinstance(aString, str) #Prune
 	# aString: string (contains source code to tokenize)
 		line = 1
 		column = -1
