@@ -1,3 +1,29 @@
+Optimizations
+	Define class attributes with a __slots__ list
+	Store statement type as an attribute and check that instead of using isinstance()
+	Get an attribute once and store the result when compared more than once
+	Reduce use of chained dot operators (a.b.c.d.e.f vs a.c.e.f) when possible
+		Generate e.g. StateSignature, but copy attribute values to State upon initialization (State.signature.identifier -> State.identifier)
+
+Mapping type identifiers to a path?
+	Pass Type object to function
+		Checks if already figured out
+			Returns 
+
+SEM encounters Type
+	Validate Type
+		Name only
+			/import/path/name.psc
+			/import/path/importednamespace/name.psc
+			/import/path/importedscript.psc:name
+			else does not exist
+		Namespace and name
+			/import/path/namespace/name.psc
+			/import/path/importednamespace/namespace/name.psc
+			/import/path/namespaceN-1/namespaceN.psc:name
+			/import/path/importednamespace/namespaceN-1/namespaceN.psc:name
+			else does not exist
+
 Phase 1
 	Line by line
 		String -> Lexical -> Tokens
@@ -20,12 +46,112 @@ Lexical objects
 			Int
 
 Syntactic objects
-	Assignment
+	Type
+		.identifier
+			Identifier
+		.isArray
+			Bool
+		.isStruct
+			Bool
 
+	Identifier
+		.namespace
+			List of String
+		.name
+			String
+
+	FunctionSignature
+		.identifier
+			Identifier
+		.returnType
+			Type
+		.parameters
+			List of FunctionParameter
+
+	FunctionParameter
+		.identifier
+			Identifier
+		.type
+			Type
+		.defaultValue
+			Expression
+
+	EventSignature
+		.identifier
+			Identifier
+		.parameters
+			List of EventParameter
+
+	EventParameter
+		.identifier
+			Identifier
+		.type
+			Type
+
+	GroupSignature
+		.identifier
+			Identifier
+		.members
+			Dict of Property
+
+	PropertySignature
+		.identifier
+			Identifier
+		.type
+			Type
+		.flags
+			List of TokenEnum members
+		.value
+			Expression
+
+	ScriptSignature
+		.identifier
+			Identifier
+		.extends
+			Identifier
+		.flags
+			List of TokenEnum members
+				or
+			ScriptFlags
+				.default
+					Bool
+				.native
+					Bool
+				etc.
+
+	StateSignature
+		.identifier
+			Identifier
+		.auto
+			Bool
+
+	StructSignature
+		.identifier
+			Identifier
+
+
+	Assignment
 	CustomEvent
 	Docstring
 	Else
 	ElseIf
+	Expression
+	If
+	Import
+	Parameter
+	Return
+	Variable declaration
+	While
+	Break
+	Continue
+	Switch
+	Case
+	Default
+	For
+	Foreach
+	Do
+	Loopwhile
+
 	EndEvent
 	EndFunction
 	EndGroup
@@ -34,44 +160,15 @@ Syntactic objects
 	EndState
 	EndStruct
 	EndWhile
-	EventSignature
-	Expression
-	FunctionSignature
-	GroupSignature
-	If
-	Import
-	Parameter
-	PropertySignature
-	Return
-	ScriptSignature
-	StateSignature
-	StructSignature
-	Variable declaration
-	While
-	Break
-	Continue
-	Switch
-	Case
-	Default
+	EndFor
+	EndForEach
 	Endswitch
-	For
-	Endfor
-	Foreach
-	Endforeach
-	Do
-	Loopwhile
+
 
 Semantic objects
 	Script
 		.signature
-			.identifier
-				Identifier
-			.flags
-				List of TokenEnum members
-			.parent
-				Identifier
-			.docstring
-				String
+			ScriptSignature
 		.imports
 			Dict of Import
 		.customEvents
@@ -101,6 +198,9 @@ Semantic objects
 		.type
 			Type
 		.flags
+			List of TokenEnum
+		.line
+			Int
 
 	Property
 		.identifier
@@ -109,68 +209,44 @@ Semantic objects
 			Type
 		.flags
 			List of TokenEnum members
+		.starts
+			Int
+		.ends
+			Int
 
 	Group
 		.members
 			Dict of Property
-
-	Function
-		.identifier
-			Identifier
-		.returnType
-			Type
-		.parameters
-			List of FunctionParameter
-
-	FunctionParameter
-		.identifier
-			Identifier
-		.type
-			Type
-		.defaultValue
-			Expression
-
-	Event
-		.identifier
-			Identifier
-		.parameters
-			List of EventParameter
-
-	EventParameter
-		.identifier
-			Identifier
-		.type
-			Type
+		.starts
+			Int
+		.ends
+			Int
 
 	State
-		.identifier
-			Identifier
-		.auto
-			Bool
+		.signature
+			StateSignature
 		.functions
 			Dict of Function
 		.events
 			Dict of Event
+		.starts
+			Int
+		.ends
+			Int
 
 	Struct
 		.identifier
 			Identifier
 		.members
-			Dict of Variable
+			Dict of Variable (Can struct members have a default value other than 0, 0.0, None, False, or ""?)
+				or
+			Dict of StructMember
+				.identifier
+					Identifier
+				.type
+					Type
 
-	Type
-		.identifier
-			Identifier
-		.isArray
-			Bool
-		.isStruct
-			Bool
 
-	Identifier
-		.namespace
-			List of String
-		.name
-			String
 
 
 
