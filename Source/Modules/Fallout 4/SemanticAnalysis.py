@@ -81,7 +81,7 @@ class SemanticFirstPhase(object):
 		"currentScope", # ScopeEnum
 		"currentStatement", # statement
 		"stack", # list of objects
-		"pendingPropertyDocstring" # bool
+		"pendingDocstring" # function
 	]
 
 	def __init__(self):
@@ -92,7 +92,7 @@ class SemanticFirstPhase(object):
 		self.currentScope = [-1]
 		self.stack = []
 		self.scopeStack = []
-		pendingPropertyDocstring = False
+		pendingDocstring = None
 
 	def EnterEmptyStateScope(self):
 		self.currentScope.append(ScopeEnum.SCRIPT)
@@ -106,6 +106,8 @@ class SemanticFirstPhase(object):
 	def EnterFunctionScope(self):
 		self.currentScope.append(ScopeEnum.FUNCTION)
 		self.stack.append([self.currentStatement])
+		if self.currentStatement.flags.isNative:
+			self.pendingDocstring = self.LeaveFunctionScope
 
 	def LeaveFunctionScope(self):
 		scope = self.stack.pop()
@@ -142,7 +144,7 @@ class SemanticFirstPhase(object):
 		self.currentScope.append(ScopeEnum.PROPERTY)
 		self.stack.append([self.currentStatement])
 		if self.currentStatement.flags.isAuto or self.currentStatement.flags.isAutoReadOnly:
-			self.pendingPropertyDocstring = True
+			self.pendingDocstring = self.LeavePropertyScope
 
 	def LeavePropertyScope(self):
 		scope = self.stack.pop()
@@ -198,14 +200,15 @@ class SemanticFirstPhase(object):
 	def Assemble(self, aStat):
 		currentScope = self.currentScope[-1]
 		self.currentStatement = aStat
-		if self.pendingPropertyDocstring:
-			self.pendingPropertyDocstring = False
+		if self.pendingDocstring:
 			if isinstance(aStat, DocstringStatement):
 				self.stack[-1].append(aStat)
-				self.LeavePropertyScope()
+				self.pendingDocstring()
+				self.pendingDocstring = None
 				return
 			else:
-				self.LeavePropertyScope()
+				self.pendingDocstring()
+				self.pendingDocstring = None
 		if currentScope == -1:
 			print(type(aStat))
 			if isinstance(aStat, SyntacticAnalysis.ScriptSignatureStatement):
