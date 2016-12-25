@@ -152,6 +152,11 @@ class Identifier(object):
 			return ":".join(thisIdentifier).upper() == ":".join(thatIdentifier).upper()
 		return NotImplemented
 
+	def __str__(self):
+		l = self.namespace[:]
+		l.append(self.name)
+		return ":".join(l)
+
 class Type(object):
 	__slots__ = [
 		"identifier", # Identifier
@@ -856,6 +861,7 @@ class ForCounter(object):
 	__slots__ = [
 		"identifier", # Identifier
 		"type", # Type
+		"isAuto", # bool
 		"expression" # ExpressionNode
 	]
 
@@ -866,6 +872,10 @@ class ForCounter(object):
 		assert isinstance(aExpression, ExpressionNode) #Prune
 		self.identifier = aIdentifier
 		self.type = aType
+		if aType:
+			self.isAuto = False
+		else:
+			self.isAuto = True
 		self.expression = aExpression
 
 class ForStatement(object):
@@ -903,15 +913,16 @@ class ForEachElement(object):
 		"isAuto" # bool
 	]
 
-	def __init__(self, aIdentifier, aType, aAuto):
+	def __init__(self, aIdentifier, aType):
 		assert isinstance(aIdentifier, Identifier) #Prune
 		if aType: #Prune
 			assert isinstance(aType, Type) #Prune
-		else: #Prun
-			assert isinstance(aAuto, bool) #Prun
 		self.identifier = aIdentifier
 		self.type = aType
-		self.isAuto = aAuto
+		if aType:
+			self.isAuto = False
+		else:
+			self.isAuto = True
 
 class ForEachStatement(object):
 	__slots__ = [
@@ -972,6 +983,7 @@ class Syntactic(object):
 		"tokenIndex", # int
 		"tokenCount", # int
 		"tokens", # list of Token
+		"capricaExtensions", # bool
 		"line" # int
 	]
 
@@ -979,7 +991,7 @@ class Syntactic(object):
 		self.stack = None
 
 	def Reset(self, aCaprica):
-		pass
+		self.capricaExtensions = aCaprica
 
 	def Abort(self, aMessage):
 	# aMessage: string
@@ -1004,8 +1016,8 @@ class Syntactic(object):
 					return self.tokens[self.tokenIndex - 1]
 				else:
 					return None
-			self.Abort("Expected a %s symbol instead of a %s symbol." % (TokenDescription[aToken], TokenDescription[self.tokens[self.tokenIndex].type]))
-		self.Abort("Expected a %s symbol but no tokens remain." % (TokenDescription[aToken]))
+			self.Abort("Expected a(n) %s symbol instead of a %s symbol." % (TokenDescription[aToken], TokenDescription[self.tokens[self.tokenIndex].type]))
+		self.Abort("Expected a(n) %s symbol but no tokens remain." % (TokenDescription[aToken]))
 
 	def Peek(self, aN = 1):
 	# aN: int
@@ -1310,17 +1322,16 @@ class Syntactic(object):
 
 	def Atom(self):
 		if self.Accept(TokenEnum.kNEW):
-			typ = self.ExpectType(True)
+			typIdentifier = Identifier(self.ExpectType(True))
 			if self.Accept(TokenEnum.LEFTBRACKET):
 				size = self.ExpectExpression()
 				self.Expect(TokenEnum.RIGHTBRACKET)
-				self.Shift(ArrayCreationNode(typ, size))
+				self.Shift(ArrayCreationNode(typIdentifier, size))
 			else:
-				self.Shift(StructCreationNode(typ))
-				typ = ":".join(typ)
-				typUpper = typ.upper()
+				self.Shift(StructCreationNode(typIdentifier))
+				typUpper = str(typIdentifier).upper()
 				if typUpper == "BOOL" or typUpper == "FLOAT" or typUpper == "INT" or typUpper == "STRING" or typUpper == "VAR":
-					raise SyntacticError("'%s' is a type, not a struct." % typ, self.line)
+					raise SyntacticError("'%s' is a type, not a struct." % typIdentifier, self.line)
 			return True
 		elif self.Accept(TokenEnum.LEFTPARENTHESIS):
 			self.Shift()
@@ -1357,7 +1368,7 @@ class Syntactic(object):
 			self.Shift(IdentifierNode(Identifier([self.PeekBackwards().value])))
 			return True
 		else:
-			self.Abort("Expected a function call, and identifier, or the LENGTH keyword")
+			self.Abort("Expected a function call, an identifier, or the LENGTH keyword")
 
 	def FunctionCall(self):
 		def Reduce():
@@ -1423,9 +1434,14 @@ class Syntactic(object):
 		return VariableStatement(identifier, aType, value, flags, self.line)
 
 	def ExpectExpression(self):
-		if not self.Expression():
-			self.Abort("Expected an expression")
-		return self.Pop()
+		try:
+			self.Expression()
+			return self.Pop()
+		except SyntacticError as e:
+			if self.tokenIndex < self.tokenCount:
+				raise SyntacticError("Expected an expression after '%s'." % self.tokens[self.tokenIndex].value, e.line)
+			else:
+				raise SyntacticError("Expected an expression.", e.line)
 
 	def Process(self, aTokens):
 	# aTokens: List of Token
@@ -1440,6 +1456,7 @@ class Syntactic(object):
 		self.stack = []
 
 		tokenType = self.tokens[0].type
+		print(TokenDescription[tokenType])
 		if tokenType == TokenEnum.kBOOL or tokenType == TokenEnum.kFLOAT or tokenType == TokenEnum.kINT or tokenType == TokenEnum.kSTRING or tokenType == TokenEnum.kVAR:
 			typ = None
 			self.Consume()
@@ -1614,7 +1631,71 @@ class Syntactic(object):
 			self.Consume()
 			result = DocstringStatement(self.PeekBackwards().value, self.line)
 		else:
-			result = self.ExpressionOrAssignment()
+			if self.capricaExtensions:
+				if tokenType == TokenEnum.kFOR:
+					self.Consume()
+					counterTyp = None
+					if self.Accept(TokenEnum.kINT) or self.Accept(TokenEnum.kFLOAT):
+						typIdentifier = Identifier([self.PeekBackwards().value])
+						counterTyp = Type(typIdentifier, False, False)
+					elif self.Expect(TokenEnum.kAUTO):
+						pass
+					counterIdentifier = Identifier([self.Expect(TokenEnum.IDENTIFIER).value])
+					self.Expect(TokenEnum.ASSIGN)
+					startExpression = self.ExpectExpression()
+					counter = ForCounter(counterIdentifier, counterTyp, startExpression)
+					self.Expect(TokenEnum.kTO)
+					toExpression = self.ExpectExpression()
+					stepExpression = None
+					if self.Accept(TokenEnum.kSTEP):
+						stepExpression = self.ExpectExpression()
+					result = ForStatement(counter, toExpression, stepExpression, self.line)
+				elif tokenType == TokenEnum.kFOREACH:
+					self.Consume()
+					elementType = None
+					if self.Accept(TokenEnum.kAUTO):
+						pass
+					else:
+						typIdentifier = Identifier(self.ExpectType(True))
+						elementType = Type(typIdentifier, False, False)
+					elementIdentifer = Identifier([self.Expect(TokenEnum.IDENTIFIER).value])
+					element = ForEachElement(elementIdentifer, elementType)
+					self.Expect(TokenEnum.kIN)
+					result = ForEachStatement(element, self.ExpectExpression(), self.line)
+				elif tokenType == TokenEnum.kENDFOR:
+					self.Consume()
+					result = EndForStatement(self.line)
+				elif tokenType == TokenEnum.kENDFOREACH:
+					self.Consume()
+					result = EndForEachStatement(self.line)
+				elif tokenType == TokenEnum.kBREAK:
+					self.Consume()
+					result = BreakStatement(self.line)
+				elif tokenType == TokenEnum.kCONTINUE:
+					self.Consume()
+					result = ContinueStatement(self.line)
+				elif tokenType == TokenEnum.kDO:
+					self.Consume()
+					result = DoStatement(self.line)
+				elif tokenType == TokenEnum.kLOOPWHILE:
+					self.Consume()
+					result = LoopWhileStatement(self.ExpectExpression(), self.line)
+				elif tokenType == TokenEnum.kSWITCH:
+					self.Consume()
+					result = SwitchStatement(self.ExpectExpression(), self.line)
+				elif tokenType == TokenEnum.kCASE:
+					self.Consume()
+					result = SwitchCaseStatement(self.ExpectExpression(), self.line)
+				elif tokenType == TokenEnum.kDEFAULT:
+					self.Consume()
+					result = SwitchDefaultStatement(self.line)
+				elif tokenType == TokenEnum.kENDSWITCH:
+					self.Consume()
+					result = EndSwitchStatement(self.line)
+				else:
+					result = self.ExpressionOrAssignment()
+			else:
+				result = self.ExpressionOrAssignment()
 		if self.tokenIndex < self.tokenCount:
 			if self.tokens[self.tokenIndex].type == TokenEnum.KEYWORD:
 				self.Abort("Unexpected %s symbol (%s)." % (TokenDescription[self.tokens[self.tokenIndex].type], KeywordDescription[self.tokens[self.tokenIndex].value]))

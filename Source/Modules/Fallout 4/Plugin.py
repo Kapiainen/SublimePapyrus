@@ -17,13 +17,31 @@ if PYTHON_VERSION[0] == 2:
 	imp.load_source("Linter", linterPackage)
 	del linterPackage
 	import Linter
+	# Fallout 4 lexical analysis
+	lexicalModule = os.path.join(root, module, "LexicalAnalysis.py")
+	imp.load_source("LexicalAnalysis", lexicalModule)
+	# Fallout 4 syntactic analysis
+	syntacticModule = os.path.join(root, module, "SyntacticAnalysis.py")
+	imp.load_source("SyntacticAnalysis", Module)
+	# Fallout 4 semantic analysis
+#	semanticModule = os.path.join(root, module, "SemanticAnalysis.py")
+#	imp.load_source("SemanticAnalysis", semanticModule)
+	import LexicalAnalysis
+	import SyntacticAnalysis
+#	import SemanticAnalysis
 	# Cleaning up
 	del root
 	del module
 	del coreModule
+	del lexicalModule
+	del syntacticModule
+#	del semanticModule
 elif PYTHON_VERSION[0] >= 3:
 	from SublimePapyrus import Plugin as SublimePapyrus
 	from . import Linter
+	from . import LexicalAnalysis
+	from . import SyntacticAnalysis
+#	from . import SemanticAnalysis
 
 VALID_SCOPE = "source.papyrus.fallout4"
 
@@ -116,9 +134,9 @@ class SublimePapyrusFallout4CompileScriptCommand(sublime_plugin.WindowCommand):
 		self.window.run_command("exec", args)
 		return
 
-LINTER_CACHE = {}
-COMPLETION_CACHE = {}
-CACHE_LOCK = threading.RLock()
+#LINTER_CACHE = {}
+#COMPLETION_CACHE = {}
+#CACHE_LOCK = threading.RLock()
 #LEX = Linter.Lexical()
 #SYN = Linter.Syntactic()
 #SEM = Linter.Semantic()
@@ -209,19 +227,19 @@ class EventListener(sublime_plugin.EventListener):
 			print("Running linter")
 			try:
 				Linter.Process(aSource, aPaths, aCaprica)
-			except Linter.LexicalError as e:
+			except LexicalAnalysis.LexicalError as e:
 				print(e.message)
 				if aView:
 					SublimePapyrus.SetStatus(aView, "sublimepapyrus-linter", "Error on line %d, column %d: %s" % (e.line, e.column, e.message))
 					SublimePapyrus.HighlightLinter(aView, e.line, e.column)
 				return False
-			except Linter.SyntacticError as e:
+			except SyntacticAnalysis.SyntacticError as e:
 				print(e.message)
 				if aView:
 					SublimePapyrus.SetStatus(aView, "sublimepapyrus-linter", "Error on line %d: %s" % (e.line, e.message))
 					SublimePapyrus.HighlightLinter(aView, e.line)
 				return False
-#			except Linter.SemanticError as e:
+#			except SemanticAnalysis.SemanticError as e:
 #				print(e.message)
 #				if aView:
 #					SublimePapyrus.SetStatus(aView, "sublimepapyrus-linter", "Error on line %d: %s" % (e.line, e.message))
