@@ -1,3 +1,22 @@
+import os, sys
+PYTHON_VERSION = sys.version_info
+if PYTHON_VERSION[0] == 2:
+	import imp
+	root, module = os.path.split(os.getcwd())
+
+	lexicalModule = os.path.join(root, module, "LexicalAnalysis.py")
+	imp.load_source("LexicalAnalysis", lexicalModule)
+
+	from LexicalAnalysis import *
+
+	# Cleaning up
+	del root
+	del module
+	del coreModule
+	del lexicalModule
+elif PYTHON_VERSION[0] >= 3:
+	from .LexicalAnalysis import *
+
 # It is faster to store Statement/Node type as an attribute in a Statement object than it is to use the isinstance() function.
 class StatementEnum(object):
 	ASSIGNMENT = 0
