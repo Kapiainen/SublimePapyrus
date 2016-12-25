@@ -24,24 +24,24 @@ if PYTHON_VERSION[0] == 2:
 	syntacticModule = os.path.join(root, module, "SyntacticAnalysis.py")
 	imp.load_source("SyntacticAnalysis", Module)
 	# Fallout 4 semantic analysis
-#	semanticModule = os.path.join(root, module, "SemanticAnalysis.py")
-#	imp.load_source("SemanticAnalysis", semanticModule)
+	semanticModule = os.path.join(root, module, "SemanticAnalysis.py")
+	imp.load_source("SemanticAnalysis", semanticModule)
 	import LexicalAnalysis
 	import SyntacticAnalysis
-#	import SemanticAnalysis
+	import SemanticAnalysis
 	# Cleaning up
 	del root
 	del module
 	del coreModule
 	del lexicalModule
 	del syntacticModule
-#	del semanticModule
+	del semanticModule
 elif PYTHON_VERSION[0] >= 3:
 	from SublimePapyrus import Plugin as SublimePapyrus
 	from . import Linter
 	from . import LexicalAnalysis
 	from . import SyntacticAnalysis
-#	from . import SemanticAnalysis
+	from . import SemanticAnalysis
 
 VALID_SCOPE = "source.papyrus.fallout4"
 
@@ -239,12 +239,12 @@ class EventListener(sublime_plugin.EventListener):
 					SublimePapyrus.SetStatus(aView, "sublimepapyrus-linter", "Error on line %d: %s" % (e.line, e.message))
 					SublimePapyrus.HighlightLinter(aView, e.line)
 				return False
-#			except SemanticAnalysis.SemanticError as e:
-#				print(e.message)
-#				if aView:
-#					SublimePapyrus.SetStatus(aView, "sublimepapyrus-linter", "Error on line %d: %s" % (e.line, e.message))
-#					SublimePapyrus.HighlightLinter(aView, e.line)
-#				return False
+			except SemanticAnalysis.SemanticError as e:
+				print(e.message)
+				if aView:
+					SublimePapyrus.SetStatus(aView, "sublimepapyrus-linter", "Error on line %d: %s" % (e.line, e.message))
+					SublimePapyrus.HighlightLinter(aView, e.line)
+				return False
 #			except Linter.MissingScript as e:
 #				print(e.message)
 #				if aView:

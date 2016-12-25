@@ -79,7 +79,9 @@ class SemanticFirstPhase(object):
 	__slots__ = [
 		"capricaExtensions", # bool
 		"currentScope", # ScopeEnum
-		"statementStack" # list of list of statements
+		"currentStatement", # statement
+		"stack", # list of objects
+		"pendingPropertyDocstring" # bool
 	]
 
 	def __init__(self):
@@ -88,6 +90,9 @@ class SemanticFirstPhase(object):
 	def Reset(self, aCaprica):
 		self.capricaExtensions = aCaprica
 		self.currentScope = [-1]
+		self.stack = []
+		self.scopeStack = []
+		pendingPropertyDocstring = False
 
 	def EnterEmptyStateScope(self):
 		self.currentScope.append(ScopeEnum.SCRIPT)
@@ -100,6 +105,7 @@ class SemanticFirstPhase(object):
 
 	def EnterFunctionScope(self):
 		self.currentScope.append(ScopeEnum.FUNCTION)
+		self.stack.append([self.currentStatement])
 
 	def LeaveFunctionScope(self):
 		self.currentScope.pop()
@@ -112,8 +118,47 @@ class SemanticFirstPhase(object):
 
 	def EnterPropertyScope(self):
 		self.currentScope.append(ScopeEnum.PROPERTY)
+		self.stack.append([self.currentStatement])
+		if self.currentStatement.flags.isAuto or self.currentStatement.flags.isAutoReadOnly:
+			self.pendingPropertyDocstring = True
 
 	def LeavePropertyScope(self):
+		scope = self.stack.pop()
+		signature = scope.pop(0)
+		docstring = None
+		getFunction = None
+		setFunction = None
+		if isinstance(scope[0], SyntacticAnalysis.DocstringStatement):
+			docstring = scope.pop(0)
+		for element in scope:
+			if isinstance(element, SyntacticAnalysis.DocstringStatement):
+				if docstring:
+					raise SemanticError("Properties can only have one docstring.", element.line)
+				else:
+					raise SemanticError("A docstring has to be the next statement after the property signature.", element.line)
+			elif isinstance(element, FunctionObject):
+				name = str(element.identifier).upper()
+				if name == "GET":
+					if getFunction:
+						raise SemanticError("This property already has a 'Get' function.", element.starts)
+					else:
+						if signature.type.identifier == element.type.identifier and signature.type.isArray == element.type.isArray:
+							getFunction = element
+						else:
+							if signature.type.isArray:
+								raise SemanticError("Expected 'Get' function to return a(n) '%s' array." % str(signature.type.identifier), element.starts)
+							else:
+								raise SemanticError("Expected 'Get' function to return a(n) '%s' value." % str(signature.type.identifier), element.starts)
+				elif name == "SET":
+					if setFunction:
+						raise SemanticError("This property already has a 'Set' function.", element.starts)
+					else:
+						setFunction = element
+				else:
+					raise SemanticError("Properties can only have 'Get' and 'Set' functions.", element.starts)
+			else:
+				raise Exception("Unsupported property element:", type(element))
+		self.stack[-1].append(PropertyObject(signature, setFunction, getFunction, self.currentStatement.line))
 		self.currentScope.pop()
 
 	def EnterStructScope(self):
@@ -128,9 +173,17 @@ class SemanticFirstPhase(object):
 	def LeaveGroupScope(self):
 		self.currentScope.pop()
 
-
 	def Assemble(self, aStat):
 		currentScope = self.currentScope[-1]
+		self.currentStatement = aStat
+		if self.pendingPropertyDocstring:
+			self.pendingPropertyDocstring = False
+			if isinstance(aStat, DocstringStatement):
+				self.stack[-1].append(aStat)
+				self.LeavePropertyScope()
+				return
+			else:
+				self.LeavePropertyScope()
 		if currentScope == -1:
 			print(type(aStat))
 			if isinstance(aStat, SyntacticAnalysis.ScriptSignatureStatement):
@@ -138,403 +191,405 @@ class SemanticFirstPhase(object):
 			else:
 				raise SemanticError("Expected the first statement to be the script header.", aStat.line)
 		elif currentScope == ScopeEnum.ELSE:
-			if isinstance(aStat, AssignmentStatement):
+			if isinstance(aStat, SyntacticAnalysis.AssignmentStatement):
 				pass
-			elif isinstance(aStat, ExpressionStatement):
+			elif isinstance(aStat, SyntacticAnalysis.ExpressionStatement):
 				pass
-			elif isinstance(aStat, IfStatement):
+			elif isinstance(aStat, SyntacticAnalysis.IfStatement):
 				self.currentScope.append(ScopeEnum.IF)
-			elif isinstance(aStat, ReturnStatement):
+			elif isinstance(aStat, SyntacticAnalysis.ReturnStatement):
 				pass
-			elif isinstance(aStat, VariableStatement):
+			elif isinstance(aStat, SyntacticAnalysis.VariableStatement):
 				pass
-			elif isinstance(aStat, WhileStatement):
+			elif isinstance(aStat, SyntacticAnalysis.WhileStatement):
 				self.currentScope.append(ScopeEnum.WHILE)
-			elif isinstance(aStat, SwitchStatement):
+			elif isinstance(aStat, SyntacticAnalysis.SwitchStatement):
 				self.currentScope.append(ScopeEnum.SWITCH)
-			elif isinstance(aStat, ForStatement):
+			elif isinstance(aStat, SyntacticAnalysis.ForStatement):
 				self.currentScope.append(ScopeEnum.FOR)
-			elif isinstance(aStat, ForEachStatement):
+			elif isinstance(aStat, SyntacticAnalysis.ForEachStatement):
 				self.currentScope.append(ScopeEnum.FOREACH)
-			elif isinstance(aStat, DoStatement):
+			elif isinstance(aStat, SyntacticAnalysis.DoStatement):
 				self.currentScope.append(ScopeEnum.DO)
-			elif isinstance(aStat, EndIfStatement):
+			elif isinstance(aStat, SyntacticAnalysis.EndIfStatement):
 				self.currentScope.pop()
 			else:
 				raise SemanticError("Illegal statement in the function/event scope.", aStat.line)
 		elif currentScope == ScopeEnum.ELSEIF:
-			if isinstance(aStat, AssignmentStatement):
+			if isinstance(aStat, SyntacticAnalysis.AssignmentStatement):
 				pass
-			elif isinstance(aStat, ElseIfStatement):
+			elif isinstance(aStat, SyntacticAnalysis.ElseIfStatement):
 				self.currentScope.append(ScopeEnum.ELSEIF)
-			elif isinstance(aStat, ElseStatement):
+			elif isinstance(aStat, SyntacticAnalysis.ElseStatement):
 				self.currentScope.append(ScopeEnum.ELSE)
-			elif isinstance(aStat, ExpressionStatement):
+			elif isinstance(aStat, SyntacticAnalysis.ExpressionStatement):
 				pass
-			elif isinstance(aStat, IfStatement):
+			elif isinstance(aStat, SyntacticAnalysis.IfStatement):
 				self.currentScope.append(ScopeEnum.IF)
-			elif isinstance(aStat, ReturnStatement):
+			elif isinstance(aStat, SyntacticAnalysis.ReturnStatement):
 				pass
-			elif isinstance(aStat, VariableStatement):
+			elif isinstance(aStat, SyntacticAnalysis.VariableStatement):
 				pass
-			elif isinstance(aStat, WhileStatement):
+			elif isinstance(aStat, SyntacticAnalysis.WhileStatement):
 				self.currentScope.append(ScopeEnum.WHILE)
-			elif isinstance(aStat, SwitchStatement):
+			elif isinstance(aStat, SyntacticAnalysis.SwitchStatement):
 				self.currentScope.append(ScopeEnum.SWITCH)
-			elif isinstance(aStat, ForStatement):
+			elif isinstance(aStat, SyntacticAnalysis.ForStatement):
 				self.currentScope.append(ScopeEnum.FOR)
-			elif isinstance(aStat, ForEachStatement):
+			elif isinstance(aStat, SyntacticAnalysis.ForEachStatement):
 				self.currentScope.append(ScopeEnum.FOREACH)
-			elif isinstance(aStat, DoStatement):
+			elif isinstance(aStat, SyntacticAnalysis.DoStatement):
 				self.currentScope.append(ScopeEnum.DO)
-			elif isinstance(aStat, EndIfStatement):
+			elif isinstance(aStat, SyntacticAnalysis.EndIfStatement):
 				self.currentScope.pop()
 			else:
 				raise SemanticError("Illegal statement in the function/event scope.", aStat.line)
 		elif currentScope == ScopeEnum.EVENT:
-			if isinstance(aStat, AssignmentStatement):
+			if isinstance(aStat, SyntacticAnalysis.AssignmentStatement):
 				pass
-			elif isinstance(aStat, DocstringStatement):
+			elif isinstance(aStat, SyntacticAnalysis.DocstringStatement):
 				pass
-			elif isinstance(aStat, ExpressionStatement):
+			elif isinstance(aStat, SyntacticAnalysis.ExpressionStatement):
 				pass
-			elif isinstance(aStat, IfStatement):
+			elif isinstance(aStat, SyntacticAnalysis.IfStatement):
 				self.currentScope.append(ScopeEnum.IF)
-			elif isinstance(aStat, ReturnStatement):
+			elif isinstance(aStat, SyntacticAnalysis.ReturnStatement):
 				pass
-			elif isinstance(aStat, VariableStatement):
+			elif isinstance(aStat, SyntacticAnalysis.VariableStatement):
 				pass
-			elif isinstance(aStat, WhileStatement):
+			elif isinstance(aStat, SyntacticAnalysis.WhileStatement):
 				self.currentScope.append(ScopeEnum.WHILE)
-			elif isinstance(aStat, SwitchStatement):
+			elif isinstance(aStat, SyntacticAnalysis.SwitchStatement):
 				self.currentScope.append(ScopeEnum.SWITCH)
-			elif isinstance(aStat, ForStatement):
+			elif isinstance(aStat, SyntacticAnalysis.ForStatement):
 				self.currentScope.append(ScopeEnum.FOR)
-			elif isinstance(aStat, ForEachStatement):
+			elif isinstance(aStat, SyntacticAnalysis.ForEachStatement):
 				self.currentScope.append(ScopeEnum.FOREACH)
-			elif isinstance(aStat, DoStatement):
+			elif isinstance(aStat, SyntacticAnalysis.DoStatement):
 				self.currentScope.append(ScopeEnum.DO)
-			elif isinstance(aStat, EndEventStatement):
+			elif isinstance(aStat, SyntacticAnalysis.EndEventStatement):
 				self.LeaveEventScope()
 			else:
 				raise SemanticError("Illegal statement in the function/event scope.", aStat.line)
 		elif currentScope == ScopeEnum.FUNCTION:
-			if isinstance(aStat, AssignmentStatement):
+			if isinstance(aStat, SyntacticAnalysis.AssignmentStatement):
 				pass
-			elif isinstance(aStat, DocstringStatement):
+			elif isinstance(aStat, SyntacticAnalysis.DocstringStatement):
 				pass
-			elif isinstance(aStat, ExpressionStatement):
+			elif isinstance(aStat, SyntacticAnalysis.ExpressionStatement):
 				pass
-			elif isinstance(aStat, IfStatement):
+			elif isinstance(aStat, SyntacticAnalysis.IfStatement):
 				self.currentScope.append(ScopeEnum.IF)
-			elif isinstance(aStat, ReturnStatement):
+			elif isinstance(aStat, SyntacticAnalysis.ReturnStatement):
 				pass
-			elif isinstance(aStat, VariableStatement):
+			elif isinstance(aStat, SyntacticAnalysis.VariableStatement):
 				pass
-			elif isinstance(aStat, WhileStatement):
+			elif isinstance(aStat, SyntacticAnalysis.WhileStatement):
 				self.currentScope.append(ScopeEnum.WHILE)
-			elif isinstance(aStat, SwitchStatement):
+			elif isinstance(aStat, SyntacticAnalysis.SwitchStatement):
 				self.currentScope.append(ScopeEnum.SWITCH)
-			elif isinstance(aStat, ForStatement):
+			elif isinstance(aStat, SyntacticAnalysis.ForStatement):
 				self.currentScope.append(ScopeEnum.FOR)
-			elif isinstance(aStat, ForEachStatement):
+			elif isinstance(aStat, SyntacticAnalysis.ForEachStatement):
 				self.currentScope.append(ScopeEnum.FOREACH)
-			elif isinstance(aStat, DoStatement):
+			elif isinstance(aStat, SyntacticAnalysis.DoStatement):
 				self.currentScope.append(ScopeEnum.DO)
-			elif isinstance(aStat, EndFunctionStatement):
+			elif isinstance(aStat, SyntacticAnalysis.EndFunctionStatement):
 				self.LeaveFunctionScope()
 			else:
 				raise SemanticError("Illegal statement in the function/event scope.", aStat.line)
 		elif currentScope == ScopeEnum.GROUP:
-			if isinstance(aStat, DocstringStatement):
+			if isinstance(aStat, SyntacticAnalysis.DocstringStatement):
 				pass
-			elif isinstance(aStat, PropertySignatureStatement):
+			elif isinstance(aStat, SyntacticAnalysis.PropertySignatureStatement):
 				self.EnterPropertyScope()
 			else:
 				raise SemanticError("Illegal statement in the group scope.", aStat.line)
 		elif currentScope == ScopeEnum.IF:
-			if isinstance(aStat, AssignmentStatement):
+			if isinstance(aStat, SyntacticAnalysis.AssignmentStatement):
 				pass
-			elif isinstance(aStat, ElseIfStatement):
+			elif isinstance(aStat, SyntacticAnalysis.ElseIfStatement):
 				self.currentScope.append(ScopeEnum.ELSEIF)
-			elif isinstance(aStat, ElseStatement):
+			elif isinstance(aStat, SyntacticAnalysis.ElseStatement):
 				self.currentScope.append(ScopeEnum.ELSE)
-			elif isinstance(aStat, ExpressionStatement):
+			elif isinstance(aStat, SyntacticAnalysis.ExpressionStatement):
 				pass
-			elif isinstance(aStat, IfStatement):
+			elif isinstance(aStat, SyntacticAnalysis.IfStatement):
 				self.currentScope.append(ScopeEnum.IF)
-			elif isinstance(aStat, ReturnStatement):
+			elif isinstance(aStat, SyntacticAnalysis.ReturnStatement):
 				pass
-			elif isinstance(aStat, VariableStatement):
+			elif isinstance(aStat, SyntacticAnalysis.VariableStatement):
 				pass
-			elif isinstance(aStat, WhileStatement):
+			elif isinstance(aStat, SyntacticAnalysis.WhileStatement):
 				self.currentScope.append(ScopeEnum.WHILE)
-			elif isinstance(aStat, SwitchStatement):
+			elif isinstance(aStat, SyntacticAnalysis.SwitchStatement):
 				self.currentScope.append(ScopeEnum.SWITCH)
-			elif isinstance(aStat, ForStatement):
+			elif isinstance(aStat, SyntacticAnalysis.ForStatement):
 				self.currentScope.append(ScopeEnum.FOR)
-			elif isinstance(aStat, ForEachStatement):
+			elif isinstance(aStat, SyntacticAnalysis.ForEachStatement):
 				self.currentScope.append(ScopeEnum.FOREACH)
-			elif isinstance(aStat, DoStatement):
+			elif isinstance(aStat, SyntacticAnalysis.DoStatement):
 				self.currentScope.append(ScopeEnum.DO)
-			elif isinstance(aStat, EndIfStatement):
+			elif isinstance(aStat, SyntacticAnalysis.EndIfStatement):
 				self.currentScope.pop()
 			else:
 				raise SemanticError("Illegal statement in the function/event scope.", aStat.line)
 		elif currentScope == ScopeEnum.PROPERTY:
-			if isinstance(aStat, FunctionSignatureStatement):
+			if isinstance(aStat, SyntacticAnalysis.FunctionSignatureStatement):
 				self.EnterFunctionScope()
-			elif isinstance(aStat, EndPropertyStatement):
+			elif isinstance(aStat, SyntacticAnalysis.DocstringStatement):
+				self.stack[-1].append(aStat)
+			elif isinstance(aStat, SyntacticAnalysis.EndPropertyStatement):
 				self.LeavePropertyScope()
 			else:
 				raise SemanticError("Illegal statement in the property scope.", aStat.line)
 		elif currentScope == ScopeEnum.SCRIPT:
-			if isinstance(aStat, CustomEventStatement):
+			if isinstance(aStat, SyntacticAnalysis.CustomEventStatement):
 				pass
-			elif isinstance(aStat, DocstringStatement):
+			elif isinstance(aStat, SyntacticAnalysis.DocstringStatement):
 				pass
-			elif isinstance(aStat, EventSignatureStatement):
+			elif isinstance(aStat, SyntacticAnalysis.EventSignatureStatement):
 				self.EnterEventScope()
-			elif isinstance(aStat, FunctionSignatureStatement):
+			elif isinstance(aStat, SyntacticAnalysis.FunctionSignatureStatement):
 				self.EnterFunctionScope()
-			elif isinstance(aStat, GroupSignatureStatement):
+			elif isinstance(aStat, SyntacticAnalysis.GroupSignatureStatement):
 				self.EnterGroupScope()
-			elif isinstance(aStat, ImportStatement):
+			elif isinstance(aStat, SyntacticAnalysis.ImportStatement):
 				pass
-			elif isinstance(aStat, PropertySignatureStatement):
+			elif isinstance(aStat, SyntacticAnalysis.PropertySignatureStatement):
 				self.EnterPropertyScope()
-			elif isinstance(aStat, StateSignatureStatement):
+			elif isinstance(aStat, SyntacticAnalysis.StateSignatureStatement):
 				self.EnterStateScope()
-			elif isinstance(aStat, StructSignatureStatement):
+			elif isinstance(aStat, SyntacticAnalysis.StructSignatureStatement):
 				self.EnterStructScope()
-			elif isinstance(aStat, VariableStatement):
+			elif isinstance(aStat, SyntacticAnalysis.VariableStatement):
 				pass
 			else:
 				raise SemanticError("Illegal statement in the empty state scope.", aStat.line)
 		elif currentScope == ScopeEnum.STATE:
-			if isinstance(aStat, EventSignatureStatement):
+			if isinstance(aStat, SyntacticAnalysis.EventSignatureStatement):
 				self.EnterEventScope()
-			elif isinstance(aStat, FunctionSignatureStatement):
+			elif isinstance(aStat, SyntacticAnalysis.FunctionSignatureStatement):
 				self.EnterFunctionScope()
-			elif isinstance(aStat, EndStateStatement):
+			elif isinstance(aStat, SyntacticAnalysis.EndStateStatement):
 				self.LeaveStateScope()
 			else:
 				raise SemanticError("Illegal statement in the state scope.", aStat.line)
 		elif currentScope == ScopeEnum.STRUCT:
-			if isinstance(aStat, DocstringStatement):
+			if isinstance(aStat, SyntacticAnalysis.DocstringStatement):
 				pass
-			elif isinstance(aStat, VariableStatement):
+			elif isinstance(aStat, SyntacticAnalysis.VariableStatement):
 				pass
-			elif isinstance(aStat, EndStructStatement):
+			elif isinstance(aStat, SyntacticAnalysis.EndStructStatement):
 				self.LeaveStructScope()
 			else:
 				raise SemanticError("Illegal statement in the struct scope.", aStat.line)
 		elif currentScope == ScopeEnum.WHILE:
-			if isinstance(aStat, AssignmentStatement):
+			if isinstance(aStat, SyntacticAnalysis.AssignmentStatement):
 				pass
-			elif isinstance(aStat, ExpressionStatement):
+			elif isinstance(aStat, SyntacticAnalysis.ExpressionStatement):
 				pass
-			elif isinstance(aStat, IfStatement):
+			elif isinstance(aStat, SyntacticAnalysis.IfStatement):
 				self.currentScope.append(ScopeEnum.IF)
-			elif isinstance(aStat, ReturnStatement):
+			elif isinstance(aStat, SyntacticAnalysis.ReturnStatement):
 				pass
-			elif isinstance(aStat, VariableStatement):
+			elif isinstance(aStat, SyntacticAnalysis.VariableStatement):
 				pass
-			elif isinstance(aStat, WhileStatement):
+			elif isinstance(aStat, SyntacticAnalysis.WhileStatement):
 				self.currentScope.append(ScopeEnum.WHILE)
-			elif isinstance(aStat, SwitchStatement):
+			elif isinstance(aStat, SyntacticAnalysis.SwitchStatement):
 				self.currentScope.append(ScopeEnum.SWITCH)
-			elif isinstance(aStat, ForStatement):
+			elif isinstance(aStat, SyntacticAnalysis.ForStatement):
 				self.currentScope.append(ScopeEnum.FOR)
-			elif isinstance(aStat, ForEachStatement):
+			elif isinstance(aStat, SyntacticAnalysis.ForEachStatement):
 				self.currentScope.append(ScopeEnum.FOREACH)
-			elif isinstance(aStat, DoStatement):
+			elif isinstance(aStat, SyntacticAnalysis.DoStatement):
 				self.currentScope.append(ScopeEnum.DO)
-			elif isinstance(aStat, BreakStatement):
+			elif isinstance(aStat, SyntacticAnalysis.BreakStatement):
 				pass
-			elif isinstance(aStat, ContinueStatement):
+			elif isinstance(aStat, SyntacticAnalysis.ContinueStatement):
 				pass
-			elif isinstance(aStat, EndWhileStatement):
+			elif isinstance(aStat, SyntacticAnalysis.EndWhileStatement):
 				self.currentScope.pop()
 			else:
 				raise SemanticError("Illegal statement in the function/event scope.", aStat.line)
 		#Caprica extensions
 		elif self.capricaExtensions:
 			if currentScope == ScopeEnum.SWITCHCASE:
-				if isinstance(aStat, AssignmentStatement):
+				if isinstance(aStat, SyntacticAnalysis.AssignmentStatement):
 					pass
-				elif isinstance(aStat, ExpressionStatement):
+				elif isinstance(aStat, SyntacticAnalysis.ExpressionStatement):
 					pass
-				elif isinstance(aStat, IfStatement):
+				elif isinstance(aStat, SyntacticAnalysis.IfStatement):
 					self.currentScope.append(ScopeEnum.IF)
-				elif isinstance(aStat, ReturnStatement):
+				elif isinstance(aStat, SyntacticAnalysis.ReturnStatement):
 					pass
-				elif isinstance(aStat, VariableStatement):
+				elif isinstance(aStat, SyntacticAnalysis.VariableStatement):
 					pass
-				elif isinstance(aStat, WhileStatement):
+				elif isinstance(aStat, SyntacticAnalysis.WhileStatement):
 					self.currentScope.append(ScopeEnum.WHILE)
-				elif isinstance(aStat, SwitchStatement):
+				elif isinstance(aStat, SyntacticAnalysis.SwitchStatement):
 					self.currentScope.append(ScopeEnum.SWITCH)
-				elif isinstance(aStat, ForStatement):
+				elif isinstance(aStat, SyntacticAnalysis.ForStatement):
 					self.currentScope.append(ScopeEnum.FOR)
-				elif isinstance(aStat, ForEachStatement):
+				elif isinstance(aStat, SyntacticAnalysis.ForEachStatement):
 					self.currentScope.append(ScopeEnum.FOREACH)
-				elif isinstance(aStat, DoStatement):
+				elif isinstance(aStat, SyntacticAnalysis.DoStatement):
 					self.currentScope.append(ScopeEnum.DO)
-				elif isinstance(aStat, CaseStatement):
+				elif isinstance(aStat, SyntacticAnalysis.CaseStatement):
 					pass
-				elif isinstance(aStat, DefaultStatement):
+				elif isinstance(aStat, SyntacticAnalysis.DefaultStatement):
 					pass
-				elif isinstance(aStat, BreakStatement):
+				elif isinstance(aStat, SyntacticAnalysis.BreakStatement):
 					pass
-				elif isinstance(aStat, ContinueStatement):
+				elif isinstance(aStat, SyntacticAnalysis.ContinueStatement):
 					pass
-				elif isinstance(aStat, EndSwitchStatement):
+				elif isinstance(aStat, SyntacticAnalysis.EndSwitchStatement):
 					pass
 				else:
 					raise SemanticError("Illegal statement in the function/event scope.", aStat.line)
 			elif currentScope == ScopeEnum.SWITCHDEFAULT:
-				if isinstance(aStat, AssignmentStatement):
+				if isinstance(aStat, SyntacticAnalysis.AssignmentStatement):
 					pass
-				elif isinstance(aStat, ExpressionStatement):
+				elif isinstance(aStat, SyntacticAnalysis.ExpressionStatement):
 					pass
-				elif isinstance(aStat, IfStatement):
+				elif isinstance(aStat, SyntacticAnalysis.IfStatement):
 					self.currentScope.append(ScopeEnum.IF)
-				elif isinstance(aStat, ReturnStatement):
+				elif isinstance(aStat, SyntacticAnalysis.ReturnStatement):
 					pass
-				elif isinstance(aStat, VariableStatement):
+				elif isinstance(aStat, SyntacticAnalysis.VariableStatement):
 					pass
-				elif isinstance(aStat, WhileStatement):
+				elif isinstance(aStat, SyntacticAnalysis.WhileStatement):
 					self.currentScope.append(ScopeEnum.WHILE)
-				elif isinstance(aStat, SwitchStatement):
+				elif isinstance(aStat, SyntacticAnalysis.SwitchStatement):
 					self.currentScope.append(ScopeEnum.SWITCH)
-				elif isinstance(aStat, ForStatement):
+				elif isinstance(aStat, SyntacticAnalysis.ForStatement):
 					self.currentScope.append(ScopeEnum.FOR)
-				elif isinstance(aStat, ForEachStatement):
+				elif isinstance(aStat, SyntacticAnalysis.ForEachStatement):
 					self.currentScope.append(ScopeEnum.FOREACH)
-				elif isinstance(aStat, DoStatement):
+				elif isinstance(aStat, SyntacticAnalysis.DoStatement):
 					self.currentScope.append(ScopeEnum.DO)
-				elif isinstance(aStat, BreakStatement):
+				elif isinstance(aStat, SyntacticAnalysis.BreakStatement):
 					pass
-				elif isinstance(aStat, ContinueStatement):
+				elif isinstance(aStat, SyntacticAnalysis.ContinueStatement):
 					pass
-				elif isinstance(aStat, EndSwitchStatement):
+				elif isinstance(aStat, SyntacticAnalysis.EndSwitchStatement):
 					self.currentScope.pop()
 				else:
 					raise SemanticError("Illegal statement in the function/event scope.", aStat.line)
 			elif currentScope == ScopeEnum.DO:
-				if isinstance(aStat, AssignmentStatement):
+				if isinstance(aStat, SyntacticAnalysis.AssignmentStatement):
 					pass
-				elif isinstance(aStat, ExpressionStatement):
+				elif isinstance(aStat, SyntacticAnalysis.ExpressionStatement):
 					pass
-				elif isinstance(aStat, IfStatement):
+				elif isinstance(aStat, SyntacticAnalysis.IfStatement):
 					self.currentScope.append(ScopeEnum.IF)
-				elif isinstance(aStat, ReturnStatement):
+				elif isinstance(aStat, SyntacticAnalysis.ReturnStatement):
 					pass
-				elif isinstance(aStat, VariableStatement):
+				elif isinstance(aStat, SyntacticAnalysis.VariableStatement):
 					pass
-				elif isinstance(aStat, WhileStatement):
+				elif isinstance(aStat, SyntacticAnalysis.WhileStatement):
 					self.currentScope.append(ScopeEnum.WHILE)
-				elif isinstance(aStat, SwitchStatement):
+				elif isinstance(aStat, SyntacticAnalysis.SwitchStatement):
 					self.currentScope.append(ScopeEnum.SWITCH)
-				elif isinstance(aStat, ForStatement):
+				elif isinstance(aStat, SyntacticAnalysis.ForStatement):
 					self.currentScope.append(ScopeEnum.FOR)
-				elif isinstance(aStat, ForEachStatement):
+				elif isinstance(aStat, SyntacticAnalysis.ForEachStatement):
 					self.currentScope.append(ScopeEnum.FOREACH)
-				elif isinstance(aStat, DoStatement):
+				elif isinstance(aStat, SyntacticAnalysis.DoStatement):
 					self.currentScope.append(ScopeEnum.DO)
-				elif isinstance(aStat, BreakStatement):
+				elif isinstance(aStat, SyntacticAnalysis.BreakStatement):
 					pass
-				elif isinstance(aStat, ContinueStatement):
+				elif isinstance(aStat, SyntacticAnalysis.ContinueStatement):
 					pass
-				elif isinstance(aStat, LoopWhileStatement):
+				elif isinstance(aStat, SyntacticAnalysis.LoopWhileStatement):
 					self.currentScope.pop()
 				else:
 					raise SemanticError("Illegal statement in the function/event scope.", aStat.line)
 			elif currentScope == ScopeEnum.FOR:
-				if isinstance(aStat, AssignmentStatement):
+				if isinstance(aStat, SyntacticAnalysis.AssignmentStatement):
 					pass
-				elif isinstance(aStat, ExpressionStatement):
+				elif isinstance(aStat, SyntacticAnalysis.ExpressionStatement):
 					pass
-				elif isinstance(aStat, IfStatement):
+				elif isinstance(aStat, SyntacticAnalysis.IfStatement):
 					self.currentScope.append(ScopeEnum.IF)
-				elif isinstance(aStat, ReturnStatement):
+				elif isinstance(aStat, SyntacticAnalysis.ReturnStatement):
 					pass
-				elif isinstance(aStat, VariableStatement):
+				elif isinstance(aStat, SyntacticAnalysis.VariableStatement):
 					pass
-				elif isinstance(aStat, WhileStatement):
+				elif isinstance(aStat, SyntacticAnalysis.WhileStatement):
 					self.currentScope.append(ScopeEnum.WHILE)
-				elif isinstance(aStat, SwitchStatement):
+				elif isinstance(aStat, SyntacticAnalysis.SwitchStatement):
 					self.currentScope.append(ScopeEnum.SWITCH)
-				elif isinstance(aStat, ForStatement):
+				elif isinstance(aStat, SyntacticAnalysis.ForStatement):
 					self.currentScope.append(ScopeEnum.FOR)
-				elif isinstance(aStat, ForEachStatement):
+				elif isinstance(aStat, SyntacticAnalysis.ForEachStatement):
 					self.currentScope.append(ScopeEnum.FOREACH)
-				elif isinstance(aStat, DoStatement):
+				elif isinstance(aStat, SyntacticAnalysis.DoStatement):
 					self.currentScope.append(ScopeEnum.DO)
-				elif isinstance(aStat, BreakStatement):
+				elif isinstance(aStat, SyntacticAnalysis.BreakStatement):
 					pass
-				elif isinstance(aStat, ContinueStatement):
+				elif isinstance(aStat, SyntacticAnalysis.ContinueStatement):
 					pass
-				elif isinstance(aStat, EndForStatement):
+				elif isinstance(aStat, SyntacticAnalysis.EndForStatement):
 					self.currentScope.pop()
 				else:
 					raise SemanticError("Illegal statement in the function/event scope.", aStat.line)
 			elif currentScope == ScopeEnum.FOREACH:
-				if isinstance(aStat, AssignmentStatement):
+				if isinstance(aStat, SyntacticAnalysis.AssignmentStatement):
 					pass
-				elif isinstance(aStat, ExpressionStatement):
+				elif isinstance(aStat, SyntacticAnalysis.ExpressionStatement):
 					pass
-				elif isinstance(aStat, IfStatement):
+				elif isinstance(aStat, SyntacticAnalysis.IfStatement):
 					self.currentScope.append(ScopeEnum.IF)
-				elif isinstance(aStat, ReturnStatement):
+				elif isinstance(aStat, SyntacticAnalysis.ReturnStatement):
 					pass
-				elif isinstance(aStat, VariableStatement):
+				elif isinstance(aStat, SyntacticAnalysis.VariableStatement):
 					pass
-				elif isinstance(aStat, WhileStatement):
+				elif isinstance(aStat, SyntacticAnalysis.WhileStatement):
 					self.currentScope.append(ScopeEnum.WHILE)
-				elif isinstance(aStat, SwitchStatement):
+				elif isinstance(aStat, SyntacticAnalysis.SwitchStatement):
 					self.currentScope.append(ScopeEnum.SWITCH)
-				elif isinstance(aStat, ForStatement):
+				elif isinstance(aStat, SyntacticAnalysis.ForStatement):
 					self.currentScope.append(ScopeEnum.FOR)
-				elif isinstance(aStat, ForEachStatement):
+				elif isinstance(aStat, SyntacticAnalysis.ForEachStatement):
 					self.currentScope.append(ScopeEnum.FOREACH)
-				elif isinstance(aStat, DoStatement):
+				elif isinstance(aStat, SyntacticAnalysis.DoStatement):
 					self.currentScope.append(ScopeEnum.DO)
-				elif isinstance(aStat, BreakStatement):
+				elif isinstance(aStat, SyntacticAnalysis.BreakStatement):
 					pass
-				elif isinstance(aStat, ContinueStatement):
+				elif isinstance(aStat, SyntacticAnalysis.ContinueStatement):
 					pass
-				elif isinstance(aStat, EndForEachStatement):
+				elif isinstance(aStat, SyntacticAnalysis.EndForEachStatement):
 					self.currentScope.pop()
 				else:
 					raise SemanticError("Illegal statement in the function/event scope.", aStat.line)
 			elif currentScope == ScopeEnum.SWITCH:
-				if isinstance(aStat, AssignmentStatement):
+				if isinstance(aStat, SyntacticAnalysis.AssignmentStatement):
 					pass
-				elif isinstance(aStat, ExpressionStatement):
+				elif isinstance(aStat, SyntacticAnalysis.ExpressionStatement):
 					pass
-				elif isinstance(aStat, IfStatement):
+				elif isinstance(aStat, SyntacticAnalysis.IfStatement):
 					self.currentScope.append(ScopeEnum.IF)
-				elif isinstance(aStat, ReturnStatement):
+				elif isinstance(aStat, SyntacticAnalysis.ReturnStatement):
 					pass
-				elif isinstance(aStat, VariableStatement):
+				elif isinstance(aStat, SyntacticAnalysis.VariableStatement):
 					pass
-				elif isinstance(aStat, WhileStatement):
+				elif isinstance(aStat, SyntacticAnalysis.WhileStatement):
 					self.currentScope.append(ScopeEnum.WHILE)
-				elif isinstance(aStat, SwitchStatement):
+				elif isinstance(aStat, SyntacticAnalysis.SwitchStatement):
 					self.currentScope.append(ScopeEnum.SWITCH)
-				elif isinstance(aStat, ForStatement):
+				elif isinstance(aStat, SyntacticAnalysis.ForStatement):
 					self.currentScope.append(ScopeEnum.FOR)
-				elif isinstance(aStat, ForEachStatement):
+				elif isinstance(aStat, SyntacticAnalysis.ForEachStatement):
 					self.currentScope.append(ScopeEnum.FOREACH)
-				elif isinstance(aStat, DoStatement):
+				elif isinstance(aStat, SyntacticAnalysis.DoStatement):
 					self.currentScope.append(ScopeEnum.DO)
-				elif isinstance(aStat, BreakStatement):
+				elif isinstance(aStat, SyntacticAnalysis.BreakStatement):
 					pass
-				elif isinstance(aStat, ContinueStatement):
+				elif isinstance(aStat, SyntacticAnalysis.ContinueStatement):
 					pass
-				elif isinstance(aStat, EndSwitchStatement):
+				elif isinstance(aStat, SyntacticAnalysis.EndSwitchStatement):
 					self.currentScope.pop()
 				else:
 					raise SemanticError("Illegal statement in the function/event scope.", aStat.line)
@@ -564,12 +619,49 @@ class SemanticSecondPhase(object):
 
 class FunctionObject(object):
 	__slots__ = [
-		"identifier",
-		"type",
-		"parameters",
-		"flags",
-		"line"
+		"identifier", # Identifier
+		"type", # Type (optional)
+		"parameters", # list of FunctionParameter (optional)
+		"flags", # FunctionFlags
+		"body", # list of statements
+		"starts", # int
+		"ends" # int
 	]
 
-	def __init__(self):
-		pass
+	def __init__(self, aSignature, aBody, aEnds):
+		assert isinstance(aSignature, SyntacticAnalysis.FunctionSignatureStatement) #Prune
+		assert isinstance(aBody, list) #Prune
+		assert isinstance(aEnds, int) #Prune
+		self.identifier = aSignature.identifier
+		self.type = aSignature.type
+		self.parameters = aSignature.parameters
+		self.flags = aSignature.flags
+		self.body = aSignature.body
+		self.starts = aSignature.line
+		self.ends = aEnds
+
+class PropertyObject(object):
+	__slots__ = [
+		"identifier", # Identifier
+		"type", # Type
+		"value", # ExpressionNode (optional)
+		"flags", #PropertyFlags
+		"setFunction", # FunctionObject
+		"getFunction", # FunctionObject
+		"starts", # int
+		"ends" # int
+	]
+
+	def __init__(self, aSignature, aSetFunction, aGetFunction, aEnds):
+		assert isinstance(aSignature, SyntacticAnalysis.PropertySignatureStatement) #Prune
+		assert isinstance(aSetFunction, FunctionObject) #Prune
+		assert isinstance(aGetFunction, FunctionObject) #Prune
+		assert isinstance(aEnds, int) #Prune
+		self.identifier = aSignature.identifier
+		self.type = aSignature.type
+		self.value = aSignature.value
+		self.flags = aSignature.flags
+		self.setFunction = aSetFunction
+		self.getFunction = aGetFunction
+		self.starts = aSignature.line
+		self.ends = aEnds

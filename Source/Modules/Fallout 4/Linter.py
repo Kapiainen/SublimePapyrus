@@ -11,12 +11,12 @@ if PYTHON_VERSION[0] == 2:
 	syntacticModule = os.path.join(root, module, "SyntacticAnalysis.py")
 	imp.load_source("SyntacticAnalysis", Module)
 	
-#	semanticModule = os.path.join(root, module, "SemanticAnalysis.py")
-#	imp.load_source("SemanticAnalysis", semanticModule)
+	semanticModule = os.path.join(root, module, "SemanticAnalysis.py")
+	imp.load_source("SemanticAnalysis", semanticModule)
 
 	from LexicalAnalysis import *
 	from SyntacticAnalysis import *
-#	from SemanticAnalysis import *
+	from SemanticAnalysis import *
 
 	# Cleaning up
 	del root
@@ -24,11 +24,11 @@ if PYTHON_VERSION[0] == 2:
 	del coreModule
 	del lexicalModule
 	del syntacticModule
-#	del semanticModule
+	del semanticModule
 elif PYTHON_VERSION[0] >= 3:
 	from .LexicalAnalysis import *
 	from .SyntacticAnalysis import *
-#	from .SemanticAnalysis import *
+	from .SemanticAnalysis import *
 
 INITIALIZED = False
 IMPORT_PATHS = None
@@ -36,6 +36,8 @@ LINTER_CACHE = {}
 TYPE_MAPS = {}
 LEX = None
 SYN = None
+SEMP1 = None
+SEMP2 = None
 #SEM = None
 
 #class TypeMap(object):
@@ -123,6 +125,8 @@ def BuildScript(aSource):
 	assert isinstance(aSource, str) #Prune
 	global LEX
 	global SYN
+	global SEMP1
+	global SEMP2
 #	global SEM
 	tokens = []
 	for token in LEX.Process(aSource):
@@ -130,7 +134,9 @@ def BuildScript(aSource):
 		if tokenType == TokenEnum.NEWLINE:
 			if tokens:
 				statement = SYN.Process(tokens)
-				#if statement:
+				if statement:
+					print(type(statement))
+					SEMP1.Assemble(statement)
 				#	SEM.AssembleScript(statement)
 				tokens = []
 		elif tokenType != TokenEnum.COMMENTLINE and tokenType != TokenEnum.COMMENTBLOCK:
@@ -140,9 +146,13 @@ def BuildScript(aSource):
 def Initialize():
 	global LEX
 	global SYN
+	global SEMP1
+	global SEMP2
 #	global SEM
 	LEX = Lexical()
 	SYN = Syntactic()
+	SEMP1 = SemanticFirstPhase()
+	SEMP2 = SemanticSecondPhase()
 #	SEM = Semantic()
 
 def Process(aSource, aPaths, aCaprica):
@@ -156,11 +166,15 @@ def Process(aSource, aPaths, aCaprica):
 	IMPORT_PATHS = aPaths
 	global LEX
 	global SYN
+	global SEMP1
+	global SEMP2
 #	global SEM
 	LEX.Reset(aCaprica)
 	SYN.Reset(aCaprica)
+	SEMP1.Reset(aCaprica)
+	SEMP2.Reset(aCaprica)
 #	SEM.Reset(aCaprica)
 	print("Linting with Caprica extensions:", aCaprica)
-	script = BuildScript(aSource) # Phase 1
-	#SEM.ValidateScript(script) # Phase 2
+	script = BuildScript(aSource)
+	#SEM.ValidateScript(script)
 	return True
