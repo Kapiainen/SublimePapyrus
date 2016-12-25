@@ -108,6 +108,28 @@ class SemanticFirstPhase(object):
 		self.stack.append([self.currentStatement])
 
 	def LeaveFunctionScope(self):
+		scope = self.stack.pop()
+		signature = scope.pop(0)
+		docstring = None
+		if isinstance(scope[0], SyntacticAnalysis.DocstringStatement):
+			docstring = scope.pop(0)
+		for statement in scope:
+			if isinstance(aStat, SyntacticAnalysis.DocstringStatement):
+				if docstring:
+					raise SemanticError("This function already has a docstring.", statement.line)
+				else:
+					raise SemanticError("A docstring has to be the next statement after the function signature.", statement.line)
+			elif isinstance(aStat, SyntacticAnalysis.ReturnStatement):
+				if signature.type:
+					if not statement.expression:
+						if signature.type.isArray:
+							raise SemanticError("This function has to return a(n) '%s' array." % signature.type.identifier, statement.line)
+						else:
+							raise SemanticError("This function has to return a(n) '%s' value." % signature.type.identifier, statement.line)
+				else:
+					if statement.expression:
+						raise SemanticError("This function does not have a return type.", statement.line)
+		self.stack[-1].append(FunctionObject(signature, scope, self.currentStatement.line))
 		self.currentScope.pop()
 
 	def EnterEventScope(self):
@@ -146,9 +168,9 @@ class SemanticFirstPhase(object):
 							getFunction = element
 						else:
 							if signature.type.isArray:
-								raise SemanticError("Expected 'Get' function to return a(n) '%s' array." % str(signature.type.identifier), element.starts)
+								raise SemanticError("Expected 'Get' function to return a(n) '%s' array." % signature.type.identifier, element.starts)
 							else:
-								raise SemanticError("Expected 'Get' function to return a(n) '%s' value." % str(signature.type.identifier), element.starts)
+								raise SemanticError("Expected 'Get' function to return a(n) '%s' value." % signature.type.identifier, element.starts)
 				elif name == "SET":
 					if setFunction:
 						raise SemanticError("This property already has a 'Set' function.", element.starts)
@@ -273,27 +295,33 @@ class SemanticFirstPhase(object):
 				raise SemanticError("Illegal statement in the function/event scope.", aStat.line)
 		elif currentScope == ScopeEnum.FUNCTION:
 			if isinstance(aStat, SyntacticAnalysis.AssignmentStatement):
-				pass
+				self.stack[-1].append(aStat)
 			elif isinstance(aStat, SyntacticAnalysis.DocstringStatement):
-				pass
+				self.stack[-1].append(aStat)
 			elif isinstance(aStat, SyntacticAnalysis.ExpressionStatement):
-				pass
+				self.stack[-1].append(aStat)
 			elif isinstance(aStat, SyntacticAnalysis.IfStatement):
 				self.currentScope.append(ScopeEnum.IF)
+				self.stack[-1].append(aStat)
 			elif isinstance(aStat, SyntacticAnalysis.ReturnStatement):
-				pass
+				self.stack[-1].append(aStat)
 			elif isinstance(aStat, SyntacticAnalysis.VariableStatement):
-				pass
+				self.stack[-1].append(aStat)
 			elif isinstance(aStat, SyntacticAnalysis.WhileStatement):
 				self.currentScope.append(ScopeEnum.WHILE)
+				self.stack[-1].append(aStat)
 			elif isinstance(aStat, SyntacticAnalysis.SwitchStatement):
 				self.currentScope.append(ScopeEnum.SWITCH)
+				self.stack[-1].append(aStat)
 			elif isinstance(aStat, SyntacticAnalysis.ForStatement):
 				self.currentScope.append(ScopeEnum.FOR)
+				self.stack[-1].append(aStat)
 			elif isinstance(aStat, SyntacticAnalysis.ForEachStatement):
 				self.currentScope.append(ScopeEnum.FOREACH)
+				self.stack[-1].append(aStat)
 			elif isinstance(aStat, SyntacticAnalysis.DoStatement):
 				self.currentScope.append(ScopeEnum.DO)
+				self.stack[-1].append(aStat)
 			elif isinstance(aStat, SyntacticAnalysis.EndFunctionStatement):
 				self.LeaveFunctionScope()
 			else:
