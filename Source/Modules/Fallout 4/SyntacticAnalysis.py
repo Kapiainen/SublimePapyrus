@@ -638,21 +638,21 @@ class PropertySignatureStatement(object):
 	__slots__ = [
 		"identifier", # Identifier
 		"type", # Type
-		"defaultValue", # ExpressionNode
+		"value", # ExpressionNode
 		"flags", # PropertyFlags
 		"line" # int
 	]
 
-	def __init__(self, aIdentifier, aType, aDefaultValue, aFlags, aLine):
+	def __init__(self, aIdentifier, aType, aValue, aFlags, aLine):
 		assert isinstance(aIdentifier, Identifier) #Prune
 		assert isinstance(aType, Type) #Prune
-		if aDefaultValue: #Prune
-			assert isinstance(aDefaultValue, ExpressionNode) #Prune
+		if aValue: #Prune
+			assert isinstance(aValue, ExpressionNode) #Prune
 		assert isinstance(aFlags, PropertyFlags) #Prune
 		assert isinstance(aLine, int) #Prune
 		self.identifier = aIdentifier
 		self.type = aType
-		self.defaultValue = aDefaultValue
+		self.value = aValue
 		self.flags = aFlags
 		self.line = aLine
 
@@ -1101,12 +1101,12 @@ class Syntactic(object):
 	def Property(self, aType):
 	# aType: Type
 		identifier = Identifier(self.ExpectIdentifier())
-		defaultValue = None
+		value = None
 		flags = None
 		if self.Accept(TokenEnum.ASSIGN):
 			if not self.Expression():
 				self.Abort("Expected an expression.")
-			defaultValue = self.Pop()
+			value = self.Pop()
 			flags = self.AcceptFlags([TokenEnum.kAUTOREADONLY, TokenEnum.kAUTO, TokenEnum.kCONST, TokenEnum.kMANDATORY, TokenEnum.kHIDDEN, TokenEnum.kCONDITIONAL])
 			if TokenEnum.kAUTO in flags and TokenEnum.kAUTOREADONLY in flags:
 				self.Abort("A property cannot have both the AUTO and the AUTOREADONLY flag.")
@@ -1127,7 +1127,11 @@ class Syntactic(object):
 			flags = PropertyFlags(TokenEnum.kAUTO in flags, TokenEnum.kAUTOREADONLY in flags, TokenEnum.kCONDITIONAL in flags, TokenEnum.kCONST in flags, TokenEnum.kHIDDEN in flags, TokenEnum.kMANDATORY in flags)
 		else:
 			flags = PropertyFlags(False, False, False, False, False, False)
-		return PropertySignatureStatement(identifier, aType, defaultValue, flags, self.line)
+		if value and not (flags.isAuto or flags.isAutoReadOnly):
+			raise SyntacticError("A property can only define a starting value if it has either the 'Auto' or the 'AutoReadOnly' flag.", self.line)
+		if flags.isAuto and flags.isAutoReadOnly:
+			raise SyntacticError("A property cannot have both the 'Auto' and the 'AutoReadOnly' flags.", self.line)
+		return PropertySignatureStatement(identifier, aType, value, flags, self.line)
 
 	def FunctionParameters(self):
 		parameters = []

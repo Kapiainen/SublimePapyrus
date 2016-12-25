@@ -91,14 +91,15 @@ class SemanticFirstPhase(object):
 		self.capricaExtensions = aCaprica
 		self.currentScope = [-1]
 		self.stack = []
-		self.scopeStack = []
-		pendingDocstring = None
+		self.pendingDocstring = None
 
 	def EnterEmptyStateScope(self):
 		self.currentScope.append(ScopeEnum.SCRIPT)
+		self.stack.append([self.currentStatement])
 
 	def EnterStateScope(self):
 		self.currentScope.append(ScopeEnum.STATE)
+		self.stack.append([self.currentStatement])
 
 	def LeaveStateScope(self):
 		self.currentScope.pop()
@@ -113,15 +114,15 @@ class SemanticFirstPhase(object):
 		scope = self.stack.pop()
 		signature = scope.pop(0)
 		docstring = None
-		if isinstance(scope[0], SyntacticAnalysis.DocstringStatement):
+		if scope and isinstance(scope[0], SyntacticAnalysis.DocstringStatement):
 			docstring = scope.pop(0)
 		for statement in scope:
-			if isinstance(aStat, SyntacticAnalysis.DocstringStatement):
+			if isinstance(statement, SyntacticAnalysis.DocstringStatement):
 				if docstring:
 					raise SemanticError("This function already has a docstring.", statement.line)
 				else:
 					raise SemanticError("A docstring has to be the next statement after the function signature.", statement.line)
-			elif isinstance(aStat, SyntacticAnalysis.ReturnStatement):
+			elif isinstance(statement, SyntacticAnalysis.ReturnStatement):
 				if signature.type:
 					if not statement.expression:
 						if signature.type.isArray:
@@ -131,11 +132,17 @@ class SemanticFirstPhase(object):
 				else:
 					if statement.expression:
 						raise SemanticError("This function does not have a return type.", statement.line)
-		self.stack[-1].append(FunctionObject(signature, scope, self.currentStatement.line))
+		if not scope:
+			scope = None
+		if signature.flags.isNative:
+			self.stack[-1].append(FunctionObject(signature, scope, signature.line))
+		else:
+			self.stack[-1].append(FunctionObject(signature, scope, self.currentStatement.line))
 		self.currentScope.pop()
 
 	def EnterEventScope(self):
 		self.currentScope.append(ScopeEnum.EVENT)
+		self.stack.append([self.currentStatement])
 
 	def LeaveEventScope(self):
 		self.currentScope.pop()
@@ -152,7 +159,7 @@ class SemanticFirstPhase(object):
 		docstring = None
 		getFunction = None
 		setFunction = None
-		if isinstance(scope[0], SyntacticAnalysis.DocstringStatement):
+		if scope and isinstance(scope[0], SyntacticAnalysis.DocstringStatement):
 			docstring = scope.pop(0)
 		for element in scope:
 			if isinstance(element, SyntacticAnalysis.DocstringStatement):
@@ -182,26 +189,33 @@ class SemanticFirstPhase(object):
 					raise SemanticError("Properties can only have 'Get' and 'Set' functions.", element.starts)
 			else:
 				raise Exception("Unsupported property element:", type(element))
-		self.stack[-1].append(PropertyObject(signature, setFunction, getFunction, self.currentStatement.line))
+		if signature.flags.isAuto or signature.flags.isAutoReadOnly:
+			self.stack[-1].append(PropertyObject(signature, setFunction, getFunction, signature.line))
+		else:
+			if not setFunction and not getFunction:
+				raise SemanticError("This property has to have at least a 'Set' or a 'Get' function.", signature.line)
+			self.stack[-1].append(PropertyObject(signature, setFunction, getFunction, self.currentStatement.line))
 		self.currentScope.pop()
 
 	def EnterStructScope(self):
 		self.currentScope.append(ScopeEnum.STRUCT)
+		self.stack.append([self.currentStatement])
 
 	def LeaveStructScope(self):
 		self.currentScope.pop()
 
 	def EnterGroupScope(self):
 		self.currentScope.append(ScopeEnum.GROUP)
+		self.stack.append([self.currentStatement])
 
 	def LeaveGroupScope(self):
 		self.currentScope.pop()
 
 	def Assemble(self, aStat):
-		currentScope = self.currentScope[-1]
+		print("Current scope: %s" % ScopeDescription[self.currentScope[-1]])
 		self.currentStatement = aStat
 		if self.pendingDocstring:
-			if isinstance(aStat, DocstringStatement):
+			if isinstance(aStat, SyntacticAnalysis.DocstringStatement):
 				self.stack[-1].append(aStat)
 				self.pendingDocstring()
 				self.pendingDocstring = None
@@ -209,6 +223,8 @@ class SemanticFirstPhase(object):
 			else:
 				self.pendingDocstring()
 				self.pendingDocstring = None
+			print("Dropping down to: %s" % ScopeDescription[self.currentScope[-1]])
+		currentScope = self.currentScope[-1]
 		if currentScope == -1:
 			print(type(aStat))
 			if isinstance(aStat, SyntacticAnalysis.ScriptSignatureStatement):
@@ -244,8 +260,10 @@ class SemanticFirstPhase(object):
 			if isinstance(aStat, SyntacticAnalysis.AssignmentStatement):
 				pass
 			elif isinstance(aStat, SyntacticAnalysis.ElseIfStatement):
+				self.currentScope.pop()
 				self.currentScope.append(ScopeEnum.ELSEIF)
 			elif isinstance(aStat, SyntacticAnalysis.ElseStatement):
+				self.currentScope.pop()
 				self.currentScope.append(ScopeEnum.ELSE)
 			elif isinstance(aStat, SyntacticAnalysis.ExpressionStatement):
 				pass
@@ -334,14 +352,18 @@ class SemanticFirstPhase(object):
 				pass
 			elif isinstance(aStat, SyntacticAnalysis.PropertySignatureStatement):
 				self.EnterPropertyScope()
+			elif isinstance(aStat, SyntacticAnalysis.EndGroupStatement):
+				self.LeaveGroupScope()
 			else:
 				raise SemanticError("Illegal statement in the group scope.", aStat.line)
 		elif currentScope == ScopeEnum.IF:
 			if isinstance(aStat, SyntacticAnalysis.AssignmentStatement):
 				pass
 			elif isinstance(aStat, SyntacticAnalysis.ElseIfStatement):
+				self.currentScope.pop()
 				self.currentScope.append(ScopeEnum.ELSEIF)
 			elif isinstance(aStat, SyntacticAnalysis.ElseStatement):
+				self.currentScope.pop()
 				self.currentScope.append(ScopeEnum.ELSE)
 			elif isinstance(aStat, SyntacticAnalysis.ExpressionStatement):
 				pass
@@ -661,13 +683,14 @@ class FunctionObject(object):
 
 	def __init__(self, aSignature, aBody, aEnds):
 		assert isinstance(aSignature, SyntacticAnalysis.FunctionSignatureStatement) #Prune
-		assert isinstance(aBody, list) #Prune
+		if aBody: #Prune
+			assert isinstance(aBody, list) #Prune
 		assert isinstance(aEnds, int) #Prune
 		self.identifier = aSignature.identifier
 		self.type = aSignature.type
 		self.parameters = aSignature.parameters
 		self.flags = aSignature.flags
-		self.body = aSignature.body
+		self.body = aBody
 		self.starts = aSignature.line
 		self.ends = aEnds
 
@@ -685,8 +708,10 @@ class PropertyObject(object):
 
 	def __init__(self, aSignature, aSetFunction, aGetFunction, aEnds):
 		assert isinstance(aSignature, SyntacticAnalysis.PropertySignatureStatement) #Prune
-		assert isinstance(aSetFunction, FunctionObject) #Prune
-		assert isinstance(aGetFunction, FunctionObject) #Prune
+		if aSetFunction: #Prune
+			assert isinstance(aSetFunction, FunctionObject) #Prune
+		if aGetFunction: #Prune
+			assert isinstance(aGetFunction, FunctionObject) #Prune
 		assert isinstance(aEnds, int) #Prune
 		self.identifier = aSignature.identifier
 		self.type = aSignature.type
