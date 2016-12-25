@@ -927,14 +927,15 @@ class SyntacticError(Exception):
 		self.line = aLine
 
 class Syntactic(object):
-#	__slots__ = [
+	__slots__ = [
 		"stack", # list of various objects
 		"tokenIndex", # int
 		"tokenCount", # int
 		"tokens", # list of Token
 		"line" # int
-#	]
-		def __init__(self):
+	]
+
+	def __init__(self):
 		self.stack = None
 
 	def Reset(self, aCaprica):
