@@ -259,7 +259,12 @@ class LexicalError(Exception):
 # Using regex is faster than e.g. grouping characters by splitting an input string.
 class Lexical(object):
 	"""Lexical analysis."""
-	__slots__ = ["tokenRegex", "keywordRegex", "capricaExtensions"]
+	__slots__ = [
+		"tokenRegex", # regex pattern
+		"keywordRegex", # regex pattern
+		"capricaExtensions" # bool
+	]
+
 	def __init__(self):
 		tokenSpecifications = [
 			(TokenEnum.COMMENTBLOCK, r";/[\S\s]*?(?=/;)/;"),
