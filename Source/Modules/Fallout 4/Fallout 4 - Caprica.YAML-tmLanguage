@@ -548,31 +548,31 @@ repository:
     patterns:
     - comment: ForEach statement
       name: meta.foreach.papyrus
-      begin: (?i)^\s*(foreach)\s+(?:(?:(?:([_a-z][0-9_a-z]*)(\:))?)(?:(?:([_a-z][0-9_a-z]*)(\:))?)(?:(?:([_a-z][0-9_a-z]*)(\:))?)(?:(?:([_a-z][0-9_a-z]*)(\:))?)(?:(?:([_a-z][0-9_a-z]*)(\:))?)(?:(?:([_a-z][0-9_a-z]*)(\:))?)(?:(?:([_a-z][0-9_a-z]*)(\:))?)(?:(?:([_a-z][0-9_a-z]*)(\:))?)(?:(?:([_a-z][0-9_a-z]*)(\:))?)(?:(?:([_a-z][0-9_a-z]*)(\:))?)([_a-z][0-9_a-z]*)|(auto))\s+([_a-z][0-9_a-z]*)\s+
+      begin: (?i)^\s*(foreach)\s+(?:(auto)|(?:(?:([_a-z][0-9_a-z]*)(\:))?)(?:(?:([_a-z][0-9_a-z]*)(\:))?)(?:(?:([_a-z][0-9_a-z]*)(\:))?)(?:(?:([_a-z][0-9_a-z]*)(\:))?)(?:(?:([_a-z][0-9_a-z]*)(\:))?)(?:(?:([_a-z][0-9_a-z]*)(\:))?)(?:(?:([_a-z][0-9_a-z]*)(\:))?)(?:(?:([_a-z][0-9_a-z]*)(\:))?)(?:(?:([_a-z][0-9_a-z]*)(\:))?)(?:(?:([_a-z][0-9_a-z]*)(\:))?)([_a-z][0-9_a-z]*))\s+([_a-z][0-9_a-z]*)\s+
       beginCaptures:
         '1': {name: keyword.other.papyrus}
-        '2': {name: storage.type.papyrus}
-        '3': {name: keyword.operator.papyrus}
-        '4': {name: storage.type.papyrus}
-        '5': {name: keyword.operator.papyrus}
-        '6': {name: storage.type.papyrus}
-        '7': {name: keyword.operator.papyrus}
-        '8': {name: storage.type.papyrus}
-        '9': {name: keyword.operator.papyrus}
-        '10': {name: storage.type.papyrus}
-        '11': {name: keyword.operator.papyrus}
-        '12': {name: storage.type.papyrus}
-        '13': {name: keyword.operator.papyrus}
-        '14': {name: storage.type.papyrus}
-        '15': {name: keyword.operator.papyrus}
-        '16': {name: storage.type.papyrus}
-        '17': {name: keyword.operator.papyrus}
-        '18': {name: storage.type.papyrus}
-        '19': {name: keyword.operator.papyrus}
-        '20': {name: storage.type.papyrus}
-        '21': {name: keyword.operator.papyrus}
-        '22': {name: storage.type.papyrus}
-        '23': {name: keyword.other.papyrus}
+        '2': {name: keyword.other.papyrus}
+        '3': {name: storage.type.papyrus}
+        '4': {name: keyword.operator.papyrus}
+        '5': {name: storage.type.papyrus}
+        '6': {name: keyword.operator.papyrus}
+        '7': {name: storage.type.papyrus}
+        '8': {name: keyword.operator.papyrus}
+        '9': {name: storage.type.papyrus}
+        '10': {name: keyword.operator.papyrus}
+        '11': {name: storage.type.papyrus}
+        '12': {name: keyword.operator.papyrus}
+        '13': {name: storage.type.papyrus}
+        '14': {name: keyword.operator.papyrus}
+        '15': {name: storage.type.papyrus}
+        '16': {name: keyword.operator.papyrus}
+        '17': {name: storage.type.papyrus}
+        '18': {name: keyword.operator.papyrus}
+        '19': {name: storage.type.papyrus}
+        '20': {name: keyword.operator.papyrus}
+        '21': {name: storage.type.papyrus}
+        '22': {name: keyword.operator.papyrus}
+        '23': {name: storage.type.papyrus}
         '24': {name: variable.other.papyrus}
       end: ([\n\r])
       patterns:
