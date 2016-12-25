@@ -3,6 +3,266 @@ import os
 # PLATFORM_WINDOWS is used to determine how to look for scripts in the filesystem. Unix-based OSes often have case-sensitive filesystems.
 PLATFORM_WINDOWS = os.name == "nt"
 
+#3: Semantic analysis
+
+class SemanticError(Exception):
+	def __init__(self, aMessage, aLine):
+	# aMessage: string
+	# aLine: int
+		self.message = aMessage
+		self.line = aLine
+
+class Script(object):
+	__slots__ = ["name", "starts", "flags", "parent", "docstring", "imports", "customEvents", "variables", "properties",  "groups", "functions", "events", "states", "structs", "identifier", "parentIdentifier"]
+	def __init__(self, aName, aStarts, aFlags, aParent, aDocstring, aImports, aCustomEvents, aVariables, aProperties, aGroups, aFunctions, aEvents, aStates, aStructs):
+	# aName: List of string
+	# aStarts: int
+	# aFlags: List of TokenEnum
+	# aParent: List of string
+	# aDocstring: string
+	# aImports: List of string
+	# aCustomEvents: Dictionary of CustomEvent
+	# aVariables: Dictionary of Variable
+	# aProperties: Dictionary of Property
+	# aGroups: Dictionary of Group
+	# aFunctions: Dictionary of Function
+	# aEvents: Dictionary of Event
+	# aStates: Dictionary of State
+	# aStructs: Dictionary of Struct
+		self.name = [e.upper() for e in aName]
+		self.identifier = aName
+		self.starts = aStarts
+		self.flags = aFlags
+		commonParent = "SCRIPTOBJECT"
+		if not aParent and not (len(self.name) == 1 and self.name[0] == commonParent):
+			self.parent = [commonParent]
+			self.parentIdentifier = ["ScriptObject"]
+		elif aParent:
+			self.parent = [e.upper() for e in aParent]
+			self.parentIdentifier = aParent
+		else:
+			self.parent = None
+			self.parentIdentifier = None
+		self.docstring = aDocstring
+		self.imports = aImports
+		self.customEvents = aCustomEvents
+		self.variables = aVariables
+		self.properties = aProperties
+		self.groups = aGroups
+		self.functions = aFunctions
+		self.events = aEvents
+		self.states = aStates
+		self.structs = aStructs
+
+class Property(object):
+	__slots__ = ["name", "flags", "type", "value", "docstring", "getFunction", "setFunction", "starts", "ends", "identifier"]
+	def __init__(self, aName, aIdentifier, aFlags, aType, aValue, aDocstring, aGetFunction, aSetFunction, aStarts, aEnds):
+	# aName: string
+	# aIdentifier: string
+	# aFlags: List of TokenEnum
+	# aType: Type
+	# aValue: Expression
+	# aDocstring: string
+	# aGetFunction: Function
+	# aSetFunction: Function
+	# aStarts: int
+	# aEnd: int
+		self.name = aName
+		self.identifier = aIdentifier
+		self.flags = aFlags
+		self.type = aType
+		self.value = aValue
+		self.docstring = aDocstring
+		self.getFunction = aGetFunction
+		self.setFunction = aSetFunction
+		self.starts = aStarts
+		self.ends = aEnds
+
+class Group(object):
+	__slots__ = ["name", "flags", "properties", "starts", "ends", "identifier"]
+	def __init__(self, aName, aIdentifier, aFlags, aProperties, aStarts, aEnds):
+	# aName: string
+	# aIdentifier: string
+	# aFlags: List of TokenEnum
+	# aProperties: Dictionary of Property
+	# aStarts: int
+	# aEnds: int
+		self.name = aName
+		self.identifier = aIdentifier
+		self.flags = aFlags
+		self.properties = aProperties
+		self.starts = aStarts
+		self.ends = aEnds
+
+#
+#		StructMember
+#			.name
+#				String
+#			.flags (cannot be CONST)
+#			.type
+#				.namespace
+#				.name (cannot be VAR nor another Struct)
+#				.array (must always be false)
+#			.value
+#				ExpressionNode (has to be a constant)
+#			
+class StructMember(object):
+	__slots__ = ["line", "name", "flags", "type", "value", "docstring", "identifier"]
+	def __init__(self, aLine, aIdentifier, aName, aFlags, aType, aValue, aDocstring):
+		self.line = aLine
+		self.name = aName
+		self.identifier = aIdentifier
+		self.flags = aFlags
+		self.type = aType
+		self.value = aValue
+		self.docstring = aDocstring
+
+#
+#		Struct
+#			.members
+#				Dict of StructMember
+class Struct(object):
+	__slots__ = ["name", "members", "starts", "ends", "identifier"]
+	def __init__(self, aName, aIdentifier, aMembers, aStarts, aEnds):
+		self.name = aName
+		self.identifier = aIdentifier
+		self.members = aMembers
+		self.starts = aStarts
+		self.ends = aEnds
+
+	def __str__(self):
+		members = {}
+		if self.members:
+			members = self.members
+		return """
+===== Object =====
+Type: Struct
+Name: %s
+Members: %s
+Starts: %d
+Ends: %d
+""" % (
+		self.name,
+		", ".join([m for m in members]),
+		self.starts,
+		self.ends
+	)
+
+#
+#		Function
+#			.name
+#				String
+#			.flags
+#				List of KeywordEnum
+#			.type
+#				.namespace
+#					List of Token
+#				.name
+#					Token
+#				.array
+#					Bool
+#			.parameters
+#				Dict of Parameter
+#			.docstring
+#				String
+#			.body
+#				List of Statement
+#			.starts
+#				Int
+#			.ends
+#				Int
+class Function(object):
+	__slots__ = ["name", "flags", "type", "parameters", "docstring", "body", "starts", "ends", "identifier"]
+	def __init__(self, aName, aIdentifier, aFlags, aType, aParameters, aDocstring, aBody, aStarts, aEnds):
+		self.name = aName
+		self.identifier = aIdentifier
+		self.flags = aFlags
+		self.type = aType
+		self.parameters = aParameters
+		self.docstring = aDocstring
+		self.body = aBody
+		self.starts = aStarts
+		self.ends = aEnds
+
+#
+#		Event
+#			.name
+#				String
+#			.flags
+#				List of KeywordEnum
+#			.remote
+#				.namespace
+#				.name
+#			.parameters
+#				Dict of Parameter
+#			.docstring
+#				String
+#			.body
+#				List of Statement
+#			.starts
+#				Int
+#			.ends
+#				Int
+class Event(object):
+	__slots__ = ["name", "flags", "remote", "parameters", "docstring", "body", "starts", "ends", "identifier"]
+	def __init__(self, aName, aIdentifier, aFlags, aRemote, aParameters, aDocstring, aBody, aStarts, aEnds):
+		self.name = aName
+		self.identifier = aIdentifier
+		self.flags = aFlags
+		self.remote = aRemote
+		self.parameters = aParameters
+		self.docstring = aDocstring
+		self.body = aBody
+		self.starts = aStarts
+		self.ends = aEnds
+
+#
+#		State
+#			.name
+#				String
+#			.auto
+#				Bool
+#			.functions
+#				Dict of Function
+#			.events
+#				Dict of Event
+class State(object):
+	__slots__ = ["name", "auto", "functions", "events", "starts", "ends", "identifier"]
+	def __init__(self, aName, aAuto, aFunctions, aEvents, aStarts, aEnds):
+		self.name = aName.value.upper()
+		self.identifier = aName.value
+		self.auto = aAuto
+		self.functions = aFunctions
+		self.events = aEvents
+		self.starts = aStarts
+		self.ends = aEnds
+
+	def __str__(self):
+		functions = {}
+		if self.functions:
+			functions = self.functions
+		events = {}
+		if self.events:
+			events = self.events
+		return """
+===== Object =====
+Type: State
+Name: %s
+Auto: %s
+Functions: %s
+Events: %s
+Starts: %d
+Ends: %d
+""" % (
+		self.name,
+		self.auto,
+		", ".join([f for f in functions]),
+		", ".join([e for e in events]),
+		self.starts,
+		self.ends
+	)
+
+
 class Semantic(object):
 	def __init__(self):
 		# Scopes

@@ -4,6 +4,7 @@ Optimizations
 	Get an attribute once and store the result when compared more than once
 	Reduce use of chained dot operators (a.b.c.d.e.f vs a.c.e.f) when possible
 		Generate e.g. StateSignature, but copy attribute values to State upon initialization (State.signature.identifier -> State.identifier)
+	Remove or comment out lines ending with "#Prune" (mostly "assert" statements to enforce types of parameters in class constructors)
 
 Mapping type identifiers to a path?
 	Pass Type object to function
@@ -24,15 +25,94 @@ SEM encounters Type
 			/import/path/importednamespace/namespaceN-1/namespaceN.psc:name
 			else does not exist
 
-Phase 1
-	Line by line
-		String -> Lexical -> Tokens
-		Tokens -> Syntactic -> Statement
-		Statement -> Semantic -> Assemble scope object
-	Generate script object from scope objects
 
-Phase 2
-	Validate script object and its scope objects
+Encounter type
+	Get the script
+		Get it from cache
+			or
+		Look for it using imported scripts and namespaces as help, if necessary
+			Find it
+				Cache it in the script's TypeMap cache under two keys: the identifier originally found and the full identifier, if it differs from the original identifier
+			Don't find it
+				Raise exception
+
+
+
+Cache ideas
+	Scripts
+		- Files that have been processed into Script objects
+		- Reside in a variable in Linter.py
+		- Dict of Script with
+
+			":".join(script.identifier.namespace[:].append(script.identifier.name)).upper()
+
+		  as the key
+		- Files only need to be turned into Script objects once (or after a cache invalidation, which would be after a manual command or after saving the file)
+
+	LocalTypeMap
+		- Resides in each Script object
+		- Dict of 
+		- Populated by ValidateScript function as types (scripts or structs) are used in the script that is being validated
+
+	TypeMap
+		- Figure out the path to a script file
+		- Reside in a variable in Linter.py
+		- Dict of str (absolute path to script file) with
+
+			":".join(script.identifier.namespace[:].append(script.identifier.name)).upper()
+
+		  as the key
+		- The path to script files would only have to be determined once (or after a manual cache invalidation)
+
+	StructMap
+		- Figure out the script that contains a specific struct
+		- Reside in a variable in Linter.py
+		- Dict of str (key to use in Scripts cache) with
+
+			":".join(script.identifier.namespace[:].append(script.identifier.name)).upper()
+
+		  as the key
+
+Overview
+	Phase 1
+		Line by line
+			String -> Lexical -> Tokens
+			Tokens -> Syntactic -> Statement
+			Statement -> Semantic -> Assemble scope object
+		Generate script object from scope objects
+
+	Phase 2
+		Validate script object and its scope objects
+
+In more detail
+	Phase 1 (performed on all scripts that are processed)
+		Lexical analysis
+			Verify valid horizontal groupings of all characters and generate Tokens
+
+		Syntactic analysis
+			Verify valid horizontal groupings of all Tokens and generate Statements
+			Build list of other scripts to process from the types used:
+				imports
+					scripts (corresponding .psc file exists among import paths)
+					namespaces (corresponding directory exists among import paths)
+						add all scripts from the namespace to the list
+				variable declarations
+				property declarations
+				struct member declarations
+				group member declarations
+				function parameter declarations
+				event parameter declarations
+				foreach element declarations
+				parent script
+
+		Semantic analysis
+			Verify that vertical groupings of all Statements and generate Script
+
+		Process all of the scripts and cache the results so that scripts are only processed once
+
+	Phase 2 (performed only on the script that initiated the linting process aka the script being edited)
+		Semantic analysis
+			Verify validity of all statements and expressions in the context of all relevant scripts
 
 Lexical objects
 	Token
