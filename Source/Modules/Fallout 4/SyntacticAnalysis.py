@@ -139,9 +139,18 @@ class Identifier(object):
 	]
 
 	def __init__(self, aIdentifier):
-		assert isinstance(aIdentifier, list #Prune
+		assert isinstance(aIdentifier, list) #Prune
 		self.name = aIdentifier.pop()
 		self.namespace = aIdentifier
+
+	def __eq__(self, aOther):
+		if isinstance(aOther, Identifier):
+			thisIdentifier = self.namespace[:]
+			thisIdentifier.append(self.name)
+			thatIdentifier = aOther.namespace[:]
+			thatIdentifier.append(aOther.name)
+			return ":".join(thisIdentifier).upper() == ":".join(thatIdentifier).upper()
+		return NotImplemented
 
 class Type(object):
 	__slots__ = [
@@ -178,11 +187,15 @@ class ArrayAtomNode(Node):
 
 class ArrayCreationNode(Node):
 	__slots__ = [
-		""
+		"type", # Type
+		"size" # ExpressionNode
 	]
 
-	def __init__(self):
-		pass
+	def __init__(self, aType, aSize):
+		assert isinstance(aType, Type) #Prune
+		assert isinstance(aSize, ExpressionNode) #Prune
+		self.type = aType
+		self.size = aSize
 
 class ArrayFuncOrIdNode(Node):
 	__slots__ = [
@@ -238,7 +251,7 @@ class FunctionCallArgumentNode(Node):
 	def __init__(self, aIdentifier, aValue):
 		if aIdentifier: #Prune
 			assert isinstance(aIdentifier, Identifier) #Prune
-		assert isinstance(aValue, Expression) #Prune
+		assert isinstance(aValue, ExpressionNode) #Prune
 		self.identifier = aIdentifier
 		self.value = aValue
 
@@ -296,9 +309,11 @@ class ExpressionStatement(object):
 		"line" # int
 	]
 
-	def __init__(self, aExpression):
-		assert isinstance(aExpression, Expression) #Prune
+	def __init__(self, aExpression, aLine):
+		assert isinstance(aExpression, ExpressionNode) #Prune
+		assert isinstance(aLine, int) #Prune
 		self.expression = aExpression
+		self.line = aLine
 
 class FunctionParameter(object):
 	__slots__ = [
@@ -310,7 +325,8 @@ class FunctionParameter(object):
 	def __init__(self, aIdentifier, aType, aDefaultValue):
 		assert isinstance(aIdentifier, Identifier) #Prune
 		assert isinstance(aType, Type) #Prune
-		assert isinstance(aDefaultValue, Expression) #Prune
+		if aDefaultValue: #Prune
+			assert isinstance(aDefaultValue, ExpressionNode) #Prune
 		self.identifier = aIdentifier
 		self.type = aType
 		self.defaultValue = aDefaultValue
@@ -344,8 +360,10 @@ class FunctionSignatureStatement(object):
 
 	def __init__(self, aIdentifier, aType, aParameters, aFlags, aLine):
 		assert isinstance(aIdentifier, Identifier) #Prune
-		assert isinstance(aType, Type) #Prune
-		assert isinstance(aParameters, list) #Prune
+		if aType: #Prune
+			assert isinstance(aType, Type) #Prune
+		if aParameters: #Prune
+			assert isinstance(aParameters, list) #Prune
 		assert isinstance(aFlags, FunctionFlags) #Prune
 		assert isinstance(aLine, int) #Prune
 		self.identifier = aIdentifier
@@ -521,9 +539,11 @@ class EventSignatureStatement(object):
 
 	def __init__(self, aIdentifier, aRemote, aParameters, aFlags, aLine):
 		assert isinstance(aIdentifier, Identifier) #Prune
-		assert isinstance(aRemote, Identifier) #Prune
-		assert isinstance(aParameters, list) #Prune
-		assert isinstance(aFlags, EventFlags))
+		if aRemote: #Prune
+			assert isinstance(aRemote, Identifier) #Prune
+		if aParameters: #Prune
+			assert isinstance(aParameters, list) #Prune
+		assert isinstance(aFlags, EventFlags) #Prune
 		assert isinstance(aLine, int) #Prune
 		self.identifier = aIdentifier
 		self.remote = aRemote
@@ -638,7 +658,8 @@ class ReturnStatement(object):
 	]
 
 	def __init__(self, aExpression, aLine):
-		assert isinstance(aExpression, ExpressionNode) #Prune
+		if aExpression: #Prune
+			assert isinstance(aExpression, ExpressionNode) #Prune
 		assert isinstance(aLine, int) #Prune
 		self.expression = aExpression
 		self.line = aLine
@@ -1055,16 +1076,25 @@ class Syntactic(object):
 		else:
 			raise SyntacticError("Expected a type identifier.", self.line)
 
+	def ExpectIdentifier(self):
+		if self.Expect(TokenEnum.IDENTIFIER):
+			result = [self.PeekBackwards().value]
+			while self.Accept(TokenEnum.COLON):
+				self.Expect(TokenEnum.IDENTIFIER)
+				result.append(self.PeekBackwards().value)
+			return result
+		else:
+			raise SyntacticError("Expected an identifier.", self.line)
+
 	def Property(self, aType):
 	# aType: Type
-		self.Expect(TokenEnum.IDENTIFIER)
-		name = self.PeekBackwards()
-		value = None
+		identifier = Identifier(self.ExpectIdentifier())
+		defaultValue = None
 		flags = None
 		if self.Accept(TokenEnum.ASSIGN):
 			if not self.Expression():
 				self.Abort("Expected an expression.")
-			value = self.Pop()
+			defaultValue = self.Pop()
 			flags = self.AcceptFlags([TokenEnum.kAUTOREADONLY, TokenEnum.kAUTO, TokenEnum.kCONST, TokenEnum.kMANDATORY, TokenEnum.kHIDDEN, TokenEnum.kCONDITIONAL])
 			if TokenEnum.kAUTO in flags and TokenEnum.kAUTOREADONLY in flags:
 				self.Abort("A property cannot have both the AUTO and the AUTOREADONLY flag.")
@@ -1082,39 +1112,42 @@ class Syntactic(object):
 					self.Abort("Only AUTO properties can have the CONDITIONAL flag.")
 				elif TokenEnum.kCONST in flags:
 					self.Abort("Only AUTO properties can have the CONST flag.")
-		return PropertySignature(self.line, name, aType, flags, value)
+			flags = PropertyFlags(TokenEnum.kAUTO in flags, TokenEnum.kAUTOREADONLY in flags, TokenEnum.kCONDITIONAL in flags, TokenEnum.kCONST in flags, TokenEnum.kHIDDEN in flags, TokenEnum.kMANDATORY in flags)
+		else:
+			flags = PropertyFlags(False, False, False, False, False, False)
+		return PropertySignatureStatement(identifier, aType, defaultValue, flags, self.line)
 
 	def FunctionParameters(self):
 		parameters = []
-		typ = self.ExpectType(True)
+		typIdentifier = self.ExpectType(True)
 		array = False
 		if self.Accept(TokenEnum.LEFTBRACKET):
 			self.Expect(TokenEnum.RIGHTBRACKET)
 			array = True
-		typ = Type(typ, array, False)
-		name = self.Expect(TokenEnum.IDENTIFIER)
-		value = None
+		typ = Type(Identifier(typIdentifier), array, False)
+		identifier = Identifier([self.Expect(TokenEnum.IDENTIFIER).value])
+		defaultValue = None
 		if self.Accept(TokenEnum.ASSIGN):
-			value = self.ExpectExpression()
-		parameters.append(ParameterSignature(self.line, name, typ, value))
+			defaultValue = self.ExpectExpression()
+		parameters.append(FunctionParameter(identifier, typ, defaultValue))
 		while self.Accept(TokenEnum.COMMA):
-			typ = self.ExpectType(True)
+			typIdentifier = self.ExpectType(True)
 			array = False
 			if self.Accept(TokenEnum.LEFTBRACKET):
 				self.Expect(TokenEnum.RIGHTBRACKET)
 				array = True
-			typ = Type(typ, array, False)
-			name = self.Expect(TokenEnum.IDENTIFIER)
-			value = None
+			typ = Type(Identifier(typIdentifier), array, False)
+			identifier = Identifier([self.Expect(TokenEnum.IDENTIFIER).value])
+			defaultValue = None
 			if self.Accept(TokenEnum.ASSIGN):
-				value = self.ExpectExpression()
-			parameters.append(ParameterSignature(self.line, name, typ, value))
+				defaultValue = self.ExpectExpression()
+			parameters.append(FunctionParameter(identifier, typ, defaultValue))
 		return parameters
 
 	def EventParameters(self, aRemote):
 	# aRemote: List of string
 		parameters = []
-		typ = self.ExpectType(True)
+		typIdentifier = Identifier(self.ExpectType(True))
 		array = False
 		if self.Accept(TokenEnum.LEFTBRACKET):
 			self.Expect(TokenEnum.RIGHTBRACKET)
@@ -1122,33 +1155,38 @@ class Syntactic(object):
 		if aRemote:
 			if array:
 				self.Abort("The first parameter in a remote/custom event cannot be an array.")
-			if ":".join(typ) != ":".join(aRemote):
+			#if ":".join(typIdentifier) != ":".join(aRemote):
+			if typIdentifier != aRemote:
 				self.Abort("The first parameter in a remote/custom event has to have the same type as the script that emits the event.")
-		typ = Type(typ, array, False)
-		name = self.Expect(TokenEnum.IDENTIFIER)
-		parameters.append(ParameterSignature(self.line, name, typ, None))
+		typ = Type(typIdentifier, array, False)
+		identifier = Identifier([self.Expect(TokenEnum.IDENTIFIER).value])
+		parameters.append(EventParameter(identifier, typ))
 		while self.Accept(TokenEnum.COMMA):
-			typ = self.ExpectType(True)
+			typIdentifier = Identifier(self.ExpectType(True))
 			array = False
 			if self.Accept(TokenEnum.LEFTBRACKET):
 				self.Expect(TokenEnum.RIGHTBRACKET)
 				array = True
-			typ = Type(typ, array, False)
-			name = self.Expect(TokenEnum.IDENTIFIER)
-			parameters.append(ParameterSignature(self.line, name, typ, None))
+			typ = Type(typIdentifier, array, False)
+			identifier = Identifier([self.Expect(TokenEnum.IDENTIFIER).value])
+			parameters.append(EventParameter(identifier, typ))
 		return parameters
 
 	def Function(self, aType):
 	# aType: Type
-		self.Expect(TokenEnum.IDENTIFIER)
-		name = self.PeekBackwards()
+		identifier = Identifier([self.Expect(TokenEnum.IDENTIFIER).value])
 		parameters = None
 		nextToken = self.Peek()
 		self.Expect(TokenEnum.LEFTPARENTHESIS)
 		if nextToken and nextToken.type != TokenEnum.RIGHTPARENTHESIS:
 			parameters = self.FunctionParameters()
 		self.Expect(TokenEnum.RIGHTPARENTHESIS)
-		return FunctionSignature(self.line, name, aType, self.AcceptFlags([TokenEnum.kNATIVE, TokenEnum.kGLOBAL, TokenEnum.kDEBUGONLY, TokenEnum.kBETAONLY]), parameters)
+		flags = self.AcceptFlags([TokenEnum.kNATIVE, TokenEnum.kGLOBAL, TokenEnum.kDEBUGONLY, TokenEnum.kBETAONLY])
+		if flags:
+			flags = FunctionFlags(TokenEnum.kBETAONLY in flags, TokenEnum.kDEBUGONLY in flags, TokenEnum.kGLOBAL in flags, TokenEnum.kNATIVE in flags)
+		else:
+			flags = FunctionFlags(False, False, False, False)
+		return FunctionSignatureStatement(identifier, aType, parameters, flags, self.line)
 
 	def Shift(self, aItem = None):
 	# aItem: Instance of a class that inherits from Node
@@ -1234,13 +1272,13 @@ class Syntactic(object):
 			self.Shift()
 			nextToken = self.Peek()
 			if nextToken and nextToken.type == TokenEnum.COLON:
-				self.Shift(IdentifierNode(self.ExpectType(False)))
+				self.Shift(IdentifierNode(Identifier(self.ExpectType(False))))
 			else:
 				if self.tokens[self.tokenIndex].type == TokenEnum.IDENTIFIER or self.tokens[self.tokenIndex].type == TokenEnum.kBOOL or self.tokens[self.tokenIndex].type == TokenEnum.kFLOAT or self.tokens[self.tokenIndex].type == TokenEnum.kINT or self.tokens[self.tokenIndex].type == TokenEnum.kSTRING or self.tokens[self.tokenIndex].type == TokenEnum.kVAR:
 					self.Consume()
 				else:
 					self.Abort("Expected a type.")
-				self.Shift(IdentifierNode(self.PeekBackwards()))
+				self.Shift(IdentifierNode(Identifier([self.PeekBackwards().value])))
 			self.ReduceBinaryOperator()
 		return True
 
@@ -1316,7 +1354,7 @@ class Syntactic(object):
 			self.Shift(LengthNode())
 			return True
 		elif self.Accept(TokenEnum.IDENTIFIER) or self.Accept(TokenEnum.kSELF) or self.Accept(TokenEnum.kPARENT):
-			self.Shift(IdentifierNode(self.PeekBackwards()))
+			self.Shift(IdentifierNode(Identifier([self.PeekBackwards().value])))
 			return True
 		else:
 			self.Abort("Expected a function call, and identifier, or the LENGTH keyword")
@@ -1326,21 +1364,21 @@ class Syntactic(object):
 			arguments = []
 			temp = self.Pop() # Right parenthesis
 			temp = self.Pop()
-			while temp.type == NodeEnum.FUNCTIONCALLARGUMENT:
+			while isinstance(temp, FunctionCallArgumentNode):
 				arguments.insert(0, temp)
 				temp = self.Pop()
-			self.Shift(FunctionCallNode(self.Pop(), arguments))
+			self.Shift(FunctionCallNode(Identifier([self.Pop().value]), arguments))
 
 		def Argument():
 			ident = None
 			nextToken = self.Peek()
 			if nextToken and nextToken.type == TokenEnum.ASSIGN:
 				self.Expect(TokenEnum.IDENTIFIER)
-				ident = self.PeekBackwards()
+				ident = Identifier([self.PeekBackwards().value])
 				self.Expect(TokenEnum.ASSIGN)
 			self.Expression()
 			expr = self.Pop()
-			self.Shift(FunctionCallArgument(ident, expr))
+			self.Shift(FunctionCallArgumentNode(ident, expr))
 			return True
 
 		self.Expect(TokenEnum.IDENTIFIER)
@@ -1365,21 +1403,24 @@ class Syntactic(object):
 		left = self.Pop()
 		if self.Accept(TokenEnum.ASSIGN) or self.Accept(TokenEnum.ASSIGNADDITION) or self.Accept(TokenEnum.ASSIGNSUBTRACTION) or self.Accept(TokenEnum.ASSIGNMULTIPLICATION) or self.Accept(TokenEnum.ASSIGNDIVISION) or self.Accept(TokenEnum.ASSIGNMODULUS):
 			operator = self.PeekBackwards()
-			self.Expression()
-			right = self.Pop()
-			return Assignment(self.line, left, right)
+			right = self.ExpectExpression()
+			return AssignmentStatement(operator, left, right, self.line)
 		elif self.tokenIndex >= self.tokenCount or self.tokens[self.tokenIndex] == None:
-			return Expression(self.line, left)
+			return ExpressionStatement(left, self.line)
 
 	def Variable(self, aType):
 	# aType: Type
 		self.Expect(TokenEnum.IDENTIFIER)
-		name = self.PeekBackwards()
+		identifier = Identifier([self.PeekBackwards().value])
 		value = None
 		if self.Accept(TokenEnum.ASSIGN):
-			self.Expression()
-			value = self.Pop()
-		return Variable(self.line, name, aType, self.AcceptFlags([TokenEnum.kCONDITIONAL, TokenEnum.kCONST, TokenEnum.kHIDDEN]), value)
+			value = self.ExpectExpression()
+		flags = self.AcceptFlags([TokenEnum.kCONDITIONAL, TokenEnum.kCONST, TokenEnum.kHIDDEN])
+		if flags:
+			flags = VariableFlags(TokenEnum.kCONDITIONAL in flags, TokenEnum.kCONST in flags, TokenEnum.kHIDDEN in flags)
+		else:
+			flags = VariableFlags(False, False, False)
+		return VariableStatement(identifier, aType, value, flags, self.line)
 
 	def ExpectExpression(self):
 		if not self.Expression():
@@ -1400,13 +1441,14 @@ class Syntactic(object):
 
 		tokenType = self.tokens[0].type
 		if tokenType == TokenEnum.kBOOL or tokenType == TokenEnum.kFLOAT or tokenType == TokenEnum.kINT or tokenType == TokenEnum.kSTRING or tokenType == TokenEnum.kVAR:
+			typ = None
 			self.Consume()
-			typ = self.PeekBackwards()
-			array = False
+			typIdentifier = [self.PeekBackwards().value]
 			if self.Accept(TokenEnum.LEFTBRACKET):
 				self.Expect(TokenEnum.RIGHTBRACKET)
-				array = True
-			typ = Type([typ.value], array, False)
+				typ = Type(Identifier(typIdentifier), True, False)
+			else:
+				typ = Type(Identifier(typIdentifier), False, False)
 			if self.Accept(TokenEnum.kPROPERTY):
 				result = self.Property(typ)
 			elif self.Accept(TokenEnum.kFUNCTION):
@@ -1420,11 +1462,11 @@ class Syntactic(object):
 				if nextToken.type == TokenEnum.COLON:
 					typ = self.ExpectType(False)
 					if typ:
-						array = False
 						if self.Accept(TokenEnum.LEFTBRACKET):
 							self.Expect(TokenEnum.RIGHTBRACKET)
-							array = True
-						typ = Type(typ, array, False)
+							typ = Type(Identifier(typ), True, False)
+						else:
+							typ = Type(Identifier(typ), False, False)
 						if self.Accept(TokenEnum.kPROPERTY):
 							result = self.Property(typ)
 						elif self.Accept(TokenEnum.kFUNCTION):
@@ -1435,7 +1477,7 @@ class Syntactic(object):
 					nextToken = self.Peek(2)
 					if nextToken:
 						if nextToken.type == TokenEnum.RIGHTBRACKET:
-							typ = Type([self.Expect(TokenEnum.IDENTIFIER).value], True, False)
+							typ = Type(Identifier([self.Expect(TokenEnum.IDENTIFIER).value]), True, False)
 							self.Consume()
 							nextToken = self.Peek()
 							self.Consume()
@@ -1451,7 +1493,7 @@ class Syntactic(object):
 						else:
 							result = self.ExpressionOrAssignment()
 				elif nextToken.type == TokenEnum.kPROPERTY:
-					typ = Type([self.Expect(TokenEnum.IDENTIFIER).value], False, False)
+					typ = Type(Identifier([self.Expect(TokenEnum.IDENTIFIER).value]), False, False)
 					self.Consume()
 					result = self.Property(typ)
 				elif nextToken.type == TokenEnum.kFUNCTION:
@@ -1459,49 +1501,49 @@ class Syntactic(object):
 					self.Consume()
 					result = self.Function(typ)
 				elif nextToken.type == TokenEnum.IDENTIFIER:
-					result = self.Variable(Type([self.Expect(TokenEnum.IDENTIFIER).value], False, False))
+					result = self.Variable(Type(Identifier([self.Expect(TokenEnum.IDENTIFIER).value]), False, False))
 				else:
 					result = self.ExpressionOrAssignment()
 			else:
 				result = self.ExpressionOrAssignment()
 		elif tokenType == TokenEnum.kIF:
 			self.Consume()
-			result = If(self.line, self.ExpectExpression())
+			result = IfStatement(self.ExpectExpression(), self.line)
 		elif tokenType == TokenEnum.kELSE:
 			self.Consume()
-			result = Else(self.line)
+			result = ElseStatement(self.line)
 		elif tokenType == TokenEnum.kELSEIF:
 			self.Consume()
-			result = ElseIf(self.line, self.ExpectExpression())
+			result = ElseIfStatement(self.ExpectExpression(), self.line)
 		elif tokenType == TokenEnum.kENDIF:
 			self.Consume()
-			result = EndIf(self.line)
+			result = EndIfStatement(self.line)
 		elif tokenType == TokenEnum.kWHILE:
 			self.Consume()
-			result = While(self.line, self.ExpectExpression())
+			result = WhileStatement(self.ExpectExpression(), self.line)
 		elif tokenType == TokenEnum.kENDWHILE:
 			self.Consume()
-			result = EndWhile(self.line)
+			result = EndWhileStatement(self.line)
 		elif tokenType == TokenEnum.kRETURN:
 			self.Consume()
 			if self.tokenIndex < self.tokenCount:
-				result = Return(self.line, self.ExpectExpression())
+				result = ReturnStatement(self.ExpectExpression(), self.line)
 			else:
-				result = Return(self.line, None)
+				result = ReturnStatement(None, self.line)
 		elif tokenType == TokenEnum.kFUNCTION:
 			self.Consume()
 			result = self.Function(None)
 		elif tokenType == TokenEnum.kENDFUNCTION:
 			self.Consume()
-			result = EndFunction(self.line)
+			result = EndFunctionStatement(self.line)
 		elif tokenType == TokenEnum.kEVENT:
 			self.Consume()
 			nextToken = self.Peek()
 			remote = None
 			if nextToken and (nextToken.type == TokenEnum.DOT or nextToken.type == TokenEnum.COLON):
-				remote = self.ExpectType(False)
+				remote = Identifier(self.ExpectType(False))
 				self.Expect(TokenEnum.DOT)
-			name = self.Expect(TokenEnum.IDENTIFIER)
+			identifier = Identifier([self.Expect(TokenEnum.IDENTIFIER).value])
 			nextToken = self.Peek()
 			self.Expect(TokenEnum.LEFTPARENTHESIS)
 			parameters = None
@@ -1510,29 +1552,39 @@ class Syntactic(object):
 			if remote and not parameters:
 				self.Abort("Remote events and CustomEvents have to have a parameter defining the script that emits the event.")
 			self.Expect(TokenEnum.RIGHTPARENTHESIS)
-			result = EventSignature(self.line, remote, name, self.AcceptFlags([TokenEnum.kNATIVE]), parameters)
+			flags = self.AcceptFlags([TokenEnum.kNATIVE])
+			if flags:
+				flags = EventFlags(TokenEnum.kNATIVE in flags)
+			else:
+				flags = EventFlags(False)
+			result = EventSignatureStatement(identifier, remote, parameters, flags, self.line)
 		elif tokenType == TokenEnum.kENDEVENT:
 			self.Consume()
-			result = EndEvent(self.line)
+			result = EndEventStatement(self.line)
 		elif tokenType == TokenEnum.kENDPROPERTY:
 			self.Consume()
-			result = EndProperty(self.line)
+			result = EndPropertyStatement(self.line)
 		elif tokenType == TokenEnum.kCUSTOMEVENT:
 			self.Consume()
 			result = CustomEvent(self.line, self.Expect(TokenEnum.IDENTIFIER))
 		elif tokenType == TokenEnum.kGROUP:
 			self.Consume()
-			name = self.Expect(TokenEnum.IDENTIFIER)
-			result = GroupSignature(self.line, name, self.AcceptFlags([TokenEnum.kCOLLAPSED, TokenEnum.kCOLLAPSEDONBASE, TokenEnum.kCOLLAPSEDONREF]))
+			identifier = Identifier([self.Expect(TokenEnum.IDENTIFIER).value])
+			flags = self.AcceptFlags([TokenEnum.kCOLLAPSED, TokenEnum.kCOLLAPSEDONBASE, TokenEnum.kCOLLAPSEDONREF])
+			if flags:
+				flags = GroupFlags(TokenEnum.kCOLLAPSED in flags, TokenEnum.kCOLLAPSEDONBASE in flags, TokenEnum.kCOLLAPSEDONREF in flags)
+			else:
+				flags = GroupFlags(False, False, False)
+			result = GroupSignatureStatement(identifier, flags, self.line)
 		elif tokenType == TokenEnum.kENDGROUP:
 			self.Consume()
-			result = EndGroup(self.line)
+			result = EndGroupStatement(self.line)
 		elif tokenType == TokenEnum.kSTRUCT:
 			self.Consume()
 			result = StructSignature(self.line, self.Expect(TokenEnum.IDENTIFIER))
 		elif tokenType == TokenEnum.kENDSTRUCT:
 			self.Consume()
-			result = EndStruct(self.line)
+			result = EndStructStatement(self.line)
 		elif tokenType == TokenEnum.kSTATE:
 			self.Consume()
 			result = StateSignature(self.line, self.Expect(TokenEnum.IDENTIFIER), False)
@@ -1548,15 +1600,19 @@ class Syntactic(object):
 			result = Import(self.line, self.ExpectType(False))
 		elif tokenType == TokenEnum.kSCRIPTNAME:
 			self.Consume()
-			name = self.ExpectType(False)
+			identifier = Identifier(self.ExpectType(False))
 			parent = None
 			if self.Accept(TokenEnum.kEXTENDS):
-				parent = self.ExpectType(False)
+				parent = Identifier(self.ExpectType(False))
 			flags = self.AcceptFlags([TokenEnum.kHIDDEN, TokenEnum.kCONDITIONAL, TokenEnum.kNATIVE, TokenEnum.kCONST, TokenEnum.kDEBUGONLY, TokenEnum.kBETAONLY, TokenEnum.kDEFAULT])
-			result = ScriptSignature(self.line, name, parent, flags)
+			if flags:
+				flags = ScriptFlags(TokenEnum.kBETAONLY in flags, TokenEnum.kCONDITIONAL in flags, TokenEnum.kCONST in flags, TokenEnum.kDEBUGONLY in flags, TokenEnum.kDEFAULT in flags, TokenEnum.kHIDDEN in flags, TokenEnum.kNATIVE in flags)
+			else:
+				flags = ScriptFlags(False, False, False, False, False, False, False)
+			result = ScriptSignatureStatement(identifier, parent, flags, self.line)
 		elif tokenType == TokenEnum.DOCSTRING:
 			self.Consume()
-			result = Docstring(self.line, self.PeekBackwards())
+			result = DocstringStatement(self.PeekBackwards().value, self.line)
 		else:
 			result = self.ExpressionOrAssignment()
 		if self.tokenIndex < self.tokenCount:
