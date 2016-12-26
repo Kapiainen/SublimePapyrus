@@ -212,10 +212,10 @@ class SemanticFirstPhase(object):
 			scope = None
 		# Native function: signature + optional docstring
 		if signature.flags.isNative:
-			self.stack[-1].append(FunctionObject(signature, scope, signature.line))
+			self.stack[-1].append(FunctionObject(signature, docstring, scope, signature.line))
 		# Non-native function: signature + optional docstring + function body
 		else:
-			self.stack[-1].append(FunctionObject(signature, scope, aStat.line))
+			self.stack[-1].append(FunctionObject(signature, docstring, scope, aStat.line))
 		self.currentScope.pop()
 
 # ==================== Event ====================
@@ -790,13 +790,16 @@ class FunctionObject(object):
 		"type", # Type (optional)
 		"parameters", # list of FunctionParameter (optional)
 		"flags", # FunctionFlags
+		"docstring", # str
 		"body", # list of statements
 		"starts", # int
 		"ends" # int
 	]
 
-	def __init__(self, aSignature, aBody, aEnds):
+	def __init__(self, aSignature, aDocstring, aBody, aEnds):
 		assert isinstance(aSignature, SyntacticAnalysis.FunctionSignatureStatement) #Prune
+		if aDocstring: #Prune
+			assert isinstance(aDocstring, SyntacticAnalysis.DocstringStatement) #Prune
 		if aBody: #Prune
 			assert isinstance(aBody, list) #Prune
 		assert isinstance(aEnds, int) #Prune
@@ -804,6 +807,10 @@ class FunctionObject(object):
 		self.type = aSignature.type
 		self.parameters = aSignature.parameters
 		self.flags = aSignature.flags
+		if aDocstring:
+			self.docstring = aDocstring.value
+		else:
+			self.docstring = ""
 		self.body = aBody
 		self.starts = aSignature.line
 		self.ends = aEnds
