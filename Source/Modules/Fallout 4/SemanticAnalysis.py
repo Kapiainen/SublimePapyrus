@@ -285,6 +285,16 @@ class SemanticFirstPhase(object):
 			raise SemanticError("Illegal statement in the function/event scope.", aStat.line)
 
 	def LeaveEventScope(self, aStat):
+		scope = self.stack.pop()
+		signature = scope.pop(0)
+		if scope:
+			for statement in scope:
+				if isinstance(statement, SyntacticAnalysis.ReturnStatement):
+					if statement.expression:
+						raise SemanticError("Events cannot return a value.", statement.line)
+			self.stack[-1].append(EventObject(signature, scope, aStat.line))
+		else:
+			self.stack[-1].append(EventObject(signature, None, aStat.line))
 		self.currentScope.pop()
 
 # ==================== Function/event sub-scopes ====================
@@ -894,8 +904,18 @@ class EventObject(object):
 		"ends" # int
 	]
 
-	def __init__(self):
-		pass
+	def __init__(self, aSignature, aBody, aEnds):
+		assert isinstance(aSignature, SyntacticAnalysis.EventSignatureStatement) #Prune
+		if aBody: #Prune
+			assert isinstance(aBody, list) #Prune
+		assert isinstance(aEnds, int) #Prune
+		self.identifier = aSignature.identifier
+		self.remote = aSignature.remote
+		self.parameters = aSignature.parameters
+		self.flags = aSignature.flags
+		self.body = aBody
+		self.starts = aSignature.line
+		self.ends = aEnds
 
 class GroupObject(object):
 	__slots__ = [
