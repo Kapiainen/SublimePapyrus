@@ -104,19 +104,19 @@ class SemanticFirstPhase(object):
 		elif isinstance(aStat, SyntacticAnalysis.DocstringStatement):
 			pass
 		elif isinstance(aStat, SyntacticAnalysis.EventSignatureStatement):
-			self.EnterEventScope()
+			self.EnterEventScope(aStat)
 		elif isinstance(aStat, SyntacticAnalysis.FunctionSignatureStatement):
-			self.EnterFunctionScope()
+			self.EnterFunctionScope(aStat)
 		elif isinstance(aStat, SyntacticAnalysis.GroupSignatureStatement):
-			self.EnterGroupScope()
+			self.EnterGroupScope(aStat)
 		elif isinstance(aStat, SyntacticAnalysis.ImportStatement):
 			pass
 		elif isinstance(aStat, SyntacticAnalysis.PropertySignatureStatement):
-			self.EnterPropertyScope()
+			self.EnterPropertyScope(aStat)
 		elif isinstance(aStat, SyntacticAnalysis.StateSignatureStatement):
-			self.EnterStateScope()
+			self.EnterStateScope(aStat)
 		elif isinstance(aStat, SyntacticAnalysis.StructSignatureStatement):
-			self.EnterStructScope()
+			self.EnterStructScope(aStat)
 		elif isinstance(aStat, SyntacticAnalysis.VariableStatement):
 			pass
 		else:
@@ -132,11 +132,11 @@ class SemanticFirstPhase(object):
 
 	def StateScope(self, aStat):
 		if isinstance(aStat, SyntacticAnalysis.EventSignatureStatement):
-			self.EnterEventScope()
+			self.EnterEventScope(aStat)
 		elif isinstance(aStat, SyntacticAnalysis.FunctionSignatureStatement):
-			self.EnterFunctionScope()
+			self.EnterFunctionScope(aStat)
 		elif isinstance(aStat, SyntacticAnalysis.EndStateStatement):
-			self.LeaveStateScope()
+			self.LeaveStateScope(aStat)
 		else:
 			raise SemanticError("Illegal statement in the state scope.", aStat.line)
 
@@ -180,7 +180,7 @@ class SemanticFirstPhase(object):
 			self.currentScope.append(ScopeEnum.DO)
 			self.stack[-1].append(aStat)
 		elif isinstance(aStat, SyntacticAnalysis.EndFunctionStatement):
-			self.LeaveFunctionScope()
+			self.LeaveFunctionScope(aStat)
 		else:
 			raise SemanticError("Illegal statement in the function/event scope.", aStat.line)
 
@@ -247,7 +247,7 @@ class SemanticFirstPhase(object):
 		elif isinstance(aStat, SyntacticAnalysis.DoStatement):
 			self.currentScope.append(ScopeEnum.DO)
 		elif isinstance(aStat, SyntacticAnalysis.EndEventStatement):
-			self.LeaveEventScope()
+			self.LeaveEventScope(aStat)
 		else:
 			raise SemanticError("Illegal statement in the function/event scope.", aStat.line)
 
@@ -532,33 +532,33 @@ class SemanticFirstPhase(object):
 
 	def ForEachScope(self, aStat):
 		if isinstance(aStat, SyntacticAnalysis.AssignmentStatement):
-				pass
-			elif isinstance(aStat, SyntacticAnalysis.ExpressionStatement):
-				pass
-			elif isinstance(aStat, SyntacticAnalysis.IfStatement):
-				self.currentScope.append(ScopeEnum.IF)
-			elif isinstance(aStat, SyntacticAnalysis.ReturnStatement):
-				pass
-			elif isinstance(aStat, SyntacticAnalysis.VariableStatement):
-				pass
-			elif isinstance(aStat, SyntacticAnalysis.WhileStatement):
-				self.currentScope.append(ScopeEnum.WHILE)
-			elif isinstance(aStat, SyntacticAnalysis.SwitchStatement):
-				self.currentScope.append(ScopeEnum.SWITCH)
-			elif isinstance(aStat, SyntacticAnalysis.ForStatement):
-				self.currentScope.append(ScopeEnum.FOR)
-			elif isinstance(aStat, SyntacticAnalysis.ForEachStatement):
-				self.currentScope.append(ScopeEnum.FOREACH)
-			elif isinstance(aStat, SyntacticAnalysis.DoStatement):
-				self.currentScope.append(ScopeEnum.DO)
-			elif isinstance(aStat, SyntacticAnalysis.BreakStatement):
-				pass
-			elif isinstance(aStat, SyntacticAnalysis.ContinueStatement):
-				pass
-			elif isinstance(aStat, SyntacticAnalysis.EndForEachStatement):
-				self.currentScope.pop()
-			else:
-				raise SemanticError("Illegal statement in the function/event scope.", aStat.line)
+			pass
+		elif isinstance(aStat, SyntacticAnalysis.ExpressionStatement):
+			pass
+		elif isinstance(aStat, SyntacticAnalysis.IfStatement):
+			self.currentScope.append(ScopeEnum.IF)
+		elif isinstance(aStat, SyntacticAnalysis.ReturnStatement):
+			pass
+		elif isinstance(aStat, SyntacticAnalysis.VariableStatement):
+			pass
+		elif isinstance(aStat, SyntacticAnalysis.WhileStatement):
+			self.currentScope.append(ScopeEnum.WHILE)
+		elif isinstance(aStat, SyntacticAnalysis.SwitchStatement):
+			self.currentScope.append(ScopeEnum.SWITCH)
+		elif isinstance(aStat, SyntacticAnalysis.ForStatement):
+			self.currentScope.append(ScopeEnum.FOR)
+		elif isinstance(aStat, SyntacticAnalysis.ForEachStatement):
+			self.currentScope.append(ScopeEnum.FOREACH)
+		elif isinstance(aStat, SyntacticAnalysis.DoStatement):
+			self.currentScope.append(ScopeEnum.DO)
+		elif isinstance(aStat, SyntacticAnalysis.BreakStatement):
+			pass
+		elif isinstance(aStat, SyntacticAnalysis.ContinueStatement):
+			pass
+		elif isinstance(aStat, SyntacticAnalysis.EndForEachStatement):
+			self.currentScope.pop()
+		else:
+			raise SemanticError("Illegal statement in the function/event scope.", aStat.line)
 	#End of Caprica extensions
 
 # ==================== Property ====================
@@ -570,11 +570,11 @@ class SemanticFirstPhase(object):
 
 	def PropertyScope(self, aStat):
 		if isinstance(aStat, SyntacticAnalysis.FunctionSignatureStatement):
-			self.EnterFunctionScope()
+			self.EnterFunctionScope(aStat)
 		elif isinstance(aStat, SyntacticAnalysis.DocstringStatement):
 			self.stack[-1].append(aStat)
 		elif isinstance(aStat, SyntacticAnalysis.EndPropertyStatement):
-			self.LeavePropertyScope()
+			self.LeavePropertyScope(aStat)
 		else:
 			raise SemanticError("Illegal statement in the property scope.", aStat.line)
 
@@ -618,13 +618,13 @@ class SemanticFirstPhase(object):
 				raise Exception("Unsupported property element:", type(element))
 		# Auto or AutoReadOnly property: signature + optional docstring
 		if signature.flags.isAuto or signature.flags.isAutoReadOnly:
-			self.stack[-1].append(PropertyObject(signature, setFunction, getFunction, signature.line))
+			self.stack[-1].append(PropertyObject(signature, docstring, setFunction, getFunction, signature.line))
 		# Full property: signature + optional docstring + property body
 		else:
 			# Function validation (at least a Set or a Get function)
 			if not setFunction and not getFunction:
 				raise SemanticError("This property has to have at least a 'Set' or a 'Get' function.", signature.line)
-			self.stack[-1].append(PropertyObject(signature, setFunction, getFunction, aStat.line))
+			self.stack[-1].append(PropertyObject(signature, docstring, setFunction, getFunction, aStat.line))
 		self.currentScope.pop()
 
 # ==================== Struct ====================
@@ -638,7 +638,7 @@ class SemanticFirstPhase(object):
 		elif isinstance(aStat, SyntacticAnalysis.VariableStatement):
 			self.stack[-1].append(aStat)
 		elif isinstance(aStat, SyntacticAnalysis.EndStructStatement):
-			self.LeaveStructScope()
+			self.LeaveStructScope(aStat)
 		else:
 			raise SemanticError("Illegal statement in the struct scope.", aStat.line)
 
@@ -685,9 +685,9 @@ class SemanticFirstPhase(object):
 		if isinstance(aStat, SyntacticAnalysis.DocstringStatement):
 			self.stack[-1].append(aStat)
 		elif isinstance(aStat, SyntacticAnalysis.PropertySignatureStatement):
-			self.EnterPropertyScope()
+			self.EnterPropertyScope(aStat)
 		elif isinstance(aStat, SyntacticAnalysis.EndGroupStatement):
-			self.LeaveGroupScope()
+			self.LeaveGroupScope(aStat)
 		else:
 			raise SemanticError("Illegal statement in the group scope.", aStat.line)
 
@@ -706,7 +706,7 @@ class SemanticFirstPhase(object):
 						raise SemanticError("Groups can only have one docstring.", element.line)
 					else:
 						raise SemanticError("A docstring has to be the next statement after the group signature.", element.line)
-				elif: isinstance(element, PropertyObject):
+				elif isinstance(element, PropertyObject):
 					key = str(element.identifier).upper()
 					if members.get(key, None):
 						raise SemanticError("This group already has a member called '%s'." % element.identifier, element.starts)
@@ -735,7 +735,7 @@ class SemanticFirstPhase(object):
 		if currentScope == -1:
 			print(type(aStat))
 			if isinstance(aStat, SyntacticAnalysis.ScriptSignatureStatement):
-				self.EnterEmptyStateScope()
+				self.EnterEmptyStateScope(aStat)
 			else:
 				raise SemanticError("Expected the first statement to be the script header.", aStat.line)
 		elif currentScope == ScopeEnum.ELSE:
@@ -813,15 +813,18 @@ class PropertyObject(object):
 		"identifier", # Identifier
 		"type", # Type
 		"value", # ExpressionNode (optional)
-		"flags", #PropertyFlags
+		"flags", # PropertyFlags
+		"docstring", # str
 		"setFunction", # FunctionObject
 		"getFunction", # FunctionObject
 		"starts", # int
 		"ends" # int
 	]
 
-	def __init__(self, aSignature, aSetFunction, aGetFunction, aEnds):
+	def __init__(self, aSignature, aDocstring, aSetFunction, aGetFunction, aEnds):
 		assert isinstance(aSignature, SyntacticAnalysis.PropertySignatureStatement) #Prune
+		if aDocstring: #Prune
+			assert isinstance(aDocstring, SyntacticAnalysis.DocstringStatement) #Prune
 		if aSetFunction: #Prune
 			assert isinstance(aSetFunction, FunctionObject) #Prune
 		if aGetFunction: #Prune
@@ -831,6 +834,10 @@ class PropertyObject(object):
 		self.type = aSignature.type
 		self.value = aSignature.value
 		self.flags = aSignature.flags
+		if aDocstring:
+			self.docstring = aDocstring.value
+		else:
+			self.docstring = ""
 		self.setFunction = aSetFunction
 		self.getFunction = aGetFunction
 		self.starts = aSignature.line
@@ -869,7 +876,10 @@ class GroupObject(object):
 		assert isinstance(aEnds, int) #Prune
 		self.identifier = aSignature.identifier
 		self.flags = aSignature.flags
-		self.docstring = aDocstring.value
+		if aDocstring:
+			self.docstring = aDocstring.value
+		else:
+			self.docstring = ""
 		self.members = aMembers
 		self.starts = aSignature.line
 		self.ends = aEnds
@@ -922,7 +932,10 @@ class StructMember(object):
 			assert isinstance(aDocstring, SyntacticAnalysis.DocstringStatement) #Prune
 		self.identifier = aSignature.identifier
 		self.type = aSignature.type
-		self.docstring = aDocstring.value
+		if aDocstring:
+			self.docstring = aDocstring.value
+		else:
+			self.docstring = ""
 		self.line = aSignature.line
 
 class StructObject(object):
