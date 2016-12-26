@@ -683,7 +683,7 @@ class SemanticFirstPhase(object):
 
 	def GroupScope(self, aStat):
 		if isinstance(aStat, SyntacticAnalysis.DocstringStatement):
-			pass
+			self.stack[-1].append(aStat)
 		elif isinstance(aStat, SyntacticAnalysis.PropertySignatureStatement):
 			self.EnterPropertyScope()
 		elif isinstance(aStat, SyntacticAnalysis.EndGroupStatement):
@@ -692,6 +692,30 @@ class SemanticFirstPhase(object):
 			raise SemanticError("Illegal statement in the group scope.", aStat.line)
 
 	def LeaveGroupScope(self, aStat):
+		scope = self.stack.pop()
+		signature = scope.pop(0)
+		if scope:
+			members = {}
+			docstring = None
+			if isinstance(scope[0], SyntacticAnalysis.DocstringStatement):
+				docstring = scope.pop(0)
+			for element in scope:
+				# Docstring validation
+				if isinstance(element, SyntacticAnalysis.DocstringStatement):
+					if docstring:
+						raise SemanticError("Groups can only have one docstring.", element.line)
+					else:
+						raise SemanticError("A docstring has to be the next statement after the group signature.", element.line)
+				elif: isinstance(element, PropertyObject):
+					key = str(element.identifier).upper()
+					if members.get(key, None):
+						raise SemanticError("This group already has a member called '%s'." % element.identifier, element.starts)
+					members[key] = element
+			if not members:
+				members = None
+			self.stack[-1].append(GroupObject(signature, docstring, members, aStat.line))
+		else:
+			self.stack[-1].append(GroupObject(signature, None, None, aStat.line))
 		self.currentScope.pop()
 
 # ==================== Assembling ====================
@@ -836,8 +860,19 @@ class GroupObject(object):
 		"ends" # int
 	]
 
-	def __init__(self):
-		pass
+	def __init__(self, aSignature, aDocstring, aMembers, aEnds):
+		assert isinstance(aSignature, SyntacticAnalysis.GroupSignatureStatement) #Prune
+		if aDocstring: #Prune
+			assert isinstance(aDocstring, SyntacticAnalysis.DocstringStatement) #Prune
+		if aMembers: #Prune
+			assert isinstance(aMembers, dict) #Prune
+		assert isinstance(aEnds, int) #Prune
+		self.identifier = aSignature.identifier
+		self.flags = aSignature.flags
+		self.docstring = aDocstring.value
+		self.members = aMembers
+		self.starts = aSignature.line
+		self.ends = aEnds
 
 class ScriptObject(object):
 	__slots__ = [
@@ -883,7 +918,8 @@ class StructMember(object):
 
 	def __init__(self, aSignature, aDocstring):
 		assert isinstance(aSignature, SyntacticAnalysis.VariableStatement) #Prune
-		assert isinstance(aDocstring, SyntacticAnalysis.DocstringStatement) #Prune
+		if aDocstring: #Prune
+			assert isinstance(aDocstring, SyntacticAnalysis.DocstringStatement) #Prune
 		self.identifier = aSignature.identifier
 		self.type = aSignature.type
 		self.docstring = aDocstring.value
