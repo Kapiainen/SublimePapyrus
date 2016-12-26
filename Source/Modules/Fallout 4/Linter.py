@@ -139,6 +139,59 @@ def BuildScript(aSource):
 			tokens.append(token)
 	return SEMP1.Build()
 
+def SortImport(aIdentifier, aScripts, aNamespaces):
+	global IMPORT_PATHS
+	isFile = False
+	isDir = False
+	if PLATFORM_WINDOWS:
+		pass #TODO: Implement the same as below, but in a manner that is faster on case-insensitive filesystems
+	else:
+		namespaceOriginal = [e.upper() for e in aIdentifier.namespace]
+		name = aIdentifier.name.upper()
+		fileName = name + ".PSC"
+		for importPath in IMPORT_PATHS:
+			if isFile and isDir:
+				break
+			namespace = namespaceOriginal[:]
+			path = importPath
+			while namespace:
+				progressed = False
+				for entry in os.listdir(path):
+					if entry.upper() == namespace[0]:
+						temp = os.path.join(path, entry)
+						if os.path.isdir(temp):
+							path = temp
+							namespace.pop(0)
+							progressed = True
+							break
+				if not progressed:
+					break
+			if namespace:
+				continue
+			for entry in os.listdir(path):
+				entryUpper = entry.upper()
+				if not isFile and fileName == entryUpper:
+					temp = os.path.join(path, entry)
+					if os.path.isfile(temp):
+						isFile = True
+				if not isDir and name == entryUpper:
+					temp = os.path.join(path, entry)
+					if os.path.isdir(temp):
+						isDir = True
+	key = str(aIdentifier).upper()
+	if isFile and isDir:
+		raise Exception("Ambiguous import, could be both a script and a namespace.") #TODO: Handle this error
+	elif isFile:
+		if aScripts.get(key, None):
+			raise Exception("Already imported this script.") #TODO: Handle this error
+		aScripts[key] = aIdentifier
+	elif isDir:
+		if aNamespaces.get(key, None):
+			raise Exception("Already imported this namespace.") #TODO: Handle this error
+		aNamespaces[key] = aIdentifier
+	else:
+		raise Exception("Unresolved import.") #TODO: Handle this error
+
 def Initialize():
 	global LEX
 	global SYN
@@ -146,7 +199,7 @@ def Initialize():
 	global SEMP2
 	LEX = Lexical()
 	SYN = Syntactic()
-	SEMP1 = SemanticFirstPhase()
+	SEMP1 = SemanticFirstPhase(SortImport)
 	SEMP2 = SemanticSecondPhase()
 
 def Process(aSource, aPaths, aCaprica):

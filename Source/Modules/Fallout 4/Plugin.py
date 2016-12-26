@@ -193,22 +193,22 @@ class EventListener(sublime_plugin.EventListener):
 				moduleSettings = modules.get("fallout4", None)
 				if moduleSettings:
 					sourcePaths = SublimePapyrus.GetSourcePaths(view)
-					scripts = moduleSettings.get("scripts", None)
-					if scripts:
-						sourcePaths.insert(0, scripts)
-						lineNumber, columnNumber = view.rowcol(view.sel()[0].begin())
-						lineNumber += 1
-						scriptContents = view.substr(sublime.Region(0, view.size()))						
-						args = None
-						caprica = "fallout4.caprica" in view.scope_name(0)
-						if PYTHON_VERSION[0] == 2:
-							args = {"aView": None, "aLineNumber": lineNumber, "aSource": scriptContents, "aPaths": sourcePaths, "aCaprica": caprica}
-						elif PYTHON_VERSION[0] >= 3:
-							args = {"aView": view, "aLineNumber": lineNumber, "aSource": scriptContents, "aPaths": sourcePaths, "aCaprica": caprica}
-						if args:
-							t = threading.Timer(delay, self.RunLinter, kwargs=args)
-							t.daemon = True
-							t.start()
+					#scripts = moduleSettings.get("scripts", None)
+					#if scripts:
+						#sourcePaths.insert(0, scripts)
+					lineNumber, columnNumber = view.rowcol(view.sel()[0].begin())
+					lineNumber += 1
+					scriptContents = view.substr(sublime.Region(0, view.size()))						
+					args = None
+					caprica = "fallout4.caprica" in view.scope_name(0)
+					if PYTHON_VERSION[0] == 2:
+						args = {"aView": None, "aLineNumber": lineNumber, "aSource": scriptContents, "aPaths": sourcePaths, "aCaprica": caprica}
+					elif PYTHON_VERSION[0] >= 3:
+						args = {"aView": view, "aLineNumber": lineNumber, "aSource": scriptContents, "aPaths": sourcePaths, "aCaprica": caprica}
+					if args:
+						t = threading.Timer(delay, self.RunLinter, kwargs=args)
+						t.daemon = True
+						t.start()
 
 	def RunLinter(self, aView, aLineNumber, aSource, aPaths, aCaprica):
 	# aView: A sublime.View object, possibly has the value None

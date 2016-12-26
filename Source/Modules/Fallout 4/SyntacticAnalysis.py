@@ -140,6 +140,8 @@ class Identifier(object):
 
 	def __init__(self, aIdentifier):
 		assert isinstance(aIdentifier, list) #Prune
+		#TODO: Change the constructor so that it can handle a single string or a list of strings
+		#TODO: Change instances of Identifier creation so that unnecessary lists are no longer allocated to contain a single string
 		self.name = aIdentifier.pop()
 		self.namespace = aIdentifier
 
@@ -1586,7 +1588,7 @@ class Syntactic(object):
 			result = EndPropertyStatement(self.line)
 		elif tokenType == TokenEnum.kCUSTOMEVENT:
 			self.Consume()
-			result = CustomEvent(self.line, self.Expect(TokenEnum.IDENTIFIER))
+			result = CustomEvent(Identifier([self.Expect(TokenEnum.IDENTIFIER)].value), self.line)
 		elif tokenType == TokenEnum.kGROUP:
 			self.Consume()
 			identifier = Identifier([self.Expect(TokenEnum.IDENTIFIER).value])
@@ -1601,23 +1603,23 @@ class Syntactic(object):
 			result = EndGroupStatement(self.line)
 		elif tokenType == TokenEnum.kSTRUCT:
 			self.Consume()
-			result = StructSignature(self.line, self.Expect(TokenEnum.IDENTIFIER))
+			result = StructSignature(Identifier([self.Expect(TokenEnum.IDENTIFIER).value]), self.line)
 		elif tokenType == TokenEnum.kENDSTRUCT:
 			self.Consume()
 			result = EndStructStatement(self.line)
 		elif tokenType == TokenEnum.kSTATE:
 			self.Consume()
-			result = StateSignature(self.line, self.Expect(TokenEnum.IDENTIFIER), False)
+			result = StateSignature(Identifier([self.Expect(TokenEnum.IDENTIFIER).value]), False, self.line)
 		elif tokenType == TokenEnum.kAUTO:
 			self.Consume()
 			self.Expect(TokenEnum.kSTATE)
-			result = StateSignature(self.line, self.Expect(TokenEnum.IDENTIFIER), True)
+			result = StateSignature(Identifier([self.Expect(TokenEnum.IDENTIFIER).value]), True, self.line)
 		elif tokenType == TokenEnum.kENDSTATE:
 			self.Consume()
 			result = EndState(self.line)
 		elif tokenType == TokenEnum.kIMPORT:
 			self.Consume()
-			result = Import(self.line, self.ExpectType(False))
+			result = ImportStatement(Identifier(self.ExpectType(False)), self.line)
 		elif tokenType == TokenEnum.kSCRIPTNAME:
 			self.Consume()
 			identifier = Identifier(self.ExpectType(False))

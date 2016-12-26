@@ -318,11 +318,15 @@ class SemanticFirstPhase(object):
 		"capricaExtensions", # bool
 		"currentScope", # ScopeEnum
 		"stack", # list of objects
-		"pendingDocstring" # function
+		"pendingDocstring", # function
+		"sortImport" # function (Identifier, dict for scripts, dict for namespaces)
 	]
 
-	def __init__(self):
-		pass
+	def __init__(self, aSortImport):
+#		if not aSortImport:
+		self.sortImport = aSortImport
+#		else:
+#			raise Exception("SemanticFirstPhase's aSortImport parameter is None.")
 
 	def Reset(self, aCaprica):
 		self.capricaExtensions = aCaprica
@@ -443,16 +447,7 @@ class SemanticFirstPhase(object):
 						raise SemanticError("This script already has a state called '%s'." % element.identifier, element.starts)
 					states[key] = element
 				elif isinstance(element, SyntacticAnalysis.ImportStatement):
-					key = str(element.identifier).upper()
-					##TODO: Implement
-					## If script
-					#if importedScripts.get(key, None):
-					#	raise SemanticError("This script already imports the '%s' script." % element.identifier, element.line)
-					#importedScripts[key] = element
-					## If namespace
-					#if importedNamespaces.get(key, None):
-					#	raise SemanticError("This script already imports the '%s' namespace." % element.identifier, element.line)
-					#importedNamespaces[key] = element
+					self.sortImport(element.identifier, importedScripts, importedNamespaces)
 			if not functions:
 				functions = None
 			if not events:
@@ -816,6 +811,10 @@ class SemanticFirstPhase(object):
 			self.currentScope.append(ScopeEnum.FOREACH)
 		elif isinstance(aStat, SyntacticAnalysis.DoStatement):
 			self.currentScope.append(ScopeEnum.DO)
+		elif isinstance(aStat, SyntacticAnalysis.SwitchCaseStatement):
+			pass
+		elif isinstance(aStat, SyntacticAnalysis.SwitchDefaultStatement):
+			pass
 		elif isinstance(aStat, SyntacticAnalysis.BreakStatement):
 			pass
 		elif isinstance(aStat, SyntacticAnalysis.ContinueStatement):
@@ -847,9 +846,9 @@ class SemanticFirstPhase(object):
 			self.currentScope.append(ScopeEnum.FOREACH)
 		elif isinstance(aStat, SyntacticAnalysis.DoStatement):
 			self.currentScope.append(ScopeEnum.DO)
-		elif isinstance(aStat, SyntacticAnalysis.CaseStatement):
+		elif isinstance(aStat, SyntacticAnalysis.SwitchCaseStatement):
 			pass
-		elif isinstance(aStat, SyntacticAnalysis.DefaultStatement):
+		elif isinstance(aStat, SyntacticAnalysis.SwitchDefaultStatement):
 			pass
 		elif isinstance(aStat, SyntacticAnalysis.BreakStatement):
 			pass
