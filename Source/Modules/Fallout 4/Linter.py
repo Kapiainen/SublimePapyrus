@@ -127,7 +127,6 @@ def BuildScript(aSource):
 	global SYN
 	global SEMP1
 	global SEMP2
-#	global SEM
 	tokens = []
 	for token in LEX.Process(aSource):
 		tokenType = token.type
@@ -136,10 +135,10 @@ def BuildScript(aSource):
 				statement = SYN.Process(tokens)
 				if statement:
 					SEMP1.Assemble(statement)
-				#	SEM.AssembleScript(statement)
 				tokens = []
 		elif tokenType != TokenEnum.COMMENTLINE and tokenType != TokenEnum.COMMENTBLOCK:
 			tokens.append(token)
+	script = SEMP1.Build()
 	return None
 
 def Initialize():

@@ -123,7 +123,114 @@ class SemanticFirstPhase(object):
 			raise SemanticError("Illegal statement in the empty state scope.", aStat.line)
 
 	def LeaveEmptyStateScope(self):
-		pass
+		scope = self.stack.pop()
+		signature = scope.pop(0)
+		if scope:
+			docstring = None
+			if isinstance(scope[0], SyntacticAnalysis.DocstringStatement):
+				docstring = scope.pop(0)
+			functions = {}
+			events = {}
+			properties = {}
+			variables = {}
+			groups = {}
+			structs = {}
+			states = {}
+			importedScripts = {}
+			importedNamespaces = {}
+			for element in scope:
+				if isinstance(element, SyntacticAnalysis.DocstringStatement):
+					if docstring:
+						raise SemanticError("This script already has a docstring.", element.line)
+					else:
+						raise SemanticError("A docstring has to be the next statement after the script signature.", element.line)
+				elif isinstance(element, FunctionObject):
+					key = str(element.identifier).upper() #TODO: element.identifier.name.upper() instead?
+					if functions.get(key, None):
+						raise SemanticError("This script already has a function called '%s'." % element.identifier, element.starts)
+					elif events.get(key, None):
+						raise SemanticError("This script already has an event called '%s'." % element.identifier, element.starts)
+					functions[key] = element
+				elif isinstance(element, EventObject):
+					if element.remote:
+						key = ("%s.%s" % (element.remote, element.identifier)).upper()
+						if events.get(key, None):
+							raise SemanticError("This script already has a remote event called '%s.%s'." % (element.remote, element.identifier), element.starts)
+					else:
+						key = str(element.identifier).upper()
+						if events.get(key, None):
+							raise SemanticError("This script already has an event called '%s'." % element.identifier, element.starts)
+						elif functions.get(key, None):
+							raise SemanticError("This script already has a function called '%s'." % element.identifier, element.starts)
+					events[key] = element
+				elif isinstance(element, PropertyObject):
+					key = str(element.identifier).upper()
+					if properties.get(key, None):
+						raise SemanticError("This script already has a property called '%s'." % element.identifier, element.starts)
+					elif variables.get(key, None):
+						raise SemanticError("This script already has a variable called '%s'." % element.identifier, element.starts)
+					properties[key] = element
+				elif isinstance(element, SyntacticAnalysis.VariableStatement):
+					key = str(element.identifier).upper()
+					if variables.get(key, None):
+						raise SemanticError("This script already has a variable called '%s'." % element.identifier, element.starts)
+					elif properties.get(key, None):
+						raise SemanticError("This script already has a property called '%s'." % element.identifier, element.starts)
+					variables[key] = element
+				elif isinstance(element, GroupObject):
+					key = str(element.identifier).upper()
+					if groups.get(key, None):
+						raise SemanticError("This script already has a group called '%s'." % element.identifier, element.starts)
+					for key, prop in element.members.items():
+						if properties.get(key, None):
+							raise SemanticError("This script already has a property called '%s'." % element.identifier, prop.starts)
+						elif variables.get(key, None):
+							raise SemanticError("This script already has a variable called '%s'." % element.identifier, prop.starts)
+						properties[key] = prop
+					groups[key] = element
+				elif isinstance(element, StructObject):
+					key = str(element.identifier).upper()
+					if structs.get(key, None):
+						raise SemanticError("This script already has a struct called '%s'." % element.identifier, element.starts)
+					structs[key] = element
+				elif isinstance(element, StateObject):
+					key = str(element.identifier).upper()
+					if states.get(key, None):
+						raise SemanticError("This script already has a state called '%s'." % element.identifier, element.starts)
+					states[key] = element
+				elif isinstance(element, SyntacticAnalysis.ImportStatement):
+					key = str(element.identifier).upper()
+					##TODO: Implement
+					## If script
+					#if importedScripts.get(key, None):
+					#	raise SemanticError("This script already imports the '%s' script." % element.identifier, element.line)
+					#importedScripts[key] = element
+					## If namespace
+					#if importedNamespaces.get(key, None):
+					#	raise SemanticError("This script already imports the '%s' namespace." % element.identifier, element.line)
+					#importedNamespaces[key] = element
+			if not functions:
+				functions = None
+			if not events:
+				events = None
+			if not properties:
+				properties = None
+			if not variables:
+				variables = None
+			if not groups:
+				groups = None
+			if not structs:
+				structs = None
+			if not states:
+				states = None
+			if not importedScripts:
+				importedScripts = None
+			if not importedNamespaces:
+				importedNamespaces = None
+			self.stack.append(ScriptObject(signature, docstring, functions, events, properties, variables, groups, structs, states, importedScripts, importedNamespaces))
+		else:
+			self.stack.append(ScriptObject(signature, None, None, None, None, None, None, None, None, None, None))
+		self.currentScope.pop()
 
 # ==================== State ====================
 	def EnterStateScope(self, aStat):
@@ -147,6 +254,7 @@ class SemanticFirstPhase(object):
 			functions = {}
 			events = {}
 			for element in scope:
+				# Validation of duplicate function/event definitions.
 				if isinstance(element, FunctionObject):
 					key = str(element.identifier).upper()
 					if functions.get(key, None):
@@ -157,7 +265,7 @@ class SemanticFirstPhase(object):
 				elif isinstance(element, EventObject):
 					key = None
 					if element.remote:
-						key = "%s.%s" % (element.remote, element.identifier).upper()
+						key = ("%s.%s" % (element.remote, element.identifier)).upper()
 						if events.get(key, None):
 							raise SemanticError("This state already has an event called '%s.%s'." % (element.remote, element.identifier), element.starts)
 					else:
@@ -289,6 +397,7 @@ class SemanticFirstPhase(object):
 		signature = scope.pop(0)
 		if scope:
 			for statement in scope:
+				# Validation of return statements.
 				if isinstance(statement, SyntacticAnalysis.ReturnStatement):
 					if statement.expression:
 						raise SemanticError("Events cannot return a value.", statement.line)
@@ -822,9 +931,14 @@ class SemanticFirstPhase(object):
 			raise SemanticError("Unsupported scope ('%s')." % ScopeDescription[currentScope], aStat.line)
 
 # ==================== Building ====================
-	def BuildScript(self):
+	def Build(self):
 		"""Returns a Script"""
-		pass
+		self.LeaveEmptyStateScope()
+		script = self.stack.pop()
+		if isinstance(script, ScriptObject):
+			return script
+		else:
+			raise SemanticError("Failed to build script object.", 1)
 
 class FunctionObject(object):
 	__slots__ = [
@@ -948,7 +1062,7 @@ class ScriptObject(object):
 		"identifier", # Identifier
 		"extends", # Identifier
 		"flags", # ScriptFlags
-		"dosctring", # str
+		"docstring", # str
 		"functions", # dict of FunctionObject
 		"events", # dict of EventObject
 		"properties", # dict of PropertyObject
@@ -961,8 +1075,45 @@ class ScriptObject(object):
 		"starts" # int
 	]
 
-	def __init__(self):
-		pass
+	def __init__(self, aSignature, aDocstring, aFunctions, aEvents, aProperties, aVariables, aGroups, aStructs, aStates, aImportedScripts, aImportedNamespaces):
+		assert isinstance(aSignature, SyntacticAnalysis.ScriptSignatureStatement) #Prune
+		if aDocstring: #Prune
+			assert isinstance(aDocstring, SyntacticAnalysis.DocstringStatement) #Prune
+		if aFunctions: #Prune
+			assert isinstance(aFunctions, dict) #Prune
+		if aEvents: #Prune
+			assert isinstance(aEvents, dict) #Prune
+		if aProperties: #Prune
+			assert isinstance(aProperties, dict) #Prune
+		if aGroups: #Prune
+			assert isinstance(aGroups, dict) #Prune
+		if aStructs: #Prune
+			assert isinstance(aStructs, dict) #Prune
+		if aStates: #Prune
+			assert isinstance(aStates, dict) #Prune
+		if aVariables: #Prune
+			assert isinstance(aVariables, dict) #Prune
+		if aImportedScripts: #Prune
+			assert isinstance(aImportedScripts, dict) #Prune
+		if aImportedNamespaces: #Prune
+			assert isinstance(aImportedNamespaces, dict) #Prune
+		self.identifier = aSignature.identifier
+		self.extends = aSignature.extends
+		self.flags = aSignature.flags
+		if aDocstring:
+			self.dosctring = aDocstring.value
+		else:
+			self.docstring = ""
+		self.functions = aFunctions
+		self.events = aEvents
+		self.properties = aProperties
+		self.variables = aVariables
+		self.groups = aGroups
+		self.structs = aStructs
+		self.states = aStates
+		self.importedScripts = aImportedScripts
+		self.importedNamespaces = aImportedNamespaces
+		self.starts = aSignature.line
 
 class StateObject(object):
 	__slots__ = [
