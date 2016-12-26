@@ -634,15 +634,46 @@ class SemanticFirstPhase(object):
 
 	def StructScope(self, aStat):
 		if isinstance(aStat, SyntacticAnalysis.DocstringStatement):
-			pass
+			self.stack[-1].append(aStat)
 		elif isinstance(aStat, SyntacticAnalysis.VariableStatement):
-			pass
+			self.stack[-1].append(aStat)
 		elif isinstance(aStat, SyntacticAnalysis.EndStructStatement):
 			self.LeaveStructScope()
 		else:
 			raise SemanticError("Illegal statement in the struct scope.", aStat.line)
 
 	def LeaveStructScope(self, aStat):
+		scope = self.stack.pop()
+		signature = scope.pop(0)
+		if scope:
+			members = {}
+			memberStack = []
+
+			def ReduceMember():
+				var = memberStack.pop(0)
+				doc = None
+				if memberStack:
+					doc = memberStack.pop()
+				key = str(var.identifier).upper()
+				if members.get(key, None):
+					raise SemanticError("This struct already has a member called '%s'." % var.identifier, var.line)
+				members[key] = StructMember(var, doc)
+
+			while scope:
+				if isinstance(aStat, SyntacticAnalysis.VariableStatement):
+					if memberStack:
+						ReduceMember()
+					memberStack.append(scope.pop(0))
+				elif isinstance(aStat, SyntacticAnalysis.DocstringStatement):
+					if memberStack:
+						memberStack.append(scope.pop(0))
+					else:
+						raise SemanticError("Illegal docstring in the struct scope.", scope[0].line)
+			if memberStack:
+				ReduceMember()
+			self.stack[-1].append(StructObject(signature, members, aStat.line))
+		else:
+			self.stack[-1].append(StructObject(signature, None, aStat.line))
 		self.currentScope.pop()
 
 # ==================== Group ====================
@@ -847,11 +878,16 @@ class StructMember(object):
 		"identifier", # Identifier
 		"type", # Type
 		"docstring", # str
-		"line"
+		"line" # int
 	]
 
-	def __init__(self):
-		pass
+	def __init__(self, aSignature, aDocstring):
+		assert isinstance(aSignature, SyntacticAnalysis.VariableStatement) #Prune
+		assert isinstance(aDocstring, SyntacticAnalysis.DocstringStatement) #Prune
+		self.identifier = aSignature.identifier
+		self.type = aSignature.type
+		self.docstring = aDocstring.value
+		self.line = aSignature.line
 
 class StructObject(object):
 	__slots__ = [
@@ -861,8 +897,15 @@ class StructObject(object):
 		"ends" # int
 	]
 
-	def __init__(self):
-		pass
+	def __init__(self, aSignature, aMembers, aEnds):
+		assert isinstance(aSignature, SyntacticAnalysis.StructSignatureStatement) #Prune
+		if aMembers: #Prune
+			assert isinstance(a, dict) #Prune
+		assert isinstance(a, int) #Prune
+		self.identifier = aSignature.identifier
+		self.members = aMembers
+		self.starts = aSignature.line
+		self.ends = aEnds
 
 # Second phase of semantic analysis
 class SemanticSecondPhase(object):
