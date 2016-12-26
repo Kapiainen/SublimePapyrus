@@ -774,3 +774,86 @@ class PropertyObject(object):
 		self.getFunction = aGetFunction
 		self.starts = aSignature.line
 		self.ends = aEnds
+
+class EventObject(object):
+	__slots__ = [
+		"identifier", # Identifier
+		"remote", # Identifier
+		"parameters", # list of EventParameter (optional)
+		"flags", # EventFlags
+		"body", # list of statements
+		"starts", # int
+		"ends" # int
+	]
+
+	def __init__(self):
+		pass
+
+class GroupObject(object):
+	__slots__ = [
+		"identifier", # Identifier
+		"flags", # GroupFlags
+		"docstring", # str
+		"members", # dict of PropertyObject
+		"starts", # int
+		"ends" # int
+	]
+
+	def __init__(self):
+		pass
+
+class ScriptObject(object):
+	__slots__ = [
+		"identifier", # Identifier
+		"extends", # Identifier
+		"flags", # ScriptFlags
+		"dosctring", # str
+		"functions", # dict of FunctionObject
+		"events", # dict of EventObject
+		"properties", # dict of PropertyObject
+		"variables", # dict of VariableStatement
+		"groups", # dict of GroupObject
+		"structs", # dict of StructObject
+		"states", # dict of StateObject
+		"importedScripts", # dict of ImportStatement
+		"importedNamespaces", # dict of ImportStatement
+		"starts" # int
+	]
+
+	def __init__(self):
+		pass
+
+class StateObject(object):
+	__slots__ = [
+		"identifier", # Identifier
+		"flags", # StateFlags
+		"functions", # dict of FunctionObject
+		"events", # dict of EventObject
+		"starts", # int
+		"ends" # int
+	]
+
+	def __init__(self):
+		pass
+
+class StructMember(object):
+	__slots__ = [
+		"identifier", # Identifier
+		"type", # Type
+		"docstring", # str
+		"line"
+	]
+
+	def __init__(self):
+		pass
+
+class StructObject(object):
+	__slots__ = [
+		"identifier", # Identifier
+		"members", # dict of StructMember
+		"starts", # int
+		"ends" # int
+	]
+
+	def __init__(self):
+		pass
