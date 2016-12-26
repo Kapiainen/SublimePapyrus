@@ -195,7 +195,7 @@ class ScriptObject(object):
 		self.extends = aSignature.extends
 		self.flags = aSignature.flags
 		if aDocstring:
-			self.dosctring = aDocstring.value
+			self.docstring = aDocstring.value
 		else:
 			self.docstring = ""
 		self.functions = aFunctions
@@ -342,22 +342,29 @@ class SemanticFirstPhase(object):
 			pass
 		elif isinstance(aStat, SyntacticAnalysis.EventSignatureStatement):
 			self.EnterEventScope(aStat)
+			return
 		elif isinstance(aStat, SyntacticAnalysis.FunctionSignatureStatement):
 			self.EnterFunctionScope(aStat)
+			return
 		elif isinstance(aStat, SyntacticAnalysis.GroupSignatureStatement):
 			self.EnterGroupScope(aStat)
+			return
 		elif isinstance(aStat, SyntacticAnalysis.ImportStatement):
 			pass
 		elif isinstance(aStat, SyntacticAnalysis.PropertySignatureStatement):
 			self.EnterPropertyScope(aStat)
+			return
 		elif isinstance(aStat, SyntacticAnalysis.StateSignatureStatement):
 			self.EnterStateScope(aStat)
+			return
 		elif isinstance(aStat, SyntacticAnalysis.StructSignatureStatement):
 			self.EnterStructScope(aStat)
+			return
 		elif isinstance(aStat, SyntacticAnalysis.VariableStatement):
 			pass
 		else:
 			raise SemanticError("Illegal statement in the empty state scope.", aStat.line)
+		self.stack[-1].append(aStat)
 
 	def LeaveEmptyStateScope(self):
 		scope = self.stack.pop()
@@ -477,10 +484,13 @@ class SemanticFirstPhase(object):
 	def StateScope(self, aStat):
 		if isinstance(aStat, SyntacticAnalysis.EventSignatureStatement):
 			self.EnterEventScope(aStat)
+			return
 		elif isinstance(aStat, SyntacticAnalysis.FunctionSignatureStatement):
 			self.EnterFunctionScope(aStat)
+			return
 		elif isinstance(aStat, SyntacticAnalysis.EndStateStatement):
 			self.LeaveStateScope(aStat)
+			return
 		else:
 			raise SemanticError("Illegal statement in the state scope.", aStat.line)
 
@@ -530,37 +540,36 @@ class SemanticFirstPhase(object):
 
 	def FunctionScope(self, aStat):
 		if isinstance(aStat, SyntacticAnalysis.AssignmentStatement):
-			self.stack[-1].append(aStat)
+			pass
 		elif isinstance(aStat, SyntacticAnalysis.DocstringStatement):
-			self.stack[-1].append(aStat)
+			pass
 		elif isinstance(aStat, SyntacticAnalysis.ExpressionStatement):
-			self.stack[-1].append(aStat)
+			pass
 		elif isinstance(aStat, SyntacticAnalysis.IfStatement):
 			self.currentScope.append(ScopeEnum.IF)
-			self.stack[-1].append(aStat)
 		elif isinstance(aStat, SyntacticAnalysis.ReturnStatement):
-			self.stack[-1].append(aStat)
+			pass
 		elif isinstance(aStat, SyntacticAnalysis.VariableStatement):
-			self.stack[-1].append(aStat)
+			pass
 		elif isinstance(aStat, SyntacticAnalysis.WhileStatement):
 			self.currentScope.append(ScopeEnum.WHILE)
-			self.stack[-1].append(aStat)
-		elif isinstance(aStat, SyntacticAnalysis.SwitchStatement):
-			self.currentScope.append(ScopeEnum.SWITCH)
-			self.stack[-1].append(aStat)
-		elif isinstance(aStat, SyntacticAnalysis.ForStatement):
-			self.currentScope.append(ScopeEnum.FOR)
-			self.stack[-1].append(aStat)
-		elif isinstance(aStat, SyntacticAnalysis.ForEachStatement):
-			self.currentScope.append(ScopeEnum.FOREACH)
-			self.stack[-1].append(aStat)
-		elif isinstance(aStat, SyntacticAnalysis.DoStatement):
-			self.currentScope.append(ScopeEnum.DO)
-			self.stack[-1].append(aStat)
 		elif isinstance(aStat, SyntacticAnalysis.EndFunctionStatement):
 			self.LeaveFunctionScope(aStat)
+			return
+		elif self.capricaExtensions:
+			if isinstance(aStat, SyntacticAnalysis.SwitchStatement):
+				self.currentScope.append(ScopeEnum.SWITCH)
+			elif isinstance(aStat, SyntacticAnalysis.ForStatement):
+				self.currentScope.append(ScopeEnum.FOR)
+			elif isinstance(aStat, SyntacticAnalysis.ForEachStatement):
+				self.currentScope.append(ScopeEnum.FOREACH)
+			elif isinstance(aStat, SyntacticAnalysis.DoStatement):
+				self.currentScope.append(ScopeEnum.DO)
+			else:
+				raise SemanticError("Illegal statement in the function scope.", aStat.line)
 		else:
-			raise SemanticError("Illegal statement in the function/event scope.", aStat.line)
+			raise SemanticError("Illegal statement in the function scope.", aStat.line)
+		self.stack[-1].append(aStat)
 
 	def LeaveFunctionScope(self, aStat):
 		scope = self.stack.pop()
@@ -616,18 +625,23 @@ class SemanticFirstPhase(object):
 			pass
 		elif isinstance(aStat, SyntacticAnalysis.WhileStatement):
 			self.currentScope.append(ScopeEnum.WHILE)
-		elif isinstance(aStat, SyntacticAnalysis.SwitchStatement):
-			self.currentScope.append(ScopeEnum.SWITCH)
-		elif isinstance(aStat, SyntacticAnalysis.ForStatement):
-			self.currentScope.append(ScopeEnum.FOR)
-		elif isinstance(aStat, SyntacticAnalysis.ForEachStatement):
-			self.currentScope.append(ScopeEnum.FOREACH)
-		elif isinstance(aStat, SyntacticAnalysis.DoStatement):
-			self.currentScope.append(ScopeEnum.DO)
 		elif isinstance(aStat, SyntacticAnalysis.EndEventStatement):
 			self.LeaveEventScope(aStat)
+			return
+		elif self.capricaExtensions:
+			if isinstance(aStat, SyntacticAnalysis.SwitchStatement):
+				self.currentScope.append(ScopeEnum.SWITCH)
+			elif isinstance(aStat, SyntacticAnalysis.ForStatement):
+				self.currentScope.append(ScopeEnum.FOR)
+			elif isinstance(aStat, SyntacticAnalysis.ForEachStatement):
+				self.currentScope.append(ScopeEnum.FOREACH)
+			elif isinstance(aStat, SyntacticAnalysis.DoStatement):
+				self.currentScope.append(ScopeEnum.DO)
+			else:
+				raise SemanticError("Illegal statement in the event scope.", aStat.line)
 		else:
-			raise SemanticError("Illegal statement in the function/event scope.", aStat.line)
+			raise SemanticError("Illegal statement in the event scope.", aStat.line)
+		self.stack[-1].append(aStat)
 
 	def LeaveEventScope(self, aStat):
 		scope = self.stack.pop()
@@ -663,18 +677,22 @@ class SemanticFirstPhase(object):
 			pass
 		elif isinstance(aStat, SyntacticAnalysis.WhileStatement):
 			self.currentScope.append(ScopeEnum.WHILE)
-		elif isinstance(aStat, SyntacticAnalysis.SwitchStatement):
-			self.currentScope.append(ScopeEnum.SWITCH)
-		elif isinstance(aStat, SyntacticAnalysis.ForStatement):
-			self.currentScope.append(ScopeEnum.FOR)
-		elif isinstance(aStat, SyntacticAnalysis.ForEachStatement):
-			self.currentScope.append(ScopeEnum.FOREACH)
-		elif isinstance(aStat, SyntacticAnalysis.DoStatement):
-			self.currentScope.append(ScopeEnum.DO)
 		elif isinstance(aStat, SyntacticAnalysis.EndIfStatement):
 			self.currentScope.pop()
+		elif self.capricaExtensions:
+			if isinstance(aStat, SyntacticAnalysis.SwitchStatement):
+				self.currentScope.append(ScopeEnum.SWITCH)
+			elif isinstance(aStat, SyntacticAnalysis.ForStatement):
+				self.currentScope.append(ScopeEnum.FOR)
+			elif isinstance(aStat, SyntacticAnalysis.ForEachStatement):
+				self.currentScope.append(ScopeEnum.FOREACH)
+			elif isinstance(aStat, SyntacticAnalysis.DoStatement):
+				self.currentScope.append(ScopeEnum.DO)
+			else:
+				raise SemanticError("Illegal statement in the 'If' scope.", aStat.line)
 		else:
-			raise SemanticError("Illegal statement in the function/event scope.", aStat.line)
+			raise SemanticError("Illegal statement in the 'If' scope.", aStat.line)
+		self.stack[-1].append(aStat)
 
 	def ElseIfScope(self, aStat):
 		if isinstance(aStat, SyntacticAnalysis.AssignmentStatement):
@@ -695,18 +713,22 @@ class SemanticFirstPhase(object):
 			pass
 		elif isinstance(aStat, SyntacticAnalysis.WhileStatement):
 			self.currentScope.append(ScopeEnum.WHILE)
-		elif isinstance(aStat, SyntacticAnalysis.SwitchStatement):
-			self.currentScope.append(ScopeEnum.SWITCH)
-		elif isinstance(aStat, SyntacticAnalysis.ForStatement):
-			self.currentScope.append(ScopeEnum.FOR)
-		elif isinstance(aStat, SyntacticAnalysis.ForEachStatement):
-			self.currentScope.append(ScopeEnum.FOREACH)
-		elif isinstance(aStat, SyntacticAnalysis.DoStatement):
-			self.currentScope.append(ScopeEnum.DO)
 		elif isinstance(aStat, SyntacticAnalysis.EndIfStatement):
 			self.currentScope.pop()
+		elif self.capricaExtensions:
+			if isinstance(aStat, SyntacticAnalysis.SwitchStatement):
+				self.currentScope.append(ScopeEnum.SWITCH)
+			elif isinstance(aStat, SyntacticAnalysis.ForStatement):
+				self.currentScope.append(ScopeEnum.FOR)
+			elif isinstance(aStat, SyntacticAnalysis.ForEachStatement):
+				self.currentScope.append(ScopeEnum.FOREACH)
+			elif isinstance(aStat, SyntacticAnalysis.DoStatement):
+				self.currentScope.append(ScopeEnum.DO)
+			else:
+				raise SemanticError("Illegal statement in the 'ElseIf' scope.", aStat.line)
 		else:
-			raise SemanticError("Illegal statement in the function/event scope.", aStat.line)
+			raise SemanticError("Illegal statement in the 'ElseIf' scope.", aStat.line)
+		self.stack[-1].append(aStat)
 
 	def ElseScope(self, aStat):
 		if isinstance(aStat, SyntacticAnalysis.AssignmentStatement):
@@ -721,18 +743,22 @@ class SemanticFirstPhase(object):
 			pass
 		elif isinstance(aStat, SyntacticAnalysis.WhileStatement):
 			self.currentScope.append(ScopeEnum.WHILE)
-		elif isinstance(aStat, SyntacticAnalysis.SwitchStatement):
-			self.currentScope.append(ScopeEnum.SWITCH)
-		elif isinstance(aStat, SyntacticAnalysis.ForStatement):
-			self.currentScope.append(ScopeEnum.FOR)
-		elif isinstance(aStat, SyntacticAnalysis.ForEachStatement):
-			self.currentScope.append(ScopeEnum.FOREACH)
-		elif isinstance(aStat, SyntacticAnalysis.DoStatement):
-			self.currentScope.append(ScopeEnum.DO)
 		elif isinstance(aStat, SyntacticAnalysis.EndIfStatement):
 			self.currentScope.pop()
+		elif self.capricaExtensions:
+			if isinstance(aStat, SyntacticAnalysis.SwitchStatement):
+				self.currentScope.append(ScopeEnum.SWITCH)
+			elif isinstance(aStat, SyntacticAnalysis.ForStatement):
+				self.currentScope.append(ScopeEnum.FOR)
+			elif isinstance(aStat, SyntacticAnalysis.ForEachStatement):
+				self.currentScope.append(ScopeEnum.FOREACH)
+			elif isinstance(aStat, SyntacticAnalysis.DoStatement):
+				self.currentScope.append(ScopeEnum.DO)
+			else:
+				raise SemanticError("Illegal statement in the 'Else' scope.", aStat.line)
 		else:
-			raise SemanticError("Illegal statement in the function/event scope.", aStat.line)
+			raise SemanticError("Illegal statement in the 'Else' scope.", aStat.line)
+		self.stack[-1].append(aStat)
 
 	def WhileScope(self, aStat):
 		if isinstance(aStat, SyntacticAnalysis.AssignmentStatement):
@@ -747,22 +773,26 @@ class SemanticFirstPhase(object):
 			pass
 		elif isinstance(aStat, SyntacticAnalysis.WhileStatement):
 			self.currentScope.append(ScopeEnum.WHILE)
-		elif isinstance(aStat, SyntacticAnalysis.SwitchStatement):
-			self.currentScope.append(ScopeEnum.SWITCH)
-		elif isinstance(aStat, SyntacticAnalysis.ForStatement):
-			self.currentScope.append(ScopeEnum.FOR)
-		elif isinstance(aStat, SyntacticAnalysis.ForEachStatement):
-			self.currentScope.append(ScopeEnum.FOREACH)
-		elif isinstance(aStat, SyntacticAnalysis.DoStatement):
-			self.currentScope.append(ScopeEnum.DO)
-		elif isinstance(aStat, SyntacticAnalysis.BreakStatement):
-			pass
-		elif isinstance(aStat, SyntacticAnalysis.ContinueStatement):
-			pass
 		elif isinstance(aStat, SyntacticAnalysis.EndWhileStatement):
 			self.currentScope.pop()
+		elif self.capricaExtensions:
+			if isinstance(aStat, SyntacticAnalysis.SwitchStatement):
+				self.currentScope.append(ScopeEnum.SWITCH)
+			elif isinstance(aStat, SyntacticAnalysis.ForStatement):
+				self.currentScope.append(ScopeEnum.FOR)
+			elif isinstance(aStat, SyntacticAnalysis.ForEachStatement):
+				self.currentScope.append(ScopeEnum.FOREACH)
+			elif isinstance(aStat, SyntacticAnalysis.DoStatement):
+				self.currentScope.append(ScopeEnum.DO)
+			elif isinstance(aStat, SyntacticAnalysis.BreakStatement):
+				pass
+			elif isinstance(aStat, SyntacticAnalysis.ContinueStatement):
+				pass
+			else:
+				raise SemanticError("Illegal statement in the 'While' scope.", aStat.line)
 		else:
-			raise SemanticError("Illegal statement in the function/event scope.", aStat.line)
+			raise SemanticError("Illegal statement in the 'While' scope.", aStat.line)
+		self.stack[-1].append(aStat)
 
 	#Caprica extensions
 	def SwitchScope(self, aStat):
@@ -793,7 +823,8 @@ class SemanticFirstPhase(object):
 		elif isinstance(aStat, SyntacticAnalysis.EndSwitchStatement):
 			self.currentScope.pop()
 		else:
-			raise SemanticError("Illegal statement in the function/event scope.", aStat.line)
+			raise SemanticError("Illegal statement in the 'Switch' scope.", aStat.line)
+		self.stack[-1].append(aStat)
 
 	def SwitchCaseScope(self, aStat):
 		if isinstance(aStat, SyntacticAnalysis.AssignmentStatement):
@@ -827,7 +858,8 @@ class SemanticFirstPhase(object):
 		elif isinstance(aStat, SyntacticAnalysis.EndSwitchStatement):
 			pass
 		else:
-			raise SemanticError("Illegal statement in the function/event scope.", aStat.line)
+			raise SemanticError("Illegal statement in the 'Switch case' scope.", aStat.line)
+		self.stack[-1].append(aStat)
 
 	def SwitchDefaultScope(self, aStat):
 		if isinstance(aStat, SyntacticAnalysis.AssignmentStatement):
@@ -857,7 +889,8 @@ class SemanticFirstPhase(object):
 		elif isinstance(aStat, SyntacticAnalysis.EndSwitchStatement):
 			self.currentScope.pop()
 		else:
-			raise SemanticError("Illegal statement in the function/event scope.", aStat.line)
+			raise SemanticError("Illegal statement in the 'Switch default case' scope.", aStat.line)
+		self.stack[-1].append(aStat)
 
 	def DoScope(self, aStat):
 		if isinstance(aStat, SyntacticAnalysis.AssignmentStatement):
@@ -887,7 +920,8 @@ class SemanticFirstPhase(object):
 		elif isinstance(aStat, SyntacticAnalysis.LoopWhileStatement):
 			self.currentScope.pop()
 		else:
-			raise SemanticError("Illegal statement in the function/event scope.", aStat.line)
+			raise SemanticError("Illegal statement in the 'Do' scope.", aStat.line)
+		self.stack[-1].append(aStat)
 
 	def ForScope(self, aStat):
 		if isinstance(aStat, SyntacticAnalysis.AssignmentStatement):
@@ -917,7 +951,8 @@ class SemanticFirstPhase(object):
 		elif isinstance(aStat, SyntacticAnalysis.EndForStatement):
 			self.currentScope.pop()
 		else:
-			raise SemanticError("Illegal statement in the function/event scope.", aStat.line)
+			raise SemanticError("Illegal statement in the 'For' scope.", aStat.line)
+		self.stack[-1].append(aStat)
 
 	def ForEachScope(self, aStat):
 		if isinstance(aStat, SyntacticAnalysis.AssignmentStatement):
@@ -947,7 +982,8 @@ class SemanticFirstPhase(object):
 		elif isinstance(aStat, SyntacticAnalysis.EndForEachStatement):
 			self.currentScope.pop()
 		else:
-			raise SemanticError("Illegal statement in the function/event scope.", aStat.line)
+			raise SemanticError("Illegal statement in the 'ForEach' scope.", aStat.line)
+		self.stack[-1].append(aStat)
 	#End of Caprica extensions
 
 # ==================== Property ====================
@@ -960,12 +996,15 @@ class SemanticFirstPhase(object):
 	def PropertyScope(self, aStat):
 		if isinstance(aStat, SyntacticAnalysis.FunctionSignatureStatement):
 			self.EnterFunctionScope(aStat)
+			return
 		elif isinstance(aStat, SyntacticAnalysis.DocstringStatement):
-			self.stack[-1].append(aStat)
+			pass
 		elif isinstance(aStat, SyntacticAnalysis.EndPropertyStatement):
 			self.LeavePropertyScope(aStat)
+			return
 		else:
 			raise SemanticError("Illegal statement in the property scope.", aStat.line)
+		self.stack[-1].append(aStat)
 
 	def LeavePropertyScope(self, aStat):
 		scope = self.stack.pop()
@@ -1023,13 +1062,15 @@ class SemanticFirstPhase(object):
 
 	def StructScope(self, aStat):
 		if isinstance(aStat, SyntacticAnalysis.DocstringStatement):
-			self.stack[-1].append(aStat)
+			pass
 		elif isinstance(aStat, SyntacticAnalysis.VariableStatement):
-			self.stack[-1].append(aStat)
+			pass
 		elif isinstance(aStat, SyntacticAnalysis.EndStructStatement):
 			self.LeaveStructScope(aStat)
+			return
 		else:
 			raise SemanticError("Illegal statement in the struct scope.", aStat.line)
+		self.stack[-1].append(aStat)
 
 	def LeaveStructScope(self, aStat):
 		scope = self.stack.pop()
@@ -1072,13 +1113,16 @@ class SemanticFirstPhase(object):
 
 	def GroupScope(self, aStat):
 		if isinstance(aStat, SyntacticAnalysis.DocstringStatement):
-			self.stack[-1].append(aStat)
+			pass
 		elif isinstance(aStat, SyntacticAnalysis.PropertySignatureStatement):
 			self.EnterPropertyScope(aStat)
+			return
 		elif isinstance(aStat, SyntacticAnalysis.EndGroupStatement):
 			self.LeaveGroupScope(aStat)
+			return
 		else:
 			raise SemanticError("Illegal statement in the group scope.", aStat.line)
+		self.stack[-1].append(aStat)
 
 	def LeaveGroupScope(self, aStat):
 		scope = self.stack.pop()
