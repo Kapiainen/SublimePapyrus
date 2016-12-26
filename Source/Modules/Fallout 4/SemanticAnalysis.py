@@ -93,6 +93,7 @@ class SemanticFirstPhase(object):
 		self.stack = []
 		self.pendingDocstring = None
 
+# ==================== Empty state/script ====================
 	def EnterEmptyStateScope(self, aStat):
 		self.currentScope.append(ScopeEnum.SCRIPT)
 		self.stack.append([aStat])
@@ -124,6 +125,7 @@ class SemanticFirstPhase(object):
 	def LeaveEmptyStateScope(self):
 		pass
 
+# ==================== State ====================
 	def EnterStateScope(self, aStat):
 		self.currentScope.append(ScopeEnum.STATE)
 		self.stack.append([aStat])
@@ -141,6 +143,7 @@ class SemanticFirstPhase(object):
 	def LeaveStateScope(self, aStat):
 		self.currentScope.pop()
 
+# ==================== Function ====================
 	def EnterFunctionScope(self, aStat):
 		self.currentScope.append(ScopeEnum.FUNCTION)
 		self.stack.append([aStat])
@@ -215,6 +218,7 @@ class SemanticFirstPhase(object):
 			self.stack[-1].append(FunctionObject(signature, scope, aStat.line))
 		self.currentScope.pop()
 
+# ==================== Event ====================
 	def EnterEventScope(self, aStat):
 		self.currentScope.append(ScopeEnum.EVENT)
 		self.stack.append([aStat])
@@ -250,6 +254,7 @@ class SemanticFirstPhase(object):
 	def LeaveEventScope(self, aStat):
 		self.currentScope.pop()
 
+# ==================== Function/event sub-scopes ====================
 	def IfScope(self, aStat):
 		if isinstance(aStat, SyntacticAnalysis.AssignmentStatement):
 			pass
@@ -556,6 +561,7 @@ class SemanticFirstPhase(object):
 				raise SemanticError("Illegal statement in the function/event scope.", aStat.line)
 	#End of Caprica extensions
 
+# ==================== Property ====================
 	def EnterPropertyScope(self, aStat):
 		self.currentScope.append(ScopeEnum.PROPERTY)
 		self.stack.append([aStat])
@@ -621,6 +627,7 @@ class SemanticFirstPhase(object):
 			self.stack[-1].append(PropertyObject(signature, setFunction, getFunction, aStat.line))
 		self.currentScope.pop()
 
+# ==================== Struct ====================
 	def EnterStructScope(self, aStat):
 		self.currentScope.append(ScopeEnum.STRUCT)
 		self.stack.append([aStat])
@@ -638,6 +645,7 @@ class SemanticFirstPhase(object):
 	def LeaveStructScope(self, aStat):
 		self.currentScope.pop()
 
+# ==================== Group ====================
 	def EnterGroupScope(self, aStat):
 		self.currentScope.append(ScopeEnum.GROUP)
 		self.stack.append([aStat])
@@ -655,6 +663,7 @@ class SemanticFirstPhase(object):
 	def LeaveGroupScope(self, aStat):
 		self.currentScope.pop()
 
+# ==================== Assembling ====================
 	def Assemble(self, aStat):
 		print("Current scope: %s" % ScopeDescription[self.currentScope[-1]])
 		if self.pendingDocstring:
@@ -715,6 +724,7 @@ class SemanticFirstPhase(object):
 		else:
 			raise SemanticError("Unsupported scope ('%s')." % ScopeDescription[currentScope], aStat.line)
 
+# ==================== Building ====================
 	def BuildScript(self):
 		"""Returns a Script"""
 		pass
