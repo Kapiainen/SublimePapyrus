@@ -141,6 +141,39 @@ class SemanticFirstPhase(object):
 			raise SemanticError("Illegal statement in the state scope.", aStat.line)
 
 	def LeaveStateScope(self, aStat):
+		scope = self.stack.pop()
+		signature = scope.pop(0)
+		if scope:
+			functions = {}
+			events = {}
+			for element in scope:
+				if isinstance(element, FunctionObject):
+					key = str(element.identifier).upper()
+					if functions.get(key, None):
+						raise SemanticError("This state already has a function called '%s'." % element.identifier, element.starts)
+					elif events.get(key, None):
+						raise SemanticError("This state already has an event called '%s'." % element.identifier, element.starts)
+					functions[key] = element
+				elif isinstance(element, EventObject):
+					key = None
+					if element.remote:
+						key = "%s.%s" % (element.remote, element.identifier).upper()
+						if events.get(key, None):
+							raise SemanticError("This state already has an event called '%s.%s'." % (element.remote, element.identifier), element.starts)
+					else:
+						key = str(element.identifier).upper()
+						if events.get(key, None):
+							raise SemanticError("This state already has an event called '%s'." % element.identifier, element.starts)
+						elif functions.get(key, None):
+							raise SemanticError("This state already has a function called '%s'." % element.identifier, element.starts)
+					events[key] = element
+			if not functions:
+				functions = None
+			if not events:
+				events = None
+			self.stack[-1].append(StateObject(signature, functions, events, aStat.line))
+		else:
+			self.stack[-1].append(StateObject(signature, None, None, aStat.line))
 		self.currentScope.pop()
 
 # ==================== Function ====================
@@ -922,8 +955,19 @@ class StateObject(object):
 		"ends" # int
 	]
 
-	def __init__(self):
-		pass
+	def __init__(self, aSignature, aFunctions, aEvents, aEnds):
+		assert isinstance(aSignature, SyntacticAnalysis.StateSignatureStatement) #Prune
+		if aFunctions: #Prune
+			assert isinstance(aFunctions, dict) #Prune
+		if aEvents: #Prune
+			assert isinstance(aEvents, dict) #Prune
+		assert isinstance(aEnds, int) #Prune
+		self.identifier = aSignature.identifier
+		self.flags = aSignature.flags
+		self.functions = aFunctions
+		self.events = aEvents
+		self.starts = aSignature.line
+		self.ends = aEnds
 
 class StructMember(object):
 	__slots__ = [
