@@ -27,6 +27,14 @@ elif PYTHON_VERSION[0] >= 3:
 	from . import LexicalAnalysis
 	from . import SyntacticAnalysis
 
+class SemanticError(Exception):
+	def __init__(self, aMessage, aLine):
+	# aMessage: string
+	# aLine: int
+		self.message = aMessage
+		self.line = aLine
+
+# First phase of semantic analysis
 class ScopeEnum(object):
 	ELSE = 0
 	ELSEIF = 1
@@ -67,13 +75,6 @@ ScopeDescription = [
 	"FOREACH",
 	"SWITCH"
 ]
-
-class SemanticError(Exception):
-	def __init__(self, aMessage, aLine):
-	# aMessage: string
-	# aLine: int
-		self.message = aMessage
-		self.line = aLine
 
 class SemanticFirstPhase(object):
 	__slots__ = [
@@ -187,11 +188,13 @@ class SemanticFirstPhase(object):
 		if scope and isinstance(scope[0], SyntacticAnalysis.DocstringStatement):
 			docstring = scope.pop(0)
 		for statement in scope:
+			# Docstring validation.
 			if isinstance(statement, SyntacticAnalysis.DocstringStatement):
 				if docstring:
 					raise SemanticError("This function already has a docstring.", statement.line)
 				else:
 					raise SemanticError("A docstring has to be the next statement after the function signature.", statement.line)
+			# Partial return statement validation.
 			elif isinstance(statement, SyntacticAnalysis.ReturnStatement):
 				if signature.type:
 					if not statement.expression:
@@ -204,8 +207,10 @@ class SemanticFirstPhase(object):
 						raise SemanticError("This function does not have a return type.", statement.line)
 		if not scope:
 			scope = None
+		# Native function: signature + optional docstring
 		if signature.flags.isNative:
 			self.stack[-1].append(FunctionObject(signature, scope, signature.line))
+		# Non-native function: signature + optional docstring + function body
 		else:
 			self.stack[-1].append(FunctionObject(signature, scope, aStat.line))
 		self.currentScope.pop()
@@ -576,11 +581,13 @@ class SemanticFirstPhase(object):
 		if scope and isinstance(scope[0], SyntacticAnalysis.DocstringStatement):
 			docstring = scope.pop(0)
 		for element in scope:
+			# Docstring validation
 			if isinstance(element, SyntacticAnalysis.DocstringStatement):
 				if docstring:
 					raise SemanticError("Properties can only have one docstring.", element.line)
 				else:
 					raise SemanticError("A docstring has to be the next statement after the property signature.", element.line)
+			# Function validation (name and return type)
 			elif isinstance(element, FunctionObject):
 				name = str(element.identifier).upper()
 				if name == "GET":
@@ -603,9 +610,12 @@ class SemanticFirstPhase(object):
 					raise SemanticError("Properties can only have 'Get' and 'Set' functions.", element.starts)
 			else:
 				raise Exception("Unsupported property element:", type(element))
+		# Auto or AutoReadOnly property: signature + optional docstring
 		if signature.flags.isAuto or signature.flags.isAutoReadOnly:
 			self.stack[-1].append(PropertyObject(signature, setFunction, getFunction, signature.line))
+		# Full property: signature + optional docstring + property body
 		else:
+			# Function validation (at least a Set or a Get function)
 			if not setFunction and not getFunction:
 				raise SemanticError("This property has to have at least a 'Set' or a 'Get' function.", signature.line)
 			self.stack[-1].append(PropertyObject(signature, setFunction, getFunction, aStat.line))
@@ -707,20 +717,6 @@ class SemanticFirstPhase(object):
 
 	def BuildScript(self):
 		"""Returns a Script"""
-		pass
-
-class SemanticSecondPhase(object):
-	__slots__ = [
-		"capricaExtensions" # bool
-	]
-
-	def __init__(self):
-		pass
-
-	def Reset(self, aCaprica):
-		self.capricaExtensions = aCaprica
-
-	def Process(self, aScript):
 		pass
 
 class FunctionObject(object):
@@ -856,4 +852,19 @@ class StructObject(object):
 	]
 
 	def __init__(self):
+		pass
+
+# Second phase of semantic analysis
+class SemanticSecondPhase(object):
+	__slots__ = [
+		"capricaExtensions" # bool
+	]
+
+	def __init__(self):
+		pass
+
+	def Reset(self, aCaprica):
+		self.capricaExtensions = aCaprica
+
+	def Process(self, aScript):
 		pass
