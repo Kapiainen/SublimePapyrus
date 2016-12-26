@@ -34,6 +34,243 @@ class SemanticError(Exception):
 		self.message = aMessage
 		self.line = aLine
 
+class FunctionObject(object):
+	__slots__ = [
+		"identifier", # Identifier
+		"type", # Type (optional)
+		"parameters", # list of FunctionParameter (optional)
+		"flags", # FunctionFlags
+		"docstring", # str
+		"body", # list of statements
+		"starts", # int
+		"ends" # int
+	]
+
+	def __init__(self, aSignature, aDocstring, aBody, aEnds):
+		assert isinstance(aSignature, SyntacticAnalysis.FunctionSignatureStatement) #Prune
+		if aDocstring: #Prune
+			assert isinstance(aDocstring, SyntacticAnalysis.DocstringStatement) #Prune
+		if aBody: #Prune
+			assert isinstance(aBody, list) #Prune
+		assert isinstance(aEnds, int) #Prune
+		self.identifier = aSignature.identifier
+		self.type = aSignature.type
+		self.parameters = aSignature.parameters
+		self.flags = aSignature.flags
+		if aDocstring:
+			self.docstring = aDocstring.value
+		else:
+			self.docstring = ""
+		self.body = aBody
+		self.starts = aSignature.line
+		self.ends = aEnds
+
+class PropertyObject(object):
+	__slots__ = [
+		"identifier", # Identifier
+		"type", # Type
+		"value", # ExpressionNode (optional)
+		"flags", # PropertyFlags
+		"docstring", # str
+		"setFunction", # FunctionObject
+		"getFunction", # FunctionObject
+		"starts", # int
+		"ends" # int
+	]
+
+	def __init__(self, aSignature, aDocstring, aSetFunction, aGetFunction, aEnds):
+		assert isinstance(aSignature, SyntacticAnalysis.PropertySignatureStatement) #Prune
+		if aDocstring: #Prune
+			assert isinstance(aDocstring, SyntacticAnalysis.DocstringStatement) #Prune
+		if aSetFunction: #Prune
+			assert isinstance(aSetFunction, FunctionObject) #Prune
+		if aGetFunction: #Prune
+			assert isinstance(aGetFunction, FunctionObject) #Prune
+		assert isinstance(aEnds, int) #Prune
+		self.identifier = aSignature.identifier
+		self.type = aSignature.type
+		self.value = aSignature.value
+		self.flags = aSignature.flags
+		if aDocstring:
+			self.docstring = aDocstring.value
+		else:
+			self.docstring = ""
+		self.setFunction = aSetFunction
+		self.getFunction = aGetFunction
+		self.starts = aSignature.line
+		self.ends = aEnds
+
+class EventObject(object):
+	__slots__ = [
+		"identifier", # Identifier
+		"remote", # Identifier
+		"parameters", # list of EventParameter (optional)
+		"flags", # EventFlags
+		"body", # list of statements
+		"starts", # int
+		"ends" # int
+	]
+
+	def __init__(self, aSignature, aBody, aEnds):
+		assert isinstance(aSignature, SyntacticAnalysis.EventSignatureStatement) #Prune
+		if aBody: #Prune
+			assert isinstance(aBody, list) #Prune
+		assert isinstance(aEnds, int) #Prune
+		self.identifier = aSignature.identifier
+		self.remote = aSignature.remote
+		self.parameters = aSignature.parameters
+		self.flags = aSignature.flags
+		self.body = aBody
+		self.starts = aSignature.line
+		self.ends = aEnds
+
+class GroupObject(object):
+	__slots__ = [
+		"identifier", # Identifier
+		"flags", # GroupFlags
+		"docstring", # str
+		"members", # dict of PropertyObject
+		"starts", # int
+		"ends" # int
+	]
+
+	def __init__(self, aSignature, aDocstring, aMembers, aEnds):
+		assert isinstance(aSignature, SyntacticAnalysis.GroupSignatureStatement) #Prune
+		if aDocstring: #Prune
+			assert isinstance(aDocstring, SyntacticAnalysis.DocstringStatement) #Prune
+		if aMembers: #Prune
+			assert isinstance(aMembers, dict) #Prune
+		assert isinstance(aEnds, int) #Prune
+		self.identifier = aSignature.identifier
+		self.flags = aSignature.flags
+		if aDocstring:
+			self.docstring = aDocstring.value
+		else:
+			self.docstring = ""
+		self.members = aMembers
+		self.starts = aSignature.line
+		self.ends = aEnds
+
+class ScriptObject(object):
+	__slots__ = [
+		"identifier", # Identifier
+		"extends", # Identifier
+		"flags", # ScriptFlags
+		"docstring", # str
+		"functions", # dict of FunctionObject
+		"events", # dict of EventObject
+		"properties", # dict of PropertyObject
+		"variables", # dict of VariableStatement
+		"groups", # dict of GroupObject
+		"structs", # dict of StructObject
+		"states", # dict of StateObject
+		"importedScripts", # dict of ImportStatement
+		"importedNamespaces", # dict of ImportStatement
+		"starts" # int
+	]
+
+	def __init__(self, aSignature, aDocstring, aFunctions, aEvents, aProperties, aVariables, aGroups, aStructs, aStates, aImportedScripts, aImportedNamespaces):
+		assert isinstance(aSignature, SyntacticAnalysis.ScriptSignatureStatement) #Prune
+		if aDocstring: #Prune
+			assert isinstance(aDocstring, SyntacticAnalysis.DocstringStatement) #Prune
+		if aFunctions: #Prune
+			assert isinstance(aFunctions, dict) #Prune
+		if aEvents: #Prune
+			assert isinstance(aEvents, dict) #Prune
+		if aProperties: #Prune
+			assert isinstance(aProperties, dict) #Prune
+		if aGroups: #Prune
+			assert isinstance(aGroups, dict) #Prune
+		if aStructs: #Prune
+			assert isinstance(aStructs, dict) #Prune
+		if aStates: #Prune
+			assert isinstance(aStates, dict) #Prune
+		if aVariables: #Prune
+			assert isinstance(aVariables, dict) #Prune
+		if aImportedScripts: #Prune
+			assert isinstance(aImportedScripts, dict) #Prune
+		if aImportedNamespaces: #Prune
+			assert isinstance(aImportedNamespaces, dict) #Prune
+		self.identifier = aSignature.identifier
+		self.extends = aSignature.extends
+		self.flags = aSignature.flags
+		if aDocstring:
+			self.dosctring = aDocstring.value
+		else:
+			self.docstring = ""
+		self.functions = aFunctions
+		self.events = aEvents
+		self.properties = aProperties
+		self.variables = aVariables
+		self.groups = aGroups
+		self.structs = aStructs
+		self.states = aStates
+		self.importedScripts = aImportedScripts
+		self.importedNamespaces = aImportedNamespaces
+		self.starts = aSignature.line
+
+class StateObject(object):
+	__slots__ = [
+		"identifier", # Identifier
+		"flags", # StateFlags
+		"functions", # dict of FunctionObject
+		"events", # dict of EventObject
+		"starts", # int
+		"ends" # int
+	]
+
+	def __init__(self, aSignature, aFunctions, aEvents, aEnds):
+		assert isinstance(aSignature, SyntacticAnalysis.StateSignatureStatement) #Prune
+		if aFunctions: #Prune
+			assert isinstance(aFunctions, dict) #Prune
+		if aEvents: #Prune
+			assert isinstance(aEvents, dict) #Prune
+		assert isinstance(aEnds, int) #Prune
+		self.identifier = aSignature.identifier
+		self.flags = aSignature.flags
+		self.functions = aFunctions
+		self.events = aEvents
+		self.starts = aSignature.line
+		self.ends = aEnds
+
+class StructMember(object):
+	__slots__ = [
+		"identifier", # Identifier
+		"type", # Type
+		"docstring", # str
+		"line" # int
+	]
+
+	def __init__(self, aSignature, aDocstring):
+		assert isinstance(aSignature, SyntacticAnalysis.VariableStatement) #Prune
+		if aDocstring: #Prune
+			assert isinstance(aDocstring, SyntacticAnalysis.DocstringStatement) #Prune
+		self.identifier = aSignature.identifier
+		self.type = aSignature.type
+		if aDocstring:
+			self.docstring = aDocstring.value
+		else:
+			self.docstring = ""
+		self.line = aSignature.line
+
+class StructObject(object):
+	__slots__ = [
+		"identifier", # Identifier
+		"members", # dict of StructMember
+		"starts", # int
+		"ends" # int
+	]
+
+	def __init__(self, aSignature, aMembers, aEnds):
+		assert isinstance(aSignature, SyntacticAnalysis.StructSignatureStatement) #Prune
+		if aMembers: #Prune
+			assert isinstance(a, dict) #Prune
+		assert isinstance(a, int) #Prune
+		self.identifier = aSignature.identifier
+		self.members = aMembers
+		self.starts = aSignature.line
+		self.ends = aEnds
+
 # First phase of semantic analysis
 class ScopeEnum(object):
 	ELSE = 0
@@ -939,243 +1176,6 @@ class SemanticFirstPhase(object):
 			return script
 		else:
 			raise SemanticError("Failed to build script object.", 1)
-
-class FunctionObject(object):
-	__slots__ = [
-		"identifier", # Identifier
-		"type", # Type (optional)
-		"parameters", # list of FunctionParameter (optional)
-		"flags", # FunctionFlags
-		"docstring", # str
-		"body", # list of statements
-		"starts", # int
-		"ends" # int
-	]
-
-	def __init__(self, aSignature, aDocstring, aBody, aEnds):
-		assert isinstance(aSignature, SyntacticAnalysis.FunctionSignatureStatement) #Prune
-		if aDocstring: #Prune
-			assert isinstance(aDocstring, SyntacticAnalysis.DocstringStatement) #Prune
-		if aBody: #Prune
-			assert isinstance(aBody, list) #Prune
-		assert isinstance(aEnds, int) #Prune
-		self.identifier = aSignature.identifier
-		self.type = aSignature.type
-		self.parameters = aSignature.parameters
-		self.flags = aSignature.flags
-		if aDocstring:
-			self.docstring = aDocstring.value
-		else:
-			self.docstring = ""
-		self.body = aBody
-		self.starts = aSignature.line
-		self.ends = aEnds
-
-class PropertyObject(object):
-	__slots__ = [
-		"identifier", # Identifier
-		"type", # Type
-		"value", # ExpressionNode (optional)
-		"flags", # PropertyFlags
-		"docstring", # str
-		"setFunction", # FunctionObject
-		"getFunction", # FunctionObject
-		"starts", # int
-		"ends" # int
-	]
-
-	def __init__(self, aSignature, aDocstring, aSetFunction, aGetFunction, aEnds):
-		assert isinstance(aSignature, SyntacticAnalysis.PropertySignatureStatement) #Prune
-		if aDocstring: #Prune
-			assert isinstance(aDocstring, SyntacticAnalysis.DocstringStatement) #Prune
-		if aSetFunction: #Prune
-			assert isinstance(aSetFunction, FunctionObject) #Prune
-		if aGetFunction: #Prune
-			assert isinstance(aGetFunction, FunctionObject) #Prune
-		assert isinstance(aEnds, int) #Prune
-		self.identifier = aSignature.identifier
-		self.type = aSignature.type
-		self.value = aSignature.value
-		self.flags = aSignature.flags
-		if aDocstring:
-			self.docstring = aDocstring.value
-		else:
-			self.docstring = ""
-		self.setFunction = aSetFunction
-		self.getFunction = aGetFunction
-		self.starts = aSignature.line
-		self.ends = aEnds
-
-class EventObject(object):
-	__slots__ = [
-		"identifier", # Identifier
-		"remote", # Identifier
-		"parameters", # list of EventParameter (optional)
-		"flags", # EventFlags
-		"body", # list of statements
-		"starts", # int
-		"ends" # int
-	]
-
-	def __init__(self, aSignature, aBody, aEnds):
-		assert isinstance(aSignature, SyntacticAnalysis.EventSignatureStatement) #Prune
-		if aBody: #Prune
-			assert isinstance(aBody, list) #Prune
-		assert isinstance(aEnds, int) #Prune
-		self.identifier = aSignature.identifier
-		self.remote = aSignature.remote
-		self.parameters = aSignature.parameters
-		self.flags = aSignature.flags
-		self.body = aBody
-		self.starts = aSignature.line
-		self.ends = aEnds
-
-class GroupObject(object):
-	__slots__ = [
-		"identifier", # Identifier
-		"flags", # GroupFlags
-		"docstring", # str
-		"members", # dict of PropertyObject
-		"starts", # int
-		"ends" # int
-	]
-
-	def __init__(self, aSignature, aDocstring, aMembers, aEnds):
-		assert isinstance(aSignature, SyntacticAnalysis.GroupSignatureStatement) #Prune
-		if aDocstring: #Prune
-			assert isinstance(aDocstring, SyntacticAnalysis.DocstringStatement) #Prune
-		if aMembers: #Prune
-			assert isinstance(aMembers, dict) #Prune
-		assert isinstance(aEnds, int) #Prune
-		self.identifier = aSignature.identifier
-		self.flags = aSignature.flags
-		if aDocstring:
-			self.docstring = aDocstring.value
-		else:
-			self.docstring = ""
-		self.members = aMembers
-		self.starts = aSignature.line
-		self.ends = aEnds
-
-class ScriptObject(object):
-	__slots__ = [
-		"identifier", # Identifier
-		"extends", # Identifier
-		"flags", # ScriptFlags
-		"docstring", # str
-		"functions", # dict of FunctionObject
-		"events", # dict of EventObject
-		"properties", # dict of PropertyObject
-		"variables", # dict of VariableStatement
-		"groups", # dict of GroupObject
-		"structs", # dict of StructObject
-		"states", # dict of StateObject
-		"importedScripts", # dict of ImportStatement
-		"importedNamespaces", # dict of ImportStatement
-		"starts" # int
-	]
-
-	def __init__(self, aSignature, aDocstring, aFunctions, aEvents, aProperties, aVariables, aGroups, aStructs, aStates, aImportedScripts, aImportedNamespaces):
-		assert isinstance(aSignature, SyntacticAnalysis.ScriptSignatureStatement) #Prune
-		if aDocstring: #Prune
-			assert isinstance(aDocstring, SyntacticAnalysis.DocstringStatement) #Prune
-		if aFunctions: #Prune
-			assert isinstance(aFunctions, dict) #Prune
-		if aEvents: #Prune
-			assert isinstance(aEvents, dict) #Prune
-		if aProperties: #Prune
-			assert isinstance(aProperties, dict) #Prune
-		if aGroups: #Prune
-			assert isinstance(aGroups, dict) #Prune
-		if aStructs: #Prune
-			assert isinstance(aStructs, dict) #Prune
-		if aStates: #Prune
-			assert isinstance(aStates, dict) #Prune
-		if aVariables: #Prune
-			assert isinstance(aVariables, dict) #Prune
-		if aImportedScripts: #Prune
-			assert isinstance(aImportedScripts, dict) #Prune
-		if aImportedNamespaces: #Prune
-			assert isinstance(aImportedNamespaces, dict) #Prune
-		self.identifier = aSignature.identifier
-		self.extends = aSignature.extends
-		self.flags = aSignature.flags
-		if aDocstring:
-			self.dosctring = aDocstring.value
-		else:
-			self.docstring = ""
-		self.functions = aFunctions
-		self.events = aEvents
-		self.properties = aProperties
-		self.variables = aVariables
-		self.groups = aGroups
-		self.structs = aStructs
-		self.states = aStates
-		self.importedScripts = aImportedScripts
-		self.importedNamespaces = aImportedNamespaces
-		self.starts = aSignature.line
-
-class StateObject(object):
-	__slots__ = [
-		"identifier", # Identifier
-		"flags", # StateFlags
-		"functions", # dict of FunctionObject
-		"events", # dict of EventObject
-		"starts", # int
-		"ends" # int
-	]
-
-	def __init__(self, aSignature, aFunctions, aEvents, aEnds):
-		assert isinstance(aSignature, SyntacticAnalysis.StateSignatureStatement) #Prune
-		if aFunctions: #Prune
-			assert isinstance(aFunctions, dict) #Prune
-		if aEvents: #Prune
-			assert isinstance(aEvents, dict) #Prune
-		assert isinstance(aEnds, int) #Prune
-		self.identifier = aSignature.identifier
-		self.flags = aSignature.flags
-		self.functions = aFunctions
-		self.events = aEvents
-		self.starts = aSignature.line
-		self.ends = aEnds
-
-class StructMember(object):
-	__slots__ = [
-		"identifier", # Identifier
-		"type", # Type
-		"docstring", # str
-		"line" # int
-	]
-
-	def __init__(self, aSignature, aDocstring):
-		assert isinstance(aSignature, SyntacticAnalysis.VariableStatement) #Prune
-		if aDocstring: #Prune
-			assert isinstance(aDocstring, SyntacticAnalysis.DocstringStatement) #Prune
-		self.identifier = aSignature.identifier
-		self.type = aSignature.type
-		if aDocstring:
-			self.docstring = aDocstring.value
-		else:
-			self.docstring = ""
-		self.line = aSignature.line
-
-class StructObject(object):
-	__slots__ = [
-		"identifier", # Identifier
-		"members", # dict of StructMember
-		"starts", # int
-		"ends" # int
-	]
-
-	def __init__(self, aSignature, aMembers, aEnds):
-		assert isinstance(aSignature, SyntacticAnalysis.StructSignatureStatement) #Prune
-		if aMembers: #Prune
-			assert isinstance(a, dict) #Prune
-		assert isinstance(a, int) #Prune
-		self.identifier = aSignature.identifier
-		self.members = aMembers
-		self.starts = aSignature.line
-		self.ends = aEnds
 
 # Second phase of semantic analysis
 class SemanticSecondPhase(object):

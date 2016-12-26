@@ -38,7 +38,6 @@ LEX = None
 SYN = None
 SEMP1 = None
 SEMP2 = None
-#SEM = None
 
 #class TypeMap(object):
 #	__slots__ = [
@@ -138,20 +137,17 @@ def BuildScript(aSource):
 				tokens = []
 		elif tokenType != TokenEnum.COMMENTLINE and tokenType != TokenEnum.COMMENTBLOCK:
 			tokens.append(token)
-	script = SEMP1.Build()
-	return None
+	return SEMP1.Build()
 
 def Initialize():
 	global LEX
 	global SYN
 	global SEMP1
 	global SEMP2
-#	global SEM
 	LEX = Lexical()
 	SYN = Syntactic()
 	SEMP1 = SemanticFirstPhase()
 	SEMP2 = SemanticSecondPhase()
-#	SEM = Semantic()
 
 def Process(aSource, aPaths, aCaprica):
 	assert isinstance(aSource, str) #Prune
@@ -166,13 +162,10 @@ def Process(aSource, aPaths, aCaprica):
 	global SYN
 	global SEMP1
 	global SEMP2
-#	global SEM
 	LEX.Reset(aCaprica)
 	SYN.Reset(aCaprica)
 	SEMP1.Reset(aCaprica)
 	SEMP2.Reset(aCaprica)
-#	SEM.Reset(aCaprica)
 	print("Linting with Caprica extensions:", aCaprica)
 	script = BuildScript(aSource)
-	#SEM.ValidateScript(script)
 	return True
