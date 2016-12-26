@@ -763,7 +763,7 @@ class SemanticFirstPhase(object):
 
 # ==================== Assembling ====================
 	def Assemble(self, aStat):
-		print("Current scope: %s" % ScopeDescription[self.currentScope[-1]])
+		#print("Current scope: %s" % ScopeDescription[self.currentScope[-1]])
 		if self.pendingDocstring:
 			if isinstance(aStat, SyntacticAnalysis.DocstringStatement):
 				self.stack[-1].append(aStat)
@@ -773,10 +773,9 @@ class SemanticFirstPhase(object):
 			else:
 				self.pendingDocstring(aStat)
 				self.pendingDocstring = None
-			print("Dropping down to: %s" % ScopeDescription[self.currentScope[-1]])
+			#print("Dropping down to: %s" % ScopeDescription[self.currentScope[-1]])
 		currentScope = self.currentScope[-1]
 		if currentScope == -1:
-			print(type(aStat))
 			if isinstance(aStat, SyntacticAnalysis.ScriptSignatureStatement):
 				self.EnterEmptyStateScope(aStat)
 			else:

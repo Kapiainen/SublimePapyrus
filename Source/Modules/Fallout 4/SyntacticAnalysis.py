@@ -1460,7 +1460,6 @@ class Syntactic(object):
 		self.stack = []
 
 		tokenType = self.tokens[0].type
-		print(TokenDescription[tokenType])
 		if tokenType == TokenEnum.kBOOL or tokenType == TokenEnum.kFLOAT or tokenType == TokenEnum.kINT or tokenType == TokenEnum.kSTRING or tokenType == TokenEnum.kVAR:
 			typ = None
 			self.Consume()

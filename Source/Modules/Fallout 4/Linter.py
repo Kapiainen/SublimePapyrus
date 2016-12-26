@@ -135,7 +135,6 @@ def BuildScript(aSource):
 			if tokens:
 				statement = SYN.Process(tokens)
 				if statement:
-					print(type(statement))
 					SEMP1.Assemble(statement)
 				#	SEM.AssembleScript(statement)
 				tokens = []
