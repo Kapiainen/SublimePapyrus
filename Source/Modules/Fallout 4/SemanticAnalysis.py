@@ -363,7 +363,7 @@ class SemanticFirstPhase(object):
 		elif isinstance(aStat, SyntacticAnalysis.VariableStatement):
 			pass
 		else:
-			raise SemanticError("Illegal statement in the empty state scope.", aStat.line)
+			raise SemanticError("Illegal statement in the 'Empty state' scope.", aStat.line)
 		self.stack[-1].append(aStat)
 
 	def LeaveEmptyStateScope(self):
@@ -492,7 +492,7 @@ class SemanticFirstPhase(object):
 			self.LeaveStateScope(aStat)
 			return
 		else:
-			raise SemanticError("Illegal statement in the state scope.", aStat.line)
+			raise SemanticError("Illegal statement in the 'State' scope.", aStat.line)
 
 	def LeaveStateScope(self, aStat):
 		scope = self.stack.pop()
@@ -566,9 +566,9 @@ class SemanticFirstPhase(object):
 			elif isinstance(aStat, SyntacticAnalysis.DoStatement):
 				self.currentScope.append(ScopeEnum.DO)
 			else:
-				raise SemanticError("Illegal statement in the function scope.", aStat.line)
+				raise SemanticError("Illegal statement in the 'Function' scope.", aStat.line)
 		else:
-			raise SemanticError("Illegal statement in the function scope.", aStat.line)
+			raise SemanticError("Illegal statement in the 'Function' scope.", aStat.line)
 		self.stack[-1].append(aStat)
 
 	def LeaveFunctionScope(self, aStat):
@@ -638,9 +638,9 @@ class SemanticFirstPhase(object):
 			elif isinstance(aStat, SyntacticAnalysis.DoStatement):
 				self.currentScope.append(ScopeEnum.DO)
 			else:
-				raise SemanticError("Illegal statement in the event scope.", aStat.line)
+				raise SemanticError("Illegal statement in the 'Event' scope.", aStat.line)
 		else:
-			raise SemanticError("Illegal statement in the event scope.", aStat.line)
+			raise SemanticError("Illegal statement in the 'Event' scope.", aStat.line)
 		self.stack[-1].append(aStat)
 
 	def LeaveEventScope(self, aStat):
