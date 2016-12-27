@@ -180,17 +180,17 @@ def SortImport(aIdentifier, aScripts, aNamespaces):
 						isDir = True
 	key = str(aIdentifier).upper()
 	if isFile and isDir:
-		raise Exception("Ambiguous import, could be both a script and a namespace.") #TODO: Handle this error
+		raise Exception("SublimePapyrus - Fallout 4 - Ambiguous import, could be both a script and a namespace.") #TODO: Handle this error
 	elif isFile:
 		if aScripts.get(key, None):
-			raise Exception("Already imported this script.") #TODO: Handle this error
+			raise Exception("SublimePapyrus - Fallout 4 - Already imported this script.") #TODO: Handle this error
 		aScripts[key] = aIdentifier
 	elif isDir:
 		if aNamespaces.get(key, None):
-			raise Exception("Already imported this namespace.") #TODO: Handle this error
+			raise Exception("SublimePapyrus - Fallout 4 - Already imported this namespace.") #TODO: Handle this error
 		aNamespaces[key] = aIdentifier
 	else:
-		raise Exception("Unresolved import.") #TODO: Handle this error
+		raise Exception("SublimePapyrus - Fallout 4 - Unresolved import.") #TODO: Handle this error
 
 def Initialize():
 	global LEX

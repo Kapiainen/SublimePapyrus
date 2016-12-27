@@ -1091,7 +1091,7 @@ class SemanticFirstPhase(object):
 				else:
 					raise SemanticError("Properties can only have 'Get' and 'Set' functions.", element.starts)
 			else:
-				raise Exception("Unsupported property element:", type(element))
+				raise Exception("SublimePapyrus - Fallout 4 - Unsupported property element:", type(element))
 		# Auto or AutoReadOnly property: signature + optional docstring
 		if signature.flags.isAuto or signature.flags.isAutoReadOnly:
 			self.stack[-1].append(PropertyObject(signature, docstring, setFunction, getFunction, signature.line))
@@ -1264,10 +1264,11 @@ class SemanticFirstPhase(object):
 		"""Returns a Script"""
 		self.LeaveEmptyStateScope()
 		script = self.stack.pop()
+		self.Reset(self.capricaExtensions)
 		if isinstance(script, ScriptObject):
 			return script
 		else:
-			raise SemanticError("Failed to build script object.", 1)
+			raise Exception("SublimePapyrus - Fallout 4 - Failed to build script object.")
 
 # Second phase of semantic analysis
 class SemanticSecondPhase(object):
