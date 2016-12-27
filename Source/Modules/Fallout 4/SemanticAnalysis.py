@@ -432,6 +432,7 @@ class SemanticFirstPhase(object):
 					typeMap[typeKey] = TypeMapEntry(aType.identifier, False)
 
 			#TODO: Implement auto-casting
+			#TODO: Move ConstantNodeVisitor, and the code that uses it, to the stage where function and event signatures are checked against the overridden signatures.
 			def ConstantNodeVisitor(aNode): # ImplementationKeyword: ConstantExpression
 				# Implements: A NodeVisitor that can validate expressions used for default values (scriptwide variables, properties, struct members, and parameters)
 				if isinstance(aNode, SyntacticAnalysis.ConstantNode):
