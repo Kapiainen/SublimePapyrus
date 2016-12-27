@@ -1526,7 +1526,7 @@ class Syntactic(object):
 					self.Consume()
 					result = self.Property(typ)
 				elif nextToken.type == TokenEnum.kFUNCTION:
-					typ = Type([self.Expect(TokenEnum.IDENTIFIER).value], False, False)
+					typ = Type(Identifier([self.Expect(TokenEnum.IDENTIFIER).value]), False, False)
 					self.Consume()
 					result = self.Function(typ)
 				elif nextToken.type == TokenEnum.IDENTIFIER:
@@ -1610,7 +1610,7 @@ class Syntactic(object):
 			result = EndGroupStatement(self.line)
 		elif tokenType == TokenEnum.kSTRUCT:
 			self.Consume()
-			result = StructSignature(Identifier([self.Expect(TokenEnum.IDENTIFIER).value]), self.line)
+			result = StructSignatureStatement(Identifier([self.Expect(TokenEnum.IDENTIFIER).value]), self.line)
 		elif tokenType == TokenEnum.kENDSTRUCT:
 			self.Consume()
 			result = EndStructStatement(self.line)

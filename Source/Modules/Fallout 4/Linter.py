@@ -162,8 +162,10 @@ def GetPath(aIdentifier):
 						dirPath = temp
 	return filePath, dirPath
 
-def SourceReader(aIdentifier):
-	return source
+def SourceReader(aPath):
+	with open(aPath, "r") as f:
+		return f.read()
+	return None
 
 def BuildScript(aSource):
 	assert isinstance(aSource, str) #Prune
@@ -267,6 +269,6 @@ def Process(aSource, aPaths, aCaprica):
 	script = BuildScript(aSource)
 	global LINTER_CACHE
 	LINTER_CACHE[str(script.identifier).upper()] = script
-	#SEMP1.Validate(script, LINTER_CACHE, SourceReader, BuildScript)
+	SEMP1.Validate(script, LINTER_CACHE, GetPath, SourceReader, BuildScript)
 	#SEMP2.Validate(script)
 	return True

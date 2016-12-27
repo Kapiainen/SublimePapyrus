@@ -268,9 +268,8 @@ class StructObject(object):
 
 	def __init__(self, aSignature, aMembers, aEnds):
 		assert isinstance(aSignature, SyntacticAnalysis.StructSignatureStatement) #Prune
-		if aMembers: #Prune
-			assert isinstance(a, dict) #Prune
-		assert isinstance(a, int) #Prune
+		assert isinstance(aMembers, dict) #Prune
+		assert isinstance(aEnds, int) #Prune
 		self.identifier = aSignature.identifier
 		self.members = aMembers
 		self.starts = aSignature.line
@@ -416,6 +415,8 @@ class SemanticFirstPhase(object):
 						raise SemanticError("A docstring has to be the next statement after the script signature.", element.line)
 				elif isinstance(element, FunctionObject):
 					key = str(element.identifier).upper() #TODO: element.identifier.name.upper() instead?
+					if element.flags.isNative and not signature.flags.isNative:
+						raise SemanticError("'Native' functions can only be defined in scripts with the 'Native' flag.", element.line)
 					if functions.get(key, None):
 						raise SemanticError("This script already has a function called '%s'." % element.identifier, element.starts)
 					elif events.get(key, None):
@@ -427,6 +428,8 @@ class SemanticFirstPhase(object):
 						for param in element.parameters:
 							AddToTypeMap(param.type)
 				elif isinstance(element, EventObject):
+					if element.flags.isNative and not signature.flags.isNative:
+						raise SemanticError("'Native' events can only be defined in scripts with the 'Native' flag.", element.line)
 					if element.remote:
 						key = ("%s.%s" % (element.remote, element.identifier)).upper()
 						if events.get(key, None):
@@ -1152,20 +1155,24 @@ class SemanticFirstPhase(object):
 				members[key] = StructMember(var, doc)
 
 			while scope:
-				if isinstance(aStat, SyntacticAnalysis.VariableStatement):
+				if isinstance(scope[0], SyntacticAnalysis.VariableStatement):
 					if memberStack:
 						ReduceMember()
 					memberStack.append(scope.pop(0))
-				elif isinstance(aStat, SyntacticAnalysis.DocstringStatement):
+				elif isinstance(scope[0], SyntacticAnalysis.DocstringStatement):
 					if memberStack:
 						memberStack.append(scope.pop(0))
 					else:
 						raise SemanticError("Illegal docstring in the struct scope.", scope[0].line)
+				else:
+					raise Exception("Unsupported type in LeaveStructScope: %s" % type(scope[0]))
 			if memberStack:
 				ReduceMember()
+			if not members:
+				raise SemanticError("This struct does not have any members.", signature.line)
 			self.stack[-1].append(StructObject(signature, members, aStat.line))
 		else:
-			self.stack[-1].append(StructObject(signature, None, aStat.line))
+			raise SemanticError("This struct does not have any members.", signature.line)
 		self.currentScope.pop()
 
 # ==================== Group ====================
@@ -1284,16 +1291,63 @@ class SemanticFirstPhase(object):
 		else:
 			raise Exception("SublimePapyrus - Fallout 4 - Failed to build script object.")
 
-# ==================== TypeMap validation ====================
-	def Validate(self, aScript, aCache, aSourceReader, aBuildFunction):
-		print(aCache)
+# ==================== Validation of pretty much everything except for expressions ====================
+	def Validate(self, aScript, aCache, aGetPath, aSourceReader, aBuildScript):
+		def ValidateScript(aScriptToProcess):
+			print("Validating: %s" % aScriptToProcess.identifier)
+			# Validate inherited objects
+			if aScriptToProcess.extends:
+				# Functions
+				# Events
+				# Structs
+				pass
+			# Update TypeMap
+			for key, entry in aScriptToProcess.typeMap.items():
+				print(key, entry)
+			print("Finished validating: %s" % aScriptToProcess.identifier)
+			return True
+
 		# Build parent scripts recursively and update a script's lineage
-		extends = aScript.extends
-		parent = aBuildFunction(source)
-		# Validate inherited objects
+		def ProcessScript(aIdentifier, aLine):
+			print("Processing: %s" % aIdentifier)
+			script = None
+			filePath, dirPath = aGetPath(aIdentifier)
+			if filePath and dirPath:
+				raise SemanticError("'%s' matches both a script and a namespace." % aIdentifier, aLine)
+			elif dirPath:
+				raise SemanticError("'%s' only matches a namespace." % aIdentifier, aLine)
+			elif not filePath:
+				raise SemanticError("'%s' does not match a script." % aIdentifier, aLine)
+			print("Reading: %s (%s)" % (aIdentifier, filePath))
+			source = aSourceReader(filePath)
+			if source:
+				print("Building: %s" % aIdentifier)
+				script = aBuildScript(source)
+				print("Finished building: %s" % aIdentifier)
+				if script.extends:
+					parent = ProcessScript(script.extends, aLine)
+					script.lineage.extend(parent.lineage)
+					script.lineage.append(str(script.extends).upper())
+					print("%s lineage:" % aIdentifier, script.lineage)
+				ValidateScript(script)
+				aCache[str(script.identifier).upper()] = script
+			else:
+				raise SemanticError("'%s' does not contain anything.", aLine)
+			print("Finished processing: %s" % aIdentifier)
+			return script
+
+		if aScript.extends:
+			parent = aCache.get(str(aScript.extends).upper(), None)
+			if not parent:
+				parent = ProcessScript(aScript.extends, aScript.starts)
+			aScript.lineage.extend(parent.lineage)
+			aScript.lineage.append(str(aScript.extends).upper())
+			print("%s lineage:" % aScript.identifier, aScript.lineage)
+		ValidateScript(aScript)
+			# Validate inherited objects
 		# Validate and update TypeMap
-		for key, entry in aScript.typeMap.items():
-			print(key, entry)
+#		for key, entry in aScript.typeMap.items():
+#			print(key, entry)
 
 # Second phase of semantic analysis
 class SemanticSecondPhase(object):
