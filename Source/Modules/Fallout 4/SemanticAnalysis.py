@@ -247,6 +247,7 @@ class StructMember(object):
 	__slots__ = [
 		"identifier", # Identifier
 		"type", # Type
+		"defaultValue", # ExpressionNode
 		"docstring", # str
 		"line" # int
 	]
@@ -261,6 +262,7 @@ class StructMember(object):
 			self.docstring = aDocstring.value
 		else:
 			self.docstring = ""
+		self.defaultValue = aSignature.value
 		self.line = aSignature.line
 
 class StructObject(object):
@@ -279,6 +281,24 @@ class StructObject(object):
 		self.members = aMembers
 		self.starts = aSignature.line
 		self.ends = aEnds
+
+class NodeResult(object):
+	__slots__ = [
+		"identifier", # Identifier
+		"isArray", # bool
+		"isStruct", # bool
+		"isConstant", # bool
+		"value", # str
+		"isObject" # bool
+	]
+
+	def __init__(self, aIdentifier, aArray, aStruct, aConstant, aValue, aObject):
+		self.identifier = aIdentifier
+		self.isArray = aArray
+		self.isStruct = aStruct
+		self.isConstant = aConstant
+		self.value = aValue
+		self.isObject = aObject
 
 # First phase of semantic analysis
 class ScopeEnum(object):
@@ -411,6 +431,50 @@ class SemanticFirstPhase(object):
 				if not typeMap.get(typeKey, None):
 					typeMap[typeKey] = TypeMapEntry(aType.identifier, False)
 
+			#TODO: Implement auto-casting
+			def ConstantNodeVisitor(aNode): # ImplementationKeyword: ConstantExpression
+				# Implements: A NodeVisitor that can validate expressions used for default values (scriptwide variables, properties, struct members, and parameters)
+				if isinstance(aNode, SyntacticAnalysis.ConstantNode):
+					identifier = None
+					if aNode.value.type == LexicalAnalysis.TokenEnum.kTRUE:
+						identifier = SyntacticAnalysis.Identifier(["Bool"])
+					elif aNode.value.type == LexicalAnalysis.TokenEnum.kFALSE:
+						identifier = SyntacticAnalysis.Identifier(["Bool"])
+					elif aNode.value.type == LexicalAnalysis.TokenEnum.FLOAT:
+						identifier = SyntacticAnalysis.Identifier(["Float"])
+					elif aNode.value.type == LexicalAnalysis.TokenEnum.INT:
+						identifier = SyntacticAnalysis.Identifier(["Int"])
+					elif aNode.value.type == LexicalAnalysis.TokenEnum.STRING:
+						identifier = SyntacticAnalysis.Identifier(["String"])
+					elif aNode.value.type == LexicalAnalysis.TokenEnum.kNONE:
+						identifier = SyntacticAnalysis.Identifier(["None"])
+					else:
+						raise Exception("ConstantNodeVisitor: Unsupported constant type.")
+					return NodeResult(identifier, False, False, True, aNode.value.value.upper(), True)
+				elif isinstance(aNode, SyntacticAnalysis.ExpressionNode):
+					return ConstantNodeVisitor(aNode.child)
+				elif isinstance(aNode, SyntacticAnalysis.UnaryOperatorNode):
+					if aNode.operator.type == LexicalAnalysis.TokenEnum.SUBTRACTION:
+						result = ConstantNodeVisitor(aNode.operand)
+						if result.isConstant:
+							key = str(result.identifier).upper()
+							if key == "INT" or key == "FLOAT":
+								result.value = "-%s" % result.value
+								return result
+							else:
+								raise SemanticError("The unary minus operator is only allowed in 'Int' or 'Float' constant expressions.", 0)
+						else:
+							raise SemanticError("Expected a constant expression after the unary minus operator.", 0)
+					else:
+						raise SemanticError("The unary minus operator is the only unary operator allowed in constant expressions.", 0)
+				return None
+
+			def ConstantNodeVisitorWrapper(aNode, aLine):
+				try:
+					return ConstantNodeVisitor(aNode)
+				except SemanticError as e:
+					raise SemanticError(e.message, aLine)
+
 			for element in scope:
 				if isinstance(element, SyntacticAnalysis.DocstringStatement): # ImplementationKeyword: Docstring
 					if docstring:
@@ -461,9 +525,41 @@ class SemanticFirstPhase(object):
 				elif isinstance(element, SyntacticAnalysis.VariableStatement): # ImplementationKeyword: Variable
 					key = str(element.identifier).upper()
 					if variables.get(key, None):
-						raise SemanticError("This script already has a variable called '%s'." % element.identifier, element.starts)
+						raise SemanticError("This script already has a variable called '%s'." % element.identifier, element.line)
 					elif properties.get(key, None):
-						raise SemanticError("This script already has a property called '%s'." % element.identifier, element.starts)
+						raise SemanticError("This script already has a property called '%s'." % element.identifier, element.line)
+					# Implements: Scriptwide variables can only be declared with constant expressions.
+					if element.value:
+						exprType = ConstantNodeVisitorWrapper(element.value, element.line)
+						if exprType:
+							variableKey = str(element.type.identifier).upper()
+							exprKey = str(exprType.identifier).upper()
+							if not element.type.isArray:
+								if variableKey == "BOOL" or variableKey == "FLOAT" or variableKey == "INT" or variableKey == "STRING":
+									if exprKey != variableKey:
+										raise SemanticError("Expected the initial value to be '%s'." % element.type.identifier, element.line)
+								elif variableKey == "VAR":
+									pass
+								else:
+									if exprKey != "NONE":
+										raise SemanticError("Expected the initial value to be 'None'.", element.line)
+							else:
+								if exprKey != "NONE":
+									raise SemanticError("Expected the initial value to be 'None'.", element.line)
+	#Type
+	#"identifier", # Identifier
+	#"isArray", # bool
+	#"isStruct" # bool
+
+	#Node result
+	#	"identifier", # Identifier
+	#	"isArray", # bool
+	#	"isStruct", # bool
+	#	"isConstant", # bool
+	#	"value", # str
+	#	"isObject" # bool
+						else:
+							raise SemanticError("Scriptwide variables can only be initialized with constant expressions.", element.line)
 					variables[key] = element
 					AddToTypeMap(element.type)
 				elif isinstance(element, GroupObject): # ImplementationKeyword: Group
@@ -1327,7 +1423,7 @@ class SemanticFirstPhase(object):
 			print("Processing inherited objects.")
 			if aScriptToProcess.extends:
 				#parent = aCache.get(str(aScriptToProcess.extends).upper())
-				lineage = [aCache.get(e) in e for aScriptToProcess.lineage]
+				lineage = [aCache.get(e) for e in aScriptToProcess.lineage]
 				# Functions
 				if aScriptToProcess.functions:
 					for key, func in aScriptToProcess.functions.items():
@@ -1362,7 +1458,7 @@ class SemanticFirstPhase(object):
 									#break #Signatures match
 									#raise SemanticError()
 						if not overriding and not aScriptToProcess.flags.isNative:
-							raise SemanticError("New events can only be defined when the script signature has the 'Native' flag.", event.line)
+							raise SemanticError("New events can only be defined when the script signature has the 'Native' flag.", event.starts)
 						#Any remaining checks
 				# Structs
 				if aScriptToProcess.structs:

@@ -199,7 +199,7 @@ class ArrayCreationNode(Node):
 	]
 
 	def __init__(self, aType, aSize):
-		assert isinstance(aType, Type) #Prune
+		assert isinstance(aType, Identifier) #Prune
 		assert isinstance(aSize, ExpressionNode) #Prune
 		self.type = aType
 		self.size = aSize

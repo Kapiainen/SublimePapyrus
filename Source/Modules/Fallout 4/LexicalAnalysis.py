@@ -42,7 +42,7 @@ class TokenEnum(object):
 	NOT = 35
 	NOTEQUAL = 36
 	OR = 37
-	SUBTRACTION = 	38
+	SUBTRACTION = 38
 	# Keywords
 	kAS = 39
 	kAUTO = 40
