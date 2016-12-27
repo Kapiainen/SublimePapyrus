@@ -40,6 +40,13 @@ SYN = None
 SEMP1 = None
 SEMP2 = None
 
+def ClearCache(aKey = None):
+	global LINTER_CACHE
+	if aKey:
+		if LINTER_CACHE.get(aKey, None):
+			del LINTER_CACHE[aKey]
+	else:
+		LINTER_CACHE = {}
 #class TypeMap(object):
 #	__slots__ = [
 #		"identifier", # LexicalAnalysis.Identifier
@@ -121,6 +128,16 @@ SEMP2 = None
 #		TYPE_MAPS[absoluteKey] = typeMap # absoluteKey = full type identifier, which is required when no scripts or namespaces have been imported
 #	return
 
+def Initialize():
+	global LEX
+	global SYN
+	global SEMP1
+	global SEMP2
+	LEX = Lexical()
+	SYN = Syntactic()
+	SEMP1 = SemanticFirstPhase()
+	SEMP2 = SemanticSecondPhase()
+
 def GetPath(aIdentifier):
 	global IMPORT_PATHS
 	filePath = None
@@ -185,6 +202,29 @@ def BuildScript(aSource):
 			tokens.append(token)
 	return SEMP1.Build(GetPath)
 
+def GetScriptName(aSource):
+	global LEX
+	global SYN
+	global SEMP1
+	global INITIALIZED
+	if not INITIALIZED:
+		Initialize()
+	tokens = []
+	for token in LEX.Process(aSource):
+		tokenType = token.type
+		if tokenType == TokenEnum.NEWLINE:
+			if tokens:
+				statement = SYN.Process(tokens)
+				if statement:
+					if isinstance(statement, SyntacticAnalysis.ScriptSignatureStatement):
+						scriptName = statement.identifier.namespace
+						scriptName.append(statement.identifier.name)
+						return scriptName
+				tokens = []
+		elif tokenType != TokenEnum.COMMENTLINE and tokenType != TokenEnum.COMMENTBLOCK:
+			tokens.append(token)
+	return None
+
 #def SortImport(aIdentifier, aScripts, aNamespaces):
 #	global IMPORT_PATHS
 #	isFile = False
@@ -237,16 +277,6 @@ def BuildScript(aSource):
 #		aNamespaces[key] = aIdentifier
 #	else:
 #		raise Exception("SublimePapyrus - Fallout 4 - Unresolved import.") #TODO: Handle this error
-
-def Initialize():
-	global LEX
-	global SYN
-	global SEMP1
-	global SEMP2
-	LEX = Lexical()
-	SYN = Syntactic()
-	SEMP1 = SemanticFirstPhase()
-	SEMP2 = SemanticSecondPhase()
 
 def Process(aSource, aPaths, aCaprica):
 	assert isinstance(aSource, str) #Prune
