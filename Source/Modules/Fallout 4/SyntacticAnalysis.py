@@ -708,11 +708,15 @@ class ScriptSignatureStatement(object):
 
 	def __init__(self, aIdentifier, aExtends, aFlags, aLine):
 		assert isinstance(aIdentifier, Identifier) #Prune
-		assert isinstance(aExtends, Identifier) #Prune
+		if aExtends: #Prune
+			assert isinstance(aExtends, Identifier) #Prune
 		assert isinstance(aFlags, ScriptFlags) #Prune
 		assert isinstance(aLine, int) #Prune
 		self.identifier = aIdentifier
-		self.extends = aExtends
+		if aExtends:
+			self.extends = aExtends
+		else:
+			self.extends = Identifier(["ScriptObject"])
 		self.flags = aFlags
 		self.line = aLine
 
