@@ -385,10 +385,11 @@ class SemanticFirstPhase(object):
 			raise SemanticError("Illegal statement in the 'Empty state' scope.", aStat.line)
 		self.stack[-1].append(aStat)
 
-	def LeaveEmptyStateScope(self, aGetPath):
+	def LeaveEmptyStateScope(self, aGetPath): # ImplementationKeyword: Script
 		scope = self.stack.pop()
 		signature = scope.pop(0)
 		if scope:
+			# Implements: Script documentation string.
 			docstring = None
 			if isinstance(scope[0], SyntacticAnalysis.DocstringStatement):
 				docstring = scope.pop(0)
@@ -411,13 +412,14 @@ class SemanticFirstPhase(object):
 					typeMap[typeKey] = TypeMapEntry(aType.identifier, False)
 
 			for element in scope:
-				if isinstance(element, SyntacticAnalysis.DocstringStatement):
+				if isinstance(element, SyntacticAnalysis.DocstringStatement): # ImplementationKeyword: Docstring
 					if docstring:
 						raise SemanticError("This script already has a docstring.", element.line)
 					else:
 						raise SemanticError("A docstring has to be the next statement after the script signature.", element.line)
-				elif isinstance(element, FunctionObject):
+				elif isinstance(element, FunctionObject): # ImplementationKeyword: Function
 					key = str(element.identifier).upper() #TODO: element.identifier.name.upper() instead?
+					# Implements: Proper use of 'Native' flag
 					if element.flags.isNative and not signature.flags.isNative:
 						raise SemanticError("'Native' functions can only be defined in scripts with the 'Native' flag.", element.line)
 					if functions.get(key, None):
@@ -430,7 +432,8 @@ class SemanticFirstPhase(object):
 					if element.parameters:
 						for param in element.parameters:
 							AddToTypeMap(param.type)
-				elif isinstance(element, EventObject):
+				elif isinstance(element, EventObject): # ImplementationKeyword: Event
+					# Proper use of 'Native' flag
 					if element.flags.isNative and not signature.flags.isNative:
 						raise SemanticError("'Native' events can only be defined in scripts with the 'Native' flag.", element.line)
 					if element.remote:
@@ -447,7 +450,7 @@ class SemanticFirstPhase(object):
 					if element.parameters:
 						for param in element.parameters:
 							AddToTypeMap(param.type)
-				elif isinstance(element, PropertyObject):
+				elif isinstance(element, PropertyObject): # ImplementationKeyword: Property
 					key = str(element.identifier).upper()
 					if properties.get(key, None):
 						raise SemanticError("This script already has a property called '%s'." % element.identifier, element.starts)
@@ -455,7 +458,7 @@ class SemanticFirstPhase(object):
 						raise SemanticError("This script already has a variable called '%s'." % element.identifier, element.starts)
 					properties[key] = element
 					AddToTypeMap(element.type)
-				elif isinstance(element, SyntacticAnalysis.VariableStatement):
+				elif isinstance(element, SyntacticAnalysis.VariableStatement): # ImplementationKeyword: Variable
 					key = str(element.identifier).upper()
 					if variables.get(key, None):
 						raise SemanticError("This script already has a variable called '%s'." % element.identifier, element.starts)
@@ -463,7 +466,7 @@ class SemanticFirstPhase(object):
 						raise SemanticError("This script already has a property called '%s'." % element.identifier, element.starts)
 					variables[key] = element
 					AddToTypeMap(element.type)
-				elif isinstance(element, GroupObject):
+				elif isinstance(element, GroupObject): # ImplementationKeyword: Group
 					key = str(element.identifier).upper()
 					if groups.get(key, None):
 						raise SemanticError("This script already has a group called '%s'." % element.identifier, element.starts)
@@ -477,7 +480,7 @@ class SemanticFirstPhase(object):
 					if element.members:
 						for key, mem in element.members.items():
 							AddToTypeMap(mem.type)
-				elif isinstance(element, StructObject):
+				elif isinstance(element, StructObject): # ImplementationKeyword: Struct
 					key = str(element.identifier).upper()
 					if structs.get(key, None):
 						raise SemanticError("This script already has a struct called '%s'." % element.identifier, element.starts)
@@ -485,7 +488,7 @@ class SemanticFirstPhase(object):
 					if element.members:
 						for key, mem in element.members.items():
 							AddToTypeMap(mem.type)
-				elif isinstance(element, StateObject):
+				elif isinstance(element, StateObject): # ImplementationKeyword: State
 					key = str(element.identifier).upper()
 					if states.get(key, None):
 						raise SemanticError("This script already has a state called '%s'." % element.identifier, element.starts)
@@ -502,7 +505,7 @@ class SemanticFirstPhase(object):
 							if event.parameters:
 								for param in event.parameters:
 									AddToTypeMap(param.type)
-				elif isinstance(element, SyntacticAnalysis.ImportStatement):
+				elif isinstance(element, SyntacticAnalysis.ImportStatement): # ImplementationKeyword: Import
 					filePath, dirPath = aGetPath(element.identifier)
 					key = str(element.identifier).upper()
 					if filePath and dirPath:
@@ -510,11 +513,11 @@ class SemanticFirstPhase(object):
 					elif filePath:
 						if importedScripts.get(key, None):
 							raise SemanticError("This script has already been imported in this script.", element.line)
-						importedScripts[key] = element.identifier
+						importedScripts[key] = element
 					elif dirPath:
 						if importedNamespaces.get(key, None):
 							raise SemanticError("This namespace has already been imported in this script.", element.line)
-						importedNamespaces[key] = element.identifier
+						importedNamespaces[key] = element
 					else:
 						raise SemanticError("This identifier does not match any script or namespace.", element.line)
 			if not functions:
@@ -1317,31 +1320,58 @@ class SemanticFirstPhase(object):
 			# Imported scripts
 			if aScriptToProcess.importedScripts:
 				print("Processing imported %d scripts." % len(aScriptToProcess.importedScripts))
-				for key, identifier in aScriptToProcess.importedScripts.items():
+				for key, statement in aScriptToProcess.importedScripts.items():
 					if not aCache.get(key, None):
-						ProcessScript(identifier, 1)
+						ProcessScript(statement.identifier, statement.line)
 			# Validate inherited objects
 			print("Processing inherited objects.")
 			if aScriptToProcess.extends:
-				parent = aCache.get(str(aScriptToProcess.extends).upper())
+				#parent = aCache.get(str(aScriptToProcess.extends).upper())
+				lineage = [aCache.get(e) in e for aScriptToProcess.lineage]
 				# Functions
-				if aScriptToProcess.functions and parent.functions:
+				if aScriptToProcess.functions:
 					for key, func in aScriptToProcess.functions.items():
-						parentFunc = parent.functions.get(key, None)
-						if parentFunc:
-							pass
+						for parent in lineage: # Check for definition in any parent script. If found and not matching, then raise exception. If found and matching, then break out of loop.
+							if parent.functions:
+								parentFunc = parent.functions.get(key, None)
+								if parentFunc:
+									pass #TODO: Check that signatures match
+									#	Return type
+									#	Parameters
+									#		Amount
+									#		Order
+									#		Type
+									#		Default values need a specific NodeVisitor that checks constant expressions (only literals and unary minus operator provided that the literal is an int or a float)
+									#break #Signatures match
+									#raise SemanticError()
+						#Any remaining checks
 				# Events
-				if aScriptToProcess.events and parent.events:
+				if aScriptToProcess.events:
 					for key, event in aScriptToProcess.events.items():
-						parentEvent = parent.events.get(key, None)
-						if parentEvent:
-							pass
+						overriding = False
+						for parent in lineage:
+							if parent.events:
+								parentEvent = parent.events.get(key, None)
+								if parentEvent:
+									pass #TODO: Check that signatures match
+									#	Parameters
+									#		Amount
+									#		Order
+									#		Type
+									#overriding = True #Signatures match
+									#break #Signatures match
+									#raise SemanticError()
+						if not overriding and not aScriptToProcess.flags.isNative:
+							raise SemanticError("New events can only be defined when the script signature has the 'Native' flag.", event.line)
+						#Any remaining checks
 				# Structs
-				if aScriptToProcess.structs and parent.structs:
+				if aScriptToProcess.structs:
 					for key, struct in aScriptToProcess.structs.items():
-						parentStruct = parent.structs.get(key, None)
-						if parentStruct:
-							raise SemanticError("A struct called '%s' has already been defined in '%s'." %(struct.identifier, parent.identifier), struct.starts)
+						for parent in lineage: # If struct has not been defined in any parent scripts, then this loop should finish by itself without raising exceptions.
+							if parent.structs:
+								parentStruct = parent.structs.get(key, None)
+								if parentStruct:
+									raise SemanticError("A struct called '%s' has already been defined in '%s'." %(struct.identifier, parent.identifier), struct.starts)
 			# Update TypeMap
 			print("Updating TypeMap.")
 			for key, entry in aScriptToProcess.typeMap.items():
