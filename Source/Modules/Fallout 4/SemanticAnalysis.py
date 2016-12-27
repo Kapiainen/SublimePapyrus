@@ -166,10 +166,11 @@ class ScriptObject(object):
 		"states", # dict of StateObject
 		"importedScripts", # dict of ImportStatement
 		"importedNamespaces", # dict of ImportStatement
+		"typeMap", # dict of TypeMapEntry
 		"starts" # int
 	]
 
-	def __init__(self, aSignature, aDocstring, aFunctions, aEvents, aProperties, aVariables, aGroups, aStructs, aStates, aImportedScripts, aImportedNamespaces):
+	def __init__(self, aSignature, aDocstring, aFunctions, aEvents, aProperties, aVariables, aGroups, aStructs, aStates, aImportedScripts, aImportedNamespaces, aTypeMap):
 		assert isinstance(aSignature, SyntacticAnalysis.ScriptSignatureStatement) #Prune
 		if aDocstring: #Prune
 			assert isinstance(aDocstring, SyntacticAnalysis.DocstringStatement) #Prune
@@ -191,6 +192,7 @@ class ScriptObject(object):
 			assert isinstance(aImportedScripts, dict) #Prune
 		if aImportedNamespaces: #Prune
 			assert isinstance(aImportedNamespaces, dict) #Prune
+		assert isinstance(aTypeMap, dict) #Prune
 		self.identifier = aSignature.identifier
 		self.extends = aSignature.extends
 		self.flags = aSignature.flags
@@ -207,6 +209,7 @@ class ScriptObject(object):
 		self.states = aStates
 		self.importedScripts = aImportedScripts
 		self.importedNamespaces = aImportedNamespaces
+		self.typeMap = aTypeMap
 		self.starts = aSignature.line
 
 class StateObject(object):
@@ -313,6 +316,18 @@ ScopeDescription = [
 	"SWITCH"
 ]
 
+class TypeMapEntry(object):
+	__slots__ = [
+		"namespace", # list of str
+		"name", # str
+		"isStruct" # bool
+	]
+
+	def __init__(self, aNamespace, aName, aStruct):
+		self.namespace = aNamespace
+		self.name = aName
+		self.isStruct = aStruct
+
 class SemanticFirstPhase(object):
 	__slots__ = [
 		"capricaExtensions", # bool
@@ -386,6 +401,12 @@ class SemanticFirstPhase(object):
 			states = {}
 			importedScripts = {}
 			importedNamespaces = {}
+			typeMap = {}
+			def AddToTypeMap(aType):
+				typeKey = str(aType.identifier).upper()
+				if not typeMap.get(typeKey, None):
+					typeMap[typeKey] = TypeMapEntry(aType.identifier.namespace, aType.identifier.name, False)
+
 			for element in scope:
 				if isinstance(element, SyntacticAnalysis.DocstringStatement):
 					if docstring:
@@ -399,6 +420,11 @@ class SemanticFirstPhase(object):
 					elif events.get(key, None):
 						raise SemanticError("This script already has an event called '%s'." % element.identifier, element.starts)
 					functions[key] = element
+					if element.type:
+						AddToTypeMap(element.type)
+					if element.parameters:
+						for param in element.parameters:
+							AddToTypeMap(param.type)
 				elif isinstance(element, EventObject):
 					if element.remote:
 						key = ("%s.%s" % (element.remote, element.identifier)).upper()
@@ -411,6 +437,9 @@ class SemanticFirstPhase(object):
 						elif functions.get(key, None):
 							raise SemanticError("This script already has a function called '%s'." % element.identifier, element.starts)
 					events[key] = element
+					if element.parameters:
+						for param in element.parameters:
+							AddToTypeMap(param.type)
 				elif isinstance(element, PropertyObject):
 					key = str(element.identifier).upper()
 					if properties.get(key, None):
@@ -418,6 +447,7 @@ class SemanticFirstPhase(object):
 					elif variables.get(key, None):
 						raise SemanticError("This script already has a variable called '%s'." % element.identifier, element.starts)
 					properties[key] = element
+					AddToTypeMap(element.type)
 				elif isinstance(element, SyntacticAnalysis.VariableStatement):
 					key = str(element.identifier).upper()
 					if variables.get(key, None):
@@ -425,6 +455,7 @@ class SemanticFirstPhase(object):
 					elif properties.get(key, None):
 						raise SemanticError("This script already has a property called '%s'." % element.identifier, element.starts)
 					variables[key] = element
+					AddToTypeMap(element.type)
 				elif isinstance(element, GroupObject):
 					key = str(element.identifier).upper()
 					if groups.get(key, None):
@@ -436,16 +467,34 @@ class SemanticFirstPhase(object):
 							raise SemanticError("This script already has a variable called '%s'." % element.identifier, prop.starts)
 						properties[key] = prop
 					groups[key] = element
+					if element.members:
+						for key, mem in element.members.items():
+							AddToTypeMap(mem.type)
 				elif isinstance(element, StructObject):
 					key = str(element.identifier).upper()
 					if structs.get(key, None):
 						raise SemanticError("This script already has a struct called '%s'." % element.identifier, element.starts)
 					structs[key] = element
+					if element.members:
+						for key, mem in element.members.items():
+							AddToTypeMap(mem.type)
 				elif isinstance(element, StateObject):
 					key = str(element.identifier).upper()
 					if states.get(key, None):
 						raise SemanticError("This script already has a state called '%s'." % element.identifier, element.starts)
 					states[key] = element
+					if element.functions:
+						for key, func in element.functions.items():
+							if func.type:
+								AddToTypeMap(func.type)
+							if func.parameters:
+								for param in func.parameters:
+									AddToTypeMap(param.type)
+					if element.events:
+						for key, event in element.events.items():
+							if event.parameters:
+								for param in event.parameters:
+									AddToTypeMap(param.type)
 				elif isinstance(element, SyntacticAnalysis.ImportStatement):
 					self.sortImport(element.identifier, importedScripts, importedNamespaces)
 			if not functions:
@@ -466,9 +515,9 @@ class SemanticFirstPhase(object):
 				importedScripts = None
 			if not importedNamespaces:
 				importedNamespaces = None
-			self.stack.append(ScriptObject(signature, docstring, functions, events, properties, variables, groups, structs, states, importedScripts, importedNamespaces))
+			self.stack.append(ScriptObject(signature, docstring, functions, events, properties, variables, groups, structs, states, importedScripts, importedNamespaces, typeMap))
 		else:
-			self.stack.append(ScriptObject(signature, None, None, None, None, None, None, None, None, None, None))
+			self.stack.append(ScriptObject(signature, None, None, None, None, None, None, None, None, None, None, {}))
 		self.currentScope.pop()
 
 # ==================== State ====================
