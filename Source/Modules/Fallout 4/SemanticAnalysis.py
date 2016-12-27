@@ -172,6 +172,7 @@ class ScriptObject(object):
 	]
 
 	def __init__(self, aSignature, aDocstring, aFunctions, aEvents, aProperties, aVariables, aGroups, aStructs, aStates, aImportedScripts, aImportedNamespaces, aTypeMap):
+		print(type(aSignature))
 		assert isinstance(aSignature, SyntacticAnalysis.ScriptSignatureStatement) #Prune
 		if aDocstring: #Prune
 			assert isinstance(aDocstring, SyntacticAnalysis.DocstringStatement) #Prune
@@ -319,14 +320,12 @@ ScopeDescription = [
 
 class TypeMapEntry(object):
 	__slots__ = [
-		"namespace", # list of str
-		"name", # str
+		"identifier", # Identifier
 		"isStruct" # bool
 	]
 
-	def __init__(self, aNamespace, aName, aStruct):
-		self.namespace = aNamespace
-		self.name = aName
+	def __init__(self, aIdentifier, aStruct):
+		self.identifier = aIdentifier
 		self.isStruct = aStruct
 
 class SemanticFirstPhase(object):
@@ -383,6 +382,10 @@ class SemanticFirstPhase(object):
 		self.stack[-1].append(aStat)
 
 	def LeaveEmptyStateScope(self, aGetPath):
+		i = 0
+		for scope in self.stack:
+			print(i, scope)
+			i += 1
 		scope = self.stack.pop()
 		signature = scope.pop(0)
 		if scope:
@@ -405,7 +408,7 @@ class SemanticFirstPhase(object):
 				# 'typeMap' can be processed once per script and then used to more quickly get to the correct ScriptObject that corresponds to the type.
 				typeKey = str(aType.identifier).upper()
 				if not typeMap.get(typeKey, None):
-					typeMap[typeKey] = TypeMapEntry(aType.identifier.namespace, aType.identifier.name, False)
+					typeMap[typeKey] = TypeMapEntry(aType.identifier, False)
 
 			for element in scope:
 				if isinstance(element, SyntacticAnalysis.DocstringStatement):
@@ -1221,17 +1224,31 @@ class SemanticFirstPhase(object):
 		self.currentScope.pop()
 
 # ==================== Assembling ====================
+	def ClosePendingDocstringScope(self, aStat):
+		if aStat and isinstance(aStat, SyntacticAnalysis.DocstringStatement):
+			self.stack[-1].append(aStat)
+			self.pendingDocstring(aStat)
+			self.pendingDocstring = None
+			return False
+		else:
+			self.pendingDocstring(aStat)
+			self.pendingDocstring = None
+			return True
+
 	def Assemble(self, aStat):
 		#print("Current scope: %s" % ScopeDescription[self.currentScope[-1]])
 		if self.pendingDocstring:
-			if isinstance(aStat, SyntacticAnalysis.DocstringStatement):
-				self.stack[-1].append(aStat)
-				self.pendingDocstring(aStat)
-				self.pendingDocstring = None
+			continueAssembling = self.ClosePendingDocstringScope(aStat)
+			if not continueAssembling:
 				return
-			else:
-				self.pendingDocstring(aStat)
-				self.pendingDocstring = None
+#			if isinstance(aStat, SyntacticAnalysis.DocstringStatement):
+#				self.stack[-1].append(aStat)
+#				self.pendingDocstring(aStat)
+#				self.pendingDocstring = None
+#				return
+#			else:
+#				self.pendingDocstring(aStat)
+#				self.pendingDocstring = None
 			#print("Dropping down to: %s" % ScopeDescription[self.currentScope[-1]])
 		currentScope = self.currentScope[-1]
 		if currentScope == -1:
@@ -1283,6 +1300,8 @@ class SemanticFirstPhase(object):
 # ==================== Building ====================
 	def Build(self, aGetPath):
 		"""Returns a Script"""
+		if self.currentScope[-1] != ScopeEnum.SCRIPT and self.pendingDocstring:
+			self.ClosePendingDocstringScope(None)
 		self.LeaveEmptyStateScope(aGetPath)
 		script = self.stack.pop()
 		self.Reset(self.capricaExtensions)
@@ -1295,45 +1314,54 @@ class SemanticFirstPhase(object):
 	def Validate(self, aScript, aCache, aGetPath, aSourceReader, aBuildScript):
 		def ValidateScript(aScriptToProcess):
 			print("Validating: %s" % aScriptToProcess.identifier)
+			# Imported scripts
+			if aScriptToProcess.importedScripts:
+				print("Processing imported %d scripts." % len(aScriptToProcess.importedScripts))
+				for key, identifier in aScriptToProcess.importedScripts.items():
+					if not aCache.get(key, None):
+						ProcessScript(identifier, 1)
 			# Validate inherited objects
+			print("Processing inherited objects.")
 			if aScriptToProcess.extends:
 				# Functions
 				# Events
 				# Structs
 				pass
 			# Update TypeMap
+			print("Updating TypeMap.")
 			for key, entry in aScriptToProcess.typeMap.items():
-				print(key, entry)
+				print(key, str(entry.identifier))
 			print("Finished validating: %s" % aScriptToProcess.identifier)
 			return True
 
 		# Build parent scripts recursively and update a script's lineage
 		def ProcessScript(aIdentifier, aLine):
 			print("Processing: %s" % aIdentifier)
-			script = None
-			filePath, dirPath = aGetPath(aIdentifier)
-			if filePath and dirPath:
-				raise SemanticError("'%s' matches both a script and a namespace." % aIdentifier, aLine)
-			elif dirPath:
-				raise SemanticError("'%s' only matches a namespace." % aIdentifier, aLine)
-			elif not filePath:
-				raise SemanticError("'%s' does not match a script." % aIdentifier, aLine)
-			print("Reading: %s (%s)" % (aIdentifier, filePath))
-			source = aSourceReader(filePath)
-			if source:
-				print("Building: %s" % aIdentifier)
-				script = aBuildScript(source)
-				print("Finished building: %s" % aIdentifier)
-				if script.extends:
-					parent = ProcessScript(script.extends, aLine)
-					script.lineage.extend(parent.lineage)
-					script.lineage.append(str(script.extends).upper())
-					print("%s lineage:" % aIdentifier, script.lineage)
-				ValidateScript(script)
-				aCache[str(script.identifier).upper()] = script
-			else:
-				raise SemanticError("'%s' does not contain anything.", aLine)
-			print("Finished processing: %s" % aIdentifier)
+			script = aCache.get(str(aIdentifier).upper(), None)
+			if not script:
+				filePath, dirPath = aGetPath(aIdentifier)
+				if filePath and dirPath:
+					raise SemanticError("'%s' matches both a script and a namespace." % aIdentifier, aLine)
+				elif dirPath:
+					raise SemanticError("'%s' only matches a namespace." % aIdentifier, aLine)
+				elif not filePath:
+					raise SemanticError("'%s' does not match a script." % aIdentifier, aLine)
+				print("Reading: %s (%s)" % (aIdentifier, filePath))
+				source = aSourceReader(filePath)
+				if source:
+					print("Building: %s" % aIdentifier)
+					script = aBuildScript(source)
+					print("Finished building: %s" % aIdentifier)
+					if script.extends:
+						parent = ProcessScript(script.extends, aLine)
+						script.lineage.extend(parent.lineage)
+						script.lineage.append(str(script.extends).upper())
+						print("%s lineage:" % aIdentifier, script.lineage)
+					ValidateScript(script)
+					aCache[str(script.identifier).upper()] = script
+				else:
+					raise SemanticError("'%s' does not contain anything.", aLine)
+				print("Finished processing: %s" % aIdentifier)
 			return script
 
 		if aScript.extends:
