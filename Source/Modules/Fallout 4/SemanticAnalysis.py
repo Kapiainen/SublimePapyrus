@@ -537,7 +537,10 @@ class SemanticFirstPhase(object):
 							if not element.type.isArray:
 								if variableKey == "BOOL" or variableKey == "FLOAT" or variableKey == "INT" or variableKey == "STRING":
 									if exprKey != variableKey:
-										raise SemanticError("Expected the initial value to be '%s'." % element.type.identifier, element.line)
+										if self.capricaExtensions and variableKey == "FLOAT" and exprKey == "INT":
+											pass
+										else:
+											raise SemanticError("Expected the initial value to be a(n) '%s' value." % element.type.identifier, element.line)
 								elif variableKey == "VAR":
 									pass
 								else:
@@ -546,18 +549,6 @@ class SemanticFirstPhase(object):
 							else:
 								if exprKey != "NONE":
 									raise SemanticError("Expected the initial value to be 'None'.", element.line)
-	#Type
-	#"identifier", # Identifier
-	#"isArray", # bool
-	#"isStruct" # bool
-
-	#Node result
-	#	"identifier", # Identifier
-	#	"isArray", # bool
-	#	"isStruct", # bool
-	#	"isConstant", # bool
-	#	"value", # str
-	#	"isObject" # bool
 						else:
 							raise SemanticError("Scriptwide variables can only be initialized with constant expressions.", element.line)
 					variables[key] = element
