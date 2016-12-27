@@ -34,6 +34,11 @@ class SemanticError(Exception):
 		self.message = aMessage
 		self.line = aLine
 
+class RemoteError(Exception):
+	def __init__(self, aMessage, aLine):
+		self.message = aMessage
+		self.line = aLine
+
 class FunctionObject(object):
 	__slots__ = [
 		"identifier", # Identifier
@@ -172,7 +177,6 @@ class ScriptObject(object):
 	]
 
 	def __init__(self, aSignature, aDocstring, aFunctions, aEvents, aProperties, aVariables, aGroups, aStructs, aStates, aImportedScripts, aImportedNamespaces, aTypeMap):
-		print(type(aSignature))
 		assert isinstance(aSignature, SyntacticAnalysis.ScriptSignatureStatement) #Prune
 		if aDocstring: #Prune
 			assert isinstance(aDocstring, SyntacticAnalysis.DocstringStatement) #Prune
@@ -382,10 +386,6 @@ class SemanticFirstPhase(object):
 		self.stack[-1].append(aStat)
 
 	def LeaveEmptyStateScope(self, aGetPath):
-		i = 0
-		for scope in self.stack:
-			print(i, scope)
-			i += 1
 		scope = self.stack.pop()
 		signature = scope.pop(0)
 		if scope:
@@ -1323,10 +1323,25 @@ class SemanticFirstPhase(object):
 			# Validate inherited objects
 			print("Processing inherited objects.")
 			if aScriptToProcess.extends:
+				parent = aCache.get(str(aScriptToProcess.extends).upper())
 				# Functions
+				if aScriptToProcess.functions and parent.functions:
+					for key, func in aScriptToProcess.functions.items():
+						parentFunc = parent.functions.get(key, None)
+						if parentFunc:
+							pass
 				# Events
+				if aScriptToProcess.events and parent.events:
+					for key, event in aScriptToProcess.events.items():
+						parentEvent = parent.events.get(key, None)
+						if parentEvent:
+							pass
 				# Structs
-				pass
+				if aScriptToProcess.structs and parent.structs:
+					for key, struct in aScriptToProcess.structs.items():
+						parentStruct = parent.structs.get(key, None)
+						if parentStruct:
+							raise SemanticError("A struct called '%s' has already been defined in '%s'." %(struct.identifier, parent.identifier), struct.starts)
 			# Update TypeMap
 			print("Updating TypeMap.")
 			for key, entry in aScriptToProcess.typeMap.items():
@@ -1339,35 +1354,57 @@ class SemanticFirstPhase(object):
 			print("Processing: %s" % aIdentifier)
 			script = aCache.get(str(aIdentifier).upper(), None)
 			if not script:
-				filePath, dirPath = aGetPath(aIdentifier)
-				if filePath and dirPath:
-					raise SemanticError("'%s' matches both a script and a namespace." % aIdentifier, aLine)
-				elif dirPath:
-					raise SemanticError("'%s' only matches a namespace." % aIdentifier, aLine)
-				elif not filePath:
-					raise SemanticError("'%s' does not match a script." % aIdentifier, aLine)
-				print("Reading: %s (%s)" % (aIdentifier, filePath))
-				source = aSourceReader(filePath)
-				if source:
-					print("Building: %s" % aIdentifier)
-					script = aBuildScript(source)
-					print("Finished building: %s" % aIdentifier)
-					if script.extends:
-						parent = ProcessScript(script.extends, aLine)
-						script.lineage.extend(parent.lineage)
-						script.lineage.append(str(script.extends).upper())
-						print("%s lineage:" % aIdentifier, script.lineage)
-					ValidateScript(script)
-					aCache[str(script.identifier).upper()] = script
-				else:
-					raise SemanticError("'%s' does not contain anything.", aLine)
-				print("Finished processing: %s" % aIdentifier)
+				try:
+					filePath, dirPath = aGetPath(aIdentifier)
+					if filePath and dirPath:
+						raise SemanticError("'%s' matches both a script and a namespace." % aIdentifier, aLine)
+					elif dirPath:
+						raise SemanticError("'%s' only matches a namespace." % aIdentifier, aLine)
+					elif not filePath:
+						raise SemanticError("'%s' does not match a script." % aIdentifier, aLine)
+					print("Reading: %s (%s)" % (aIdentifier, filePath))
+					source = aSourceReader(filePath)
+					if source:
+						print("Building: %s" % aIdentifier)
+						script = aBuildScript(source)
+						print("Finished building: %s" % aIdentifier)
+						if script.extends:
+							parent = ProcessScript(script.extends, aLine)
+							script.lineage.extend(parent.lineage)
+							script.lineage.append(str(script.extends).upper())
+							print("%s lineage:" % aIdentifier, script.lineage)
+						ValidateScript(script)
+						aCache[str(script.identifier).upper()] = script
+					else:
+						raise SemanticError("'%s' does not contain anything.", aLine)
+					print("Finished processing: %s" % aIdentifier)
+				except LexicalAnalysis.LexicalError as e:
+					raise RemoteError("Error in '%s' on line %d, column %d: %s" % (aIdentifier, e.line, e.column, e.message), aLine)
+				except SyntacticAnalysis.SyntacticError as e:
+					raise RemoteError("Error in '%s' on line %d: %s" % (aIdentifier, e.line, e.message), aLine)
+				except SemanticError as e:
+					raise RemoteError("Error in '%s' on line %d: %s" % (aIdentifier, e.line, e.message), aLine)
+				except RemoteError as e:
+					raise RemoteError(e.message, aLine)
 			return script
 
 		if aScript.extends:
 			parent = aCache.get(str(aScript.extends).upper(), None)
 			if not parent:
-				parent = ProcessScript(aScript.extends, aScript.starts)
+				try:
+					parent = ProcessScript(aScript.extends, aScript.starts)
+				except LexicalAnalysis.LexicalError as e:
+					raise RemoteError("Error in '%s' on line %d, column %d: %s" % (aScript.extends, e.line, e.column, e.message), aScript.starts)
+				except SyntacticAnalysis.SyntacticError as e:
+					raise RemoteError("Error in '%s' on line %d: %s" % (aScript.extends, e.line, e.message), aScript.starts)
+				except SemanticError as e:
+					raise RemoteError("Error in '%s' on line %d: %s" % (aScript.extends, e.line, e.message), aScript.starts)
+				except RemoteError as e:
+					raise RemoteError(e.message, aScript.starts)
+
+
+
+
 			aScript.lineage.extend(parent.lineage)
 			aScript.lineage.append(str(aScript.extends).upper())
 			print("%s lineage:" % aScript.identifier, aScript.lineage)
