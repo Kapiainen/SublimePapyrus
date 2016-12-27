@@ -716,7 +716,10 @@ class ScriptSignatureStatement(object):
 		if aExtends:
 			self.extends = aExtends
 		else:
-			self.extends = Identifier(["ScriptObject"])
+			if str(aIdentifier).upper() != "SCRIPTOBJECT":
+				self.extends = Identifier(["ScriptObject"])
+			else:
+				self.extends = None
 		self.flags = aFlags
 		self.line = aLine
 
