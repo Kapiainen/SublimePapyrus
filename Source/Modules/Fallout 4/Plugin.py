@@ -156,9 +156,30 @@ class EventListener(sublime_plugin.EventListener):
 		return False
 
 	def on_post_save(self, view):
-		# Check if extension is .psc and in one of the import folders or the scripts folder
-		#	Yes -> Check if the completions for script types needs to be updated
-		pass
+		if self.IsValidScope(view):
+			# Check if extension is .psc and in one of the import folders or the scripts folder
+			#	Yes -> Check if the completions for script types needs to be updated
+			print("\nSublimePapyrus - Fallout 4 - OnPostSave: %s" % view.file_name())
+			scriptContents = view.substr(sublime.Region(0, view.size()))
+			try:
+				scriptName = Linter.GetScriptName(scriptContents)
+			except LexicalAnalysis.LexicalError as e:
+				return
+			except SyntacticAnalysis.SyntacticError as e:
+				return
+			if scriptName:
+				Linter.ClearCache(":".join(scriptName).upper())
+			else:
+				return
+
+			return
+			region = view.find("^\s*scriptname\s+([_a-z0-9:]+)\s", 0, sublime.IGNORECASE)
+			if region:
+				scriptName = view.substr(region).trim()
+				scriptName = scriptName[10:].trim()
+				print("ScriptName:", scriptName, scriptName.split(":"))
+			else:
+				print("Could not find ScriptName.")
 
 	def on_modified(self, view):
 		if self.IsValidScope(view):
@@ -243,6 +264,12 @@ class EventListener(sublime_plugin.EventListener):
 				print(e.message)
 				if aView:
 					SublimePapyrus.SetStatus(aView, "sublimepapyrus-linter", "Error on line %d: %s" % (e.line, e.message))
+					SublimePapyrus.HighlightLinter(aView, e.line)
+				return False
+			except SemanticAnalysis.RemoteError as e:
+				print(e.message)
+				if aView:
+					SublimePapyrus.SetStatus(aView, "sublimepapyrus-linter", e.message)
 					SublimePapyrus.HighlightLinter(aView, e.line)
 				return False
 #			except Linter.MissingScript as e:
