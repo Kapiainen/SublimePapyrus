@@ -167,6 +167,7 @@ class ScriptObject(object):
 		"importedScripts", # dict of ImportStatement
 		"importedNamespaces", # dict of ImportStatement
 		"typeMap", # dict of TypeMapEntry
+		"lineage", # list of str (most distant parent first, closest parent last -> Actor: ScriptObject, Form, ObjectReference)
 		"starts" # int
 	]
 
@@ -210,6 +211,7 @@ class ScriptObject(object):
 		self.importedScripts = aImportedScripts
 		self.importedNamespaces = aImportedNamespaces
 		self.typeMap = aTypeMap
+		self.lineage = []
 		self.starts = aSignature.line
 
 class StateObject(object):
@@ -333,15 +335,11 @@ class SemanticFirstPhase(object):
 		"capricaExtensions", # bool
 		"currentScope", # ScopeEnum
 		"stack", # list of objects
-		"pendingDocstring", # function
-		"sortImport" # function (Identifier, dict for scripts, dict for namespaces)
+		"pendingDocstring" # function
 	]
 
-	def __init__(self, aSortImport):
-#		if not aSortImport:
-		self.sortImport = aSortImport
-#		else:
-#			raise Exception("SemanticFirstPhase's aSortImport parameter is None.")
+	def __init__(self):
+		pass
 
 	def Reset(self, aCaprica):
 		self.capricaExtensions = aCaprica
@@ -385,7 +383,7 @@ class SemanticFirstPhase(object):
 			raise SemanticError("Illegal statement in the 'Empty state' scope.", aStat.line)
 		self.stack[-1].append(aStat)
 
-	def LeaveEmptyStateScope(self):
+	def LeaveEmptyStateScope(self, aGetPath):
 		scope = self.stack.pop()
 		signature = scope.pop(0)
 		if scope:
@@ -403,6 +401,9 @@ class SemanticFirstPhase(object):
 			importedNamespaces = {}
 			typeMap = {}
 			def AddToTypeMap(aType):
+				# 'typeKey' is what a type would be referred to from within the script in the context of any imports that may exist.
+				# The info in the TypeMapEntry objects is the full, absolute namespace that does not depend upon the imports.
+				# 'typeMap' can be processed once per script and then used to more quickly get to the correct ScriptObject that corresponds to the type.
 				typeKey = str(aType.identifier).upper()
 				if not typeMap.get(typeKey, None):
 					typeMap[typeKey] = TypeMapEntry(aType.identifier.namespace, aType.identifier.name, False)
@@ -496,7 +497,20 @@ class SemanticFirstPhase(object):
 								for param in event.parameters:
 									AddToTypeMap(param.type)
 				elif isinstance(element, SyntacticAnalysis.ImportStatement):
-					self.sortImport(element.identifier, importedScripts, importedNamespaces)
+					filePath, dirPath = aGetPath(element.identifier)
+					key = str(element.identifier).upper()
+					if filePath and dirPath:
+						raise SemanticError("Ambiguous import, could mean both a script and a namespace.", element.line)
+					elif filePath:
+						if importedScripts.get(key, None):
+							raise SemanticError("This script has already been imported in this script.", element.line)
+						importedScripts[key] = element.identifier
+					elif dirPath:
+						if importedNamespaces.get(key, None):
+							raise SemanticError("This namespace has already been imported in this script.", element.line)
+						importedNamespaces[key] = element.identifier
+					else:
+						raise SemanticError("This identifier does not match any script or namespace.", element.line)
 			if not functions:
 				functions = None
 			if not events:
@@ -1260,15 +1274,26 @@ class SemanticFirstPhase(object):
 			raise SemanticError("Unsupported scope ('%s')." % ScopeDescription[currentScope], aStat.line)
 
 # ==================== Building ====================
-	def Build(self):
+	def Build(self, aGetPath):
 		"""Returns a Script"""
-		self.LeaveEmptyStateScope()
+		self.LeaveEmptyStateScope(aGetPath)
 		script = self.stack.pop()
 		self.Reset(self.capricaExtensions)
 		if isinstance(script, ScriptObject):
 			return script
 		else:
 			raise Exception("SublimePapyrus - Fallout 4 - Failed to build script object.")
+
+# ==================== TypeMap validation ====================
+	def Validate(self, aScript, aCache, aSourceReader, aBuildFunction):
+		print(aCache)
+		# Build parent scripts recursively and update a script's lineage
+		extends = aScript.extends
+		parent = aBuildFunction(source)
+		# Validate inherited objects
+		# Validate and update TypeMap
+		for key, entry in aScript.typeMap.items():
+			print(key, entry)
 
 # Second phase of semantic analysis
 class SemanticSecondPhase(object):

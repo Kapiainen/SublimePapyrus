@@ -30,6 +30,7 @@ elif PYTHON_VERSION[0] >= 3:
 	from .SyntacticAnalysis import *
 	from .SemanticAnalysis import *
 
+PAPYRUS_EXTENSION = ".PSC"
 INITIALIZED = False
 IMPORT_PATHS = None
 LINTER_CACHE = {}
@@ -120,37 +121,18 @@ SEMP2 = None
 #		TYPE_MAPS[absoluteKey] = typeMap # absoluteKey = full type identifier, which is required when no scripts or namespaces have been imported
 #	return
 
-def BuildScript(aSource):
-	assert isinstance(aSource, str) #Prune
-	global LEX
-	global SYN
-	global SEMP1
-	global SEMP2
-	tokens = []
-	for token in LEX.Process(aSource):
-		tokenType = token.type
-		if tokenType == TokenEnum.NEWLINE:
-			if tokens:
-				statement = SYN.Process(tokens)
-				if statement:
-					SEMP1.Assemble(statement)
-				tokens = []
-		elif tokenType != TokenEnum.COMMENTLINE and tokenType != TokenEnum.COMMENTBLOCK:
-			tokens.append(token)
-	return SEMP1.Build()
-
-def SortImport(aIdentifier, aScripts, aNamespaces):
+def GetPath(aIdentifier):
 	global IMPORT_PATHS
-	isFile = False
-	isDir = False
+	filePath = None
+	dirPath = None
 	if PLATFORM_WINDOWS:
 		pass #TODO: Implement the same as below, but in a manner that is faster on case-insensitive filesystems
 	else:
 		namespaceOriginal = [e.upper() for e in aIdentifier.namespace]
 		name = aIdentifier.name.upper()
-		fileName = name + ".PSC"
+		fileName = name + PAPYRUS_EXTENSION
 		for importPath in IMPORT_PATHS:
-			if isFile and isDir:
+			if filePath and dirPath:
 				break
 			namespace = namespaceOriginal[:]
 			path = importPath
@@ -170,27 +152,89 @@ def SortImport(aIdentifier, aScripts, aNamespaces):
 				continue
 			for entry in os.listdir(path):
 				entryUpper = entry.upper()
-				if not isFile and fileName == entryUpper:
+				if not filePath and fileName == entryUpper:
 					temp = os.path.join(path, entry)
 					if os.path.isfile(temp):
-						isFile = True
-				if not isDir and name == entryUpper:
+						filePath = temp
+				if not dirPath and name == entryUpper:
 					temp = os.path.join(path, entry)
 					if os.path.isdir(temp):
-						isDir = True
-	key = str(aIdentifier).upper()
-	if isFile and isDir:
-		raise Exception("SublimePapyrus - Fallout 4 - Ambiguous import, could be both a script and a namespace.") #TODO: Handle this error
-	elif isFile:
-		if aScripts.get(key, None):
-			raise Exception("SublimePapyrus - Fallout 4 - Already imported this script.") #TODO: Handle this error
-		aScripts[key] = aIdentifier
-	elif isDir:
-		if aNamespaces.get(key, None):
-			raise Exception("SublimePapyrus - Fallout 4 - Already imported this namespace.") #TODO: Handle this error
-		aNamespaces[key] = aIdentifier
-	else:
-		raise Exception("SublimePapyrus - Fallout 4 - Unresolved import.") #TODO: Handle this error
+						dirPath = temp
+	return filePath, dirPath
+
+def SourceReader(aIdentifier):
+	return source
+
+def BuildScript(aSource):
+	assert isinstance(aSource, str) #Prune
+	global LEX
+	global SYN
+	global SEMP1
+	tokens = []
+	for token in LEX.Process(aSource):
+		tokenType = token.type
+		if tokenType == TokenEnum.NEWLINE:
+			if tokens:
+				statement = SYN.Process(tokens)
+				if statement:
+					SEMP1.Assemble(statement)
+				tokens = []
+		elif tokenType != TokenEnum.COMMENTLINE and tokenType != TokenEnum.COMMENTBLOCK:
+			tokens.append(token)
+	return SEMP1.Build(GetPath)
+
+#def SortImport(aIdentifier, aScripts, aNamespaces):
+#	global IMPORT_PATHS
+#	isFile = False
+#	isDir = False
+#	if PLATFORM_WINDOWS:
+#		pass #TODO: Implement the same as below, but in a manner that is faster on case-insensitive filesystems
+#	else:
+#		namespaceOriginal = [e.upper() for e in aIdentifier.namespace]
+#		name = aIdentifier.name.upper()
+#		fileName = name + PAPYRUS_EXTENSION
+#		for importPath in IMPORT_PATHS:
+#			if isFile and isDir:
+#				break
+#			namespace = namespaceOriginal[:]
+#			path = importPath
+#			while namespace:
+#				progressed = False
+#				for entry in os.listdir(path):
+#					if entry.upper() == namespace[0]:
+#						temp = os.path.join(path, entry)
+#						if os.path.isdir(temp):
+#							path = temp
+#							namespace.pop(0)
+#							progressed = True
+#							break
+#				if not progressed:
+#					break
+#			if namespace:
+#				continue
+#			for entry in os.listdir(path):
+#				entryUpper = entry.upper()
+#				if not isFile and fileName == entryUpper:
+#					temp = os.path.join(path, entry)
+#					if os.path.isfile(temp):
+#						isFile = True
+#				if not isDir and name == entryUpper:
+#					temp = os.path.join(path, entry)
+#					if os.path.isdir(temp):
+#						isDir = True
+#	key = str(aIdentifier).upper()
+#	if isFile and isDir:
+#		raise Exception("SublimePapyrus - Fallout 4 - Ambiguous import, could be both a script and a namespace.") #TODO: Handle this error
+#	elif isFile:
+#		if aScripts.get(key, None):
+#			raise Exception("SublimePapyrus - Fallout 4 - Already imported this script.") #TODO: Handle this error
+#		aScripts[key] = aIdentifier
+#	elif isDir:
+#		if aNamespaces.get(key, None):
+#			raise Exception("SublimePapyrus - Fallout 4 - Already imported this namespace.") #TODO: Handle this error
+#		aNamespaces[key] = aIdentifier
+#	else:
+#		raise Exception("SublimePapyrus - Fallout 4 - Unresolved import.") #TODO: Handle this error
 
 def Initialize():
 	global LEX
@@ -199,7 +243,7 @@ def Initialize():
 	global SEMP2
 	LEX = Lexical()
 	SYN = Syntactic()
-	SEMP1 = SemanticFirstPhase(SortImport)
+	SEMP1 = SemanticFirstPhase()
 	SEMP2 = SemanticSecondPhase()
 
 def Process(aSource, aPaths, aCaprica):
@@ -221,4 +265,8 @@ def Process(aSource, aPaths, aCaprica):
 	SEMP2.Reset(aCaprica)
 	print("Linting with Caprica extensions:", aCaprica)
 	script = BuildScript(aSource)
+	global LINTER_CACHE
+	LINTER_CACHE[str(script.identifier).upper()] = script
+	#SEMP1.Validate(script, LINTER_CACHE, SourceReader, BuildScript)
+	#SEMP2.Validate(script)
 	return True
