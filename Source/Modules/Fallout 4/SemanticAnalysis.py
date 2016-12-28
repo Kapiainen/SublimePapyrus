@@ -352,6 +352,51 @@ class TypeMapEntry(object):
 		self.identifier = aIdentifier
 		self.isStruct = aStruct
 
+#TODO: Implement auto-casting
+#TODO: Move ConstantNodeVisitor, and the code that uses it, to the stage where function and event signatures are checked against the overridden signatures.
+def ConstantNodeVisitor(aNode): # ImplementationKeyword: ConstantExpression
+	# Implements: A NodeVisitor that can validate expressions used for default values (scriptwide variables, properties, struct members, and parameters)
+	if isinstance(aNode, SyntacticAnalysis.ConstantNode):
+		identifier = None
+		if aNode.value.type == LexicalAnalysis.TokenEnum.kTRUE:
+			identifier = SyntacticAnalysis.Identifier(["Bool"])
+		elif aNode.value.type == LexicalAnalysis.TokenEnum.kFALSE:
+			identifier = SyntacticAnalysis.Identifier(["Bool"])
+		elif aNode.value.type == LexicalAnalysis.TokenEnum.FLOAT:
+			identifier = SyntacticAnalysis.Identifier(["Float"])
+		elif aNode.value.type == LexicalAnalysis.TokenEnum.INT:
+			identifier = SyntacticAnalysis.Identifier(["Int"])
+		elif aNode.value.type == LexicalAnalysis.TokenEnum.STRING:
+			identifier = SyntacticAnalysis.Identifier(["String"])
+		elif aNode.value.type == LexicalAnalysis.TokenEnum.kNONE:
+			identifier = SyntacticAnalysis.Identifier(["None"])
+		else:
+			raise Exception("ConstantNodeVisitor: Unsupported constant type.")
+		return NodeResult(identifier, False, False, True, aNode.value.value.upper(), True)
+	elif isinstance(aNode, SyntacticAnalysis.ExpressionNode):
+		return ConstantNodeVisitor(aNode.child)
+	elif isinstance(aNode, SyntacticAnalysis.UnaryOperatorNode):
+		if aNode.operator.type == LexicalAnalysis.TokenEnum.SUBTRACTION:
+			result = ConstantNodeVisitor(aNode.operand)
+			if result.isConstant:
+				key = str(result.identifier).upper()
+				if key == "INT" or key == "FLOAT":
+					result.value = "-%s" % result.value
+					return result
+				else:
+					raise SemanticError("The unary minus operator is only allowed in 'Int' or 'Float' constant expressions.", 0)
+			else:
+				raise SemanticError("Expected a constant expression after the unary minus operator.", 0)
+		else:
+			raise SemanticError("The unary minus operator is the only unary operator allowed in constant expressions.", 0)
+	return None
+
+def ConstantNodeVisitorWrapper(aNode, aLine):
+	try:
+		return ConstantNodeVisitor(aNode)
+	except SemanticError as e:
+		raise SemanticError(e.message, aLine)
+
 class SemanticFirstPhase(object):
 	__slots__ = [
 		"capricaExtensions", # bool
@@ -430,51 +475,6 @@ class SemanticFirstPhase(object):
 				typeKey = str(aType.identifier).upper()
 				if not typeMap.get(typeKey, None):
 					typeMap[typeKey] = TypeMapEntry(aType.identifier, False)
-
-			#TODO: Implement auto-casting
-			#TODO: Move ConstantNodeVisitor, and the code that uses it, to the stage where function and event signatures are checked against the overridden signatures.
-			def ConstantNodeVisitor(aNode): # ImplementationKeyword: ConstantExpression
-				# Implements: A NodeVisitor that can validate expressions used for default values (scriptwide variables, properties, struct members, and parameters)
-				if isinstance(aNode, SyntacticAnalysis.ConstantNode):
-					identifier = None
-					if aNode.value.type == LexicalAnalysis.TokenEnum.kTRUE:
-						identifier = SyntacticAnalysis.Identifier(["Bool"])
-					elif aNode.value.type == LexicalAnalysis.TokenEnum.kFALSE:
-						identifier = SyntacticAnalysis.Identifier(["Bool"])
-					elif aNode.value.type == LexicalAnalysis.TokenEnum.FLOAT:
-						identifier = SyntacticAnalysis.Identifier(["Float"])
-					elif aNode.value.type == LexicalAnalysis.TokenEnum.INT:
-						identifier = SyntacticAnalysis.Identifier(["Int"])
-					elif aNode.value.type == LexicalAnalysis.TokenEnum.STRING:
-						identifier = SyntacticAnalysis.Identifier(["String"])
-					elif aNode.value.type == LexicalAnalysis.TokenEnum.kNONE:
-						identifier = SyntacticAnalysis.Identifier(["None"])
-					else:
-						raise Exception("ConstantNodeVisitor: Unsupported constant type.")
-					return NodeResult(identifier, False, False, True, aNode.value.value.upper(), True)
-				elif isinstance(aNode, SyntacticAnalysis.ExpressionNode):
-					return ConstantNodeVisitor(aNode.child)
-				elif isinstance(aNode, SyntacticAnalysis.UnaryOperatorNode):
-					if aNode.operator.type == LexicalAnalysis.TokenEnum.SUBTRACTION:
-						result = ConstantNodeVisitor(aNode.operand)
-						if result.isConstant:
-							key = str(result.identifier).upper()
-							if key == "INT" or key == "FLOAT":
-								result.value = "-%s" % result.value
-								return result
-							else:
-								raise SemanticError("The unary minus operator is only allowed in 'Int' or 'Float' constant expressions.", 0)
-						else:
-							raise SemanticError("Expected a constant expression after the unary minus operator.", 0)
-					else:
-						raise SemanticError("The unary minus operator is the only unary operator allowed in constant expressions.", 0)
-				return None
-
-			def ConstantNodeVisitorWrapper(aNode, aLine):
-				try:
-					return ConstantNodeVisitor(aNode)
-				except SemanticError as e:
-					raise SemanticError(e.message, aLine)
 
 			for element in scope:
 				if isinstance(element, SyntacticAnalysis.DocstringStatement): # ImplementationKeyword: Docstring
@@ -1411,6 +1411,11 @@ class SemanticFirstPhase(object):
 				for key, statement in aScriptToProcess.importedScripts.items():
 					if not aCache.get(key, None):
 						ProcessScript(statement.identifier, statement.line)
+			# Update TypeMap
+			# Do this immediately after imports and update all Type instances as they are encountered?
+			print("Updating TypeMap.")
+			for key, entry in aScriptToProcess.typeMap.items():
+				print(key, str(entry.identifier))
 			# Validate inherited objects
 			print("Processing inherited objects.")
 			if aScriptToProcess.extends:
@@ -1419,20 +1424,92 @@ class SemanticFirstPhase(object):
 				# Functions
 				if aScriptToProcess.functions:
 					for key, func in aScriptToProcess.functions.items():
+						overriding = False
 						for parent in lineage: # Check for definition in any parent script. If found and not matching, then raise exception. If found and matching, then break out of loop.
 							if parent.functions:
 								parentFunc = parent.functions.get(key, None)
 								if parentFunc:
-									pass #TODO: Check that signatures match
-									#	Return type
-									#	Parameters
-									#		Amount
-									#		Order
-									#		Type
-									#		Default values need a specific NodeVisitor that checks constant expressions (only literals and unary minus operator provided that the literal is an int or a float)
-									#break #Signatures match
-									#raise SemanticError()
+									overriding = True
+									# Return values should match (remember that imports may vary from script to script)
+									if parentFunc.type:
+										if func.type:
+											if func.type.isArray != parentFunc.type.isArray:
+												if parentFunc.type.isArray:
+													raise SemanticError("Expected to return an array based on definition inherited from '%s'." % (parentFunc.identifier), func.starts)
+												else:
+													raise SemanticError("Expected to return a non-array value based on definition inherited from '%s'." % (parentFunc.identifier), func.starts)
+											#TODO: Validate identifier and isStruct
+										else:
+											if parentFunc.type.isArray:
+												raise SemanticError("Expected to return a(n) '%s' array based on definition inherited from '%s'." % (parentFunc.type.identifier, parentFunc.identifier), func.starts)
+											else:
+												raise SemanticError("Expected to return a(n) '%s' value based on definition inherited from '%s'." % (parentFunc.type.identifier, parentFunc.identifier), func.starts)
+									else:
+										if func.type:
+											raise SemanticError("Expected no return value based on definition inherited from '%s'." % (parentFunc.identifier), func.starts)
+										else:
+											pass # Neither definition returns a value.
+									# Parameter counts should match
+									if parentFunc.parameters:
+										parentParamCount = len(parentFunc.parameters)
+										if func.parameters:
+											paramCount = len(func.parameters)
+											if paramCount != parentParamCount:
+												raise SemanticError("Expected %d parameters based on definition inherited from '%s'." % (parentParamCount, parent.identifier), func.starts)
+											# Parameter types and default values should match
+											i = 0
+											while i < paramCount:
+												param = func.parameters[i]
+												parentParam = parentFunc.parameters[i]
+												#Type
+												#Default value, have to be constant expressions
+												if parentParam.defaultValue:
+													if param.defaultValue:
+														paramValue = ConstantNodeVisitorWrapper(param.defaultValue, func.starts)
+														if not paramValue:
+															raise SemanticError("PARAM DEFAULTVALUE IS NONE", func.starts) # TODO: Finalize message
+														if param.type.identifier != paramValue.identifier:
+															raise SemanticError("MISMATCHING PARAM TYPE AND DEFAULTVALUE TYPE", func.starts) # TODO: Finalize message
+														if not paramValue.isConstant:
+															raise SemanticError("Expected parameter '%s' to have default value with a constant expression." % (param.identifier),func.starts)
+														parentParamValue = ConstantNodeVisitorWrapper(parentParam.defaultValue, func.starts)
+														# No need to check internal consistency of parentParam as that has already been done. Just compare the overriding param to parentParam to make sure that they match.
+														if paramValue.identifier != parentParamValue.identifier:
+															if parentParamValue.isArray:
+																raise SemanticError("Expected parameter '%s' to be a(n) '%s' array based on definition inherited from '%s'." % (param.identifier, parentParam., func.starts)
+															else:
+																raise SemanticError("", func.starts)
+														if paramValue.isArray != parentParamValue.isArray:
+															raise SemanticError("", func.starts)
+														if paramValue.value != parentParamValue.value:
+															raise SemanticError("", func.starts)
+													else:
+														raise SemanticError("Expected parameter '%s' to have a default value based on definition inherited from '%s'." % (param.identifier, parent.identifier), func.starts)
+												else:
+													if param.defaultValue:
+														raise SemanticError("Expected parameter '%s' to not have a default value based on definition inherited from '%s'." % (param.identifier, parent.identifier), func.starts)
+													else:
+														pass # Neither definition of this parameter has a default value.
+												
+#"identifier", # Identifier
+#"isArray", # bool
+#"isStruct", # bool
+#"isConstant", # bool
+#"value", # str
+#"isObject" # bool
+												i += 1
+										else:
+											raise SemanticError("Expected %d parameters based on definition inherited from '%s'." % (parentFunc.identifier), func.starts)
+									else:
+										if func.parameters:
+											raise SemanticError("Expected no parameters.", func.starts)
+										else:
+											pass # Neither definition has parameters.
+									
+									break
 						#Any remaining checks
+						if not overriding:
+							pass
 				# Events
 				if aScriptToProcess.events:
 					for key, event in aScriptToProcess.events.items():
@@ -1441,6 +1518,8 @@ class SemanticFirstPhase(object):
 							if parent.events:
 								parentEvent = parent.events.get(key, None)
 								if parentEvent:
+									overriding = True
+									break
 									pass #TODO: Check that signatures match
 									#	Parameters
 									#		Amount
@@ -1460,10 +1539,6 @@ class SemanticFirstPhase(object):
 								parentStruct = parent.structs.get(key, None)
 								if parentStruct:
 									raise SemanticError("A struct called '%s' has already been defined in '%s'." %(struct.identifier, parent.identifier), struct.starts)
-			# Update TypeMap
-			print("Updating TypeMap.")
-			for key, entry in aScriptToProcess.typeMap.items():
-				print(key, str(entry.identifier))
 			print("Finished validating: %s" % aScriptToProcess.identifier)
 			return True
 

@@ -326,7 +326,7 @@ class FunctionParameter(object):
 	__slots__ = [
 		"identifier", # Identifier
 		"type", # Type
-		"defaultValue" # Expression
+		"defaultValue" # ExpressionNode
 	]
 
 	def __init__(self, aIdentifier, aType, aDefaultValue):
