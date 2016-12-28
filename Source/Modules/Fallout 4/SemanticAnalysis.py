@@ -1404,8 +1404,12 @@ class SemanticFirstPhase(object):
 # ==================== Validation of pretty much everything except for expressions ====================
 	def Validate(self, aScript, aCache, aGetPath, aSourceReader, aBuildScript):
 		def ValidateScript(aScriptToProcess):
+			lineage = []
+			if aScriptToProcess.extends:
+				lineage = [aCache.get(e) for e in aScriptToProcess.lineage]
 			print("Validating: %s" % aScriptToProcess.identifier)
 			# Imported scripts
+			# TODO: Check that there are no attempts to import a script from this script's lineage.
 			if aScriptToProcess.importedScripts:
 				print("Processing imported %d scripts." % len(aScriptToProcess.importedScripts))
 				for key, statement in aScriptToProcess.importedScripts.items():
@@ -1415,12 +1419,73 @@ class SemanticFirstPhase(object):
 			# Do this immediately after imports and update all Type instances as they are encountered?
 			print("Updating TypeMap.")
 			for key, entry in aScriptToProcess.typeMap.items():
-				print(key, str(entry.identifier))
+				namespace = [e.upper() for e in entry.identifier.namespace]
+				name = entry.identifier.name.upper()
+				if namespace: # <namespace1:..:namespaceN>:<name>
+					# Script in /namespace1/../namespaceN/
+					candidate1 = 
+					# Struct in /namespace1/../namespaceN-1/namespaceN.psc
+					candidate2 = 
+					# Script in /importednamespace/namespace1/../namespaceN/
+					candidate3 = 
+					# Struct in /importednamespace/namespace1/../namespaceN-1/namespaceN.psc
+					candidate4 = 
+					pass
+				else: # <name>
+					candidates = {}
+					# Script directly in an import path
+					filePath, dirPath = aGetPath(entry.identifier)
+					if filePath:
+						candidates[1] = TypeMapEntry(entry.identifier, False)
+					filePath = None
+					dirPath = None
+					# Struct in current or parent script
+					struct = aScriptToProcess.structs.get(name, None)
+					if struct:
+						candidates[2] = TypeMapEntry(entry.identifier, True)
+					elif lineage:
+						for parent in lineage:
+							if parent.structs:
+								struct = parent.structs.get(name, None)
+								if struct:
+									candidates[2] = TypeMapEntry(entry.identifier, True)
+									break
+					struct = None
+					# Struct in imported script
+					for importedScript in aScriptToProcess.importedScripts:
+						temp = importedScript.structs.get(name, None)
+						if candidates[3]:
+							raise SemanticError("'%s' is an ambiguous type that could refer to multiple struct definitions found in multiple imported scripts." % entry.identifier, 1)
+						else:
+							ident = importedScript.identifier[:].append(entry.identifier.name)
+							candidates[3] = TypeMapEntry(SyntacticAnalysis.Identifier(ident), True)
+					# Script in /importednamespace/
+					for importedNamespace in aScriptToProcess.importedNamespaces:
+						ident = importedNamespace.identifier[:].append(entry.identifier.name)
+						filePath, dirPath = aGetPath(SyntacticAnalysis.Identifier(ident))
+						if candidates[4]:
+							raise SemanticError("'%s' is an ambiguous type that could refer to multiple scripts in multiple imported namespaces." % entry.identifier, 1)
+						else:
+							candidates[4] = TypeMapEntry(SyntacticAnalysis.Identifier(ident), False)
+					numCandidates = len(candidates)
+					if numCandidates > 1:
+						raise SemanticError("'%s' is an ambiguous type that could refer to multiple scripts and/or structs." % entry.identifier, 0)
+					elif numCandidates == 0:
+						raise SemanticError("'%s' could not be resolved to any known scripts nor structs.", 0)
+					else:
+						for candidateKey, candidateEntry in candidates.items():
+							aScriptToProcess.typeMap[key] = candidateEntry
+					#TODO: Continue here
+				print(key, type(entry), str(entry.identifier))
+
+
+			return True # TODO: Remove this line and finish implementing the parts under this line.
+
 			# Validate inherited objects
 			print("Processing inherited objects.")
 			if aScriptToProcess.extends:
 				#parent = aCache.get(str(aScriptToProcess.extends).upper())
-				lineage = [aCache.get(e) for e in aScriptToProcess.lineage]
+#				lineage = [aCache.get(e) for e in aScriptToProcess.lineage]
 				# Functions
 				if aScriptToProcess.functions:
 					for key, func in aScriptToProcess.functions.items():
@@ -1476,7 +1541,8 @@ class SemanticFirstPhase(object):
 														# No need to check internal consistency of parentParam as that has already been done. Just compare the overriding param to parentParam to make sure that they match.
 														if paramValue.identifier != parentParamValue.identifier:
 															if parentParamValue.isArray:
-																raise SemanticError("Expected parameter '%s' to be a(n) '%s' array based on definition inherited from '%s'." % (param.identifier, parentParam., func.starts)
+																pass
+#																raise SemanticError("Expected parameter '%s' to be a(n) '%s' array based on definition inherited from '%s'." % (param.identifier, parentParam., func.starts)
 															else:
 																raise SemanticError("", func.starts)
 														if paramValue.isArray != parentParamValue.isArray:
