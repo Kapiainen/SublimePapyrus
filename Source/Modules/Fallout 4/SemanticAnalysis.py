@@ -1421,18 +1421,67 @@ class SemanticFirstPhase(object):
 			for key, entry in aScriptToProcess.typeMap.items():
 				namespace = [e.upper() for e in entry.identifier.namespace]
 				name = entry.identifier.name.upper()
+				candidates = {}
 				if namespace: # <namespace1:..:namespaceN>:<name>
 					# Script in /namespace1/../namespaceN/
-					candidate1 = 
-					# Struct in /namespace1/../namespaceN-1/namespaceN.psc
-					candidate2 = 
+					filePath, dirPath = aGetPath(entry.identifier)
+					if filePath:
+						candidates[1] = TypeMapEntry(entry.identifier, False)
+					filePath = None
+					dirPath = None
 					# Script in /importednamespace/namespace1/../namespaceN/
-					candidate3 = 
+					for importedNamespace in aScriptToProcess.importedNamespaces:
+						ident = importedNamespace.identifier.namespace[:]
+						ident.append(importedNamespace.identifier.name)
+						ident.extend(entry.identifier.namespace)
+						ident.append(entry.identifier.name)
+						ident = SyntacticAnalysis.Identifier(ident)
+						filePath, dirPath = aGetPath(ident)
+						if filePath:
+							if candidates[2]:
+								raise SemanticError("'%s' is an ambiguous type that could refer to multiple scripts in multiple imported namespaces." % entry.identifier, 1)
+							else:
+								candidates[2] = TypeMapEntry(ident, False)
+					# Struct in /namespace1/../namespaceN-1/namespaceN.psc
+					ident = SyntacticAnalysis.Identifier(entry.identifier.namespace[:])
+					filePath, dirPath = aGetPath(ident)
+					if filePath:
+						source = aSourceReader(filePath)
+						if source:
+							script = aBuildScript(script)
+							if script:
+								if script.struct:
+									struct = script.structs.get(name, None)
+									if struct:
+										candidates[3] = TypeMapEntry(entry.identifier, True)
+					filePath = None
+					dirPath = None
 					# Struct in /importednamespace/namespace1/../namespaceN-1/namespaceN.psc
-					candidate4 = 
-					pass
+					for importedNamespace in aScriptToProcess.importedNamespaces:
+						ident = importedNamespace.identifier.namespace[:]
+						ident.append(importedNamespace.identifier.name)
+						ident.extend(entry.identifier.namespace)
+						#ident.append(entry.identifier.name)
+						ident = SyntacticAnalysis.Identifier(ident)
+						filePath, dirPath = aGetPath(ident)
+						if filePath:
+							source = aSourceReader(filePath)
+							if source:
+								script = aBuildScript(source)
+								if script:
+									if script.structs:
+										struct = script.structs.get(name, None)
+										if struct:
+											if candidates[3]:
+												raise SemanticError("'%s' is an ambiguous type that could refer to multiple structs in multiple imported namespaces." % entry.identifier, 1)
+											else:
+												temp = ident.identifier.namespace
+												temp.append(ident.identifier.name)
+												temp.append(entry.identifier.name)
+												ident = temp
+												candidates[3] = TypeMapEntry(ident, True)
+									# TODO: What if multiple namespaces have a corresponding script, but not all of them, or only one, has the struct we are looking for?
 				else: # <name>
-					candidates = {}
 					# Script directly in an import path
 					filePath, dirPath = aGetPath(entry.identifier)
 					if filePath:
@@ -1454,30 +1503,35 @@ class SemanticFirstPhase(object):
 					# Struct in imported script
 					for importedScript in aScriptToProcess.importedScripts:
 						temp = importedScript.structs.get(name, None)
-						if candidates[3]:
-							raise SemanticError("'%s' is an ambiguous type that could refer to multiple struct definitions found in multiple imported scripts." % entry.identifier, 1)
-						else:
-							ident = importedScript.identifier[:].append(entry.identifier.name)
-							candidates[3] = TypeMapEntry(SyntacticAnalysis.Identifier(ident), True)
+						if temp:
+							if candidates[3]:
+								raise SemanticError("'%s' is an ambiguous type that could refer to multiple struct definitions found in multiple imported scripts." % entry.identifier, 1)
+							else:
+								ident = importedScript.identifier[:].append(entry.identifier.name)
+								candidates[3] = TypeMapEntry(SyntacticAnalysis.Identifier(ident), True)
 					# Script in /importednamespace/
 					for importedNamespace in aScriptToProcess.importedNamespaces:
-						ident = importedNamespace.identifier[:].append(entry.identifier.name)
-						filePath, dirPath = aGetPath(SyntacticAnalysis.Identifier(ident))
-						if candidates[4]:
-							raise SemanticError("'%s' is an ambiguous type that could refer to multiple scripts in multiple imported namespaces." % entry.identifier, 1)
-						else:
-							candidates[4] = TypeMapEntry(SyntacticAnalysis.Identifier(ident), False)
-					numCandidates = len(candidates)
-					if numCandidates > 1:
-						raise SemanticError("'%s' is an ambiguous type that could refer to multiple scripts and/or structs." % entry.identifier, 0)
-					elif numCandidates == 0:
-						raise SemanticError("'%s' could not be resolved to any known scripts nor structs.", 0)
-					else:
-						for candidateKey, candidateEntry in candidates.items():
-							aScriptToProcess.typeMap[key] = candidateEntry
-					#TODO: Continue here
+						ident = importedNamespace.identifier.namespace[:]
+						ident.append(importedNamespace.name)
+						ident.append(entry.identifier.name)
+						ident = SyntacticAnalysis.Identifier(ident)
+						filePath, dirPath = aGetPath(ident)
+						if filePath:
+							if candidates[4]:
+								raise SemanticError("'%s' is an ambiguous type that could refer to multiple scripts in multiple imported namespaces." % entry.identifier, 1)
+							else:
+								candidates[4] = TypeMapEntry(ident, False)
+				numCandidates = len(candidates)
+				if numCandidates > 1:
+					raise SemanticError("'%s' is an ambiguous type that could refer to multiple scripts and/or structs." % entry.identifier, 0)
+				elif numCandidates == 0:
+					raise SemanticError("'%s' could not be resolved to any known scripts nor structs.", 0)
+				else:
+					for candidateKey, candidateEntry in candidates.items():
+						aScriptToProcess.typeMap[key] = candidateEntry
 				print(key, type(entry), str(entry.identifier))
 
+			#TODO: Iterate through script and make all .type attributes use one of the Type instances in a small set of Type instances? (Reduce memory usage)
 
 			return True # TODO: Remove this line and finish implementing the parts under this line.
 

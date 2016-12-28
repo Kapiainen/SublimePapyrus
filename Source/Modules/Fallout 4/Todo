@@ -4,6 +4,7 @@ Optimizations
 	Get an attribute once and store the result when compared more than once
 	Reduce use of chained dot operators (a.b.c.d.e.f vs a.c.e.f) when possible
 		Generate e.g. StateSignature, but copy attribute values to State upon initialization (State.signature.identifier -> State.identifier)
+	Use the TypeMap idea to make all variable, property, etc. types to use small set of instances of Type.
 	Remove or comment out lines ending with "#Prune" (mostly "assert" statements to enforce types of parameters in class constructors)
 
 Mapping type identifiers to a path?
