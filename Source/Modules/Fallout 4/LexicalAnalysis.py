@@ -1,3 +1,6 @@
+"""
+This module handles the lexical analysis of source code written in the version of Papyrus that ships with Fallout 4.
+"""
 import re
 
 # It is faster to store the type as an attribute in the Token object than it is to have multiple token classes and use the isinstance() function.
