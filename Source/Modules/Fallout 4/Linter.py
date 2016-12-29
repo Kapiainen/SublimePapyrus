@@ -55,15 +55,15 @@ SYN = None # Instance of SyntacticAnalysis.Syntactic
 SEMP1 = None # Instance of SemanticAnalysis.SemanticFirstPhase
 SEMP2 = None # Instance of SemanticAnalysis.SemanticSecondPhase
 
-def ClearCache(akey = None):
-# aKey: str
+def ClearCache(a_key = None):
+# a_key: str
 	global LINTER_CACHE
 	global COMPLETION_CACHE
-	if aKey:
-		if LINTER_CACHE.get(aKey, None):
-			del LINTER_CACHE[aKey]
-		if COMPLETION_CACHE.get(aKey, None):
-			del COMPLETION_CACHE[aKey]
+	if a_key:
+		if LINTER_CACHE.get(a_key, None):
+			del LINTER_CACHE[a_key]
+		if COMPLETION_CACHE.get(a_key, None):
+			del COMPLETION_CACHE[a_key]
 	else:
 		LINTER_CACHE = {}
 		COMPLETION_CACHE = {}
@@ -78,21 +78,36 @@ def Initialize():
 	SEMP1 = SemanticFirstPhase()
 	SEMP2 = SemanticSecondPhase()
 
-def GetPath(aIdentifier):
+def GetPath(a_identifier):
 	global IMPORT_PATHS
-	filePath = None
-	dirPath = None
+	file_path = None
+	dir_path = None
 	if PLATFORM_WINDOWS:
+		dir_list = a_identifier.namespace[:]
+		dir_list.append(a_identifier.name)
+		file_list = a_identifier.namespace[:]
+		file_list.append("%s.psc" % a_identifier.name)
+		for import_path in IMPORT_PATHS:
+			if file_path and dir_path:
+				break
+			if not dir_path:
+				temp_dir_path = os.path.join(import_path, *dir_list)
+				if os.path.isdir(temp_dir_path):
+					dir_path = temp_dir_path
+			if not file_path:
+				temp_file_path = os.path.join(import_path, *file_list)
+				if os.path.isfile(temp_file_path):
+					file_path = temp_file_path
 		pass #TODO: Implement the same as below, but in a manner that is faster on case-insensitive filesystems
 	else:
-		namespaceOriginal = [e.upper() for e in aIdentifier.namespace]
-		name = aIdentifier.name.upper()
-		fileName = name + PAPYRUS_EXTENSION
-		for importPath in IMPORT_PATHS:
-			if filePath and dirPath:
+		namespace_original = [e.upper() for e in a_identifier.namespace]
+		name = a_identifier.name.upper()
+		file_name = name + PAPYRUS_EXTENSION
+		for import_path in IMPORT_PATHS:
+			if file_path and dir_path:
 				break
-			namespace = namespaceOriginal[:]
-			path = importPath
+			namespace = namespace_original[:]
+			path = import_path
 			while namespace:
 				progressed = False
 				for entry in os.listdir(path):
@@ -108,16 +123,16 @@ def GetPath(aIdentifier):
 			if namespace:
 				continue
 			for entry in os.listdir(path):
-				entryUpper = entry.upper()
-				if not filePath and fileName == entryUpper:
+				entry_upper = entry.upper()
+				if not file_path and file_name == entry_upper:
 					temp = os.path.join(path, entry)
 					if os.path.isfile(temp):
-						filePath = temp
-				if not dirPath and name == entryUpper:
+						file_path = temp
+				if not dir_path and name == entry_upper:
 					temp = os.path.join(path, entry)
 					if os.path.isdir(temp):
-						dirPath = temp
-	return filePath, dirPath
+						dir_path = temp
+	return file_path, dir_path
 
 def SourceReader(aPath):
 	with open(aPath, "r") as f:
