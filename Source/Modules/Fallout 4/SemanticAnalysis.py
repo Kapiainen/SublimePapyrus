@@ -1,3 +1,6 @@
+"""
+This module handles the semantic analysis of source code written in the version of Papyrus that ships with Fallout 4.
+"""
 import os, sys
 PYTHON_VERSION = sys.version_info
 if PYTHON_VERSION[0] == 2:
