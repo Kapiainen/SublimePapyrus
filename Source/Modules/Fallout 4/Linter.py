@@ -24,7 +24,7 @@ if PYTHON_VERSION[0] == 2:
 	imp.load_source("LexicalAnalysis", lexicalModule)
 
 	syntacticModule = os.path.join(root, module, "SyntacticAnalysis.py")
-	imp.load_source("SyntacticAnalysis", Module)
+	imp.load_source("SyntacticAnalysis", syntacticModule)
 	
 	semanticModule = os.path.join(root, module, "SemanticAnalysis.py")
 	imp.load_source("SemanticAnalysis", semanticModule)
@@ -55,7 +55,7 @@ SYN = None # Instance of SyntacticAnalysis.Syntactic
 SEMP1 = None # Instance of SemanticAnalysis.SemanticFirstPhase
 SEMP2 = None # Instance of SemanticAnalysis.SemanticSecondPhase
 
-def ClearCache(aKey = None):
+def ClearCache(akey = None):
 # aKey: str
 	global LINTER_CACHE
 	global COMPLETION_CACHE
