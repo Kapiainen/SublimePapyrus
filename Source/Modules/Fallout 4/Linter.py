@@ -98,7 +98,6 @@ def GetPath(a_identifier):
 				temp_file_path = os.path.join(import_path, *file_list)
 				if os.path.isfile(temp_file_path):
 					file_path = temp_file_path
-		pass #TODO: Implement the same as below, but in a manner that is faster on case-insensitive filesystems
 	else:
 		namespace_original = [e.upper() for e in a_identifier.namespace]
 		name = a_identifier.name.upper()
@@ -134,30 +133,30 @@ def GetPath(a_identifier):
 						dir_path = temp
 	return file_path, dir_path
 
-def SourceReader(aPath):
-	with open(aPath, "r") as f:
-		return f.read()
+def SourceReader(a_path):
+	with open(a_path, "r") as file:
+		return file.read()
 	return None
 
-def BuildScript(aSource):
-	assert isinstance(aSource, str) #Prune
+def BuildScript(a_source):
+	assert isinstance(a_source, str) #Prune
 	global LEX
 	global SYN
 	global SEMP1
 	tokens = []
-	for token in LEX.Process(aSource):
-		tokenType = token.type
-		if tokenType == TokenEnum.NEWLINE:
+	for token in LEX.Process(a_source):
+		token_type = token.type
+		if token_type == TokenEnum.NEWLINE:
 			if tokens:
 				statement = SYN.Process(tokens)
 				if statement:
 					SEMP1.Assemble(statement)
 				tokens = []
-		elif tokenType != TokenEnum.COMMENTLINE and tokenType != TokenEnum.COMMENTBLOCK:
+		elif token_type != TokenEnum.COMMENTLINE and token_type != TokenEnum.COMMENTBLOCK:
 			tokens.append(token)
 	return SEMP1.Build(GetPath)
 
-def GetScriptName(aSource):
+def GetScriptName(a_source):
 	global LEX
 	global SYN
 	global SEMP1
@@ -165,40 +164,40 @@ def GetScriptName(aSource):
 	if not INITIALIZED:
 		Initialize()
 	tokens = []
-	for token in LEX.Process(aSource):
-		tokenType = token.type
-		if tokenType == TokenEnum.NEWLINE:
+	for token in LEX.Process(a_source):
+		token_type = token.type
+		if token_type == TokenEnum.NEWLINE:
 			if tokens:
 				statement = SYN.Process(tokens)
 				if statement:
 					if isinstance(statement, SyntacticAnalysis.ScriptSignatureStatement):
-						scriptName = statement.identifier.namespace
-						scriptName.append(statement.identifier.name)
-						return scriptName
+						script_name = statement.identifier.namespace
+						script_name.append(statement.identifier.name)
+						return script_name
 				tokens = []
-		elif tokenType != TokenEnum.COMMENTLINE and tokenType != TokenEnum.COMMENTBLOCK:
+		elif token_type != TokenEnum.COMMENTLINE and token_type != TokenEnum.COMMENTBLOCK:
 			tokens.append(token)
 	return None
 
-def Process(aSource, aPaths, aCaprica):
-	assert isinstance(aSource, str) #Prune
-	assert isinstance(aPaths, list) #Prune
-	assert isinstance(aCaprica, bool) #Prune
+def Process(a_source, a_paths, a_caprica):
+	assert isinstance(a_source, str) #Prune
+	assert isinstance(a_paths, list) #Prune
+	assert isinstance(a_caprica, bool) #Prune
 	global INITIALIZED
 	if not INITIALIZED:
 		Initialize()
 	global IMPORT_PATHS
-	IMPORT_PATHS = aPaths
+	IMPORT_PATHS = a_paths
 	global LEX
 	global SYN
 	global SEMP1
 	global SEMP2
-	LEX.Reset(aCaprica)
-	SYN.Reset(aCaprica)
-	SEMP1.Reset(aCaprica)
-	SEMP2.Reset(aCaprica)
-	print("Linting with Caprica extensions:", aCaprica)
-	script = BuildScript(aSource)
+	LEX.Reset(a_caprica)
+	SYN.Reset(a_caprica)
+	SEMP1.Reset(a_caprica)
+	SEMP2.Reset(a_caprica)
+	print("Linting with Caprica extensions:", a_caprica)
+	script = BuildScript(a_source)
 	global LINTER_CACHE
 	LINTER_CACHE[str(script.identifier).upper()] = script
 	SEMP1.Validate(script, LINTER_CACHE, GetPath, SourceReader, BuildScript)
