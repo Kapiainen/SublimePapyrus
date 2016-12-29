@@ -118,6 +118,7 @@ Settings are located in *Preferences* > *Package Settings* > *SublimePapyrus*.
 - [The Elder Scrolls V: Skyrim](#the-elder-scrolls-v-skyrim)
  - [Skyrim Script Extender](#skyrim-script-extender-skse)
  - [Immersive First Person View](#immersive-first-person-view-ifpv)
+- [Fallout 4](#fallout-4)
 
 ### **The Elder Scrolls V: Skyrim**
 - [Syntax highlighting](#syntax-highlighting)
@@ -226,6 +227,37 @@ Single file build system and a batch build variant.
   - Information about this command can be found **[here](#valid-key-insertion-framework)**.
     - Config value names (boolean, float, integer, and string)
     - SKSE mod event names
+
+### **Fallout 4**
+- [Syntax highlighting](#syntax-highlighting-1)
+- [Linter](#linter-1)
+- [Intelligent code completion](#intelligent-code-completion-1)
+- [Tooltips](#tooltips-1)
+- [Build systems](#build-systems-1)
+- [Commands](#commands-2)
+
+#### Syntax highlighting
+Syntax highlighting for the version of Papyrus that is used in ***Fallout 4***.
+
+A variant, which supports the language extensions supported by the [Caprica](https://github.com/Orvid/Caprica) compiler, is also included. This variant has to be selected in order for the linter and intelligent completion systems to also support the language extensions.
+
+#### Linter
+Requirements:
+- TBD
+
+#### Intelligent code completion
+Requirements:
+- TBD
+
+#### Tooltips
+Requirements:
+- TBD
+
+#### Build systems
+PLACEHOLDER
+
+#### Commands
+PLACEHOLDER
 
 ## **Changelog**
 
