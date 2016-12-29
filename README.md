@@ -234,7 +234,7 @@ Single file build system and a batch build variant.
 - [Intelligent code completion](#intelligent-code-completion-1)
 - [Tooltips](#tooltips-1)
 - [Build systems](#build-systems-1)
-- [Commands](#commands-2)
+- [Commands](#commands-4)
 
 #### Syntax highlighting
 Syntax highlighting for the version of Papyrus that is used in ***Fallout 4***.
