@@ -263,13 +263,13 @@ class LexicalError(Exception):
 class Lexical(object):
 	"""Lexical analysis."""
 	__slots__ = [
-		"tokenRegex", # regex pattern
-		"keywordRegex", # regex pattern
-		"capricaExtensions" # bool
+		"token_regex", # regex pattern
+		"keyword_regex", # regex pattern
+		"caprica_extensions" # bool
 	]
 
 	def __init__(self):
-		tokenSpecifications = [
+		token_specifications = [
 			(TokenEnum.COMMENTBLOCK, r";/[\S\s]*?(?=/;)/;"),
 			(TokenEnum.COMMENTLINE, r";[^\n]*"),
 			(TokenEnum.DOCSTRING, r"{[\S\s]*?(?=})}"),
@@ -309,16 +309,16 @@ class Lexical(object):
 			(TokenEnum.WHITESPACE, r"[ \t]"),
 			(TokenEnum.UNMATCHED, r"."),
 		]
-		self.tokenRegex = re.compile("|".join("(?P<t%s>%s)" % pair for pair in tokenSpecifications), re.IGNORECASE) # Papyrus is case-insensitive.
-		self.capricaExtensions = True
+		self.token_regex = re.compile("|".join("(?P<t%s>%s)" % pair for pair in token_specifications), re.IGNORECASE) # Papyrus is case-insensitive.
+		self.caprica_extensions = True
 		self.Reset(False)
 
-	def Reset(self, aCaprica):
-		assert isinstance(aCaprica, bool) #Prune
-		# aCaprica: bool
-		if aCaprica != self.capricaExtensions:
-			self.capricaExtensions = aCaprica
-			keywordSpecifications = [
+	def Reset(self, a_caprica):
+		assert isinstance(a_caprica, bool) #Prune
+		# a_caprica: bool
+		if a_caprica != self.caprica_extensions:
+			self.caprica_extensions = a_caprica
+			keyword_specifications = [
 				(TokenEnum.kAS, r"\bas\b"),
 				(TokenEnum.kAUTO, r"\bauto\b"),
 				(TokenEnum.kAUTOREADONLY, r"\bautoreadonly\b"),
@@ -372,8 +372,8 @@ class Lexical(object):
 				(TokenEnum.kWHILE, r"\bwhile\b"),
 			]
 			#Caprica extensions
-			if self.capricaExtensions:
-				keywordSpecifications.extend(
+			if self.caprica_extensions:
+				keyword_specifications.extend(
 					[
 						(TokenEnum.kBREAK, r"\bbreak\b"),
 						(TokenEnum.kCASE, r"\bcase\b"),
@@ -391,53 +391,53 @@ class Lexical(object):
 						(TokenEnum.kSTEP, r"\bstep\b"),
 					]
 				)
-			self.keywordRegex = re.compile("|".join("(?P<t%s>%s)" % pair for pair in keywordSpecifications), re.IGNORECASE) # Papyrus is case-insensitive.
+			self.keyword_regex = re.compile("|".join("(?P<t%s>%s)" % pair for pair in keyword_specifications), re.IGNORECASE) # Papyrus is case-insensitive.
 
-	def Process(self, aString):
+	def Process(self, a_string):
 		"""Generates tokens from a string."""
-		assert isinstance(aString, str) #Prune
-	# aString: string (contains source code to tokenize)
+		assert isinstance(a_string, str) #Prune
+	# a_string: string (contains source code to tokenize)
 		line = 1
 		column = -1
-		for match in self.tokenRegex.finditer(aString):
-			t = match.lastgroup
-			v = match.group(t)
-			t = int(match.lastgroup[1:])
-			if t == TokenEnum.WHITESPACE:
+		for match in self.token_regex.finditer(a_string):
+			type_ = match.lastgroup
+			value_ = match.group(type_)
+			type_ = int(match.lastgroup[1:])
+			if type_ == TokenEnum.WHITESPACE:
 				continue
-			elif t == TokenEnum.IDENTIFIER:
-				keyword = self.keywordRegex.match(v)
+			elif type_ == TokenEnum.IDENTIFIER:
+				keyword = self.keyword_regex.match(value_)
 				if keyword:
-					t = int(keyword.lastgroup[1:])
-				yield Token(t, v, line, match.start()-column)
+					type_ = int(keyword.lastgroup[1:])
+				yield Token(type_, value_, line, match.start()-column)
 				continue
-			elif t == TokenEnum.COMMENTLINE:
+			elif type_ == TokenEnum.COMMENTLINE:
 				yield Token(TokenEnum.COMMENTLINE, None, line, match.start()-column)
 				continue
-			elif t == TokenEnum.COMMENTBLOCK:
-				i = v.count("\n")
+			elif type_ == TokenEnum.COMMENTBLOCK:
+				i = value_.count("\n")
 				if i > 0:
 					line += i
 					column = match.end()-1
 				yield Token(TokenEnum.COMMENTBLOCK, None, line, match.start()-column)
 				continue
-			elif t == TokenEnum.MULTILINE:
+			elif type_ == TokenEnum.MULTILINE:
 				line += 1
 				column = match.end()-1
 				continue
-			elif t == TokenEnum.DOCSTRING or t == TokenEnum.STRING:
-				if t == TokenEnum.DOCSTRING:
-					v = v[1:-1]
-				yield Token(t, v, line, match.start()-column)
-				i = v.count("\n")
+			elif type_ == TokenEnum.DOCSTRING or type_ == TokenEnum.STRING:
+				if type_ == TokenEnum.DOCSTRING:
+					value_ = value_[1:-1]
+				yield Token(type_, value_, line, match.start()-column)
+				i = value_.count("\n")
 				if i > 0:
 					line += i
 					column = match.end()-1
 				continue
-			elif t == TokenEnum.UNMATCHED:
-				raise LexicalError("Encountered an unexpected character ('%s')." % v, line, match.start()-column)
-			yield Token(t, v, line, match.start()-column)
-			if t == TokenEnum.NEWLINE:
+			elif type_ == TokenEnum.UNMATCHED:
+				raise LexicalError("Encountered an unexpected character ('%s')." % value_, line, match.start()-column)
+			yield Token(type_, value_, line, match.start()-column)
+			if type_ == TokenEnum.NEWLINE:
 				line += 1
 				column = match.end()-1
 		yield Token(TokenEnum.NEWLINE, "\n", line, 1)
