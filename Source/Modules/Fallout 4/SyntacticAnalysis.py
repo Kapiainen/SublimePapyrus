@@ -798,11 +798,14 @@ class VariableStatement(object):
 
 class WhileStatement(object):
 	__slots__ = [
+		"expression", # ExpressionNode
 		"line" # int
 	]
 
-	def __init__(self, aLine):
+	def __init__(self, aExpression, aLine):
+		assert isinstance(aExpression, ExpressionNode) #Prune
 		assert isinstance(aLine, int) #Prune
+		self.expression = aExpression
 		self.line = aLine
 
 #Caprica extensions
@@ -1129,8 +1132,10 @@ class Syntactic(object):
 			flags = self.AcceptFlags([TokenEnum.kAUTOREADONLY, TokenEnum.kAUTO, TokenEnum.kCONST, TokenEnum.kMANDATORY, TokenEnum.kHIDDEN, TokenEnum.kCONDITIONAL])
 		if flags:
 			if TokenEnum.kAUTO not in flags:
+				# Implements: Proper use of 'Const' flag. (Partially implemented in semantic analysis.)
 				if TokenEnum.kCONDITIONAL in flags:
 					self.Abort("Only AUTO properties can have the CONDITIONAL flag.")
+				# Implements: Proper use of 'Const' flag.
 				elif TokenEnum.kCONST in flags:
 					self.Abort("Only AUTO properties can have the CONST flag.")
 			flags = PropertyFlags(TokenEnum.kAUTO in flags, TokenEnum.kAUTOREADONLY in flags, TokenEnum.kCONDITIONAL in flags, TokenEnum.kCONST in flags, TokenEnum.kHIDDEN in flags, TokenEnum.kMANDATORY in flags)
@@ -1595,7 +1600,7 @@ class Syntactic(object):
 			result = EndPropertyStatement(self.line)
 		elif tokenType == TokenEnum.kCUSTOMEVENT:
 			self.Consume()
-			result = CustomEvent(Identifier([self.Expect(TokenEnum.IDENTIFIER)].value), self.line)
+			result = CustomEventStatement(Identifier([self.Expect(TokenEnum.IDENTIFIER).value]), self.line)
 		elif tokenType == TokenEnum.kGROUP:
 			self.Consume()
 			identifier = Identifier([self.Expect(TokenEnum.IDENTIFIER).value])

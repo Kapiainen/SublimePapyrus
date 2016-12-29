@@ -28,6 +28,7 @@ elif PYTHON_VERSION[0] >= 3:
 	from . import SyntacticAnalysis
 
 class SemanticError(Exception):
+	"""Exception that is raised whenever a semantic error is discovered."""
 	def __init__(self, aMessage, aLine):
 	# aMessage: string
 	# aLine: int
@@ -35,11 +36,13 @@ class SemanticError(Exception):
 		self.line = aLine
 
 class RemoteError(Exception):
+	"""Exception that is raised whenever an error is discovered in a script other than the one that """
 	def __init__(self, aMessage, aLine):
 		self.message = aMessage
 		self.line = aLine
 
 class FunctionObject(object):
+	"""A class representing a Papyrus function definition."""
 	__slots__ = [
 		"identifier", # Identifier
 		"type", # Type (optional)
@@ -71,6 +74,7 @@ class FunctionObject(object):
 		self.ends = aEnds
 
 class PropertyObject(object):
+	"""A class representing a Papyrus property definition."""
 	__slots__ = [
 		"identifier", # Identifier
 		"type", # Type
@@ -106,6 +110,7 @@ class PropertyObject(object):
 		self.ends = aEnds
 
 class EventObject(object):
+	"""A class representing a Papyrus event definition."""
 	__slots__ = [
 		"identifier", # Identifier
 		"remote", # Identifier
@@ -130,6 +135,7 @@ class EventObject(object):
 		self.ends = aEnds
 
 class GroupObject(object):
+	"""A class representing a Papyrus group definition."""
 	__slots__ = [
 		"identifier", # Identifier
 		"flags", # GroupFlags
@@ -157,6 +163,7 @@ class GroupObject(object):
 		self.ends = aEnds
 
 class ScriptObject(object):
+	"""A class representing a Papyrus script."""
 	__slots__ = [
 		"identifier", # Identifier
 		"extends", # Identifier
@@ -220,6 +227,7 @@ class ScriptObject(object):
 		self.starts = aSignature.line
 
 class StateObject(object):
+	"""A class representing a Papyrus state definition."""
 	__slots__ = [
 		"identifier", # Identifier
 		"flags", # StateFlags
@@ -244,6 +252,7 @@ class StateObject(object):
 		self.ends = aEnds
 
 class StructMember(object):
+	"""A class representing a Papyrus struct member."""
 	__slots__ = [
 		"identifier", # Identifier
 		"type", # Type
@@ -266,6 +275,7 @@ class StructMember(object):
 		self.line = aSignature.line
 
 class StructObject(object):
+	"""A class representing a Papyrus struct definition."""
 	__slots__ = [
 		"identifier", # Identifier
 		"members", # dict of StructMember
@@ -415,6 +425,7 @@ class SemanticFirstPhase(object):
 		self.pendingDocstring = None
 
 # ==================== Empty state/script ====================
+# ImplementationKeyword: Script
 	def EnterEmptyStateScope(self, aStat):
 		self.currentScope.append(ScopeEnum.SCRIPT)
 		self.stack.append([aStat])
@@ -454,7 +465,7 @@ class SemanticFirstPhase(object):
 		scope = self.stack.pop()
 		signature = scope.pop(0)
 		if scope:
-			# Implements: Script documentation string.
+			# Implements: Scripts can have a docstring.
 			docstring = None
 			if isinstance(scope[0], SyntacticAnalysis.DocstringStatement):
 				docstring = scope.pop(0)
@@ -476,31 +487,34 @@ class SemanticFirstPhase(object):
 				if not typeMap.get(typeKey, None):
 					typeMap[typeKey] = TypeMapEntry(aType.identifier, False)
 
+			# Implements: Valid script contents.
 			for element in scope:
 				if isinstance(element, SyntacticAnalysis.DocstringStatement): # ImplementationKeyword: Docstring
+					# Implements: Invalid use of a docstring.
 					if docstring:
 						raise SemanticError("This script already has a docstring.", element.line)
 					else:
 						raise SemanticError("A docstring has to be the next statement after the script signature.", element.line)
 				elif isinstance(element, FunctionObject): # ImplementationKeyword: Function
 					key = str(element.identifier).upper() #TODO: element.identifier.name.upper() instead?
-					# Implements: Proper use of 'Native' flag
-					if element.flags.isNative and not signature.flags.isNative:
-						raise SemanticError("'Native' functions can only be defined in scripts with the 'Native' flag.", element.line)
+					# Implements: No duplicate function/event definitions.
 					if functions.get(key, None):
 						raise SemanticError("This script already has a function called '%s'." % element.identifier, element.starts)
 					elif events.get(key, None):
 						raise SemanticError("This script already has an event called '%s'." % element.identifier, element.starts)
+					# Implements: Proper use of 'Native' flag.
+					if element.flags.isNative and not signature.flags.isNative:
+						raise SemanticError("'Native' functions can only be defined in scripts with the 'Native' flag.", element.line)
 					functions[key] = element
+					# Add the return type to the typeMap.
 					if element.type:
 						AddToTypeMap(element.type)
+					# Add the types of parameters to the typeMap.
 					if element.parameters:
 						for param in element.parameters:
 							AddToTypeMap(param.type)
 				elif isinstance(element, EventObject): # ImplementationKeyword: Event
-					# Proper use of 'Native' flag
-					if element.flags.isNative and not signature.flags.isNative:
-						raise SemanticError("'Native' events can only be defined in scripts with the 'Native' flag.", element.line)
+					# Implements: No duplicate function/event definitions.
 					if element.remote:
 						key = ("%s.%s" % (element.remote, element.identifier)).upper()
 						if events.get(key, None):
@@ -511,24 +525,40 @@ class SemanticFirstPhase(object):
 							raise SemanticError("This script already has an event called '%s'." % element.identifier, element.starts)
 						elif functions.get(key, None):
 							raise SemanticError("This script already has a function called '%s'." % element.identifier, element.starts)
+					# Implements: Proper use of 'Native' flag
+					if element.flags.isNative and not signature.flags.isNative:
+						raise SemanticError("'Native' events can only be defined in scripts with the 'Native' flag.", element.line)
 					events[key] = element
+					# Add the types of parameters to the typeMap.
 					if element.parameters:
 						for param in element.parameters:
 							AddToTypeMap(param.type)
 				elif isinstance(element, PropertyObject): # ImplementationKeyword: Property
 					key = str(element.identifier).upper()
+					# Implements: No duplicate property/variable definitions.
 					if properties.get(key, None):
 						raise SemanticError("This script already has a property called '%s'." % element.identifier, element.starts)
 					elif variables.get(key, None):
 						raise SemanticError("This script already has a variable called '%s'." % element.identifier, element.starts)
+					# Implements: Proper use of 'Conditional' flag. (Partially implemented in syntactic analysis.)
+					if element.flags.isConditional and not signature.flags.isConditional:
+						raise SemanticError("'Conditional' properties can only be defined in scripts with the 'Conditional' flag.", element.starts)
 					properties[key] = element
+					# Add property type to the typeMap.
 					AddToTypeMap(element.type)
 				elif isinstance(element, SyntacticAnalysis.VariableStatement): # ImplementationKeyword: Variable
 					key = str(element.identifier).upper()
+					# Implements: No duplicate property/variable definitions.
 					if variables.get(key, None):
 						raise SemanticError("This script already has a variable called '%s'." % element.identifier, element.line)
 					elif properties.get(key, None):
 						raise SemanticError("This script already has a property called '%s'." % element.identifier, element.line)
+					# Implements: Proper use of 'Conditional' flag.
+					if element.flags.isConditional and not signature.flags.isConditional:
+						raise SemanticError("'Conditional' variables can only be defined in scripts with the 'Conditional' flag.", element.line)
+					# Implements: Proper use of 'Hidden' flag.
+					if element.flags.isHidden:
+						raise SemanticError("Only struct members can have the 'Hidden' flag.", element.line)
 					# Implements: Scriptwide variables can only be declared with constant expressions.
 					if element.value:
 						exprType = ConstantNodeVisitorWrapper(element.value, element.line)
@@ -553,11 +583,14 @@ class SemanticFirstPhase(object):
 						else:
 							raise SemanticError("Scriptwide variables can only be initialized with constant expressions.", element.line)
 					variables[key] = element
+					# Add variable type to the typeMap.
 					AddToTypeMap(element.type)
 				elif isinstance(element, GroupObject): # ImplementationKeyword: Group
 					key = str(element.identifier).upper()
+					# Implements: No duplicate group definitions.
 					if groups.get(key, None):
 						raise SemanticError("This script already has a group called '%s'." % element.identifier, element.starts)
+					# Implements: No duplicate property/variable definitions.
 					for key, prop in element.members.items():
 						if properties.get(key, None):
 							raise SemanticError("This script already has a property called '%s'." % element.identifier, prop.starts)
@@ -565,22 +598,27 @@ class SemanticFirstPhase(object):
 							raise SemanticError("This script already has a variable called '%s'." % element.identifier, prop.starts)
 						properties[key] = prop
 					groups[key] = element
+					# Add group member types to the typeMap.
 					if element.members:
 						for key, mem in element.members.items():
 							AddToTypeMap(mem.type)
 				elif isinstance(element, StructObject): # ImplementationKeyword: Struct
 					key = str(element.identifier).upper()
+					# Implements: No duplicate struct definitions.
 					if structs.get(key, None):
 						raise SemanticError("This script already has a struct called '%s'." % element.identifier, element.starts)
 					structs[key] = element
+					# Add struct member types to the typeMap.
 					if element.members:
 						for key, mem in element.members.items():
 							AddToTypeMap(mem.type)
 				elif isinstance(element, StateObject): # ImplementationKeyword: State
 					key = str(element.identifier).upper()
+					# Implements: No duplicate state definitions.
 					if states.get(key, None):
 						raise SemanticError("This script already has a state called '%s'." % element.identifier, element.starts)
 					states[key] = element
+					# Add function return types, function parameter types, and event parameter types to the typeMap.
 					if element.functions:
 						for key, func in element.functions.items():
 							if func.type:
@@ -596,16 +634,20 @@ class SemanticFirstPhase(object):
 				elif isinstance(element, SyntacticAnalysis.ImportStatement): # ImplementationKeyword: Import
 					filePath, dirPath = aGetPath(element.identifier)
 					key = str(element.identifier).upper()
+					# Implements: No ambiguous imports.
 					if filePath and dirPath:
 						raise SemanticError("Ambiguous import, could mean both a script and a namespace.", element.line)
 					elif filePath:
+						# Implements: No duplicate script imports.
 						if importedScripts.get(key, None):
 							raise SemanticError("This script has already been imported in this script.", element.line)
 						importedScripts[key] = element
 					elif dirPath:
+						# Implements: No duplicate namespace imports.
 						if importedNamespaces.get(key, None):
 							raise SemanticError("This namespace has already been imported in this script.", element.line)
 						importedNamespaces[key] = element
+					# Implements: Imports have to point at an existing script or namespace in one of the import paths.
 					else:
 						raise SemanticError("This identifier does not match any script or namespace.", element.line)
 			if not functions:
@@ -632,6 +674,7 @@ class SemanticFirstPhase(object):
 		self.currentScope.pop()
 
 # ==================== State ====================
+# ImplementationKeyword: State
 	def EnterStateScope(self, aStat):
 		self.currentScope.append(ScopeEnum.STATE)
 		self.stack.append([aStat])
@@ -656,7 +699,7 @@ class SemanticFirstPhase(object):
 			functions = {}
 			events = {}
 			for element in scope:
-				# Validation of duplicate function/event definitions.
+				# Implements: No duplicate function definitions.
 				if isinstance(element, FunctionObject):
 					key = str(element.identifier).upper()
 					if functions.get(key, None):
@@ -664,6 +707,7 @@ class SemanticFirstPhase(object):
 					elif events.get(key, None):
 						raise SemanticError("This state already has an event called '%s'." % element.identifier, element.starts)
 					functions[key] = element
+				# Implements: No duplicate event definitions.
 				elif isinstance(element, EventObject):
 					key = None
 					if element.remote:
@@ -687,6 +731,7 @@ class SemanticFirstPhase(object):
 		self.currentScope.pop()
 
 # ==================== Function ====================
+# ImplementationKeyword: Function
 	def EnterFunctionScope(self, aStat):
 		self.currentScope.append(ScopeEnum.FUNCTION)
 		self.stack.append([aStat])
@@ -730,16 +775,17 @@ class SemanticFirstPhase(object):
 		scope = self.stack.pop()
 		signature = scope.pop(0)
 		docstring = None
+		# Implements: Functions can have a docstring.
 		if scope and isinstance(scope[0], SyntacticAnalysis.DocstringStatement):
 			docstring = scope.pop(0)
 		for statement in scope:
-			# Docstring validation.
+			# Implements: Invalid use of a docstring.
 			if isinstance(statement, SyntacticAnalysis.DocstringStatement):
 				if docstring:
 					raise SemanticError("This function already has a docstring.", statement.line)
 				else:
 					raise SemanticError("A docstring has to be the next statement after the function signature.", statement.line)
-			# Partial return statement validation.
+			# Implements: Return statement validation. (Partially implemented in a later stage when types can be properly validated.)
 			elif isinstance(statement, SyntacticAnalysis.ReturnStatement):
 				if signature.type:
 					if not statement.expression:
@@ -761,6 +807,7 @@ class SemanticFirstPhase(object):
 		self.currentScope.pop()
 
 # ==================== Event ====================
+# ImplementationKeyword: Event
 	def EnterEventScope(self, aStat):
 		self.currentScope.append(ScopeEnum.EVENT)
 		self.stack.append([aStat])
@@ -803,7 +850,7 @@ class SemanticFirstPhase(object):
 		signature = scope.pop(0)
 		if scope:
 			for statement in scope:
-				# Validation of return statements.
+				# Implements: Events cannot return values.
 				if isinstance(statement, SyntacticAnalysis.ReturnStatement):
 					if statement.expression:
 						raise SemanticError("Events cannot return a value.", statement.line)
@@ -1146,6 +1193,7 @@ class SemanticFirstPhase(object):
 	#End of Caprica extensions
 
 # ==================== Property ====================
+# ImplementationKeyword: Property
 	def EnterPropertyScope(self, aStat):
 		self.currentScope.append(ScopeEnum.PROPERTY)
 		self.stack.append([aStat])
@@ -1171,16 +1219,18 @@ class SemanticFirstPhase(object):
 		docstring = None
 		getFunction = None
 		setFunction = None
+		# Implements: Properties can have a docstring.
 		if scope and isinstance(scope[0], SyntacticAnalysis.DocstringStatement):
 			docstring = scope.pop(0)
 		for element in scope:
-			# Docstring validation
+			# Implements: Invalid use of a docstring.
 			if isinstance(element, SyntacticAnalysis.DocstringStatement):
 				if docstring:
 					raise SemanticError("Properties can only have one docstring.", element.line)
 				else:
 					raise SemanticError("A docstring has to be the next statement after the property signature.", element.line)
-			# Function validation (name and return type)
+			# Implements: Function validation (name and return type).
+			# TODO: Look at this implementation again.
 			elif isinstance(element, FunctionObject):
 				name = str(element.identifier).upper()
 				if name == "GET":
@@ -1208,13 +1258,14 @@ class SemanticFirstPhase(object):
 			self.stack[-1].append(PropertyObject(signature, docstring, setFunction, getFunction, signature.line))
 		# Full property: signature + optional docstring + property body
 		else:
-			# Function validation (at least a Set or a Get function)
+			# Implements: Full properties have to have at least a 'Set' function or a 'Get' function'.
 			if not setFunction and not getFunction:
 				raise SemanticError("This property has to have at least a 'Set' or a 'Get' function.", signature.line)
 			self.stack[-1].append(PropertyObject(signature, docstring, setFunction, getFunction, aStat.line))
 		self.currentScope.pop()
 
 # ==================== Struct ====================
+# ImplementationKeyword: Struct
 	def EnterStructScope(self, aStat):
 		self.currentScope.append(ScopeEnum.STRUCT)
 		self.stack.append([aStat])
@@ -1235,17 +1286,23 @@ class SemanticFirstPhase(object):
 		scope = self.stack.pop()
 		signature = scope.pop(0)
 		if scope:
+			# Generate StructMember objects, which are made from a VariableStatement + DocstringStatement (optional).
 			members = {}
 			memberStack = []
 
 			def ReduceMember():
 				var = memberStack.pop(0)
 				doc = None
+				# Implements: Struct members can have a docstring.
 				if memberStack:
 					doc = memberStack.pop()
+				# Implements: No duplicate struct members.
 				key = str(var.identifier).upper()
 				if members.get(key, None):
 					raise SemanticError("This struct already has a member called '%s'." % var.identifier, var.line)
+				# Implements: Proper use of 'Const' flag.
+				if var.flags.isConst:
+					raise SemanticError("Struct members cannot have the 'Const' flag.", var.line)
 				members[key] = StructMember(var, doc)
 
 			while scope:
@@ -1262,6 +1319,7 @@ class SemanticFirstPhase(object):
 					raise Exception("Unsupported type in LeaveStructScope: %s" % type(scope[0]))
 			if memberStack:
 				ReduceMember()
+			# Implements: Structs have to have at least one member.
 			if not members:
 				raise SemanticError("This struct does not have any members.", signature.line)
 			self.stack[-1].append(StructObject(signature, members, aStat.line))
@@ -1270,6 +1328,7 @@ class SemanticFirstPhase(object):
 		self.currentScope.pop()
 
 # ==================== Group ====================
+# ImplementationKeyword: Group
 	def EnterGroupScope(self, aStat):
 		self.currentScope.append(ScopeEnum.GROUP)
 		self.stack.append([aStat])
@@ -1293,25 +1352,29 @@ class SemanticFirstPhase(object):
 		if scope:
 			members = {}
 			docstring = None
+			# Implements: Groups can have a docstring.
 			if isinstance(scope[0], SyntacticAnalysis.DocstringStatement):
 				docstring = scope.pop(0)
 			for element in scope:
-				# Docstring validation
+				# Implements: Invalid use of a docstring.
 				if isinstance(element, SyntacticAnalysis.DocstringStatement):
 					if docstring:
 						raise SemanticError("Groups can only have one docstring.", element.line)
 					else:
 						raise SemanticError("A docstring has to be the next statement after the group signature.", element.line)
+				# Implements: Groups can have members.
 				elif isinstance(element, PropertyObject):
 					key = str(element.identifier).upper()
 					if members.get(key, None):
 						raise SemanticError("This group already has a member called '%s'." % element.identifier, element.starts)
 					members[key] = element
+			# Implements: Groups have to have at least one member.
 			if not members:
-				members = None
+				raise SemanticError("Groups have to have at least one member.", signature.line)
 			self.stack[-1].append(GroupObject(signature, docstring, members, aStat.line))
 		else:
-			self.stack[-1].append(GroupObject(signature, None, None, aStat.line))
+			# Implements: Groups have to have at least one member.
+			raise SemanticError("Groups have to have at least one member.", signature.line)
 		self.currentScope.pop()
 
 # ==================== Assembling ====================
@@ -1419,6 +1482,12 @@ class SemanticFirstPhase(object):
 			# Do this immediately after imports and update all Type instances as they are encountered?
 			print("Updating TypeMap.")
 			for key, entry in aScriptToProcess.typeMap.items():
+				print(key, type(entry), str(entry.identifier))
+				if key == "BOOL" or key == "FLOAT" or key == "INT" or key == "STRING" or key == "VAR":
+					continue
+				elif key == "CUSTOMEVENTNAME" or key == "SCRIPTEVENTNAME":
+					aScriptToProcess.typeMap[key].identifier = SyntacticAnalysis.Identifier(["String"])
+					continue
 				namespace = [e.upper() for e in entry.identifier.namespace]
 				name = entry.identifier.name.upper()
 				candidates = {}
@@ -1430,18 +1499,20 @@ class SemanticFirstPhase(object):
 					filePath = None
 					dirPath = None
 					# Script in /importednamespace/namespace1/../namespaceN/
-					for importedNamespace in aScriptToProcess.importedNamespaces:
-						ident = importedNamespace.identifier.namespace[:]
-						ident.append(importedNamespace.identifier.name)
-						ident.extend(entry.identifier.namespace)
-						ident.append(entry.identifier.name)
-						ident = SyntacticAnalysis.Identifier(ident)
-						filePath, dirPath = aGetPath(ident)
-						if filePath:
-							if candidates[2]:
-								raise SemanticError("'%s' is an ambiguous type that could refer to multiple scripts in multiple imported namespaces." % entry.identifier, 1)
-							else:
-								candidates[2] = TypeMapEntry(ident, False)
+					if aScriptToProcess.importedNamespaces:
+						for imported_key, statement in aScriptToProcess.importedNamespaces.items():
+							print(type(statement), statement)
+							ident = statement.identifier.namespace[:]
+							ident.append(statement.identifier.name)
+							ident.extend(entry.identifier.namespace)
+							ident.append(entry.identifier.name)
+							ident = SyntacticAnalysis.Identifier(ident)
+							filePath, dirPath = aGetPath(ident)
+							if filePath:
+								if candidates[2]:
+									raise SemanticError("'%s' is an ambiguous type that could refer to multiple scripts in multiple imported namespaces." % entry.identifier, 1)
+								else:
+									candidates[2] = TypeMapEntry(ident, False)
 					# Struct in /namespace1/../namespaceN-1/namespaceN.psc
 					ident = SyntacticAnalysis.Identifier(entry.identifier.namespace[:])
 					filePath, dirPath = aGetPath(ident)
@@ -1457,30 +1528,31 @@ class SemanticFirstPhase(object):
 					filePath = None
 					dirPath = None
 					# Struct in /importednamespace/namespace1/../namespaceN-1/namespaceN.psc
-					for importedNamespace in aScriptToProcess.importedNamespaces:
-						ident = importedNamespace.identifier.namespace[:]
-						ident.append(importedNamespace.identifier.name)
-						ident.extend(entry.identifier.namespace)
-						#ident.append(entry.identifier.name)
-						ident = SyntacticAnalysis.Identifier(ident)
-						filePath, dirPath = aGetPath(ident)
-						if filePath:
-							source = aSourceReader(filePath)
-							if source:
-								script = aBuildScript(source)
-								if script:
-									if script.structs:
-										struct = script.structs.get(name, None)
-										if struct:
-											if candidates[3]:
-												raise SemanticError("'%s' is an ambiguous type that could refer to multiple structs in multiple imported namespaces." % entry.identifier, 1)
-											else:
-												temp = ident.identifier.namespace
-												temp.append(ident.identifier.name)
-												temp.append(entry.identifier.name)
-												ident = temp
-												candidates[3] = TypeMapEntry(ident, True)
-									# TODO: What if multiple namespaces have a corresponding script, but not all of them, or only one, has the struct we are looking for?
+					if aScriptToProcess.importedNamespaces:
+						for imported_key, statement in aScriptToProcess.importedNamespaces.items():
+							ident = statement.identifier.namespace[:]
+							ident.append(statement.identifier.name)
+							ident.extend(entry.identifier.namespace)
+							#ident.append(entry.identifier.name)
+							ident = SyntacticAnalysis.Identifier(ident)
+							filePath, dirPath = aGetPath(ident)
+							if filePath:
+								source = aSourceReader(filePath)
+								if source:
+									script = aBuildScript(source)
+									if script:
+										if script.structs:
+											struct = script.structs.get(name, None)
+											if struct:
+												if candidates[3]:
+													raise SemanticError("'%s' is an ambiguous type that could refer to multiple structs in multiple imported namespaces." % entry.identifier, 1)
+												else:
+													temp = ident.identifier.namespace
+													temp.append(ident.identifier.name)
+													temp.append(entry.identifier.name)
+													ident = temp
+													candidates[3] = TypeMapEntry(ident, True)
+										# TODO: What if multiple namespaces have a corresponding script, but not all of them, or only one, has the struct we are looking for?
 				else: # <name>
 					# Script directly in an import path
 					filePath, dirPath = aGetPath(entry.identifier)
@@ -1489,47 +1561,52 @@ class SemanticFirstPhase(object):
 					filePath = None
 					dirPath = None
 					# Struct in current or parent script
-					struct = aScriptToProcess.structs.get(name, None)
-					if struct:
-						candidates[2] = TypeMapEntry(entry.identifier, True)
-					elif lineage:
-						for parent in lineage:
-							if parent.structs:
-								struct = parent.structs.get(name, None)
-								if struct:
-									candidates[2] = TypeMapEntry(entry.identifier, True)
-									break
-					struct = None
+					if aScriptToProcess.structs:
+						struct = aScriptToProcess.structs.get(name, None)
+						if struct:
+							candidates[2] = TypeMapEntry(entry.identifier, True)
+						elif lineage:
+							for parent in lineage:
+								if parent.structs:
+									struct = parent.structs.get(name, None)
+									if struct:
+										candidates[2] = TypeMapEntry(entry.identifier, True)
+										break
+						struct = None
 					# Struct in imported script
-					for importedScript in aScriptToProcess.importedScripts:
-						temp = importedScript.structs.get(name, None)
-						if temp:
-							if candidates[3]:
-								raise SemanticError("'%s' is an ambiguous type that could refer to multiple struct definitions found in multiple imported scripts." % entry.identifier, 1)
-							else:
-								ident = importedScript.identifier[:].append(entry.identifier.name)
-								candidates[3] = TypeMapEntry(SyntacticAnalysis.Identifier(ident), True)
+					if aScriptToProcess.importedScripts:
+						for imported_key, statement in aScriptToProcess.importedScripts.items():
+							script = aCache.get(imported_key, None)
+							if script:
+								if script.structs:
+									temp = script.structs.get(name, None)
+									if temp:
+										if candidates[3]:
+											raise SemanticError("'%s' is an ambiguous type that could refer to multiple struct definitions found in multiple imported scripts." % entry.identifier, 1)
+										else:
+											ident = script.identifier[:].append(entry.identifier.name)
+											candidates[3] = TypeMapEntry(SyntacticAnalysis.Identifier(ident), True)
 					# Script in /importednamespace/
-					for importedNamespace in aScriptToProcess.importedNamespaces:
-						ident = importedNamespace.identifier.namespace[:]
-						ident.append(importedNamespace.name)
-						ident.append(entry.identifier.name)
-						ident = SyntacticAnalysis.Identifier(ident)
-						filePath, dirPath = aGetPath(ident)
-						if filePath:
-							if candidates[4]:
-								raise SemanticError("'%s' is an ambiguous type that could refer to multiple scripts in multiple imported namespaces." % entry.identifier, 1)
-							else:
-								candidates[4] = TypeMapEntry(ident, False)
+					if aScriptToProcess.importedNamespaces:
+						for imported_key, statement in aScriptToProcess.importedNamespaces.items():
+							ident = statement.identifier.namespace[:]
+							ident.append(statement.identifier.name)
+							ident.append(entry.identifier.name)
+							ident = SyntacticAnalysis.Identifier(ident)
+							filePath, dirPath = aGetPath(ident)
+							if filePath:
+								if candidates[4]:
+									raise SemanticError("'%s' is an ambiguous type that could refer to multiple scripts in multiple imported namespaces." % entry.identifier, 1)
+								else:
+									candidates[4] = TypeMapEntry(ident, False)
 				numCandidates = len(candidates)
 				if numCandidates > 1:
 					raise SemanticError("'%s' is an ambiguous type that could refer to multiple scripts and/or structs." % entry.identifier, 0)
 				elif numCandidates == 0:
-					raise SemanticError("'%s' could not be resolved to any known scripts nor structs.", 0)
+					raise SemanticError("'%s' could not be resolved to any known scripts nor structs." % entry.identifier, 0)
 				else:
 					for candidateKey, candidateEntry in candidates.items():
 						aScriptToProcess.typeMap[key] = candidateEntry
-				print(key, type(entry), str(entry.identifier))
 
 			#TODO: Iterate through script and make all .type attributes use one of the Type instances in a small set of Type instances? (Reduce memory usage)
 
@@ -1653,12 +1730,22 @@ class SemanticFirstPhase(object):
 						#Any remaining checks
 				# Structs
 				if aScriptToProcess.structs:
+					# Look for overriding definitions of inherited structs.
 					for key, struct in aScriptToProcess.structs.items():
 						for parent in lineage: # If struct has not been defined in any parent scripts, then this loop should finish by itself without raising exceptions.
 							if parent.structs:
 								parentStruct = parent.structs.get(key, None)
 								if parentStruct:
-									raise SemanticError("A struct called '%s' has already been defined in '%s'." %(struct.identifier, parent.identifier), struct.starts)
+									raise SemanticError("A struct called '%s' has already been defined in '%s'." % (struct.identifier, parent.identifier), struct.starts)
+				# Properties
+				if aScriptToProcess.properties:
+					for key, prop in aScriptToProcess.properties.items():
+						for parent in lineage:
+							if parent.properties:
+								if parent.properties.get(key, None):
+									raise SemanticError("A property called '%s' has already been defined in '%s'." % (prop.identifier, parent.identifier), prop.starts)
+			else:
+				pass
 			print("Finished validating: %s" % aScriptToProcess.identifier)
 			return True
 
