@@ -1,4 +1,9 @@
-# Developed for Python 3.x
+"""
+Builds .sublime-package files from the contents of the "Source" folder.
+
+Developed for Python 3.x
+"""
+
 import os, zipfile, sys
 
 ROOT = ""
@@ -13,16 +18,16 @@ PACKAGE_EXTENSION = ".sublime-package"
 def main():
 	print("Building .sublime-package files...")
 	global ROOT
-	licenseFile = os.path.join(ROOT, "LICENSE.md")
-	if not os.path.isfile(licenseFile):
+	license_file = os.path.join(ROOT, "LICENSE.md")
+	if not os.path.isfile(license_file):
 		print("Could not find 'LICENSE.md' in '%s'." % ROOT)
 		return
-	licenseRelPath = os.path.relpath(licenseFile, os.path.split(licenseFile)[0])
-	readmeFile = os.path.join(ROOT, "README.md")
-	if not os.path.isfile(readmeFile):
+	license_relative_path = os.path.relpath(license_file, os.path.split(license_file)[0])
+	readme_file = os.path.join(ROOT, "README.md")
+	if not os.path.isfile(readme_file):
 		print("Could not find 'README.md' in '%s'." % ROOT)
 		return
-	readmeRelPath = os.path.relpath(readmeFile, os.path.split(readmeFile)[0])
+	readme_relative_path = os.path.relpath(readme_file, os.path.split(readme_file)[0])
 	pkg = os.path.join(ROOT, "Packages")
 	if not os.path.isdir(pkg):
 		os.makedirs(pkg)
@@ -32,31 +37,33 @@ def main():
 		return
 	core = os.path.join(src, "Core")
 	if os.path.isdir(core):
-		coreFiles = []
+		core_files = []
 		for root, dirs, files in os.walk(core):
 			for file in files:
-				coreFiles.append(os.path.join(root, file))
-		with zipfile.ZipFile(os.path.join(pkg, PACKGE_PREFIX+PACKAGE_EXTENSION), "w") as coreZip:
-			coreZip.write(licenseFile, licenseRelPath)
-			coreZip.write(readmeFile, readmeRelPath)
-			for file in coreFiles:
-				coreZip.write(file, os.path.relpath(file, os.path.split(file)[0]))
+				core_files.append(os.path.join(root, file))
+		with zipfile.ZipFile(os.path.join(pkg, PACKGE_PREFIX+PACKAGE_EXTENSION), "w") as core_zip:
+			core_zip.write(license_file, license_relative_path)
+			core_zip.write(readme_file, readme_relative_path)
+			for file in core_files:
+				core_zip.write(file, os.path.relpath(file, os.path.split(file)[0]))
 	else:
 		print("There is no 'Core' folder in '%s'." % src)
 		return
 	modules = os.path.join(src, "Modules")
+	print("Building modules:\n\tCore")
 	if os.path.isdir(modules):
-		for moduleName in os.listdir(modules):
-			modulePath = os.path.join(modules, moduleName)
-			if os.path.isdir(modulePath):
-				moduleFiles = []
-				for root, dirs, files in os.walk(modulePath):
+		for module_name in os.listdir(modules):
+			print("\t" + module_name)
+			module_path = os.path.join(modules, module_name)
+			if os.path.isdir(module_path):
+				module_files = []
+				for root, dirs, files in os.walk(module_path):
 					for file in files:
-						moduleFiles.append(os.path.join(root, file))
-				with zipfile.ZipFile(os.path.join(pkg, "%s - %s%s" % (PACKGE_PREFIX, moduleName, PACKAGE_EXTENSION)), "w") as moduleZip:
-					moduleZip.write(licenseFile, licenseRelPath)
-					moduleZip.write(readmeFile, readmeRelPath)
-					for file in moduleFiles:
-						moduleZip.write(file, os.path.relpath(file, os.path.split(file)[0]))
+						module_files.append(os.path.join(root, file))
+				with zipfile.ZipFile(os.path.join(pkg, "%s - %s%s" % (PACKGE_PREFIX, module_name, PACKAGE_EXTENSION)), "w") as module_zip:
+					module_zip.write(license_file, license_relative_path)
+					module_zip.write(readme_file, readme_relative_path)
+					for file in module_files:
+						module_zip.write(file, os.path.relpath(file, os.path.split(file)[0]))
 	print("Finished...")
 main()

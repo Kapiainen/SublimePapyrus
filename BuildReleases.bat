@@ -1,2 +1,0 @@
-@python BuildReleases.py
-@pause
