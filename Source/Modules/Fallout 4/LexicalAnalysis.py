@@ -314,6 +314,7 @@ class Lexical(object):
 		self.Reset(False)
 
 	def Reset(self, a_caprica):
+		"""Resets the lexer according to the given parameters."""
 		assert isinstance(a_caprica, bool) #Prune
 		# a_caprica: bool
 		if a_caprica != self.caprica_extensions:
