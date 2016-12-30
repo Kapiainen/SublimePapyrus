@@ -1,5 +1,6 @@
 # API for accessing the core plugin of SublimePapyrus
 import sublime, sublime_plugin, sys, os, threading, time
+PLATFORM_WINDOWS = os.name == "nt"
 PYTHON_VERSION = sys.version_info
 SUBLIME_VERSION = None
 if PYTHON_VERSION[0] == 2:
@@ -51,62 +52,61 @@ def plugin_loaded():
 
 class SublimePapyrusFallout4CompileScriptCommand(sublime_plugin.WindowCommand):
 	def run(self, **args):
-		print(args)
+		# Get user settings for Fallout 4
 		settings = SublimePapyrus.GetSettings()
 		if not settings:
 			return SublimePapyrus.ShowMessage("No settings.")
 		modules = settings.get("modules", None)
 		if not modules:
 			return SublimePapyrus.ShowMessage("No modules.")
-		moduleSettings = modules.get("fallout4", None)
-		if not moduleSettings:
+		module_settings = modules.get("fallout4", None)
+		if not module_settings:
 			return SublimePapyrus.ShowMessage("No Fallout 4 module settings.")
-		scriptsPath = moduleSettings.get("scripts", None)
-		if not scriptsPath:
-			return SublimePapyrus.ShowMessage("No scripts path.")
-		if scriptsPath[-1:] == "\\":
-			scriptsPath = scriptsPath[:-1]
-		print(scriptsPath)
-		print(args["cmd"])
-		print(scriptsPath in args["cmd"])
-		if not scriptsPath.lower() in args["cmd"].lower():
-			return SublimePapyrus.ShowMessage("Compilation target not in scripts path.")
-		compilerPath = moduleSettings.get("compiler", None)
-		if not compilerPath:
+		compiler_path = module_settings.get("compiler", None)
+		if not compiler_path:
 			return SublimePapyrus.ShowMessage("No compiler path.")
-		flags = moduleSettings.get("flags", None)
+		flags = module_settings.get("flags", None)
 		if not flags:
 			return SublimePapyrus.ShowMessage("No flags file.")
-		outputPath = moduleSettings.get("output", None)
-		if not outputPath:
+		output_path = module_settings.get("output", None)
+		if not output_path:
 			return SublimePapyrus.ShowMessage("No output path.")
-		importPaths = moduleSettings.get("import", None)
-		if not importPaths:
+		import_paths = module_settings.get("import", None)
+		if not import_paths:
 			return SublimePapyrus.ShowMessage("No import paths.")
-		if not scriptsPath in importPaths:
-			importPaths.insert(0, scriptsPath)
-		arguments = moduleSettings.get("arguments", None)
+
+		# Arguments in the user settings
+		arguments = module_settings.get("arguments", None)
 		if arguments:
 			temp = []
-			for a in arguments:
-				if a[0] != "-":
-					temp.append("-%s" % a)
+			for argument_ in arguments:
+				if argument_[0] != "-":
+					temp.append("-%s" % argument_)
 				else:
-					temp.append(a)
+					temp.append(argument_)
 			arguments = temp
 
+		# Build mode (debug, release, etc.)
 		mode = args["mode"]
 		if not mode:
 			return SublimePapyrus.ShowMessage("No build mode.")
 		target = None
-		if mode == "debug" or mode == "release" or mode == "final":
-			target = args["cmd"][len(scriptsPath)+1:]
-		elif mode == "batch" or mode == "batchrecursive":
-			target = scriptsPath
+		if mode == "debug" or mode == "release" or mode == "final": # Single file
+			path_1 = args["cmd"].replace("\\", "/").lower()
+			path_2 = import_paths[0].replace("\\", "/").lower()
+			common_prefix = os.path.commonprefix([path_1, path_2])
+			if not common_prefix:
+				return SublimePapyrus.ShowMessage("Script is not in the first import folder.")
+			relative_path = os.path.relpath(path_1, common_prefix)
+			target = args["cmd"].replace("\\", "/")[-len(relative_path):]
+		elif mode == "batch" or mode == "batchrecursive": # Batch
+			return SublimePapyrus.ShowMessage("Batch build not currently supported")
 		else:
-			return SublimePapyrus.ShowMessage("Unknown build mode.")
+			return SublimePapyrus.ShowMessage("Unsupported build mode.")
 		if not target:
 			return SublimePapyrus.ShowMessage("No compilation target.")
+
+		# Arguments demanded by the build modes
 		if mode == "debug":
 			pass
 		elif mode == "release":
@@ -130,7 +130,9 @@ class SublimePapyrusFallout4CompileScriptCommand(sublime_plugin.WindowCommand):
 				arguments.append("-all")
 			else:
 				arguments = ["-all"]
-		args = {"cmd": "\"%s\" \"%s\" -i=\"%s\" -o=\"%s\" -f=\"%s\" %s" % (compilerPath, target, ";".join(importPaths), outputPath, flags, " ".join(arguments)), "file_regex": args["file_regex"]}
+
+		# Put all the arguments together and run the compiler
+		args = {"cmd": "\"%s\" \"%s\" -i=\"%s\" -o=\"%s\" -f=\"%s\" %s" % (compiler_path, target, ";".join(import_paths), output_path, flags, " ".join(arguments)), "file_regex": args["file_regex"]}
 		self.window.run_command("exec", args)
 		return
 
