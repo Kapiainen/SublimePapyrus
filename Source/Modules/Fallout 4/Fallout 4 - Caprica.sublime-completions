@@ -1,0 +1,14 @@
+{
+	"scope": "source.papyrus.fallout4.caprica",
+	"completions":
+	[
+		{"trigger": "for\tfor-loop", "contents": "For ${1:Type} ${2:Identifier} = ${3:StartExpression} To ${4:ToExpression} ${5:Step ${6:StepExpression}}\n\t${0}\nEndFor"},
+		{"trigger": "foreach\tforeach-loop", "contents": "ForEach ${1:Type} ${2:Identifier} In ${3:Expression}\n\t${0}\nEndForEach"},
+		{"trigger": "switch\tswitch statement", "contents": "Switch ${1:$SELECTION}\n\t${0}\nEndSwitch"},
+		{"trigger": "do\tdo-loopwhile-loop", "contents": "Do\n${0}\nLoopWhile ${1:$SELECTION}"},
+		{"trigger": "break\tkeyword", "contents": "Break"},
+		{"trigger": "continue\tkeyword", "contents": "Continue"},
+		{"trigger": "case\tswitch case statement", "contents": "Case ${1:$SELECTION}"},
+		{"trigger": "default\tkeyword", "contents": "Default"}
+	]
+}
