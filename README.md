@@ -118,6 +118,7 @@ Settings are located in *Preferences* > *Package Settings* > *SublimePapyrus*.
 - [The Elder Scrolls V: Skyrim](#the-elder-scrolls-v-skyrim)
  - [Skyrim Script Extender](#skyrim-script-extender-skse)
  - [Immersive First Person View](#immersive-first-person-view-ifpv)
+- [Fallout 4](#fallout-4)
 
 ### **The Elder Scrolls V: Skyrim**
 - [Syntax highlighting](#syntax-highlighting)
@@ -226,6 +227,20 @@ Single file build system and a batch build variant.
   - Information about this command can be found **[here](#valid-key-insertion-framework)**.
     - Config value names (boolean, float, integer, and string)
     - SKSE mod event names
+
+### **Fallout 4**
+- [Syntax highlighting](#syntax-highlighting-1)
+- [Basic completions](#basic-completions)
+- [Build systems](#build-systems-1)
+
+#### Syntax highlighting
+Syntax highlighting for the version of Papyrus that is used in ***Fallout 4*** and a separate variant that supports the language extensions implemented in [Orvid's Caprica compiler](https://github.com/Orvid/Caprica).
+
+#### Basic completions
+Completions for keywords and language features (e.g. while-loop, function definition). Additional completions are also available when using the Caprica variant of syntax highlighting.
+
+#### Build systems
+Single file build systems (debug, release, and final) for Bethesda's compiler. Corresponding build systems, which are available when using the Caprica variant of syntax highlighting, also exist for the Caprica compiler and take into account the differences in the formatting of arguments when invoking the Caprica compiler versus Bethesda's compiler.
 
 ## **Changelog**
 **Version 2.6.9 - 2016/12/22:**
