@@ -1,0 +1,18 @@
+{
+	"target": "sublime_papyrus_fallout4_compile_script",
+	"cmd": "$file",
+	"file_regex": "^([a-zA-Z]:[^\\(]+(?=\\s\\())\\s\\(([0-9]+),\\s([0-9]+)\\):\\s(.*)$",
+	"mode": "caprica_debug",
+	"selector": "source.papyrus.fallout4.caprica",
+	"variants":
+	[
+		{
+			"name": "Release",
+			"mode": "caprica_release"
+		},
+		{
+			"name": "Final",
+			"mode": "caprica_final"
+		}
+	]
+}
