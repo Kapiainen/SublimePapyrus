@@ -2233,7 +2233,7 @@
 					<key>comment</key>
 					<string>Script flags</string>
 					<key>match</key>
-					<string>(?i)\b(conditional|const|default|hidden|native)\b</string>
+					<string>(?i)\b(conditional|const|default|hidden|native|debugonly|betaonly)\b</string>
 					<key>name</key>
 					<string>keyword.other.papyrus</string>
 				</dict>
@@ -2621,7 +2621,7 @@
 						</dict>
 						<dict>
 							<key>match</key>
-							<string>(?i)(?:\b(conditional|const)\b)</string>
+							<string>(?i)(?:\b(conditional|const|hidden)\b)</string>
 							<key>name</key>
 							<string>keyword.other.papyrus</string>
 						</dict>

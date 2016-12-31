@@ -99,7 +99,7 @@ repository:
       - include: '#namespace'
     - comment: Script flags
       name: keyword.other.papyrus
-      match: (?i)\b(conditional|const|default|hidden|native)\b
+      match: (?i)\b(conditional|const|default|hidden|native|debugonly|betaonly)\b
 
   import:
     patterns:
@@ -559,7 +559,7 @@ repository:
       patterns:
       - include: '#constants'
       - name: keyword.other.papyrus
-        match: (?i)(?:\b(conditional|const)\b)
+        match: (?i)(?:\b(conditional|const|hidden)\b)
       - include: '#expression'
       - include: '#endOfLine'
 
