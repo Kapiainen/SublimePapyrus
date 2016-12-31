@@ -86,6 +86,7 @@ class PropertyObject(object):
 		"docstring", # str
 		"setFunction", # FunctionObject
 		"getFunction", # FunctionObject
+		"group", # str
 		"starts", # int
 		"ends" # int
 	]
@@ -109,6 +110,7 @@ class PropertyObject(object):
 			self.docstring = ""
 		self.setFunction = aSetFunction
 		self.getFunction = aGetFunction
+		self.group = None
 		self.starts = aSignature.line
 		self.ends = aEnds
 
@@ -599,6 +601,7 @@ class SemanticFirstPhase(object):
 							raise SemanticError("This script already has a property called '%s'." % element.identifier, prop.starts)
 						elif variables.get(key, None):
 							raise SemanticError("This script already has a variable called '%s'." % element.identifier, prop.starts)
+						prop.group = key
 						properties[key] = prop
 					groups[key] = element
 					# Add group member types to the typeMap.
@@ -1731,24 +1734,114 @@ class SemanticFirstPhase(object):
 						if not overriding and not aScriptToProcess.flags.isNative:
 							raise SemanticError("New events can only be defined when the script signature has the 'Native' flag.", event.starts)
 						#Any remaining checks
-				# Structs
+				
+			else:
+				def MatchFunctionSignatures(a_overriding_function, a_overriding_type_map, a_original_function, a_original_type_map):
+					pass
+
+				def MatchEventSignatures(a_overriding_event, a_overriding_type_map, a_original_event, a_original_type_map):
+					pass
+
+				# ImplementationKeyword: Function
+				if aScriptToProcess.functions:
+					for key, func in aScriptToProcess.functions.items():
+						if aScriptToProcess.extends:
+							# Match signature with original signature (parameter names can differ)
+							pass
+						else:
+							pass
+				#	Return type
+				#	Parameters
+				#		Types
+				#		Default values
+
+				# ImplementationKeyword: Event
+				if aScriptToProcess.events:
+					for key, event in aScriptToProcess.events.items():
+						if aScriptToProcess.extends:
+							# Match signature with original signature (parameter names can differ)
+							pass
+						else:
+							pass
+				#	Remote
+				#		Exists in remote script
+				#		First parameter
+				#	Parameters
+				#		Types
+
+				# ImplementationKeyword: Struct
 				if aScriptToProcess.structs:
-					# Look for overriding definitions of inherited structs.
 					for key, struct in aScriptToProcess.structs.items():
-						for parent in lineage: # If struct has not been defined in any parent scripts, then this loop should finish by itself without raising exceptions.
-							if parent.structs:
-								parentStruct = parent.structs.get(key, None)
-								if parentStruct:
-									raise SemanticError("A struct called '%s' has already been defined in '%s'." % (struct.identifier, parent.identifier), struct.starts)
-				# Properties
+						# Implements: No overriding definitions of inherited structs
+						if aScriptToProcess.extends:
+							for parent in lineage: # If struct has not been defined in any parent scripts, then this loop should finish by itself without raising an exception.
+								if parent.structs:
+									parent_struct = parent.structs.get(key, None)
+									if parent_struct:
+										raise SemanticError("A struct called '%s' has already been defined in '%s'." % (struct.identifier, parent.identifier), struct.starts)
+				#		Member types
+						for member_key, member in struct.members.items():
+							# Implements: Struct member type validation
+							# Implements: Struct member default value
+							pass
+
+				# ImplementationKeyword: Property
 				if aScriptToProcess.properties:
 					for key, prop in aScriptToProcess.properties.items():
-						for parent in lineage:
-							if parent.properties:
-								if parent.properties.get(key, None):
-									raise SemanticError("A property called '%s' has already been defined in '%s'." % (prop.identifier, parent.identifier), prop.starts)
-			else:
-				pass
+						if aScriptToProcess.extends:
+							# Check if inherited
+							for parent in lineage:
+								if parent.properties:
+									if parent.properties.get(key, None):
+										raise SemanticError("A property called '%s' has already been defined in '%s'." % (prop.identifier, parent.identifier), prop.starts)
+				#		Type
+				#		Default value
+				#		Functions
+
+				# ImplementationKeyword: Variable
+				if aScriptToProcess.variables:
+					for key, variable in aScriptToProcess.variables.items():
+				#		Type
+				#		Default value
+						pass
+
+				# ImplementationKeyword: Group
+				if aScriptToProcess.groups:
+					for key, group in aScriptToProcess.groups.items():
+						if aScriptToProcess.extends:
+							pass
+						else:
+							pass
+
+				# ImplementationKeyword: State
+				if aScriptToProcess.states:
+					for key, state in aScriptToProcess.states.items():
+				#		Functions
+				#		Events
+						if aScriptToProcess.extends:
+							# Has to be defined in empty state if not in a parent script
+							# Match signature with original signature (parameter names can differ)
+							if state.functions:
+								for function_key, function in state.functions.items():
+									overriding = False
+									for parent in lineage:
+										if parent.functions:
+											parent_function = parent.functions.get(function_key, None)
+											if parent_function:
+												overriding = True
+												MatchFunctionSignatures()
+												break
+									if not overriding:
+										pass
+							if state.events:
+								for event_key, event in state.events.items():
+									if event.remote:
+										pass
+									else:
+										pass
+						else:
+							# If not defined in empty state, then raise error
+							pass
 			print("Finished validating: %s" % aScriptToProcess.identifier)
 			return True
 
