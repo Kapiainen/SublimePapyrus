@@ -777,7 +777,7 @@ class Syntactic(SharedResources):
 		elif self.token.type == self.DOCUMENTATION_STRING:
 			self.Accept(self.DOCUMENTATION_STRING)
 			self.stat = Statement(self.STAT_DOCUMENTATION, line, Documentation(self.GetPreviousValue()))
-		elif self.token.type == self.KW_STATE or (self.token.type == self.KW_AUTO and self.Peek().type == self.KW_STATE):
+		elif self.token.type == self.KW_STATE or (self.token.type == self.KW_AUTO and self.Peek() != None and self.Peek().type == self.KW_STATE):
 			self.State()
 		elif self.token.type == self.KW_ENDSTATE:
 			self.Accept(self.KW_ENDSTATE)
