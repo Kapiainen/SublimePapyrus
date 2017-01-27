@@ -228,6 +228,12 @@ Single file build system and a batch build variant.
     - SKSE mod event names
 
 ## **Changelog**
+**Version 2.7.0 - 2017/01/27:**
+
+- **Skyrim**
+  - Added completions for End* keywords (e.g. EndWhile).
+  - Fixed a bug that caused the linter to crash.
+
 **Version 2.6.10 - 2017/01/12:**
 
 - **Skyrim**

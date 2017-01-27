@@ -143,6 +143,7 @@ class EventListener(sublime_plugin.EventListener):
 		self.completionKeywordFalse = ("false\tkeyword", "False",)
 		self.completionKeywordNone = ("none\tkeyword", "None",)
 		self.completionKeywordTrue = ("true\tkeyword", "True",)
+		self.scriptContents = None
 
 	# Clear cache in order to force an update
 	def on_close(self, view):
@@ -396,6 +397,8 @@ h1 {
 				scriptContents = view.substr(sublime.Region(0, view.size()))
 			else:
 				scriptContents = self.scriptContents
+			if not scriptContents:
+				return Exit()
 			lineCount = scriptContents.count("\n") + 1
 			statements = []
 			lines = []
@@ -549,11 +552,15 @@ h1 {
 							completions.append(SublimePapyrus.MakeEventCompletion(obj, sem, False, "parent"))
 					completions.append(("import\timport statement", "Import ${0:$SELECTION}",))
 					completions.append(("property\tproperty def.", "${1:Type} Property ${2:PropertyName} ${3:Auto}",))
+					completions.append(("endproperty\tkeyword", "EndProperty",))
 					completions.append(("fullproperty\tfull property def.", "${1:Type} Property ${2:PropertyName}\n\t${1:Type} Function Get()\n\t\t${3}\n\tEndFunction\n\n\tFunction Set(${1:Type} Variable)\n\t\t${4}\n\tEndFunction\nEndProperty",))
 					completions.append(("autostate\tauto state def.", "Auto State ${1:StateName}\n\t${0}\nEndState",))
 					completions.append(("state\tstate def.", "State ${1:StateName}\n\t${0}\nEndState",))
+					completions.append(("endstate\tkeyword", "EndState",))
 					completions.append(("event\tevent def.", "Event ${1:EventName}(${2:Parameters})\n\t${0}\nEndEvent",))
+					completions.append(("endevent\tkeyword", "EndEvent",))
 					completions.append(("function\tfunction def.", "${1:Type} Function ${2:FunctionName}(${3:Parameters})\n\t${0}\nEndFunction",))
+					completions.append(("endfunction\tkeyword", "EndFunction",))
 					# Types to facilitate variable declarations
 					completions.extend(self.GetTypeCompletions(view, True))
 					return completions
@@ -707,7 +714,9 @@ h1 {
 					completions.append(("if\tif", "If ${1:$SELECTION}\n\t${0}\nEndIf",))
 					completions.append(("elseif\telse-if", "ElseIf ${1:$SELECTION}\n\t${0}",))
 					completions.append(("else\telse", "Else\n\t${0}",))
+					completions.append(("endif\tkeyword", "EndIf",))
 					completions.append(("while\twhile-loop", "While ${1:$SELECTION}\n\t${0}\nEndWhile",))
+					completions.append(("endwhile\tkeyword", "EndWhile",))
 					completions.append(("for\tpseudo for-loop", "Int ${1:iCount} = 0\nWhile ${1:iCount} < ${2:maxSize}\n\t${0}\n\t${1:iCount} += 1\nEndWhile",))
 					if e.signature.data.type:
 						completions.append(("return\tstat.", "Return ",))
