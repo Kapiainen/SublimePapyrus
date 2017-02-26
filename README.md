@@ -228,6 +228,11 @@ Single file build system and a batch build variant.
     - SKSE mod event names
 
 ## **Changelog**
+**Version 2.7.1 - 2017/02/26:**
+
+- **Skyrim**
+  - Fixed a bug in the linter's assignment validation.
+
 **Version 2.7.0 - 2017/01/27:**
 
 - **Skyrim**

@@ -824,7 +824,7 @@ class Syntactic(SharedResources):
 		elif node.type == self.NODE_ARRAYCREATION:
 			pass
 		elif node.type == self.NODE_BINARYOPERATOR:
-			if node.data.operator.type == self.OP_DOT:
+			if node.data.operator.type == self.OP_DOT or node.data.operator.type == self.KW_AS:
 				self.AssignmentValidator(node.data.leftOperand)
 				self.AssignmentValidator(node.data.rightOperand)
 			else:
