@@ -828,7 +828,7 @@ class Syntactic(SharedResources):
 				self.AssignmentValidator(node.data.leftOperand)
 				self.AssignmentValidator(node.data.rightOperand)
 			else:
-				self.Abort("The left-hand side expression contains operators other than the dot operator.")
+				self.Abort("The left-hand side expression contains operators other than the dot and cast operators.")
 		elif node.type == self.NODE_UNARYOPERATOR:
 			self.AssignmentValidator(node.data.operand)
 		else:
